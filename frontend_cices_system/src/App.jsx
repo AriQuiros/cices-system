@@ -3,7 +3,7 @@ import logoUCR from '../public/images/logoUCR.png';
 import logoCICES from '../public/images/logoCICES.png';
 import logoCICES2 from '../public/images/logoCICES2.png';
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Hello from "./Hello"
+import Login from "./paginas/login/Login"
 
 function App() {
     return (
@@ -21,11 +21,9 @@ function App() {
 function Main(){
     return(
         <main>
-            {/* <AppProvider> */}
             <Routes>
-                <Route path="/" element={<Hello />} />
+                <Route path="/" element={<Login />} />
             </Routes>
-            {/* </AppProvider> */}
         </main>
     );
 }

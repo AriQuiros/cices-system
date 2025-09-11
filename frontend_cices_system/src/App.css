@@ -5,27 +5,46 @@ header {
   width: 100%;
   z-index: 1000;
 }
-
 .header-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 0 0 10px;
+  justify-content: space-between;
   background: #0FC3F3;
+  padding: 0px 5px;
+  position: relative;
 }
 
 .page-name {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin: 0;
   flex: 1;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-  flex-wrap: wrap;
 }
 
+/* bloque de logos */
 .logos {
+  position: relative;
+  background:transparent;
+  padding: 5px 30px;
+  width: 280px;
   display: flex;
-  justify-content: flex-end;
-  background-color: white;
+  align-items: center;
+  gap: 20px;
+  z-index: 1;
+}
+
+/* diagonal blanca que empalma con el celeste */
+.logos::before {
+  content: "";
+  position: absolute;
+  left: -150px;                /* mueve más o menos según necesites */
+  top: 0;
+  bottom: 0;
+  width: 700px;                /* ancho del wedge */
+  background: #fff;
+  transform: skewX(-70deg);   /* ángulo */
+  z-index: -1;
 }
 
 .logos img {
@@ -34,7 +53,7 @@ header {
 }
 
 .divider {
-  height: 5px;
+  height: 10px;
   background: #ccc;
 }
 
@@ -49,11 +68,11 @@ main {
 
 /* --- FOOTER --- */
 footer {
-  position: fixed;
-  bottom: 0;
+  position: relative;
   width: 100%;
   background: #ccc;
   padding: 0 20px;
+  margin-top: auto;
 }
 
 .footer-content {
@@ -74,32 +93,53 @@ footer {
 
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
-  /* Header ya no fijo */
-  header {
+  header{
     position: relative;
+    width:100vw;
+    margin-left:calc(50% - 50vw);
   }
 
-  main {
-    margin-top: 20px;
-    margin-bottom: 20px;
+  .header-content{
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 14px;
+    background:#0FC3F3;
+    overflow:hidden;
   }
 
-  .header-content {
-    text-align: center;
+  /* Panel blanco con borde diagonal a la IZQUIERDA */
+  .header-content::after{
+    content:"";
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:52vw;                    /* ajusta 45–60vw según se vea */
+    background:#fff;
+    clip-path: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
+    z-index:0;
   }
 
-  .page-name {
-    flex: 100%;
-    margin-bottom: 10px;
+  .page-name{
+    font-size:1.25rem;
+    color:#fff;
+    margin:0;
+    max-width:48vw;                /* evita que el título se meta al blanco */
+    z-index:1;
   }
 
-  /* Logos se ponen en columna */
-  .logos {
-
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+  .logos{
+    position:relative;
+    padding:8px 10px;
+    width:auto;
+    display:flex; align-items:center; gap:10px;
+    z-index:1;
   }
+
+  .logos::before{ display:none; }  /* quita el wedge de desktop */
+  .logos img{ max-width:72px; height:auto; }
+
+  .divider{ height:6px; }
 
   /* Footer ya no fijo */
   footer {

@@ -1,0 +1,49 @@
+.funcionalidades {
+    align-content: space-between;
+    align-items: center;
+    background-color: #e6e6e6;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0px 20px;
+    position: relative;
+}
+
+.funcionalidades .text-wrapper {
+    color: #005da4;
+    flex: 1;
+    font-family: "Inria Serif-Bold", Helvetica;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.36px;
+    line-height: 21.6px;
+    position: relative;
+    text-align: center;
+}
+
+.funcionalidades .div {
+    color: #005da4;
+    flex: 1;
+    font-family: "Inria Serif-Bold", Helvetica;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.36px;
+    line-height: 21.6px;
+    margin-top: -1.00px;
+    position: relative;
+    text-align: center;
+}
+
+.funcionalidades .text-wrapper-2 {
+    color: #005da4;
+    flex: 1;
+    font-family: "Inria Serif-Bold", Helvetica;
+    font-size: 18px;
+    font-weight: 700;
+    height: 21px;
+    letter-spacing: 0.36px;
+    line-height: 21.6px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+}

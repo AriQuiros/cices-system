@@ -7,9 +7,6 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
@@ -36,8 +33,5 @@ public class InvestigadorProyecto {
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "ID_PROYECTO", nullable = false)
     private Proyecto idProyecto;
-
-    @OneToMany(mappedBy = "idInvestigadorProyecto")
-    private Set<HorasAsignada> horasAsignadas = new LinkedHashSet<>();
 
 }

@@ -28,4 +28,5 @@ public class RolPermiso {
     @JoinColumn(name = "ID_PERMISO", nullable = false)
     private Permiso idPermiso;
 
+
 }

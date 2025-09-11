@@ -1,13 +1,13 @@
 package org.example.backend_cices_system.logic;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -22,8 +22,5 @@ public class PermisoProyecto {
     @NotNull
     @Column(name = "NOMBRE_PERMISO_PROYECTO", nullable = false, length = 20)
     private String nombrePermisoProyecto;
-
-    @OneToMany(mappedBy = "idPermisoProyecto")
-    private Set<RolPermisoProyecto> rolPermisoProyectos = new LinkedHashSet<>();
 
 }

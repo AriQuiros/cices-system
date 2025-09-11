@@ -42,4 +42,5 @@ public class Certificacion {
     @Column(name = "ID_CODIGO_TIPO_ESTADO", nullable = false)
     private Short idCodigoTipoEstado;
 
+
 }

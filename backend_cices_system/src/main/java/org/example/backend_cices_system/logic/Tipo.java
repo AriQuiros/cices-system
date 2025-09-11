@@ -2,6 +2,7 @@ package org.example.backend_cices_system.logic;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,9 +14,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "TIPO")
 public class Tipo {
-    @NotNull
+    @Id
     @Column(name = "ID_TIPO", nullable = false)
-    private Short idTipo;
+    private Short id;
 
     @Size(max = 30)
     @NotNull

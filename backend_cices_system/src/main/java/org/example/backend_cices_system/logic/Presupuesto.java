@@ -9,8 +9,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -44,11 +42,5 @@ public class Presupuesto {
 
     @Column(name = "ID_CODIGO_TIPO_PRESUPUESTO")
     private Short idCodigoTipoPresupuesto;
-
-    @OneToMany(mappedBy = "idPresupuesto")
-    private Set<Gasto> gastos = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "idPresupuesto")
-    private Set<HorasAsignada> horasAsignadas = new LinkedHashSet<>();
 
 }

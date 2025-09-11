@@ -44,4 +44,5 @@ public class Gasto {
     @Column(name = "DESCRIPCION", nullable = false)
     private String descripcion;
 
+
 }

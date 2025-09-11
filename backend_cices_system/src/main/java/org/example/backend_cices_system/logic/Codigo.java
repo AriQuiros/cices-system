@@ -1,25 +1,28 @@
 package org.example.backend_cices_system.logic;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import oracle.sql.CHAR;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "CODIGO")
 public class Codigo {
-    @NotNull
+    @Id
     @Column(name = "ID_CODIGO", nullable = false)
-    private Short idCodigo;
+    private Short id;
 
     @NotNull
-    @Column(name = "ID_TIPO", nullable = false)
-    private Short idTipo;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_TIPO", nullable = false)
+    private Tipo idTipo;
 
     @Size(max = 30)
     @NotNull
@@ -28,7 +31,7 @@ public class Codigo {
 
     @NotNull
     @Column(name = "TIPO_VALOR", nullable = false)
-    private Boolean tipoValor = false;
+    private char tipoValor;
 
     @Size(max = 30)
     @NotNull

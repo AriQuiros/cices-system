@@ -40,4 +40,5 @@ public class HorasAsignada {
     @Column(name = "ID_CODIGO_TIPO_HORAS", nullable = false)
     private Short idCodigoTipoHoras;
 
+
 }

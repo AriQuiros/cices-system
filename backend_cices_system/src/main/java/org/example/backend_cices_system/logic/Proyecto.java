@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -56,14 +54,5 @@ public class Proyecto {
     @Size(max = 254)
     @Column(name = "VINCULACION", length = 254)
     private String vinculacion;
-
-    @OneToMany(mappedBy = "idProyecto")
-    private Set<Documento> documentos = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "idProyecto")
-    private Set<InvestigadorProyecto> investigadorProyectos = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "idProyecto")
-    private Set<Presupuesto> presupuestos = new LinkedHashSet<>();
 
 }

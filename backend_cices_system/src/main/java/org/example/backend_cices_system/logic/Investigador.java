@@ -8,9 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
@@ -39,11 +36,5 @@ public class Investigador {
     @NotNull
     @Column(name = "ID_CODIGO_GRADO_ACADEMICO", nullable = false)
     private Short idCodigoGradoAcademico;
-
-    @OneToMany(mappedBy = "idInvestigador")
-    private Set<Certificacion> certificacions = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "idInvestigador")
-    private Set<InvestigadorProyecto> investigadorProyectos = new LinkedHashSet<>();
 
 }

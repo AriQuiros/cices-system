@@ -8,9 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
@@ -39,8 +36,5 @@ public class Usuario {
     @NotNull
     @Column(name = "ACTIVO", nullable = false)
     private Long activo;
-
-    @OneToMany(mappedBy = "idUsuario")
-    private Set<RolUsuario> rolUsuarios = new LinkedHashSet<>();
 
 }

@@ -33,4 +33,5 @@ public class Documento {
     @Column(name = "DIRECTORIO", nullable = false)
     private String directorio;
 
+
 }

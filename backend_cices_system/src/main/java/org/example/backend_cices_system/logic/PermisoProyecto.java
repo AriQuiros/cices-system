@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Entity
@@ -23,4 +25,7 @@ public class PermisoProyecto {
     @Column(name = "NOMBRE_PERMISO_PROYECTO", nullable = false, length = 20)
     private String nombrePermisoProyecto;
 
+    @NotNull
+    @Column(name = "FECHA_EXPIRA_PERMISO", nullable = false)
+    private LocalDate fechaExpiracionPermiso;
 }

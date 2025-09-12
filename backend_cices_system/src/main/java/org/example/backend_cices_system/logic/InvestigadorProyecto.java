@@ -34,4 +34,8 @@ public class InvestigadorProyecto {
     @JoinColumn(name = "ID_PROYECTO", nullable = false)
     private Proyecto idProyecto;
 
+    @Lob
+    @Column(name = "ACTIVIDAD_PROYECTO")
+    private String actividadProyecto;
+
 }

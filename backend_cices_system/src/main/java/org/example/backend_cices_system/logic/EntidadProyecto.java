@@ -1,0 +1,35 @@
+package org.example.backend_cices_system.logic;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "ENTIDAD_PROYECTO")
+public class EntidadProyecto {
+    @Id
+    @Column(name = "ID_ENTIDAD", nullable = false)
+    private Short id;
+
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_ENTIDAD", nullable = false)
+    private Entidad entidad;
+
+    @NotNull
+    @Column(name = "ID_ENTIDAD_PROYECTO", nullable = false)
+    private Short idEntidadProyecto;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_PROYECTO", nullable = false)
+    private Proyecto idProyecto;
+
+}

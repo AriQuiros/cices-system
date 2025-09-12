@@ -4,10 +4,11 @@ import logoCICES from '../public/images/logoCICES.png';
 import logoCICES2 from '../public/images/logoCICES2.png';
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Login from "./paginas/login/Login"
+import Registro from "./paginas/registro/Registro.jsx"
 
 function App() {
     return (
-        <div className = "App-main">
+        <div className = "app-container">
             <BrowserRouter>
                 <Header />
                 <Main />
@@ -23,6 +24,7 @@ function Main(){
         <main>
             <Routes>
                 <Route path="/" element={<Login />} />
+                <Route path="/Registro" element={<Registro />} />
             </Routes>
         </main>
     );

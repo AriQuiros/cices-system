@@ -59,11 +59,8 @@ header {
 
 /* --- MAIN --- */
 main {
-  margin-top: 80px;
-  margin-bottom: 100px;
-  padding: 20px;
+  margin-top: auto;
   background: #fff;
-  min-height: 100vh;
 }
 
 /* --- FOOTER --- */
@@ -72,7 +69,6 @@ footer {
   width: 100%;
   background: #ccc;
   padding: 0 20px;
-  margin-top: auto;
 }
 
 .footer-content {
@@ -92,7 +88,7 @@ footer {
 }
 
 /* --- RESPONSIVE --- */
-@media (max-width: 768px) {
+@media (max-width: 855px) {
   header{
     position: relative;
     width:100vw;
@@ -120,6 +116,10 @@ footer {
     z-index:0;
   }
 
+  main{
+    margin: 0;
+  }
+
   .page-name{
     font-size:1.25rem;
     color:#fff;
@@ -144,7 +144,6 @@ footer {
   /* Footer ya no fijo */
   footer {
     position: relative;
-    margin-top: 20px;
   }
 
   .footer-content {

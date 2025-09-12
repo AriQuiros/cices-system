@@ -1,16 +1,10 @@
-html, body {
-    height: 60%;
-    padding: 0;
-    background: url("/public/images/ImgPrincipal.png") no-repeat center center fixed;
-    background-size: 1200px;
-}
-
 .login-container {
     min-height: calc(100vh - 160px);
     display: grid;
     place-items: center;
     padding: 20px;
     background: transparent;
+    background: url("/public/images/ImgPrincipal.png") no-repeat center center fixed;
 }
 
 .login-card {

@@ -1,9 +1,6 @@
 package org.example.backend_cices_system.logic;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -29,5 +26,9 @@ public class PresentacionInforme {
     @Column(name = "FECHA_PRESENTACION", nullable = false)
     private LocalDate fechaPresentacion;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_PROYECTO")
+    private Proyecto idProyecto;
 
 }

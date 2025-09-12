@@ -4,10 +4,12 @@ import logoCICES from '../public/images/logoCICES.png';
 import logoCICES2 from '../public/images/logoCICES2.png';
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Login from "./paginas/login/Login"
+import Registro from "./paginas/registro/Registro.jsx"
+import RegistroProyecto from "./paginas/registro/RegistroProyecto.jsx"
 
 function App() {
     return (
-        <div className = "App-main">
+        <div className = "app-container">
             <BrowserRouter>
                 <Header />
                 <Main />
@@ -23,6 +25,8 @@ function Main(){
         <main>
             <Routes>
                 <Route path="/" element={<Login />} />
+                <Route path="/Registro" element={<Registro />} />
+                <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
             </Routes>
         </main>
     );
@@ -52,9 +56,9 @@ function Footer() {
                     <img src={logoCICES2} alt="LogoFooterCices"/>
                 </div>
                 <div className="footer-contact">
-                    <p>Correo: cices@ucr.ac.cr</p>
-                    <p>Teléfono: 2511-5191 / 2511-5187</p>
-                    <p>Horario: De Lunes a Viernes de 7:00 a.m. a 5:00 p.m.</p>
+                    <p>Correo: cices@ucr.ac.cr<br/>
+                        Teléfono: 2511-5191 / 2511-5187<br/>
+                        Horario: De Lunes a Viernes de 7:00 a.m. a 5:00 p.m.</p>
                 </div>
                 <div className="footer-location">
                     <p>Ubicación: 2do piso de la Escuela de Enfermería,<br/>

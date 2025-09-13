@@ -1,0 +1,39 @@
+.contenedor_director{
+        padding: 20px;
+        overflow-x: hidden;
+        margin-top:4%;
+        box-sizing: border-box;
+        min-height: calc(100vh - 200px);
+}
+
+.resumen_funcionalidades{
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+.resumen_funcionalidades h3{
+    text-align: center;
+}
+
+.resumen_personal, .resumen_proyectos{
+    background-color: #DDDDDD;
+    width: 50%;
+    border-radius: 10px;
+    min-width: 0; /*para que no se pasen del tamano del padre*/
+    padding: 20px;
+}
+
+.label{
+    display: grid;
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.label label, .label label{
+    padding:10px;
+    border: 1px solid #D9D9D9;
+    border-radius: 10px;
+    min-width: 0;
+}

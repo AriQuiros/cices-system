@@ -50,7 +50,7 @@ function Login() {
 
                 <div className="login-links">
                     <label> ¿No tienes una cuenta?
-                        <a href="/registrar"> Click aquí</a>
+                        <a href="/Registro"> Click aquí</a>
                     </label>
                 </div>
             </div>

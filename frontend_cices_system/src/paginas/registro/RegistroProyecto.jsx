@@ -103,6 +103,8 @@ function RegistroProyecto() {
                     </div>
                 </fieldset>
 
+                <fieldset id="input-project-group" className="input-group">
+                    <legend>Entidades vinculadas</legend>
                 <label>Unidades participantes</label>
                 <small>Unidad 1</small>
                 <div id="inline-project-group" className="inline-group">
@@ -132,6 +134,8 @@ function RegistroProyecto() {
                         <button type="button">❌</button>
                     </div>
                 </div>
+                </fieldset>
+
 
                 <div className="form-row">
                     <div className="input-group">

@@ -1,10 +1,14 @@
 package org.example.backend_cices_system.service;
-import org.example.backend_cices_system.data.RolUsuarioRepository;
-import org.example.backend_cices_system.data.UsuarioRepository;
+import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.LoginResponse;
 import org.example.backend_cices_system.dto.UserInfo;
+import org.example.backend_cices_system.logic.*;
 import org.example.backend_cices_system.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+import org.example.backend_cices_system.dto.UsuarioRegistroDTO;
+
+import java.time.LocalDate;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
@@ -14,15 +18,28 @@ public class AuthService {
     private final JwtUtil jwt;
     private final UsuarioRepository usuarioRepository;
     private final RolUsuarioRepository rolUsuarioRepository;
+    private final EmpleadoRepository empleadoRepository;
+    private final RolRepository rolRepository;
+    private final InvestigadorRepository investigadorRepository;
+    private final CertificacionRepository certificacionRepository;
 
-    public AuthService(UsuarioRepository u,
-                       RolUsuarioRepository r,
-                       PasswordEncoder enc,
-                       JwtUtil jwt) {
-        this.usuarioRepository = u;
-        this.rolUsuarioRepository = r;
-        this.encoder = enc;
+    public AuthService(
+            UsuarioRepository usuarioRepository,
+            RolUsuarioRepository rolUsuarioRepository,
+            EmpleadoRepository empleadoRepository,
+            RolRepository rolRepository,
+            InvestigadorRepository investigadorRepository,
+            PasswordEncoder encoder,
+            JwtUtil jwt,CertificacionRepository certificacionRepository
+    ) {
+        this.usuarioRepository = usuarioRepository;
+        this.rolUsuarioRepository = rolUsuarioRepository;
+        this.empleadoRepository = empleadoRepository;
+        this.rolRepository = rolRepository;
+        this.investigadorRepository = investigadorRepository;
+        this.encoder = encoder;
         this.jwt = jwt;
+        this.certificacionRepository = certificacionRepository;
     }
 
     public LoginResponse login(String username, String password) {
@@ -60,5 +77,84 @@ public class AuthService {
                 token,
                 new UserInfo(u.getId(), u.getNombreUsuario(), nombre, roles)
         );
+    }
+    @Transactional
+    public void registrar(UsuarioRegistroDTO usuario) {
+        // Validación de roles
+        var roles = usuario.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            throw new RuntimeException("Debe seleccionar al menos un rol");
+        }
+        // Roles principales permitidos
+        String[] rolesPrincipales = {"DIRECTOR", "ADMINISTRADOR", "ASISTENTE"};
+        boolean esInvestigador = roles.stream().anyMatch(r -> r.equalsIgnoreCase("INVESTIGADOR"));
+        int otrosRoles = (int) roles.stream().filter(r -> {
+            for (String principal : rolesPrincipales) {
+                if (r.equalsIgnoreCase(principal)) return true;
+            }
+            return false;
+        }).count();
+        if (otrosRoles > 1) {
+            throw new RuntimeException("Solo puede seleccionar un rol entre Director, Administrador o Asistente");
+        }
+        if (!esInvestigador && otrosRoles != 1) {
+            throw new RuntimeException("Debe seleccionar al menos un rol principal");
+        }
+
+        // 1. Crear y guardar Empleado
+        Empleado empleado = new Empleado();
+        empleado.setNombreCompleto(usuario.getNombreCompleto());
+        empleado.setNacionalidad(usuario.getNacionalidad());
+        empleado.setIdCodigoTipoId(usuario.getIdCodigoTipoId());
+        empleado.setIdentificacion(usuario.getIdentificacion());
+        empleado.setCorreo(usuario.getCorreo());
+        empleado.setNumeroTelefono(usuario.getTelefono());
+        empleado = empleadoRepository.save(empleado);
+
+        // 2. Crear y guardar Usuario
+        Usuario nuevoUsuario = new Usuario();
+        nuevoUsuario.setIdEmpleado(empleado);
+        nuevoUsuario.setNombreUsuario(usuario.getNombreUsuario());
+        nuevoUsuario.setContrasena(encoder.encode(usuario.getContrasena()));
+        nuevoUsuario.setActivo(1L);
+        nuevoUsuario = usuarioRepository.save(nuevoUsuario);
+
+        // 3. Asignar Roles
+        for (String nombreRol : roles) {
+            Rol rol = (Rol) rolRepository.findByNombreRolIgnoreCase(nombreRol)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + nombreRol));
+            RolUsuario rolUsuario = new RolUsuario();
+            rolUsuario.setIdUsuario(nuevoUsuario);
+            rolUsuario.setIdRol(rol);
+            rolUsuarioRepository.save(rolUsuario);
+        }
+
+        // 4. Si es investigador, crear Investigador
+        if (esInvestigador) {
+            Investigador investigador = new Investigador();
+            investigador.setIdEmpleado(empleado);
+            investigador.setNumeroBecario(usuario.getNumeroBecario() != null && !usuario.getNumeroBecario().isBlank() ? Integer.valueOf(usuario.getNumeroBecario()) : null);
+            investigador.setUnidadAcademica(usuario.getUnidadAcademica());
+            investigador.setInstitucionOrigen(usuario.getInstitucionOrigen());
+            investigador.setIdCodigoGradoAcademico(usuario.getIdCodigoGradoAcademico());
+            investigador = investigadorRepository.save(investigador);
+            // Procesar acreditaciones si existen
+            if (usuario.getAcreditaciones() != null) {
+                for (UsuarioRegistroDTO.AcreditacionDTO acreditacion : usuario.getAcreditaciones()) {
+                    Certificacion cert = new Certificacion();
+                    cert.setIdInvestigador(investigador);
+                    cert.setNombreCertificacion(acreditacion.getText());
+                    // Asigna la fecha de expiración
+                    if (acreditacion.getDate() != null && !acreditacion.getDate().isBlank()) {
+                        cert.setFechaExpiracion(LocalDate.parse(acreditacion.getDate()));
+                    }
+                    // Asigna el tipo de certificación (por ejemplo, LICENCIA PROFESIONAL, id=8)
+                    cert.setIdCodigoTipoCertificacion((short)8); // Cambia el valor según tu lógica o lo que venga del frontend
+                    // Asigna el estado de la certificación (por ejemplo, VIGENTE, id=9)
+                    cert.setIdCodigoTipoEstado((short)9); // Cambia el valor según tu lógica o lo que venga del frontend
+                    certificacionRepository.save(cert);
+                }
+            }
+        }
     }
 }

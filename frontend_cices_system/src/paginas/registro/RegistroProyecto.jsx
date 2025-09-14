@@ -1,270 +1,145 @@
-import {AppContext} from "../../context/AppContext.jsx";
-import {useContext, useEffect, useState} from "react";
+import React, {useState, useEffect} from "react";
+import "./RegistroInvestigador.css";
 
-import "./Registro.css";
-import "./RegistroProyecto.css";
+function RegistroInvestigador({onClose}) {
+    const [gradosAcademicos, setGradosAcademicos] = useState([]);
 
-function RegistroProyecto() {
-    const [tiposState, setTiposState] = useState({});
-    const { proyectosState, setProyectosState, token } = useContext(AppContext);
+    // Estado para los campos del formulario
+    const [formData, setFormData] = useState({
+        institucion: "",
+        unidadAcademica: "",
+        gradoAcademico: ""
+    });
 
-    const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+    // Estado para las acreditaciones
+    const [acreditaciones, setAcreditaciones] = useState([{text: "", date: ""}]);
 
-    useEffect(()=> {
-        handleTypes(); //pide los tipos y codigos para los selects
+    // Ejemplo de grados académicos
+    useEffect(() => {
+        fetch("http://localhost:5173/api/catalogos/grados_academicos")
+            .then(res => res.json())
+            .then(data => setGradosAcademicos(data))
+            .catch(err => setGradosAcademicos([]));
     }, []);
 
-    async function types() {
-        try {
-            const response = await fetch(  `${API}/api/catalogos/tipos_registro_proyecto`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(["ESTADO PROYECTO", "TIPO ENTIDAD", "TIPO PROYECTO", "TIPO META"])
-            });
+    // Maneja cambios en los campos del formulario
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
-            if (!response.ok) {
-                alert("Error: " + response.status);
-                return null;
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error("Error al obtener tipos:", error);
-            alert("Error al conectar con el servidor");
-            return null;
+    // Maneja cambios en las acreditaciones
+    const handleAcreditacionChange = (idx, field, value) => {
+        const nuevas = acreditaciones.map((ac, i) =>
+            i === idx ? {...ac, [field]: value} : ac
+        );
+        setAcreditaciones(nuevas);
+    };
+
+    // Agrega una nueva fila de acreditación vacía
+    const handleAddRow = () => {
+        setAcreditaciones([...acreditaciones, {text: "", date: ""}]);
+    };
+
+    // Elimina la fila de acreditación en la posición indicada
+    const handleRemoveRow = (idx) => {
+        if (acreditaciones.length > 1) {
+            setAcreditaciones(acreditaciones.filter((_, i) => i !== idx));
         }
-    }
+    };
 
-    function handleTypes() {
-        (async () => {
-            const tipos = await types();
-            if (tipos) {
-                setTiposState(tipos);
-            }
-        })();
-    }
-
-    function handleChange(event){
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-        let proyectoChanged = {...proyectosState.proyecto};
-        proyectoChanged[name] = value;
-        setProyectosState({
-            ...proyectosState,
-            proyecto: proyectoChanged
-        });
-    }
-
-    function handleClear(){
-        setProyectosState({...proyectosState, proyecto:{codigo: '', nombre: '', unidadOrigen: '', estado: '', tipo: '',
-                lineaInvestigacion: '', descripcion: '', objetivoGeneral: '',
-                objetivosEspecificos: [
-                    {
-                        categoria: '',
-                        descripcion: '',
-                        metas: [
-                            {
-                                tipo: '',
-                                cantidad: 0,
-                                descripcion: '',
-                                indicadores: ['']
-                            }
-                        ]
-                    }
-                ],
-                entidadesVinculadas: [
-                    {
-                        nombre: '',
-                        tipo: ''
-                    }
-                ],
-                fechaInicio: '', fechaFinalizacion: '',
-                documentos: [
-                    {
-                        nombre: '',
-                        directorio: ''
-                    }
-                ]
-            }
-        });
-    }
+    // Maneja el envío del formulario
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Aquí puedes enviar los datos al backend si lo necesitas
+        onClose();
+    };
 
     return (
-        <>
-            <Show
-                types={tiposState}
-                entity={proyectosState.proyecto}
-                handleChange={handleChange}
-                handleClear={handleClear}
-            />
-        </>
-    );
-}
-
-function Show({types, entity, handleChange}){
-    const [tipoMetaSeleccionado, setTipoMetaSeleccionado] = useState('');
-
-    return (
-        <div className="form-container">
-            <h2>Registrar Proyecto</h2>
-
-            <form id="form-project-content" className="form-content">
-                <div className="form-row">
-                    <input type="text" placeholder="Código" className="input-field"
-                           name="codigo" value={entity.codigo} onChange={handleChange}/>
-                    <input type="text" placeholder="Nombre" className="input-field"
-                           name="nombre" value={entity.nombre} onChange={handleChange}
+        <div className="overlay">
+            <div className="popup">
+                <h2>Registro Investigador</h2>
+                <form className="form" onSubmit={handleSubmit}>
+                    <input
+                        className="input"
+                        type="text"
+                        name="institucion"
+                        placeholder="Institución de origen"
+                        value={formData.institucion}
+                        onChange={handleChange}
                     />
                     <input
-                        type="text" placeholder="Unidad de Origen: CICES" className="input-field"
-                        name="unidadOrigen" value={entity.unidadOrigen} onChange={handleChange}
+                        className="input"
+                        type="text"
+                        name="unidadAcademica"
+                        placeholder="Unidad académica"
+                        value={formData.unidadAcademica}
+                        onChange={handleChange}
                     />
-                </div>
 
-                <div className="form-row">
-                    <select className="input-field" name="estado" value={entity.estado} onChange={handleChange}>
-                        <option value="">Estado</option>
-                        {types["ESTADO PROYECTO"]?.map(opcion => (
-                            <option key={opcion.id} value={opcion.valor}>
-                                {opcion.despliegue}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="select-wrap">
+                        <select
+                            className="select"
+                            name="gradoAcademico"
+                            value={formData.gradoAcademico}
+                            onChange={handleChange}
+                        >
+                            <option value="">Grado académico</option>
+                            {gradosAcademicos && gradosAcademicos.length > 0 && gradosAcademicos.map((grado) => (
+                                <option key={grado.id} value={grado.valor}>
+                                    {grado.despliegue ? grado.despliegue.charAt(0).toUpperCase() + grado.despliegue.slice(1).toLowerCase() : ""}
+                                </option>
+                            ))}
+                        </select>
+                        <svg className="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="m6 9 6 6 6-6" strokeLinecap="round"/>
+                        </svg>
+                    </div>
 
-                    <select className="input-field" name="tipo" value={entity.tipo} onChange={handleChange}>
-                        <option value="">Tipo de proyecto</option>
-                        {types["TIPO PROYECTO"]?.map(opcion => (
-                            <option key={opcion.id} value={opcion.valor}>
-                                {opcion.despliegue}
-                            </option>
-                        ))}
-                    </select>
-
-                    <input type="text" placeholder="Línea de investigación" className="input-field"
-                           name="lineaInvestigacion" value={entity.lineaInvestigacion} onChange={handleChange}/>
-                </div>
-
-                <div className="form-row">
-                    <textarea placeholder="Descripción" className="input-field" rows="8"
-                              name="descripcion" value={entity.descripcion} onChange={handleChange}
-                    ></textarea>
-                    <textarea placeholder="Objetivo General" className="input-field" rows="8"
-                              name="objetivoGeneral" value={entity.objetivoGeneral} onChange={handleChange}
-                    ></textarea>
-                </div>
-
-                <label>Objetivos Específicos</label>
-                <fieldset id="input-project-group" className="input-group">
-                    <legend>Objetivo Específico 1
-                        <div className="icon-buttons">
-                            <button type="button">➕</button>
-                            <button type="button">❌</button>
-                        </div>
-                    </legend>
-                    <input type="text" placeholder="Categoría" className="input-field"/>
-                    <textarea placeholder="Descripción" className="input-field"></textarea>
-                    <label>Metas</label>
-                    <div className="form-row">
-                        <div id="inline-project-group" className="inline-group">
-                            <small>Meta 1</small>
-                            {/*momentaneamente tipoMetaSeleccionada*/}
-                            <select className="input-field" name="tipoMeta"
-                                    value={tipoMetaSeleccionado}
-                                    onChange={(e) => setTipoMetaSeleccionado(e.target.value)}>
-                                <option value="">Tipo</option>
-                                {types["TIPO META"]?.map(opcion => (
-                                    <option key={opcion.id} value={opcion.valor}>
-                                        {opcion.despliegue}
-                                    </option>
-                                ))}
-                            </select>
-
-                            {tipoMetaSeleccionado === 'CUANTITATIVA' && (
+                    <div className="rows-group">
+                        {acreditaciones.map((ac, idx) => (
+                            <div className="row" key={idx}>
                                 <input
-                                    type="number"
-                                    placeholder="Cantidad"
-                                    className="input-field"
+                                    className="input"
+                                    type="text"
+                                    placeholder="Acreditación o licencia"
+                                    value={ac.text}
+                                    onChange={e => handleAcreditacionChange(idx, "text", e.target.value)}
                                 />
-                            )}
-                        </div>
-
-                        <textarea placeholder="Descripción" className="input-field"></textarea>
-                        <div className="icon-buttons">
-                            <button type="button">➕</button>
-                            <button type="button">❌</button>
-                        </div>
+                                <div className="field with-icon">
+                                    <input
+                                        className="input"
+                                        type="date"
+                                        value={ac.date}
+                                        onChange={e => handleAcreditacionChange(idx, "date", e.target.value)}
+                                    />
+                                </div>
+                                {idx === acreditaciones.length - 1 ? (
+                                    <button type="button" className="icon-btn" onClick={handleAddRow}>+</button>
+                                ) : acreditaciones.length > 1 && (
+                                    <button
+                                        type="button"
+                                        className="icon-btn remove-btn"
+                                        onClick={() => handleRemoveRow(idx)}
+                                    >
+                                        &#10006;
+                                    </button>
+                                )}
+                            </div>
+                        ))}
                     </div>
 
-
-                    <label>Indicadores</label>
-                    <div id="inline-project-group" className="inline-group">
-                        <input type="text" placeholder="Indicador 1" className="input-field"/>
-                        <div className="icon-buttons">
-                            <button type="button">➕</button>
-                            <button type="button">❌</button>
-                        </div>
+                    <div className="actions">
+                        <button type="button" className="btn btn-cancel" onClick={onClose}>Cancelar</button>
+                        <button type="submit" className="btn btn-confirm">Confirmar</button>
                     </div>
-                </fieldset>
-
-                {/*tipos y codigos*/}
-                <fieldset id="input-project-group" className="input-group">
-                    <legend>Entidades vinculadas</legend>
-                    <label>Unidades participantes</label>
-                    <div id="inline-project-group" className="inline-group">
-                        <input type="text" placeholder="Nombre de la unidad 1" className="input-field"/>
-                        <div className="icon-buttons">
-                            <button type="button">➕</button>
-                            <button type="button">❌</button>
-                        </div>
-                    </div>
-
-                    <label>Instituciones Participantes</label>
-                    <div id="inline-project-group" className="inline-group">
-                        <input type="text" placeholder="Nombre de la institución 1" className="input-field"/>
-                        <div className="icon-buttons">
-                            <button type="button">➕</button>
-                            <button type="button">❌</button>
-                        </div>
-                    </div>
-
-                    <label>Sitios de investigación</label>
-                    <div id="inline-project-group" className="inline-group">
-                        <input type="text" placeholder="Nombre del sitio 1" className="input-field"/>
-                        <div className="icon-buttons">
-                            <button type="button">➕</button>
-                            <button type="button">❌</button>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <div className="form-row">
-                    <div className="input-group">
-                        <label htmlFor="fecha-inicio">Fecha de inicio</label>
-                        <input type="date" id="fecha-inicio" name="fechaInicio"
-                               className="input-field" value={entity.fechaInicio} onChange={handleChange}/>
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="fecha-fin">Fecha de finalización</label>
-                        <input type="date" id="fecha-fin" name="fechaFinalizacion"
-                               className="input-field" value={entity.fechaFinalizacion} onChange={handleChange}/>
-                    </div>
-                </div>
-
-                <label className="checkbox-group">
-                    <input type="checkbox"/> Establecer Fechas de presentación de informes
-                </label>
-
-                <button type="submit" id="submit-project-btn" className="submit-btn">
-                    Registrar Proyecto
-                </button>
-            </form>
+                </form>
+            </div>
         </div>
     );
 }
 
-export default RegistroProyecto;
+export default RegistroInvestigador;

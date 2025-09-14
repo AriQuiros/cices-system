@@ -1,17 +1,31 @@
-import { useState } from "react";
+import { useAuth } from "../../context/useAuth.js";
 import "./Login.css";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 function Login() {
-    const [form, setForm] = useState({ email: "", password: "" });
+    const { login, error } = useAuth();
+    const [form, setForm] = useState({ username: "", password: "" });
+    const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        //conectar con backend /auth/login
-        console.log("Login intent", form);
+        const res = await fetch(`${API}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error(res.status === 401 ? "Credenciales inválidas" : "Error en servidor");
+        const data = await res.json(); // { token, user }
+        login(data.user, data.token);
+
+        if (data.user.roles.includes("DIRECTOR")) navigate("/Director");
+        else if (data.user.roles.includes("ADMINISTRADOR")) navigate("/Administrador");
+        else navigate("/dashboard");
     };
 
     return (
@@ -23,36 +37,28 @@ function Login() {
                 <form onSubmit={handleSubmit} className="login-form">
                     <label>
                         Usuario
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="usuario@ucr.ac.cr"
-                            required
-                            value={form.email}
-                            onChange={handleChange}
-                        />
+                        <input type="text" name="username" placeholder="usuario@ucr.ac.cr"
+                               value={form.username} onChange={handleChange} required/>
                     </label>
 
                     <label>
                         Contraseña
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="••••••••"
-                            required
-                            value={form.password}
-                            onChange={handleChange}
-                        />
+                        <input type="password" name="password" placeholder="••••••••"
+                               value={form.password} onChange={handleChange} required/>
                     </label>
 
-                    <button type="submit" className="btn-login">Login</button>
+                    <div className="login-actions">
+                        <button type="submit" className="btn-login">Login</button>
+                    </div>
+
+                    <div className="login-links">
+                        <label> ¿No tienes una cuenta?
+                            <a href="/Registro"> Click aquí</a>
+                        </label>
+                    </div>
+
+                    {error && <p className="error">{error}</p>}
                 </form>
-
-                <div className="login-links">
-                    <label> ¿No tienes una cuenta?
-                        <a href="/Registro"> Click aquí</a>
-                    </label>
-                </div>
             </div>
         </section>
     );

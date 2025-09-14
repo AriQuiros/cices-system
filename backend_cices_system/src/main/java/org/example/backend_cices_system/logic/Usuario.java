@@ -14,6 +14,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "USUARIO")
 public class Usuario {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_USUARIO")
+    @SequenceGenerator(name = "SEC_USUARIO", sequenceName = "SEC_USUARIO", allocationSize = 1)
     @Column(name = "ID_USUARIO", nullable = false)
     private Short id;
 
@@ -36,5 +38,6 @@ public class Usuario {
     @NotNull
     @Column(name = "ACTIVO", nullable = false)
     private Long activo;
+
 
 }

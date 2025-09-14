@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CatalogoRepository extends JpaRepository<Codigo, Short> {
     List<Codigo> findByIdTipoNombreIn(List<String> nombresTipos);
+    List<Codigo> findByIdTipoId(Short idTipo);
 }

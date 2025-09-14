@@ -30,5 +30,17 @@ public class CatalogoService {
                         )
                 ));
     }
+    public List<CodigoDTO> obtenerGradosAcademicos() {
+        List<Codigo> codigos = catalogoRepository.findByIdTipoId((short)2);
+        return codigos.stream()
+                .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
+                .collect(Collectors.toList());
+    }
+    public List<CodigoDTO> obtenerTiposIdentificacion() {
+        List<Codigo> codigos = catalogoRepository.findByIdTipoId((short)1);
+        return codigos.stream()
+                .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
+                .collect(Collectors.toList());
+    }
 }
 

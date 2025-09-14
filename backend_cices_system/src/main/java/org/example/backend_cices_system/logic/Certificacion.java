@@ -16,6 +16,8 @@ import java.time.LocalDate;
 @Table(name = "CERTIFICACION")
 public class Certificacion {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_CERTIFICACION")
+    @SequenceGenerator(name = "SEC_CERTIFICACION", sequenceName = "SEC_CERTIFICACION", allocationSize = 1)
     @Column(name = "ID_CERTIFICACION", nullable = false)
     private Short id;
 

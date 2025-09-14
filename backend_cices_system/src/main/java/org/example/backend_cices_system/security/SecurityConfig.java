@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers("/Director/**").hasRole("DIRECTOR")
                         .requestMatchers("/Administrador/**").hasRole("ADMINISTRADOR")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(b -> b.disable())
                 .formLogin(f -> f.disable())

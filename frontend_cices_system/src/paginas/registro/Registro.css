@@ -1,8 +1,7 @@
 .form-container {
-    height:100vh;
-    padding-top: 5%;
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -15,7 +14,7 @@
     padding: 30px;
     border-radius: 10px;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 .input-field {
@@ -73,101 +72,4 @@
     }
 }
 
-/*********************Proyectos**********************/
-legend {
-    display: flex;
-    gap: 5px;
-}
-
-textarea {
-    resize: none;
-}
-
-#form-project-content {
-    border-radius: 10px;
-    width: 100%;
-}
-
-#input-project-field {
-    padding: 0.5rem;
-    box-sizing: border-box;
-}
-
-#input-project-group {
-    gap: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-}
-
-#inline-project-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.icon-buttons {
-    display: flex;
-    gap: 0.25rem;
-}
-
-.icon-buttons button {
-    padding: 0.25rem 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-}
-
-#inline-project-group select {
-    max-width: 30%;
-}
-
-#inline-project-group small {
-    white-space: nowrap;
-    display: inline-block;
-}
-
-#checkbox-project-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* Responsive para computadores */
-@media (min-width: 650px) {
-    #form-project-container {
-        justify-content: flex-start;
-        align-items: stretch;
-    }
-
-    #form-project-content {
-        max-width: 100%;
-        border-radius: 0;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 1rem;
-        width: 100%;
-    }
-
-    .form-row .input-field,
-    .form-row select,
-    .form-row textarea {
-        flex: 1;
-    }
-
-    #submit-project-btn {
-        max-width: 200px;
-    }
-
-    .form-row .input-group { /*fechas de proyecto*/
-        flex: 1;
-    }
-    .round-checkbox input[type="checkbox"] {
-        border-radius: 6px;
-        accent-color: #4caf50;
-    }
-
-}
 

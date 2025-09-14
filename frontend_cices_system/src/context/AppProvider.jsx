@@ -18,8 +18,57 @@ export default function AppProvider({ children }) {
         localStorage.clear();
     };
 
+    /********PROYECTOS**********/
+    const [proyectosState, setProyectosState] = useState({
+        proyecto: {
+            codigo: '',
+            nombre: '',
+            unidadOrigen: '',
+            estado: '',
+            tipo: '',
+            lineaInvestigacion: '',
+            descripcion: '',
+            objetivoGeneral: '',
+            objetivosEspecificos: [
+                {
+                    categoria: '',
+                    descripcion: '',
+                    metas: [
+                        {
+                            tipo: '',
+                            cantidad: 0,
+                            descripcion: '',
+                            indicadores: ['']
+                        }
+                    ]
+                }
+            ],
+            entidadesVinculadas: [
+                {
+                    nombre: '',
+                    tipo: ''
+                }
+            ],
+            fechaInicio: '',
+            fechaFinalizacion: '',
+            documentos: [
+                {
+                    nombre: '',
+                    directorio: ''
+                }
+            ]
+        }
+    });
+
     return (
-        <AppContext.Provider value={{ user, token, login, logout }}>
+        <AppContext.Provider value={{
+            user,
+            token,
+            login,
+            logout,
+            proyectosState: proyectosState,
+            setProyectosState: setProyectosState
+        }}>
             {children}
         </AppContext.Provider>
     );

@@ -59,7 +59,7 @@ header {
 
 /* --- MAIN --- */
 main {
-  margin-top: auto;
+  flex: 1;
   background: #fff;
 }
 

@@ -1,19 +1,44 @@
+import React, { useEffect, useRef, useState } from "react";
 import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import logoUCR from '../public/images/logoUCR.png';
 import logoCICES from '../public/images/logoCICES.png';
 import logoCICES2 from '../public/images/logoCICES2.png';
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Login from "./paginas/login/Login"
-import Registro from "./paginas/registro/Registro.jsx"
-import RegistroProyecto from "./paginas/registro/RegistroProyecto.jsx"
-import Director from "./paginas/director/Director.jsx"
+
+import Login from "./paginas/login/Login";
+import Registro from "./paginas/registro/Registro";
+import RegistroProyecto from "./paginas/registro/RegistroProyecto";
+import Director from "./paginas/director/Director";
+import AppProvider from "./context/AppProvider.jsx";
+
+function useElementHeight() {
+    const ref = useRef(null);
+    const [height, setHeight] = useState(0);
+
+    useEffect(() => {
+        const updateHeight = () => {
+            if (ref.current) {
+                setHeight(ref.current.offsetHeight);
+            }
+        };
+
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        return () => window.removeEventListener('resize', updateHeight);
+    }, []);
+
+    return [ref, height];
+}
 
 function App() {
+    const [headerRef, headerHeight] = useElementHeight();
+
     return (
         <div className = "app-container">
             <BrowserRouter>
-                <Header />
-                <Main />
+                <Header innerRef={headerRef} />
+                <Main style={{ paddingTop: `${headerHeight}px` }} />
                 <Footer />
             </BrowserRouter>
         </div>
@@ -21,23 +46,25 @@ function App() {
 }
 
 
-function Main(){
+function Main({ style }){
     return(
-        <main>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/Registro" element={<Registro />} />
-                <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
-                <Route path="/director" element={<Director />} />
-            </Routes>
+        <main style={style}>
+            <AppProvider>
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/Registro" element={<Registro />} />
+                    <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
+                    <Route path="/director" element={<Director />} />
+                </Routes>
+            </AppProvider>
         </main>
     );
 }
 
 
-function Header() {
+function Header({ innerRef }) {
     return (
-        <header>
+        <header ref={innerRef}>
             <div className="header-content">
                 <div className="page-name">Sistema de Información del CICES</div>
                 <div className="logos">

@@ -3,7 +3,6 @@
     display: grid;
     place-items: center;
     padding: 20px;
-    background: transparent;
     background: url("/public/images/ImgPrincipal.png") no-repeat center center fixed;
 }
 

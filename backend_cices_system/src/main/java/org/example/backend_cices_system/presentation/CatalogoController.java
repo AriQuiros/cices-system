@@ -42,4 +42,9 @@ public class CatalogoController {
     public ResponseEntity<List<CodigoDTO>> obtenerTiposIdentificacion() {
         return ResponseEntity.ok(catalogoService.obtenerTiposIdentificacion());
     }
+
+    @GetMapping("/tipos_certificacion")
+    public ResponseEntity<List<CodigoDTO>> obtenerTiposCertificacion() {
+        return ResponseEntity.ok(catalogoService.obtenerTiposCertificacion());
+    }
 }

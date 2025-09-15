@@ -1,39 +1,114 @@
-.contenedor_director{
-        padding: 20px;
-        overflow-x: hidden;
-        margin-top:4%;
-        box-sizing: border-box;
-        min-height: calc(100vh - 200px);
-}
-
-.resumen_funcionalidades{
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
-}
-.resumen_funcionalidades h3{
-    text-align: center;
-}
-
-.resumen_personal, .resumen_proyectos{
-    background-color: #DDDDDD;
-    width: 50%;
-    border-radius: 10px;
-    min-width: 0; /*para que no se pasen del tamano del padre*/
+.contenedor_director {
     padding: 20px;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
 }
 
-.label{
+.resumen_funcionalidades {
     display: grid;
-    gap: 15px;
-    width: 100%;
-    box-sizing: border-box;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin: 0 auto;
 }
 
+.resumen_personal, .resumen_proyectos {
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
 
-.label label, .label label{
-    padding:10px;
-    border: 1px solid #D9D9D9;
-    border-radius: 10px;
-    min-width: 0;
+.resumen_personal h3, .resumen_proyectos h3 {
+    color: #005DA4;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #005DA4;
+    font-weight: 600;
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.label label {
+    padding: 1rem 1.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-weight: 500;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.label label:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: #005DA4;
+}
+
+.label label {
+    position: relative;
+    padding-left: 3rem;
+}
+
+.label label::before {
+    content: "•";
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #005DA4;
+    font-size: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .contenedor_director {
+        padding: 1.5rem;
+    }
+
+    .resumen_funcionalidades {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .resumen_personal, .resumen_proyectos {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .contenedor_director {
+        padding: 1rem;
+    }
+
+    .resumen_personal, .resumen_proyectos {
+        padding: 1.25rem;
+    }
+
+    .resumen_personal h3, .resumen_proyectos h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .label label {
+        padding: 0.875rem 1.25rem;
+        padding-left: 2.5rem;
+        font-size: 0.95rem;
+    }
+
+    .label label::before {
+        left: 1rem;
+    }
+}
+
+.resumen_personal, .resumen_proyectos {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.label label {
+    background: white;
+    border-left: 4px solid #005DA4;
 }

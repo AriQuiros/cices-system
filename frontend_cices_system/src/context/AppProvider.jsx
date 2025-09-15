@@ -1,9 +1,34 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { AppContext } from "./AppContext.jsx";
 
+
 export default function AppProvider({ children }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {});
     const [token, setToken] = useState(localStorage.getItem("token") || null);
+
+    useEffect(() => {
+        const cargarUsuario = () => {
+            try{
+                const usuarioGuardado = localStorage.getItem("user");
+                const tokenGuardado = localStorage.getItem("token");
+
+                if(usuarioGuardado){
+                    setUser(JSON.parse(usuarioGuardado))
+                }
+
+                if(tokenGuardado){
+                    setToken(tokenGuardado);
+                }
+            }catch (error){
+                console.error(error);
+                localStorage.removeItem("user");
+                localStorage.removeItem("token");
+            }
+        }
+        cargarUsuario();
+    }, []);
+
+
 
     const login = (userData, token) => {
         setUser(userData);

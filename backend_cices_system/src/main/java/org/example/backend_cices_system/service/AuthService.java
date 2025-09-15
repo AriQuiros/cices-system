@@ -157,4 +157,8 @@ public class AuthService {
             }
         }
     }
+    public boolean existeIdentificacion(String identificacion) {
+        return empleadoRepository.findAll().stream()
+                .anyMatch(e -> e.getIdentificacion() != null && e.getIdentificacion().equals(identificacion));
+    }
 }

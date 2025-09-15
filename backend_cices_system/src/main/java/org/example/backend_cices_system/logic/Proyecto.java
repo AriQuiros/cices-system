@@ -16,6 +16,8 @@ import java.util.Set;
 @Table(name = "PROYECTO")
 public class Proyecto {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_PROYECTO")
+    @SequenceGenerator(name = "SEC_PROYECTO", sequenceName = "SEC_PROYECTO", allocationSize = 1)
     @Column(name = "ID_PROYECTO", nullable = false)
     private Short id;
 
@@ -67,5 +69,13 @@ public class Proyecto {
 
     @OneToMany(mappedBy = "idProyecto")
     private Set<Presupuesto> presupuestos = new LinkedHashSet<>();
+
+    @Lob
+    @Column(name = "DESCRIPCION_PROYECTO")
+    private String descripcionProyecto;
+
+    @Lob
+    @Column(name = "OBJETIVO_GENERAL")
+    private String objetivoGeneral;
 
 }

@@ -20,15 +20,15 @@ import java.util.Map;
 public class CatalogoController {
     @Autowired
     private RolRepository rolRepository;
+    @Autowired
+    private CatalogoService catalogoService;
 
     @GetMapping("/roles")
     public ResponseEntity<List<Rol>> obtenerRoles() {
         return ResponseEntity.ok(rolRepository.findAll());
     }
-    @Autowired
-    private CatalogoService catalogoService;
 
-    @PostMapping("/tipos_registro_proyecto")
+    @PostMapping("/tipos")
     public ResponseEntity<Map<String, List<CodigoDTO>>> obtenerPorTipos(@RequestBody List<String> tipos) {
         return ResponseEntity.ok(catalogoService.obtenerCodigosPorTipos(tipos));
     }

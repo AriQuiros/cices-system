@@ -14,6 +14,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "DOCUMENTO")
 public class Documento {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_DOCUMENTO")
+    @SequenceGenerator(name = "SEC_DOCUMENTO", sequenceName = "SEC_DOCUMENTO", allocationSize = 1)
     @Column(name = "ID_DOCUMENTO", nullable = false)
     private Short id;
 
@@ -23,7 +25,7 @@ public class Documento {
     @JoinColumn(name = "ID_PROYECTO", nullable = false)
     private Proyecto idProyecto;
 
-    @Size(max = 50)
+    @Size(max = 255)
     @NotNull
     @Column(name = "NOMBRE_DOCUMENTO", nullable = false, length = 50)
     private String nombreDocumento;

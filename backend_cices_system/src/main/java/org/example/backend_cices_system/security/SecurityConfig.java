@@ -37,8 +37,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers("/Director/**").hasRole("DIRECTOR")
-                        .requestMatchers("/Administrador/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/director/**").hasRole("DIRECTOR")
+                        .requestMatchers("/administrador/**").hasRole("ADMINISTRADOR")
                         .anyRequest().permitAll()
                 )
                 .httpBasic(b -> b.disable())

@@ -43,6 +43,24 @@ export default function AppProvider({ children }) {
         localStorage.clear();
     };
 
+    /************EMPLEADOS***************/
+    const [empleadosState, setEmpleadosState] = useState({
+        empleado: {
+            nombre: "",
+            nacionalidad: "",
+            tipoIdentificacion: "",
+            identificacion: "",
+            telefono: "",
+            correo: "",
+            contrasena: "",
+            roles: [{
+                id: "",
+                nombre: ""
+            }],
+            numeroBecario: ""
+        }
+    });
+
     /********PROYECTOS**********/
     const [proyectosState, setProyectosState] = useState({
         proyecto: {
@@ -68,20 +86,12 @@ export default function AppProvider({ children }) {
                     ]
                 }
             ],
-            entidadesVinculadas: [
-                {
-                    nombre: '',
-                    tipo: ''
-                }
-            ],
+            unidades: [{ nombre: '' }],
+            instituciones: [{ nombre: '' }],
+            sitios: [{ nombre: '' }],
             fechaInicio: '',
             fechaFinalizacion: '',
-            documentos: [
-                {
-                    nombre: '',
-                    directorio: ''
-                }
-            ]
+            documentos: []
         }
     });
 
@@ -92,7 +102,9 @@ export default function AppProvider({ children }) {
             login,
             logout,
             proyectosState: proyectosState,
-            setProyectosState: setProyectosState
+            setProyectosState: setProyectosState,
+            empleadosState: empleadosState,
+            setEmpleadosState: setEmpleadosState
         }}>
             {children}
         </AppContext.Provider>

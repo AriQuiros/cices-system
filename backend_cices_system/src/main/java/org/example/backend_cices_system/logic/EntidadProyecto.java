@@ -13,18 +13,16 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "ENTIDAD_PROYECTO")
 public class EntidadProyecto {
     @Id
-    @Column(name = "ID_ENTIDAD", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_ENTIDAD_PROYECTO")
+    @SequenceGenerator(name = "SEC_ENTIDAD_PROYECTO", sequenceName = "SEC_ENTIDAD_PROYECTO", allocationSize = 1)
+    @Column(name = "ID_ENTIDAD_PROYECTO", nullable = false)
     private Short id;
 
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "ID_ENTIDAD", nullable = false)
-    private Entidad entidad;
-
-    @NotNull
-    @Column(name = "ID_ENTIDAD_PROYECTO", nullable = false)
-    private Short idEntidadProyecto;
+    private Entidad idEntidad;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

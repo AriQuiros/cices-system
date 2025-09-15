@@ -16,6 +16,8 @@ import java.util.Set;
 @Table(name = "OBJETIVO_ESPECIFICO")
 public class ObjetivoEspecifico {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_OBJETIVO_ESPECIFICO")
+    @SequenceGenerator(name = "SEC_OBJETIVO_ESPECIFICO", sequenceName = "SEC_OBJETIVO_ESPECIFICO", allocationSize = 1)
     @Column(name = "ID_OBJETIVO", nullable = false)
     private Short id;
 

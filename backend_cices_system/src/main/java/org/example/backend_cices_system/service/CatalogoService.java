@@ -15,6 +15,12 @@ public class CatalogoService {
     @Autowired
     private CatalogoRepository catalogoRepository;
 
+    public Short obtenerIdCodigoPorTipoYValor(String nombreTipo, String valor) {
+        return catalogoRepository.findByIdTipoNombreAndValor(nombreTipo, valor)
+                .map(Codigo::getId)
+                .orElseThrow(() -> new RuntimeException("Código no encontrado: " + valor));
+    }
+
     public Map<String, List<CodigoDTO>> obtenerCodigosPorTipos(List<String> nombresTipos) {
         List<Codigo> codigos = catalogoRepository.findByIdTipoNombreIn(nombresTipos);
         return codigos.stream()

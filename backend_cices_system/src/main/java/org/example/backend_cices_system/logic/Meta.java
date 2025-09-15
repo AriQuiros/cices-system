@@ -16,6 +16,8 @@ import java.util.Set;
 @Table(name = "META")
 public class Meta {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_META")
+    @SequenceGenerator(name = "SEC_META", sequenceName = "SEC_META", allocationSize = 1)
     @Column(name = "ID_META", nullable = false)
     private Short id;
 

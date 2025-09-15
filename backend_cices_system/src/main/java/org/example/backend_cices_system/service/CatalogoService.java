@@ -48,5 +48,11 @@ public class CatalogoService {
                 .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
                 .collect(Collectors.toList());
     }
+    public List<CodigoDTO> obtenerTiposCertificacion() {
+        List<Codigo> codigos = catalogoRepository.findByIdTipoId((short)3);
+        return codigos.stream()
+                .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
+                .collect(Collectors.toList());
+    }
 }
 

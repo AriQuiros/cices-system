@@ -56,36 +56,29 @@ header {
   height: auto;
   background: #ccc;
   display: flex;
-  align-items: center;
   padding: 0 20px;
   width: 100%;
+
 }
 
 .divider nav {
   width: 100%;
   color: #005DA4;
+  justify-content: space-between;
 }
 
 .divider nav ul.menu {
   display: flex;
-  list-style: none;
   width: 100%;
-  justify-content: space-between;
 }
 
 .divider nav ul.Menu li a {
-  display: block;
   color: #005DA4;
   text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .divider nav ul.Menu li {
-  flex: 1;
   color: #005DA4;
-  min-width: 0;
 }
 
 .divider nav ul.Menu li a:hover {

@@ -15,6 +15,7 @@
     padding: 2rem;
     border-radius: 8px;
     border: 1px solid #e9ecef;
+    background:#ffffff;
 }
 
 .resumen_personal h3, .resumen_proyectos h3 {
@@ -38,30 +39,10 @@
     font-weight: 500;
     color: #2c3e50;
     transition: all 0.3s ease;
-    cursor: pointer;
+    background: white;
+    border-left: 4px solid #005DA4;
 }
 
-.label label:hover {
-    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-color: #005DA4;
-}
-
-.label label {
-    position: relative;
-    padding-left: 3rem;
-}
-
-.label label::before {
-    content: "•";
-    position: absolute;
-    left: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #005DA4;
-    font-size: 1.5rem;
-}
 
 /* Responsive */
 @media (max-width: 968px) {
@@ -102,13 +83,4 @@
     .label label::before {
         left: 1rem;
     }
-}
-
-.resumen_personal, .resumen_proyectos {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-}
-
-.label label {
-    background: white;
-    border-left: 4px solid #005DA4;
 }

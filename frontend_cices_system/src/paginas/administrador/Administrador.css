@@ -1,5 +1,5 @@
 .contenedor_administrador {
-    padding: 2rem;
+    padding: 50px;
     background: #f8f9fa;
     min-height: calc(100vh - 140px);
 }
@@ -95,7 +95,6 @@
     }
 }
 
-/* Estilos consistentes con tu tema */
 .buscar input[type="text"] {
     border-color: #ccc;
 }

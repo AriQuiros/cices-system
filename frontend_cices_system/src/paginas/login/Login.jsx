@@ -23,8 +23,9 @@ function Login() {
         const data = await res.json(); // { token, user }
         login(data.user, data.token);
 
-        if (data.user.roles.includes("DIRECTOR")) navigate("/Director");
-        else if (data.user.roles.includes("ADMINISTRADOR")) navigate("/Administrador");
+        if (data.user.roles.includes("DIRECTOR")) navigate("/director");
+        else if (data.user.roles.includes("ADMINISTRADOR")) navigate("/administrador");
+        else if (data.user.roles.includes("INVESTIGADOR")) navigate("/investigador");
         else navigate("/dashboard");
     };
 

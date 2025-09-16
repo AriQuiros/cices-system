@@ -12,6 +12,7 @@ import RegistroProyecto from "./paginas/registro/RegistroProyecto";
 import Director from "./paginas/director/Director";
 import Administrador from "./paginas/administrador/Administrador.jsx";
 import Certificacion from "./paginas/certificacion/Certificacion.jsx";
+import Investigador from "./paginas/investigador/Investigador.jsx";
 
 
 import AppProvider from "./context/AppProvider.jsx";
@@ -63,6 +64,7 @@ function Main({ style }){
                     <Route path="/director" element={<Director />} />
                     <Route path="/administrador" element={<Administrador />} />
                     <Route path="/certificacion" element={<Certificacion />} />
+                    <Route path="/investigador" element={<Investigador />} />
                 </Routes>
         </main>
     );
@@ -72,6 +74,7 @@ function Main({ style }){
 function Header({ innerRef }) {
     const {user: usuario, logout: cerrarSesion} = useContext(AppContext);
     const navigate = useNavigate();
+    const [menuAbierto, setMenuAbierto] = useState(false);
 
     //obtener rol de usuario
     const rol = usuario?.roles?.[0];
@@ -91,21 +94,27 @@ function Header({ innerRef }) {
                 </div>
             </div>
             <div className="divider">
+                <button className="menu-toggle" onClick={() => setMenuAbierto(!menuAbierto)}>
+                    ☰
+                </button>
                 <nav>
-                    <ul className="Menu">
+                    <ul className={`Menu ${menuAbierto ? 'show' : ''}`}>
                         {usuario && (
                             <>
-                                <span className="bienvenida">Bienvenido, {usuario.username}</span>
+                                <span className="bienvenida">Bienvenid@, {usuario.username}</span>
                                 {rol === 'DIRECTOR' && (
                                     <>
-                                        <li><Link to="/director/resumen">Resumen General</Link></li>
+                                        <li><Link to="/director">Resumen General</Link></li>
                                         <li><Link to="/director/personal">Gestionar Personal</Link></li>
                                         <li><Link to="/director/proyectos">Gestionar Proyectos</Link></li>
                                         <li><Link to="/director/gastos">Gastos de Proyectos</Link></li>
                                         <li><Link to="/director/reportes">Generar Reportes</Link></li>
                                         <li><Link to="/director/notificaciones">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>
-                                        <li><button onClick={dirigirLogin}>Cerrar Sesion</button></li>
+                                        <li>
+                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
+                                            </button>
+                                        </li>
                                     </>
                                 )}
 
@@ -119,14 +128,15 @@ function Header({ innerRef }) {
                                         <li><Link to="/director/notificaciones">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>
                                         <li>
-                                            <button onClick={dirigirLogin}>Cerrar Sesion</button>
+                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
+                                            </button>
                                         </li>
                                     </>
                                 )}
 
                                 {rol === 'INVESTIGADOR' && (
                                     <>
-                                        <li><Link to="/director/resumen">Historia de Participacion</Link></li>
+                                        <li><Link to="/director/resumen">Historial de Participacion</Link></li>
                                         <li><Link to="/director/resumen">Mis Proyectos</Link></li>
                                         <li><Link to="/director/personal">Custodiar datos de Investigacion</Link></li>
                                         <li><Link to="/director/proyectos">Actualizar Proyecto</Link></li>
@@ -136,7 +146,8 @@ function Header({ innerRef }) {
                                         <li><Link to="/director/notificaciones">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>
                                         <li>
-                                            <button onClick={dirigirLogin}>Cerrar Sesion</button>
+                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
+                                            </button>
                                         </li>
                                     </>
                                 )}

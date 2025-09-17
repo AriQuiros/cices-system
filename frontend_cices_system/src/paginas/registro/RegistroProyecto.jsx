@@ -5,7 +5,7 @@ import { useTiposCatalogo } from '../../hooks/useTiposCatalogo';
 import "./Registro.css";
 import "./RegistroProyecto.css";
 
-const MAX_TOTAL_SIZE_MB = 15;
+const MAX_TOTAL_SIZE_MB = 10;
 
 const getTotalFileSizeMB = (files) => {
     return files.reduce((total, file) => total + file.size, 0) / (1024 * 1024);
@@ -21,6 +21,7 @@ function RegistroProyecto() {
         "TIPO PROYECTO",
         "TIPO META"
     ]);
+
     if (loading) return <p>Cargando opciones...</p>;
 
     const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
@@ -199,14 +200,22 @@ function RegistroProyecto() {
             },
             body: formData
         })
-            .then(res => res.json())
-            .then(data => {
+            .then(async res => {
+                const data = await res.json();
+
+                if (!res.ok) {
+                    setErrorMessage(data.error || 'Error desconocido al registrar el proyecto.');
+                    return;
+                }
+
                 console.log('Proyecto registrado:', data);
+                setErrorMessage("");
+                handleClear();
             })
             .catch(err => {
-                console.error('Error al registrar:', err);
+                console.error('Error de red al registrar:', err);
+                setErrorMessage('Ocurrió un error de red al registrar el proyecto.');
             });
-        handleClear();
     }
 
     return (

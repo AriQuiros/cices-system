@@ -30,7 +30,8 @@ public class AuthService {
             RolRepository rolRepository,
             InvestigadorRepository investigadorRepository,
             PasswordEncoder encoder,
-            JwtUtil jwt,CertificacionRepository certificacionRepository
+            JwtUtil jwt,
+            CertificacionRepository certificacionRepository
     ) {
         this.usuarioRepository = usuarioRepository;
         this.rolUsuarioRepository = rolUsuarioRepository;

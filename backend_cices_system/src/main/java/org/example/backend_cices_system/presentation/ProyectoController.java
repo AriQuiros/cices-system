@@ -42,7 +42,9 @@ public class ProyectoController {
 
             return ResponseEntity.ok(Map.of("mensaje", "Proyecto registrado correctamente", "proyecto", proyecto));
 
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("error", "Error registrando proyecto", "detalle", e.getMessage()));
         }

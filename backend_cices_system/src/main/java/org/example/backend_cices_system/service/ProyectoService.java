@@ -25,6 +25,9 @@ public class ProyectoService {
 
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO dto) {
+        if (proyectoRepo.findByCodigoProyecto(dto.getCodigoProyecto()).isPresent()) {
+            throw new IllegalArgumentException("El código del proyecto ya se encuentra registrado");
+        }
         // Guardar proyecto base
         Proyecto proyecto = new Proyecto();
         proyecto.setNombreProyecto(dto.getNombreProyecto());

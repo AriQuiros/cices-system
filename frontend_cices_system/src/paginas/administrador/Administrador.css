@@ -115,3 +115,145 @@
     border-color: #e9ecef;
     background: #f8f9fa;
 }
+
+
+
+/* src/paginas/administrador/Administrador.css */
+
+/* base */
+.contenedor_administrador{
+    position: relative;
+    padding: 50px;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
+}
+.contenido_administrador{
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+/* barra debajo del header */
+.admin-toolbar{
+    position: sticky;
+    top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    margin: -0.5rem -0.5rem 8px;
+    padding: 0.5rem;
+    z-index: 10;
+    background: transparent;
+}
+
+/* botón tres puntos */
+.menu-btn{
+    width: 40px; height: 40px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #005DA4;
+    font-size: 22px; line-height: 1;
+    cursor: pointer; border-radius: 6px;
+    transition: background-color .2s, border-color .2s;
+}
+.menu-btn:hover{ background:#e9ecef; border-color:#e9ecef; }
+.menu-btn:focus{ outline:2px solid #005DA4; outline-offset:2px; }
+
+/* búsqueda */
+.Busqueda{
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.buscador{ display:flex; justify-content:center; }
+.buscar{ display:flex; gap:1rem; width:100%; }
+.buscar input[type="text"]{
+    flex:1; padding:.75rem 1rem;
+    border:1px solid #ccc; border-radius:4px; font-size:1rem; outline:none;
+}
+.buscar input[type="text"]:focus{ border-color:#005DA4; }
+.buscar button{
+    padding:.75rem 1.5rem; background:#005DA4; color:#fff;
+    border:none; border-radius:4px; cursor:pointer; font-size:1rem; font-weight:500;
+    transition: background-color .3s ease;
+}
+.buscar button:hover{ background:#004080; }
+
+/* resultados */
+.resultado{ margin-top:1.5rem; }
+.resultado > div{
+    padding:1.5rem; border-radius:6px; display:flex; justify-content:center;
+    color:#6c757d; background:#f8f9fa;
+    border: 1px solid #e9ecef;              /* antes solo border-color */
+}
+
+/* panel lateral */
+.side-panel{
+    position: fixed; top: 0; right: 0; height: 100%;
+    width: 280px; max-width: 85vw;
+    background: #fff; border-left: 1px solid #e9ecef;
+    box-shadow: -2px 0 12px rgba(0,0,0,.08);
+    transform: translateX(100%);
+    transition: transform .25s ease-out;
+    z-index: 1101;
+    display: flex; flex-direction: column;
+    padding: 16px; font-family: inherit;
+}
+.side-panel.open{ transform: translateX(0); }
+
+.panel-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 4px 4px 12px; border-bottom:1px solid #e9ecef;
+}
+.panel-header strong{ color:#004080; font-weight:600; }
+.close-btn{
+    border:1px solid transparent; background:transparent; color:#6c757d;
+    font-size:22px; line-height:1; cursor:pointer; border-radius:6px;
+    transition: background-color .2s, color .2s, border-color .2s;
+}
+.close-btn:hover{ background:#f8f9fa; color:#004080; border-color:#e9ecef; }
+.close-btn:focus{ outline:2px solid #005DA4; outline-offset:2px; }
+
+.panel-nav ul{
+    list-style:none; margin:12px 0 0; padding:0;
+    display:grid; gap:10px;
+}
+
+/* Links del panel: sin fondo ni bordes, celeste #0FC3F3 */
+.panel-nav a{
+    display: inline;                 /* texto simple */
+    padding: 0; margin: 0;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #0FC3F3 !important;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+}
+.panel-nav a:link,
+.panel-nav a:visited,
+.panel-nav a:hover,
+.panel-nav a:active{ color:#0FC3F3 !important; }
+.panel-nav a:hover,
+.panel-nav a:focus{
+    text-decoration: underline;
+    outline: none;
+}
+
+/* backdrop */
+.backdrop{
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.25);
+    opacity: 0; visibility: hidden;
+    transition: opacity .2s; z-index: 1100;
+}
+.backdrop.show{ opacity: 1; visibility: visible; }
+
+/* responsive */
+@media (max-width:768px){
+    .contenedor_administrador{ padding:1rem; }
+    .contenido_administrador{ padding:1.5rem; }
+    .buscar{ flex-direction:column; gap:.5rem; }
+    .buscar button{ width:100%; }
+}

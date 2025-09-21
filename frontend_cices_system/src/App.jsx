@@ -101,7 +101,6 @@ function Header({ innerRef }) {
                     <ul className={`Menu ${menuAbierto ? 'show' : ''}`}>
                         {usuario && (
                             <>
-                                <span className="bienvenida">Bienvenid@, {usuario.username}</span>
                                 {rol === 'DIRECTOR' && (
                                     <>
                                         <li><Link to="/director">Resumen General</Link></li>

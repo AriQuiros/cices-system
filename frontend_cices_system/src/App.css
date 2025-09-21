@@ -1,92 +1,371 @@
-/* ===== HEADER ===== */
-header{
-  position:fixed; top:0; width:100%; z-index:1000;
+/* --- HEADER --- */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0FC3F3;
+  padding: 0px 5px;
+  position: relative;
 }
 
-.header-content{
-  display:flex; align-items:center; justify-content:space-between;
-  background:#0FC3F3; padding:0 5px; position:relative; overflow:hidden;
+.page-name {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin: 0;
+  flex: 1;
 }
 
-.page-name{
-  color:#fff; font-weight:700; font-size:1.6rem; margin:0; flex:1;
+/* bloque de logos */
+.logos {
+  position: relative;
+  background:transparent;
+  padding: 5px 30px;
+  width: 280px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 1;
 }
 
-/* logos + cuña blanca */
-.logos{
-  position:relative; background:transparent; padding:5px 30px; width:280px;
-  display:flex; align-items:center; gap:20px; z-index:1;
-}
-.logos::before{
-  content:""; position:absolute; left:-150px; top:0; bottom:0; width:700px;
-  background:#fff; transform:skewX(-70deg); z-index:-1;
-}
-.logos img{ max-width:100px; height:auto; }
-
-/* barra de navegación */
-.divider{
-  display:flex; align-items:center; padding:0 20px; height:44px;
-  background:#ccc; overflow:hidden;
+/* diagonal blanca que empalma con el celeste */
+.logos::before {
+  content: "";
+  position: absolute;
+  left: -150px;                /* mueve más o menos según necesites */
+  top: 0;
+  bottom: 0;
+  width: 700px;                /* ancho del wedge */
+  background: #fff;
+  transform: skewX(-70deg);   /* ángulo */
+  z-index: -1;
 }
 
-.Menu{
-  display:flex; align-items:center; gap:1rem; list-style:none; padding:0;
-  margin-left:20px;
+.logos img {
+  max-width: 100px;
+  height: auto;
 }
-.Menu li{ display:flex; }
-.Menu li a{
-  display:flex; align-items:center;
-  height:43px; padding:0 20px; color:#000; text-decoration:none; border-radius:6px;
+
+.divider {
+  height: auto;
+  background: #D9D9D9;
+  display: flex;
+  padding: 0 20px;
+  width: 100%;
+
 }
-.Menu li a:hover{ background:#005DA4; color:#fff !important; }
+
+.divider nav {
+  width: 100%;
+  color: #005DA4;
+  justify-content: space-between;
+  padding: 10px 10px;
+}
+
+.divider nav ul.menu {
+  display: flex;
+  width: 100%;
+}
+
+.divider nav ul.Menu li a {
+  color: black;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 17px;
+}
+
+.divider nav ul.Menu li a:hover {
+  background-color: #005DA4 ;
+  color: white !important;
+}
 
 .cerrarSesionbtn{
-  height:43px; color:#000; border:none; border-radius:4px; background:transparent;
-  cursor:pointer; font-size:1rem;
+  height: 35px;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: transparent;
+  font-size: 17px;
 }
-.Menu button:hover{ background:#004080; color:#fff; }
 
-.menu-toggle{
-  display:none; background:none; border:none; color:#005DA4; font-size:1.5rem; cursor:pointer; padding:.5rem;
+.Menu button:hover{
+  background: #004080;
+  color: white;
 }
 
-/* ===== MAIN ===== */
-main{ flex:1; background:#fff; }
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #005DA4;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
 
-/* ===== FOOTER ===== */
-footer{ position:relative; width:100%; background:#ccc; padding:0 20px; }
-.footer-content{ display:flex; justify-content:space-between; align-items:center; }
-.footer-logo img{ max-height:60px; width:auto; }
-.footer-contact,.footer-location{ text-align:left; }
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
 
-/* ===== RESPONSIVE (≤768px) ===== */
-@media (max-width:768px){
-  header{ position:relative; width:100vw; margin-left:calc(50% - 50vw); }
+  .divider {
+    height: auto;
+    padding: 10px;
+    flex-direction: column;
+  }
 
-  .header-content{ padding:12px 14px; }
+  .divider nav ul.Menu {
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .divider nav ul.Menu.show {
+    display: flex;
+    background: #ccc;
+    border-radius: 4px;
+    padding: 20px;
+  }
+
+  .divider nav ul.Menu li {
+    width: 100%;
+    margin: 0.2rem 0;
+    border: 1px solid;
+  }
+
+  .divider nav ul.Menu li a {
+    padding: 0.8rem 1rem;
+    text-align: center;
+    display: block;
+  }
+
+  .cerrarSesionbtn {
+    width: 100%;
+    margin-top: 0.5rem;
+    height: 40px;
+  }
+}
+
+
+/* --- MAIN --- */
+main {
+  flex: 1;
+  background: #fff;
+}
+
+/* --- FOOTER --- */
+footer {
+  position: relative;
+  width: 100%;
+  background: #ccc;
+  padding: 0 20px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo img {
+  max-height: 60px;
+  width: auto;
+}
+
+.footer-contact,
+.footer-location {
+  text-align: left;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 855px) {
+  header{
+    position: relative;
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  .header-content{
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 14px;
+    background:#0FC3F3;
+    overflow:hidden;
+  }
+
+  /* Panel blanco con borde diagonal a la IZQUIERDA */
   .header-content::after{
-    content:""; position:absolute; top:0; right:0; bottom:0; width:52vw;
-    background:#fff; clip-path:polygon(24% 0,100% 0,100% 100%,0 100%); z-index:0;
+    content:"";
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:52vw;                    /* ajusta 45–60vw según se vea */
+    background:#fff;
+    clip-path: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
+    z-index:0;
   }
 
-  .page-name{ font-size:1.25rem; max-width:48vw; z-index:1; }
-  .logos{ padding:8px 10px; gap:10px; width:auto; z-index:1; }
-  .logos::before{ display:none; }
-  .logos img{ max-width:72px; }
-
-  .menu-toggle{ display:block; }
-
-  .divider{ height:auto; padding:8px 12px; flex-direction:column; }
-
-  .Menu{ display:none; flex-direction:column; gap:.5rem; margin-top:.5rem; }
-  .Menu.show{ display:flex; background:#ccc; border-radius:6px; padding:12px; }
-  .Menu li{ width:100%; }
-  .Menu li a{
-    display:block; width:100%; height:40px; line-height:40px; padding:0 12px; text-align:left;
+  main{
+      flex:1;
   }
 
-  .cerrarSesionbtn{ width:100%; height:40px; text-align:left; padding:0 12px; }
+  .page-name{
+    font-size:1.25rem;
+    color:#fff;
+    margin:0;
+    max-width:48vw;                /* evita que el título se meta al blanco */
+    z-index:1;
+  }
 
-  footer{ margin-top:auto; }
-  .footer-content{ flex-direction:column; text-align:center; gap:15px; }
+  .logos{
+    position:relative;
+    padding:8px 10px;
+    width:auto;
+    display:flex; align-items:center; gap:10px;
+    z-index:1;
+  }
+
+  .logos::before{ display:none; }  /* quita el wedge de desktop */
+  .logos img{ max-width:72px; height:auto; }
+
+  .divider{ height:6px; }
+
+  /* Footer ya no fijo */
+  footer {
+      margin-top: auto;
+      width: 100%;
+      position: relative;
+      background: #ccc;
+      padding: 0 20px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/* Header.css - Agregar estas reglas */
+.Menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+  align-items: center;
+}
+
+.Menu li {
+  position: relative;
+}
+
+.Menu a {
+  color: #2c3e50;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.Menu a:hover {
+  background-color: #f8f9fa;
+}
+
+/* Dropdown styles */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: none;
+}
+
+.dropbtn {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background: white;
+  min-width: 200px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  padding: 0.5rem 0;
+  list-style: none;
+  z-index: 1000;
+}
+
+.dropdown-content li {
+  margin: 0;
+}
+
+.dropdown-content a,
+.dropdown-content button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2c3e50;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-content button {
+  color: #dc3545;
+}
+
+/* Mostrar dropdown cuando el checkbox está checked */
+.dropdown-toggle:checked ~ .dropdown-content {
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .Menu {
+    gap: 1rem;
+  }
+
+  .dropdown-content {
+    right: -50%;
+    min-width: 150px;
+  }
+}
+
+

@@ -104,11 +104,11 @@ function Header({ innerRef }) {
                                 {rol === 'DIRECTOR' && (
                                     <>
                                         <li><Link to="/director">Resumen General</Link></li>
-                                        <li><Link to="/director/personal">Gestionar Personal</Link></li>
-                                        <li><Link to="/director/proyectos">Gestionar Proyectos</Link></li>
-                                        <li><Link to="/director/gastos">Gastos de Proyectos</Link></li>
-                                        <li><Link to="/director/reportes">Generar Reportes</Link></li>
-                                        <li><Link to="/director/notificaciones">Notificaciones</Link></li>
+                                        <li><Link to="/director">Gestionar Personal</Link></li>
+                                        <li><Link to="/RegistroProyecto">Gestionar Proyectos</Link></li>
+                                        <li><Link to="/director">Gastos de Proyectos</Link></li>
+                                        <li><Link to="/director">Generar Reportes</Link></li>
+                                        <li><Link to="/director">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>
                                         <li>
                                             <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
@@ -119,12 +119,12 @@ function Header({ innerRef }) {
 
                                 {rol === 'ADMINISTRADOR' && (
                                     <>
-                                        <li><Link to="/director/resumen">Registar Proyecto</Link></li>
-                                        <li><Link to="/director/personal">Actualizar Proyecto</Link></li>
-                                        <li><Link to="/director/proyectos">Asignar Investigadores</Link></li>
-                                        <li><Link to="/director/gastos">Generar Reportes</Link></li>
-                                        <li><Link to="/director/reportes">Generar Reportes</Link></li>
-                                        <li><Link to="/director/notificaciones">Notificaciones</Link></li>
+                                        <li><Link to="/RegistroProyecto">Registar Proyecto</Link></li>
+                                        <li><Link to="/administrador">Actualizar Proyecto</Link></li>
+                                        <li><Link to="/administrador">Asignar Investigadores</Link></li>
+                                        <li><Link to="/administrador">Generar Reportes</Link></li>
+                                        <li><Link to="/administrador">Generar Reportes</Link></li>
+                                        <li><Link to="/administrador">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>
                                         <li>
                                             <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
@@ -135,14 +135,14 @@ function Header({ innerRef }) {
 
                                 {rol === 'INVESTIGADOR' && (
                                     <>
-                                        <li><Link to="/director/resumen">Historial de Participacion</Link></li>
-                                        <li><Link to="/director/resumen">Mis Proyectos</Link></li>
-                                        <li><Link to="/director/personal">Custodiar datos de Investigacion</Link></li>
-                                        <li><Link to="/director/proyectos">Actualizar Proyecto</Link></li>
-                                        <li><Link to="/director/gastos">Certificaciones y Licencias</Link></li>
-                                        <li><Link to="/director/reportes">Registrar Gastos</Link></li>
-                                        <li><Link to="/director/reportes">Consultar Gastos</Link></li>
-                                        <li><Link to="/director/notificaciones">Notificaciones</Link></li>
+                                        <li><Link to="/investigador">Historial de Participacion</Link></li>
+                                        <li><Link to="/investigador">Mis Proyectos</Link></li>
+                                        <li><Link to="/investigador">Custodiar datos de Investigacion</Link></li>
+                                        <li><Link to="/investigador">Actualizar Proyecto</Link></li>
+                                        <li><Link to="/investigador">Certificaciones y Licencias</Link></li>
+                                        <li><Link to="/investigador">Registrar Gastos</Link></li>
+                                        <li><Link to="/investigador">Consultar Gastos</Link></li>
+                                        <li><Link to="/investigador">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>
                                         <li>
                                             <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion

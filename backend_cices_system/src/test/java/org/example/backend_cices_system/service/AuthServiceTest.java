@@ -2,6 +2,7 @@ package org.example.backend_cices_system.service;
 
 import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.LoginResponse;
+import org.example.backend_cices_system.dto.UserInfo;
 import org.example.backend_cices_system.dto.UsuarioRegistroDTO;
 import org.example.backend_cices_system.logic.*;
 import org.example.backend_cices_system.security.JwtUtil;
@@ -13,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +44,12 @@ public class AuthServiceTest {
     @Mock
     private RolRepository rolRepository;
 
+    @Mock
+    private InvestigadorRepository investigadorRepository;
+
     @InjectMocks
     private AuthService authService;
+
 
         //LOGIN
         @Test
@@ -129,7 +136,9 @@ public class AuthServiceTest {
             verify(rolUsuarioRepository, times(1)).save(any(RolUsuario.class));
         }
 
-        //si no se selecciona un rol al registrar
+
+
+    //si no se selecciona un rol al registrar
         @Test
         void registrarFallaSinRol() {
             UsuarioRegistroDTO dto = new UsuarioRegistroDTO();

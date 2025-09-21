@@ -58,12 +58,10 @@ header {
   display: flex;
   padding: 0 20px;
   width: 100%;
-
 }
 
 .divider nav {
   width: 100%;
-  color: #005DA4;
   justify-content: space-between;
   padding: 10px 10px;
 }
@@ -74,11 +72,9 @@ header {
 }
 
 .divider nav ul.Menu li a {
-  color: black;
+  color: #005DA4;
   text-decoration: none;
   display: flex;
-  justify-content: center;
-  text-align: center;
   font-size: 15px;
 }
 
@@ -87,9 +83,13 @@ header {
   color: white !important;
 }
 
+.divider nav ul.Menu{
+  justify-content: space-between;
+}
+
 .cerrarSesionbtn{
   height: 35px;
-  color: black;
+  color: #005DA4;
   border: none;
   border-radius: 4px;
   cursor: pointer;

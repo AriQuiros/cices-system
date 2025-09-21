@@ -57,13 +57,15 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource cors() {
         var c = new CorsConfiguration();
-        c.setAllowedOrigins(List.of("http://localhost:5173"));
+        c.setAllowedOrigins(List.of("http://localhost:5173")); // origen exacto
         c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        c.setAllowedHeaders(List.of("*"));
-        c.setExposedHeaders(List.of("X-Login-Attempts-Remaining")); // necesario para leer el header en el navegador
+        c.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Origin")); // incluye Authorization
+        c.setExposedHeaders(List.of("X-Login-Attempts-Remaining"));
         c.setAllowCredentials(true);
         var s = new UrlBasedCorsConfigurationSource();
         s.registerCorsConfiguration("/**", c);
         return s;
     }
+
+
 }

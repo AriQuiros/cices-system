@@ -1,24 +1,29 @@
 import { useAuth } from "../../context/useAuth.js";
 import "./Login.css";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigationType } from "react-router-dom";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 function Login() {
-    const { login } = useAuth();
+    const { login, logout } = useAuth();
     const [form, setForm] = useState({ username: "", password: "" });
     const [localError, setLocalError] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(0);
     const timerRef = useRef(null);
     const navigate = useNavigate();
+    const navType = useNavigationType();
+
+    useEffect(() => {
+        if (navType === "POP") {
+            logout();
+            navigate("/", { replace: true });
+        }
+    }, [navType, logout, navigate]);
 
     const clearTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
+        if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
     };
 
     useEffect(() => () => clearTimer(), []);
@@ -35,13 +40,7 @@ function Login() {
         setSecondsLeft(total);
         if (total === 0) return;
         timerRef.current = setInterval(() => {
-            setSecondsLeft((prev) => {
-                if (prev <= 1) {
-                    clearTimer();
-                    return 0;
-                }
-                return prev - 1;
-            });
+            setSecondsLeft((prev) => (prev <= 1 ? (clearTimer(), 0) : prev - 1));
         }, 1000);
     };
 
@@ -74,27 +73,17 @@ function Login() {
                     msg = `Credenciales inválidas${remaining ? ` · Intentos restantes: ${remaining}` : ""}`;
                 } else if (res.status === 423) {
                     let mins = 0;
-                    try {
-                        const j = await res.json();
-                        mins = Number(j?.remainingMinutes ?? 0);
-                    } catch {}
-                    if (mins > 0) {
-                        startCountdown(mins);
-                        msg = `Cuenta bloqueada. Intenta en ${formatMMSS(mins * 60)}`;
-                    } else {
-                        msg = "Cuenta bloqueada temporalmente.";
-                    }
+                    try { const j = await res.json(); mins = Number(j?.remainingMinutes ?? 0); } catch {}
+                    msg = mins > 0 ? `Cuenta bloqueada. Intenta en ${formatMMSS(mins * 60)}` : "Cuenta bloqueada temporalmente.";
+                    if (mins > 0) startCountdown(mins);
                 } else {
-                    try {
-                        const j = await res.json();
-                        if (j?.error) msg = j.error;
-                    } catch {}
+                    try { const j = await res.json(); if (j?.error) msg = j.error; } catch {}
                 }
                 setLocalError(msg);
                 return;
             }
 
-            const data = await res.json(); // { token, user }
+            const data = await res.json();
             login(data.user, data.token);
 
             const r = data.user.roles || [];
@@ -118,26 +107,14 @@ function Login() {
                 <form onSubmit={handleSubmit} className="login-form">
                     <label>
                         Usuario
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="usuario@ucr.ac.cr"
-                            value={form.username}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="text" name="username" placeholder="usuario@ucr.ac.cr"
+                               value={form.username} onChange={handleChange} required />
                     </label>
 
                     <label>
                         Contraseña
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="••••••••"
-                            value={form.password}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="password" name="password" placeholder="••••••••"
+                               value={form.password} onChange={handleChange} required />
                     </label>
 
                     <div className="login-actions">
@@ -147,17 +124,14 @@ function Login() {
                     </div>
 
                     <div className="login-links">
-                        <label>
-                            ¿No tienes una cuenta?
+                        <label>¿No tienes una cuenta?
                             <a href="/Registro"> Click aquí</a>
                         </label>
                     </div>
 
                     {(localError || secondsLeft > 0) && (
                         <p className="error" role="alert" aria-live="polite">
-                            {secondsLeft > 0
-                                ? `Cuenta bloqueada. Intenta en ${formatMMSS(secondsLeft)}`
-                                : localError}
+                            {secondsLeft > 0 ? `Cuenta bloqueada. Intenta en ${formatMMSS(secondsLeft)}` : localError}
                         </p>
                     )}
                 </form>
@@ -167,3 +141,4 @@ function Login() {
 }
 
 export default Login;
+

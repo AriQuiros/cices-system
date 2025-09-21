@@ -79,7 +79,7 @@ header {
   display: flex;
   justify-content: center;
   text-align: center;
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .divider nav ul.Menu li a:hover {
@@ -94,7 +94,7 @@ header {
   border-radius: 4px;
   cursor: pointer;
   background-color: transparent;
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .Menu button:hover{

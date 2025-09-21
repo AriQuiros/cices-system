@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext.jsx";
 import "./Director.css";
 
@@ -6,8 +7,22 @@ const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export default function Director() {
     const { token } = useContext(AppContext);
+    const { state } = useLocation();                 // ← recibe { toast }
+    const navigate = useNavigate();
+    const [toast, setToast] = useState(state?.toast || "");
+
     const [data, setData] = useState(null);
     const [err, setErr] = useState("");
+
+    // auto-ocultar toast y limpiar history.state para que no reaparezca
+    useEffect(() => {
+        if (!toast) return;
+        const id = setTimeout(() => {
+            setToast("");
+            navigate(".", { replace: true, state: {} });
+        }, 2500);
+        return () => clearTimeout(id);
+    }, [toast, navigate]);
 
     useEffect(() => {
         if (!token) return;
@@ -60,6 +75,8 @@ export default function Director() {
                     </div>
                 </section>
             </div>
+
+            {toast && <div className="toast-welcome">{toast}</div>}
         </div>
     );
 }

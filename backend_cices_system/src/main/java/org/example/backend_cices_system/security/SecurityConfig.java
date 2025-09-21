@@ -24,9 +24,7 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
     @Bean
     SecurityFilterChain security(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
@@ -45,6 +43,9 @@ public class SecurityConfig {
                 .httpBasic(b -> b.disable())
                 .formLogin(f -> f.disable())
                 .exceptionHandling(e -> e.authenticationEntryPoint((req,res,ex)->{
+                    // No interceptar /auth/login. Deja que el controller responda con headers/body propios.
+                    String uri = req.getRequestURI();
+                    if (uri != null && uri.endsWith("/auth/login")) return;
                     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     res.setContentType("application/json");
                     res.getWriter().write("{\"error\":\"unauthorized\"}");
@@ -59,6 +60,7 @@ public class SecurityConfig {
         c.setAllowedOrigins(List.of("http://localhost:5173"));
         c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         c.setAllowedHeaders(List.of("*"));
+        c.setExposedHeaders(List.of("X-Login-Attempts-Remaining")); // necesario para leer el header en el navegador
         c.setAllowCredentials(true);
         var s = new UrlBasedCorsConfigurationSource();
         s.registerCorsConfiguration("/**", c);

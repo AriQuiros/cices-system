@@ -2,21 +2,38 @@ package org.example.backend_cices_system.presentation;
 import org.example.backend_cices_system.dto.LoginRequest;
 import org.example.backend_cices_system.dto.LoginResponse;
 import org.example.backend_cices_system.service.AuthService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
-
+import org.example.backend_cices_system.service.LoginAttemptService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;
-    public AuthController(AuthService authService) { this.authService = authService; }
+    private final LoginAttemptService attemptService;
 
-    @org.springframework.web.bind.annotation.PostMapping("/login")
-    public org.springframework.http.ResponseEntity<LoginResponse> login(
-            @org.springframework.web.bind.annotation.RequestBody LoginRequest req) {
-        return org.springframework.http.ResponseEntity.ok(authService.login(req.username(), req.password()));
+    public AuthController(AuthService authService, LoginAttemptService attemptService) {
+        this.authService = authService;
+        this.attemptService = attemptService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+        try {
+            var resp = authService.login(req.username(), req.password());
+            return ResponseEntity.ok(resp);
+        } catch (org.springframework.security.authentication.LockedException ex) {
+            long remain = attemptService.blockMinutesRemaining(req.username());
+            return ResponseEntity.status(423)
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                    .body(java.util.Map.of("error","Cuenta bloqueada temporalmente","remainingMinutes",remain));
+        } catch (org.springframework.security.authentication.BadCredentialsException ex) {
+            int remaining = attemptService.remaining(req.username());
+            return ResponseEntity.status(401)
+                    .header("X-Login-Attempts-Remaining", String.valueOf(remaining))
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                    .body(java.util.Map.of("error","Credenciales inválidas","remaining",remaining));
+        }
     }
 }

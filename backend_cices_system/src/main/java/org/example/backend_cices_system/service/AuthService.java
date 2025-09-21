@@ -5,14 +5,14 @@ import org.example.backend_cices_system.dto.UserInfo;
 import org.example.backend_cices_system.logic.*;
 import org.example.backend_cices_system.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.backend_cices_system.dto.UsuarioRegistroDTO;
-
 import java.time.LocalDate;
 import java.util.Optional;
 
-@org.springframework.stereotype.Service
-@org.springframework.transaction.annotation.Transactional(readOnly = true)
+@Service
+@Transactional(readOnly = true)
 public class AuthService {
     private final PasswordEncoder encoder;
     private final JwtUtil jwt;
@@ -22,6 +22,8 @@ public class AuthService {
     private final RolRepository rolRepository;
     private final InvestigadorRepository investigadorRepository;
     private final CertificacionRepository certificacionRepository;
+    private final LoginAttemptService attemptService;
+
 
     public AuthService(
             UsuarioRepository usuarioRepository,
@@ -31,7 +33,8 @@ public class AuthService {
             InvestigadorRepository investigadorRepository,
             PasswordEncoder encoder,
             JwtUtil jwt,
-            CertificacionRepository certificacionRepository
+            CertificacionRepository certificacionRepository,
+            LoginAttemptService attemptService
     ) {
         this.usuarioRepository = usuarioRepository;
         this.rolUsuarioRepository = rolUsuarioRepository;
@@ -41,44 +44,40 @@ public class AuthService {
         this.encoder = encoder;
         this.jwt = jwt;
         this.certificacionRepository = certificacionRepository;
+        this.attemptService = attemptService;
     }
 
     public LoginResponse login(String username, String password) {
-        System.out.println("req username=" + username +
-                " password.len=" + (password != null ? password.length() : null));
+        if (attemptService.isBlocked(username))
+            throw new org.springframework.security.authentication.LockedException("Usuario bloqueado por intentos fallidos");
 
         var u = usuarioRepository.findActiveByUsername(username)
-                .orElseThrow(() ->
-                        new org.springframework.security.authentication.BadCredentialsException("Credenciales inválidas"));
+                .orElseThrow(() -> {
+                    attemptService.onFailure(username);
+                    return new org.springframework.security.authentication.BadCredentialsException("Credenciales inválidas");
+                });
 
         var stored = Optional.ofNullable(u.getContrasena()).orElse("").trim();
-
-        System.out.println("stored=" + stored);
-        System.out.println("stored.startsWith$2=" + stored.startsWith("$2") +
-                " matches=" + encoder.matches(password, stored));
-
-        if (stored.startsWith("{bcrypt}")) {
-            stored = stored.substring("{bcrypt}".length());
-        }
+        if (stored.startsWith("{bcrypt}")) stored = stored.substring("{bcrypt}".length());
 
         boolean ok = !stored.isBlank() &&
-                (stored.startsWith("$2")
-                        ? encoder.matches(password, stored)
-                        : stored.equals(password));
+                (stored.startsWith("$2") ? encoder.matches(password, stored) : stored.equals(password));
 
         if (!ok) {
+            attemptService.onFailure(username);
             throw new org.springframework.security.authentication.BadCredentialsException("Credenciales inválidas");
         }
+
+        attemptService.onSuccess(username);
 
         var roles = rolUsuarioRepository.findRoleNamesByUsuarioId(u.getId());
         var token = jwt.generate(u.getNombreUsuario(), roles);
         var nombre = u.getIdEmpleado() != null ? u.getIdEmpleado().getNombreCompleto() : null;
 
-        return new LoginResponse(
-                token,
-                new UserInfo(u.getId(), u.getNombreUsuario(), nombre, roles)
-        );
+        return new LoginResponse(token, new UserInfo(u.getId(), u.getNombreUsuario(), nombre, roles));
     }
+
+
     @Transactional
     public void registrar(UsuarioRegistroDTO usuario) {
         // Validación de roles

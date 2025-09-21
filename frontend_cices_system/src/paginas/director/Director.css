@@ -55,6 +55,23 @@
     vertical-align:middle;
 }
 
+.toast-welcome{
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: #005DA4;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    pointer-events: none;
+    z-index: 2000;
+    animation: toast-in .2s ease, toast-out .3s ease 2.2s forwards;
+}
+@keyframes toast-in{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+@keyframes toast-out{ to{opacity:0; transform:translateY(10px)} }
+
+
 
 
 /* Responsive */

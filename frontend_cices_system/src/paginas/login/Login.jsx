@@ -87,10 +87,13 @@ function Login() {
             login(data.user, data.token);
 
             const r = data.user.roles || [];
-            if (r.includes("DIRECTOR")) navigate("/director");
-            else if (r.includes("ADMINISTRADOR")) navigate("/administrador");
-            else if (r.includes("INVESTIGADOR")) navigate("/investigador");
-            else navigate("/dashboard");
+            const dest =
+                r.includes("DIRECTOR") ? "/director" :
+                    r.includes("ADMINISTRADOR") ? "/administrador" :
+                        r.includes("INVESTIGADOR") ? "/investigador" : "/dashboard";
+
+            const welcomeMsg = `Bienvenid@, ${data.user?.nombreCompleto || data.user?.username || ""}`;
+            navigate(dest, { state: { toast: welcomeMsg } });
         } catch {
             setLocalError("No se pudo conectar con el servidor");
         } finally {

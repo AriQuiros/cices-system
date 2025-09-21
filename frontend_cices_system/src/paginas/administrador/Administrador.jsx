@@ -1,24 +1,38 @@
 // src/paginas/administrador/Administrador.jsx
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Administrador.css";
 
 function Administrador() {
     const [open, setOpen] = useState(false);
-    const { pathname } = useLocation();
+    const location = useLocation();
+    const { pathname, state } = location;          // ← recibe { toast } desde login
+    const navigate = useNavigate();
+    const [toast, setToast] = useState(state?.toast || "");
 
+    // Esc para cerrar panel
     useEffect(() => {
         const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, []);
 
+    // Cierra panel al cambiar de ruta
     useEffect(() => { setOpen(false); }, [pathname]);
+
+    // Auto-oculta toast y limpia history.state para no reaparecer
+    useEffect(() => {
+        if (!toast) return;
+        const id = setTimeout(() => {
+            setToast("");
+            navigate(".", { replace: true, state: {} });
+        }, 2500);
+        return () => clearTimeout(id);
+    }, [toast, navigate]);
 
     return (
         <div className="contenedor_administrador">
             <div className="contenido_administrador">
-                {/* barra debajo del header */}
                 <div className="admin-toolbar">
                     <button
                         className="menu-btn"
@@ -43,25 +57,7 @@ function Administrador() {
 
                 <section className="resultado">
                     <div className="resultado">
-                        <p>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista.
-                        </p>
+                        <p>esto es una lista<br/>esto es una lista<br/>...</p>
                     </div>
                 </section>
             </div>
@@ -91,11 +87,12 @@ function Administrador() {
             </aside>
 
             <div className={`backdrop ${open ? "show" : ""}`} onClick={() => setOpen(false)} />
+
+            {toast && <div className="toast-welcome">{toast}</div>}
         </div>
     );
 }
 
 export default Administrador;
-
 
 

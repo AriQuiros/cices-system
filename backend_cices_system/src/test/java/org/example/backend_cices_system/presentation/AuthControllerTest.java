@@ -11,23 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import java.util.List;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
@@ -53,22 +44,28 @@ class AuthControllerTest {
         assertEquals("test", body.user().username());
         assertEquals("Test User", body.user().nombreCompleto());
         assertEquals(List.of("ADMINISTRADOR"), body.user().roles());
+
+        verify(authService).login("test","password");
+        verifyNoMoreInteractions(authService, attemptService);
     }
 
     @Test
     void testLoginBadCredentials() {
         when(authService.login("bad","x"))
-                .thenThrow(new org.springframework.security.authentication.BadCredentialsException("x"));
+                .thenThrow(new BadCredentialsException("x"));
         when(attemptService.remaining("bad")).thenReturn(3);
 
         var response = controller.login(new LoginRequest("bad","x"));
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("3", response.getHeaders().getFirst("X-Login-Attempts-Remaining"));
+        assertEquals(org.springframework.http.MediaType.APPLICATION_JSON, response.getHeaders().getContentType());
+
         var body = (Map<?,?>) response.getBody();
         assertEquals("Credenciales inválidas", body.get("error"));
         assertEquals(3, body.get("remaining"));
     }
+
 
     @Test
     void testLoginLocked() {

@@ -26,7 +26,6 @@ class AuthServiceTest {
     @Mock private JwtUtil jwtUtil;
     @Mock private EmpleadoRepository empleadoRepository;
     @Mock private RolRepository rolRepository;
-    @Mock private InvestigadorRepository investigadorRepository;
     @Mock private LoginAttemptService attemptService;
     @Mock private CertificacionRepository certificacionRepository;
 

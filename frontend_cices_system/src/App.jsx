@@ -13,6 +13,7 @@ import Director from "./paginas/director/Director";
 import Administrador from "./paginas/administrador/Administrador.jsx";
 import Certificacion from "./paginas/certificacion/Certificacion.jsx";
 import Investigador from "./paginas/investigador/Investigador.jsx";
+import RegistroInvestigador from "./paginas/registro/RegistroInvestigador.jsx";
 
 
 import AppProvider from "./context/AppProvider.jsx";
@@ -61,6 +62,7 @@ function Main({ style }){
                     <Route path="/" element={<Login />} />
                     <Route path="/Registro" element={<Registro />} />
                     <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
+                    <Route path="/RegistroInvestigador" element={<RegistroInvestigador />} />
                     <Route path="/director" element={<Director />} />
                     <Route path="/administrador" element={<Administrador />} />
                     <Route path="/certificacion" element={<Certificacion />} />

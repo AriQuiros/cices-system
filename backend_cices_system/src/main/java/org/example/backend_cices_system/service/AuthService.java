@@ -133,25 +133,36 @@ public class AuthService {
         if (esInvestigador) {
             Investigador investigador = new Investigador();
             investigador.setIdEmpleado(empleado);
-            investigador.setNumeroBecario(usuario.getNumeroBecario() != null && !usuario.getNumeroBecario().isBlank() ? Integer.valueOf(usuario.getNumeroBecario()) : null);
+            investigador.setNumeroBecario(usuario.getNumeroBecario() != null && !usuario.getNumeroBecario().isBlank()
+                    ? Integer.valueOf(usuario.getNumeroBecario()) : null);
             investigador.setUnidadAcademica(usuario.getUnidadAcademica());
             investigador.setInstitucionOrigen(usuario.getInstitucionOrigen());
             investigador.setIdCodigoGradoAcademico(usuario.getIdCodigoGradoAcademico());
             investigador = investigadorRepository.save(investigador);
-            // Procesar acreditaciones si existen
+
+            // Certificaciones
             if (usuario.getAcreditaciones() != null) {
-                for (UsuarioRegistroDTO.AcreditacionDTO acreditacion : usuario.getAcreditaciones()) {
+                for (var a : usuario.getAcreditaciones()) {
                     Certificacion cert = new Certificacion();
                     cert.setIdInvestigador(investigador);
-                    cert.setNombreCertificacion(acreditacion.getText());
-                    // Asigna la fecha de expiración
-                    if (acreditacion.getDate() != null && !acreditacion.getDate().isBlank()) {
-                        cert.setFechaExpiracion(LocalDate.parse(acreditacion.getDate()));
-                    }
-                    // Asigna el tipo de certificación (por ejemplo, LICENCIA PROFESIONAL, id=8)
-                    cert.setIdCodigoTipoCertificacion((short)8); // Cambia el valor según tu lógica o lo que venga del frontend
-                    // Asigna el estado de la certificación (por ejemplo, VIGENTE, id=9)
-                    cert.setIdCodigoTipoEstado((short)9); // Cambia el valor según tu lógica o lo que venga del frontend
+
+                    // nombre: usa el que exista
+                    String nombre = a.getNombreCertificacion() != null ? a.getNombreCertificacion() : a.getText();
+                    cert.setNombreCertificacion(nombre);
+
+                    // fecha: LocalDate directo o parse de String "yyyy-MM-dd"
+                    java.time.LocalDate fecha =
+                            a.getFechaExpiracion() != null ? a.getFechaExpiracion()
+                                    : (a.getDate() != null && !a.getDate().isBlank() ? java.time.LocalDate.parse(a.getDate()) : null);
+                    if (fecha == null) throw new RuntimeException("Falta fecha de expiración en acreditación");
+                    cert.setFechaExpiracion(fecha);
+
+                    // tipo y estado: usa IDs del front si vienen; si no, defaults actuales
+                    Short tipo = a.getIdCodigoTipoCertificacion() != null ? a.getIdCodigoTipoCertificacion() : (short)8;
+                    Short estado = a.getIdCodigoTipoEstado() != null ? a.getIdCodigoTipoEstado() : (short)9;
+                    cert.setIdCodigoTipoCertificacion(tipo);
+                    cert.setIdCodigoTipoEstado(estado);
+
                     certificacionRepository.save(cert);
                 }
             }

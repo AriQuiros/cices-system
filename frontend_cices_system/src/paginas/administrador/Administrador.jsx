@@ -17,23 +17,7 @@ function Administrador() {
 
                 <section className="resultado">
                     <div className="lista_resultado">
-                        <p> esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista <br/>
-                            esto es una lista. </p>
+
                     </div>
                 </section>
             </div>

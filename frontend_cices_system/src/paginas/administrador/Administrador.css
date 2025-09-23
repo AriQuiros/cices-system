@@ -9,7 +9,6 @@
     background: #fff;
     border-radius: 8px;
     padding: 2rem;
-    max-width: 960px;
 }
 
 /* búsqueda */
@@ -25,7 +24,6 @@
     display: flex;
     gap: 1rem;
     width: 100%;
-    max-width: 720px;
 }
 
 .buscar input[type="text"] {

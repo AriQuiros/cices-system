@@ -80,7 +80,7 @@ function RegistroInvestigador({ onClose, onConfirm }) {
             return;
         }
 
-        // valida certificaciones: permite filas vacías, pero si hay datos, todos obligatorios
+        // valida certificaciones
         for (const c of certificaciones) {
             const filled = c.nombre.trim() || c.tipo || c.expiracion;
             if (filled) {
@@ -107,10 +107,11 @@ function RegistroInvestigador({ onClose, onConfirm }) {
         onConfirm({
             institucion: formData.institucion,
             unidadAcademica: formData.unidadAcademica,
-            gradoAcademico: formData.gradoAcademico,
-            certificaciones: certsLimpias
+            gradoAcademico: Number(formData.gradoAcademico) || null,
+            acreditaciones: certsLimpias
         });
     };
+
 
     // catálogos
     useEffect(() => {

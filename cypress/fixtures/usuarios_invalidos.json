@@ -1,0 +1,38 @@
+[
+  {
+    "rol": "Administrador",
+    "nombreCompleto": "Caso Mismatch",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Nacional",
+    "identificacion": "999001",
+    "telefono": "88880001",
+    "correo": "mismatch@ucr.ac.cr",
+    "contrasena": "AAA11111",
+    "confirmarContrasena": "BBB22222",
+    "expect": "mismatch"
+  },
+  {
+    "rol": "Asistente",
+    "nombreCompleto": "",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Dimex",
+    "identificacion": "",
+    "telefono": "88880002",
+    "correo": "faltantes@ucr.ac.cr",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123",
+    "expect": "missing"
+  },
+  {
+    "rol": "Director",
+    "nombreCompleto": "Correo inválido",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Pasaporte",
+    "identificacion": "999003",
+    "telefono": "88880003",
+    "correo": "invalido@correo.com",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123",
+    "expect": "email"
+  }
+]

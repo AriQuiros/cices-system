@@ -186,7 +186,7 @@ function RegistroInvestigador({ onClose, onConfirm }) {
                             ))}
                         </select>
                         <svg className="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m6 9 6 6 6-6" strokeLinecap="round" />
+                            <path d="m6 9 6 6 6-6" strokeLinecap="round"/>
                         </svg>
                     </div>
 
@@ -196,33 +196,45 @@ function RegistroInvestigador({ onClose, onConfirm }) {
                     <div className="rows-group">
                         {certificaciones.map((c, idx) => (
                             <div className="row" key={idx}>
-                                <input
-                                    className="input"
-                                    type="text"
-                                    placeholder="Nombre de la certificación"
-                                    value={c.nombre}
-                                    onChange={(e) => handleCertChange(idx, "nombre", e.target.value)}
-                                />
+                                <div className="field">
+                                    <label> ㅤ</label>
+                                    <input
+                                        className="input"
+                                        type="text"
+                                        placeholder="Nombre de la certificación"
+                                        value={c.nombre}
+                                        onChange={(e) => handleCertChange(idx, "nombre", e.target.value)}
+                                    />
+                                </div>
 
-                                <div className="select-wrap">
+                                <div className="field select-wrap">
+                                    <label>ㅤ </label>
                                     <select
                                         className="select"
                                         value={c.tipo}
                                         onChange={(e) => handleCertChange(idx, "tipo", e.target.value)}
                                         disabled={loadingTipos || tipos.length === 0}
                                     >
-                                        <option value="">{loadingTipos ? "Cargando..." : "Tipo de certificación"}</option>
+                                        <option value="">
+                                            {loadingTipos ? "Cargando..." : "Tipo de certificación"}
+                                        </option>
                                         {tipos.map((t) => (
                                             <option key={t.id} value={t.id}>{t.despliegue}</option>
                                         ))}
                                     </select>
-                                    <svg className="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="m6 9 6 6 6-6" strokeLinecap="round" />
+                                    <svg className="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         strokeWidth="2">
+                                        <path d="m6 9 6 6 6-6" strokeLinecap="round"/>
                                     </svg>
                                 </div>
 
                                 <div className="field with-icon">
+                                    <label htmlFor={`expiracion-${idx}`} className="label-small">
+                                        Fecha de expiración
+                                    </label>
+
                                     <input
+                                        id={`expiracion-${idx}`}
                                         className="input"
                                         type="date"
                                         value={c.expiracion}
@@ -231,7 +243,6 @@ function RegistroInvestigador({ onClose, onConfirm }) {
                                     />
                                 </div>
 
-                                {/* Conserva el +. Quita campos viejos de acreditación. */}
                                 {idx === certificaciones.length - 1 ? (
                                     <button type="button" className="icon-btn" onClick={handleAddCert}>+</button>
                                 ) : certificaciones.length > 1 && (
@@ -247,6 +258,7 @@ function RegistroInvestigador({ onClose, onConfirm }) {
                             </div>
                         ))}
                     </div>
+
 
                     {errorForm && <p className="form-error">{errorForm}</p>}
 

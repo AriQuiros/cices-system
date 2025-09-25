@@ -134,3 +134,7 @@
 .remove-btn:hover {
     background: #fdecea;
 }
+.label-small {
+    font-size: 0.8rem;
+}
+

@@ -1,0 +1,18 @@
+{
+    "nombreCompleto": "Prueba Invalida",
+    "nacionalidad": "Costarricense",
+    "tipoIdentificacion": "Nacional",
+    "numeroIdentificacion": "ABC123XYZ",
+    "telefono": "8888-1001",
+    "correo": "prueba.invalida.ucr.ac.cr",
+    "contrasena": "1234",
+    "confirmarContrasena": "123",
+    "rol": "Investigador",
+    "numeroBecario": "BecarioX",
+    "institucionOrigen": "Universidad de Costa Rica",
+    "unidadAcademica": "Facultad de Ciencias Sociales",
+    "gradoAcademico": "Licenciatura",
+    "certificacionNombre": "Certificación sin fecha",
+    "certificacionTipo": "LICENCIA PROFESIONAL",
+    "certificacionExpiracion": "fecha_invalida"
+  }

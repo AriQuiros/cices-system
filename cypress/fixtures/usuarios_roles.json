@@ -1,0 +1,69 @@
+[
+  {
+    "rol": "Administrador",
+    "nombreCompleto": "Ana Admin Uno",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Nacional",
+    "identificacion": "910001",
+    "telefono": "88881001",
+    "correo": "ana.admin1@ucr.ac.cr",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123"
+  },
+  {
+    "rol": "Administrador",
+    "nombreCompleto": "Andrés Admin Dos",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Dimex",
+    "identificacion": "910002",
+    "telefono": "88881002",
+    "correo": "andres.admin2@ucr.ac.cr",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123"
+  },
+  {
+    "rol": "Asistente",
+    "nombreCompleto": "Bea Asistente Uno",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Pasaporte",
+    "identificacion": "920001",
+    "telefono": "88882001",
+    "correo": "bea.asistente1@ucr.ac.cr",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123"
+  },
+  {
+    "rol": "Asistente",
+    "nombreCompleto": "Bruno Asistente Dos",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Nacional",
+    "identificacion": "920002",
+    "telefono": "88882002",
+    "correo": "bruno.asistente2@ucr.ac.cr",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123"
+  },
+  {
+    "rol": "Director",
+    "nombreCompleto": "Clara Directora Uno",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Dimex",
+    "identificacion": "930001",
+    "telefono": "88883001",
+    "correo": "clara.directora1@ucr.ac.cr",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123"
+  },
+  {
+    "rol": "Director",
+    "nombreCompleto": "Carlos Director Dos",
+    "nacionalidad": "CR",
+    "tipoIdentificacion": "Pasaporte",
+    "identificacion": "930002",
+    "telefono": "88883002",
+    "correo": "carlos.director2@ucr.ac.cr",
+    "contrasena": "ClaveSegura123",
+    "confirmarContrasena": "ClaveSegura123"
+  }
+]
+

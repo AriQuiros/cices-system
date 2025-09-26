@@ -41,7 +41,7 @@ public class Empleado {
     @Column(name = "CORREO", nullable = false, length = 254)
     private String correo;
 
-    @Size(max = 10)
+    @Size(max = 15)
     @NotNull
     @Column(name = "NUMERO_TELEFONO", nullable = false, length = 10)
     private String numeroTelefono;

@@ -110,18 +110,18 @@ function Login() {
                 <form onSubmit={handleSubmit} className="login-form">
                     <label>
                         Usuario
-                        <input type="text" name="username" placeholder="usuario@ucr.ac.cr"
+                        <input type="text" id="login-username" name="username" placeholder="usuario@ucr.ac.cr"
                                value={form.username} onChange={handleChange} required />
                     </label>
 
                     <label>
                         Contraseña
-                        <input type="password" name="password" placeholder="••••••••"
+                        <input type="password" id="login-password" name="password" placeholder="••••••••"
                                value={form.password} onChange={handleChange} required />
                     </label>
 
                     <div className="login-actions">
-                        <button type="submit" className="btn-login" disabled={submitting}>
+                        <button type="submit" id="login-submit" className="btn-login" disabled={submitting}>
                             {submitting ? "Ingresando" : "Login"}
                         </button>
                     </div>

@@ -1,4 +1,5 @@
 package org.example.backend_cices_system.service;
+import jakarta.validation.constraints.NotNull;
 import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.LoginResponse;
 import org.example.backend_cices_system.dto.UserInfo;
@@ -8,8 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.backend_cices_system.dto.UsuarioRegistroDTO;
+
 import java.time.LocalDate;
-import java.util.Optional;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -138,38 +141,75 @@ public class AuthService {
             investigador.setUnidadAcademica(usuario.getUnidadAcademica());
             investigador.setInstitucionOrigen(usuario.getInstitucionOrigen());
             investigador.setIdCodigoGradoAcademico(usuario.getIdCodigoGradoAcademico());
+
+            // dentro de registrar(...), justo antes de investigadorRepository.save(investigador):
+            if (usuario.getUnidadAcademica() == null || usuario.getUnidadAcademica().isBlank())
+                throw new IllegalArgumentException("unidadAcademica requerida");
+
+            if (usuario.getInstitucionOrigen() == null || usuario.getInstitucionOrigen().isBlank())
+                throw new IllegalArgumentException("institucionOrigen requerida");
+
+            if (usuario.getIdCodigoGradoAcademico() == null)
+                throw new IllegalArgumentException("idCodigoGradoAcademico requerido");
+
             investigador = investigadorRepository.save(investigador);
 
             // Certificaciones
-            if (usuario.getAcreditaciones() != null) {
-                for (var a : usuario.getAcreditaciones()) {
-                    Certificacion cert = new Certificacion();
-                    cert.setIdInvestigador(investigador);
-
-                    // nombre: usa el que exista
-                    String nombre = a.getNombreCertificacion() != null ? a.getNombreCertificacion() : a.getText();
-                    cert.setNombreCertificacion(nombre);
-
-                    // fecha: LocalDate directo o parse de String "yyyy-MM-dd"
-                    java.time.LocalDate fecha =
-                            a.getFechaExpiracion() != null ? a.getFechaExpiracion()
-                                    : (a.getDate() != null && !a.getDate().isBlank() ? java.time.LocalDate.parse(a.getDate()) : null);
-                    if (fecha == null) throw new RuntimeException("Falta fecha de expiración en acreditación");
-                    cert.setFechaExpiracion(fecha);
-
-                    // tipo y estado: usa IDs del front si vienen; si no, defaults actuales
-                    Short tipo = a.getIdCodigoTipoCertificacion() != null ? a.getIdCodigoTipoCertificacion() : (short)8;
-                    Short estado = a.getIdCodigoTipoEstado() != null ? a.getIdCodigoTipoEstado() : (short)9;
-                    cert.setIdCodigoTipoCertificacion(tipo);
-                    cert.setIdCodigoTipoEstado(estado);
-
-                    certificacionRepository.save(cert);
-                }
-            }
+           registrarCertificaciones(usuario,investigador);
         }
     }
     public boolean existeIdentificacion(String identificacion) {
         return empleadoRepository.findAll().stream()
                 .anyMatch(e -> e.getIdentificacion() != null && e.getIdentificacion().equals(identificacion));
     }
+
+    private void registrarCertificaciones(UsuarioRegistroDTO usuario, Investigador inv) {
+        var acc = usuario.getAcreditaciones();
+        if (acc == null || acc.isEmpty()) return;
+
+        var hoy = java.time.LocalDate.now();
+        var vistos = new java.util.HashSet<String>();
+        var lote = new java.util.ArrayList<Certificacion>();
+
+        for (var a : acc) {
+            String nombre = a.getNombreCertificacion() != null ? a.getNombreCertificacion() : a.getText();
+            if (nombre == null || nombre.isBlank()) throw new IllegalArgumentException("Nombre requerido");
+            nombre = nombre.trim();
+            if (!vistos.add(nombre.toLowerCase())) throw new IllegalArgumentException("Duplicado en la lista: " + nombre);
+
+            if (certificacionRepository.existsByIdInvestigadorAndNombreCertificacionIgnoreCase(inv, nombre)) {
+                throw new IllegalStateException("Ya existe para este investigador: " + nombre);
+            }
+
+            java.time.LocalDate fecha = a.getFechaExpiracion();
+            if (fecha == null) {
+                String ds = a.getDate();
+                if (ds != null && !ds.isBlank()) {
+                    try { fecha = java.time.LocalDate.parse(ds); }
+                    catch (java.time.format.DateTimeParseException e) {
+                        throw new IllegalArgumentException("Formato de fecha inválido: " + ds);
+                    }
+                }
+            }
+            if (fecha == null) throw new IllegalArgumentException("Falta fecha en: " + nombre);
+            if (fecha.isBefore(hoy)) throw new IllegalArgumentException("Fecha debe ser hoy o futura en: " + nombre);
+
+            if (a.getIdCodigoTipoCertificacion() == null)
+                throw new IllegalArgumentException("Tipo de certificación requerido");
+
+            short tipo = a.getIdCodigoTipoCertificacion();
+            short estado = a.getIdCodigoTipoEstado() != null ? a.getIdCodigoTipoEstado() : (short)9;
+
+            var c = new Certificacion();
+            c.setIdInvestigador(inv);
+            c.setNombreCertificacion(nombre);
+            c.setFechaExpiracion(fecha);
+            c.setIdCodigoTipoCertificacion(tipo);
+            c.setIdCodigoTipoEstado(estado);
+            lote.add(c);
+        }
+        certificacionRepository.saveAll(lote); // <- requerido por tu test
+    }
+
+
 }

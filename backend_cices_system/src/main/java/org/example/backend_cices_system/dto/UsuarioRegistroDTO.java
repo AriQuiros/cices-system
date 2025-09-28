@@ -43,4 +43,6 @@ public class UsuarioRegistroDTO {
         private String text;
         private String date;
     }
+
+
 }

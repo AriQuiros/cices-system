@@ -7,6 +7,5 @@ public record RegistroInvestigadorDTO(
         String institucionOrigen,
         String unidadAcademica,
         Short idCodigoGradoAcademico,
-        Integer numeroBecario,
         List<CertificacionDTO> acreditaciones
 ) {}

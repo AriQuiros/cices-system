@@ -136,8 +136,6 @@ public class AuthService {
         if (esInvestigador) {
             Investigador investigador = new Investigador();
             investigador.setIdEmpleado(empleado);
-            investigador.setNumeroBecario(usuario.getNumeroBecario() != null && !usuario.getNumeroBecario().isBlank()
-                    ? Integer.valueOf(usuario.getNumeroBecario()) : null);
             investigador.setUnidadAcademica(usuario.getUnidadAcademica());
             investigador.setInstitucionOrigen(usuario.getInstitucionOrigen());
             investigador.setIdCodigoGradoAcademico(usuario.getIdCodigoGradoAcademico());

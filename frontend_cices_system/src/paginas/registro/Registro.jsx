@@ -10,6 +10,8 @@ function Registro() {
     const [popupError, setPopupError] = useState({ visible: false, mensaje: "" });
     // Estado para error de formato de correo
     const [errorCorreo, setErrorCorreo] = useState("");
+    // Estado para error de formato de teléfono
+    const [errorTelefono, setErrorTelefono] = useState("");
     const [tiposIdentificacion, setTiposIdentificacion] = useState([]);
     // Estado para mostrar popup de éxito
     const [popupExito, setPopupExito] = useState(false);
@@ -43,6 +45,10 @@ function Registro() {
         confirmarContrasena: "",
         roles: []
     });
+
+    // Estados para mostrar/ocultar contraseñas
+    const [mostrarContrasena, setMostrarContrasena] = useState(false);
+    const [mostrarConfirmarContrasena, setMostrarConfirmarContrasena] = useState(false);
 
     // Estado inicial para resetear el formulario
     const initialFormData = {
@@ -78,6 +84,17 @@ function Registro() {
                 setErrorCorreo("El correo debe terminar en @ucr.ac.cr");
             } else {
                 setErrorCorreo("");
+            }
+            return;
+        }
+        if (name === "telefono") {
+            setFormData(prev => ({ ...prev, telefono: value }));
+            // Validar que solo contenga números y símbolos (no letras)
+            const contieneLetras = /[a-zA-ZÀ-ÿ]/.test(value);
+            if (value && contieneLetras) {
+                setErrorTelefono("El teléfono no debe contener letras");
+            } else {
+                setErrorTelefono("");
             }
             return;
         }
@@ -173,6 +190,12 @@ function Registro() {
             setErrorCorreo("El correo debe terminar en @ucr.ac.cr");
             return;
         }
+        // Validación de teléfono sin letras
+        const contieneLetras = /[a-zA-ZÀ-ÿ]/.test(formData.telefono);
+        if (formData.telefono && contieneLetras) {
+            setErrorTelefono("El teléfono no debe contener letras");
+            return;
+        }
         // Validación de coincidencia de contraseñas
         if (formData.contrasena !== formData.confirmarContrasena) {
             setErrorContrasena("Las contraseñas no coinciden");
@@ -222,6 +245,11 @@ function Registro() {
             if (response.ok) {
                 // Registro exitoso
                 setFormData(initialFormData);
+                setMostrarContrasena(false);
+                setMostrarConfirmarContrasena(false);
+                setErrorCorreo("");
+                setErrorTelefono("");
+                setErrorContrasena("");
                 setMostrarPopup(false);
                 setDatosInvestigador(null);
                 setPopupExito(true);
@@ -341,6 +369,11 @@ function Registro() {
                     />
                     <small className="input-message">Sin guiones</small>
                 </div>
+                {errorTelefono && (
+                    <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+                        {errorTelefono}
+                    </div>
+                )}
                 <input
                     type="email"
                     name="correo"
@@ -355,25 +388,79 @@ function Registro() {
                     </div>
                 )}
                 <div className="input-group">
-                    <input
-                        type="password"
-                        name="contrasena"
-                        placeholder="Contraseña"
-                        className="input-field"
-                        value={formData.contrasena}
-                        onChange={handleChange}
-                    />
+                    <div style={{ position: 'relative', width: '100%' }}>
+                        <input
+                            type={mostrarContrasena ? "text" : "password"}
+                            name="contrasena"
+                            placeholder="Contraseña"
+                            className="input-field"
+                            value={formData.contrasena}
+                            onChange={handleChange}
+                            style={{ paddingRight: '40px' }}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                                color: '#666',
+                                padding: '0',
+                                width: '24px',
+                                height: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                            aria-label={mostrarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        >
+                            {mostrarContrasena ? "👁️" : "👁️‍🗨️"}
+                        </button>
+                    </div>
                     <small className="input-message">Mínimo 8 caracteres</small>
                 </div>
                 <div className="input-group">
-                    <input
-                        type="password"
-                        name="confirmarContrasena"
-                        placeholder="Confirmar contraseña"
-                        className="input-field"
-                        value={formData.confirmarContrasena}
-                        onChange={handleChange}
-                    />
+                    <div style={{ position: 'relative', width: '100%' }}>
+                        <input
+                            type={mostrarConfirmarContrasena ? "text" : "password"}
+                            name="confirmarContrasena"
+                            placeholder="Confirmar contraseña"
+                            className="input-field"
+                            value={formData.confirmarContrasena}
+                            onChange={handleChange}
+                            style={{ paddingRight: '40px' }}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setMostrarConfirmarContrasena(!mostrarConfirmarContrasena)}
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                                color: '#666',
+                                padding: '0',
+                                width: '24px',
+                                height: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                            aria-label={mostrarConfirmarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        >
+                            {mostrarConfirmarContrasena ? "👁️" : "👁️‍🗨️"}
+                        </button>
+                    </div>
                 </div>
                 {errorContrasena && (
                     <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>

@@ -260,7 +260,7 @@ function Registro() {
                 setPopupError({ visible: true, mensaje: errorMsg });
             }
         } catch (error) {
-            setPopupError({ visible: true, mensaje: "Error de conexión" });
+            setPopupError({ visible: true, mensaje: "Error de conexión." });
         }
     };
 

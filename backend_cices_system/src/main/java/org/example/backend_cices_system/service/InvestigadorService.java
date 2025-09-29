@@ -23,7 +23,6 @@ public class InvestigadorService {
         inv.setInstitucionOrigen(dto.institucionOrigen());
         inv.setUnidadAcademica(dto.unidadAcademica());
         inv.setIdCodigoGradoAcademico(dto.idCodigoGradoAcademico());
-        inv.setNumeroBecario(dto.numeroBecario());
         em.persist(inv);
         em.flush(); // garantiza ID generado
         Short invId = inv.getId();

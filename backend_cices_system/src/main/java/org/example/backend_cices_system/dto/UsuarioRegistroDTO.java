@@ -22,7 +22,6 @@ public class UsuarioRegistroDTO {
     private List<String> roles;
 
     // Campos de investigador
-    private String numeroBecario;
     private String unidadAcademica;
     private String institucionOrigen;
     private Short idCodigoGradoAcademico;

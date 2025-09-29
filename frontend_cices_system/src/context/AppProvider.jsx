@@ -63,8 +63,7 @@ export default function AppProvider({ children }) {
             roles: [{
                 id: "",
                 nombre: ""
-            }],
-            numeroBecario: ""
+            }]
         }
     });
 

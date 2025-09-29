@@ -39,7 +39,4 @@ public class Investigador {
     @Column(name = "ID_CODIGO_GRADO_ACADEMICO", nullable = false)
     private Short idCodigoGradoAcademico;
 
-    @Column(name = "NUMERO_BECARIO")
-    private Integer numeroBecario;
-
 }

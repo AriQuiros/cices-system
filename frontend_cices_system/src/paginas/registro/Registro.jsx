@@ -41,8 +41,7 @@ function Registro() {
         correo: "",
         contrasena: "",
         confirmarContrasena: "",
-        roles: [],
-        numeroBecario: ""
+        roles: []
     });
 
     // Estado inicial para resetear el formulario
@@ -55,8 +54,7 @@ function Registro() {
         correo: "",
         contrasena: "",
         confirmarContrasena: "",
-        roles: [],
-        numeroBecario: ""
+        roles: []
     };
     const [mostrarPopup, setMostrarPopup] = useState(false);
     const [popupIdentificacion, setPopupIdentificacion] = useState(false);
@@ -197,8 +195,7 @@ function Registro() {
             telefono: formData.telefono,
             nombreUsuario: formData.correo,
             contrasena: formData.contrasena,
-            roles: formData.roles,
-            numeroBecario: formData.numeroBecario
+            roles: formData.roles
         };
         // Si tiene rol investigador, agrega los datos del popup
         if (formData.roles.includes(idRolInvestigador) && datosInvestigador) {
@@ -408,15 +405,7 @@ function Registro() {
                 </div>
                 {idRolInvestigador && formData.roles.includes(idRolInvestigador) && (
                     <div className="input-group">
-                        <label>Número de becario:</label>
-                        <input
-                            type="text"
-                            name="numeroBecario"
-                            placeholder="(Si aplica)"
-                            className="input-field"
-                            value={formData.numeroBecario}
-                            onChange={handleChange}
-                        />
+                        {/* Campos de investigador se manejan en el popup */}
                     </div>
                 )}
                 <button type="submit" className="submit-btn">Registrar</button>

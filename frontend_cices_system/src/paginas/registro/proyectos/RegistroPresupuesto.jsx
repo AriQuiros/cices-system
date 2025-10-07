@@ -7,20 +7,18 @@ import "../usuarios/Registro.css";
 import "./RegistroProyecto.css";
 import "./Presupuesto.css";
 
-function RegistroPresupuesto() {
+function RegistroPresupuesto({ onClose }) {
     const {
         PresupuestoFState, setPresupuestoFState,
         PresupuestoHState, setPresupuestoHState,
         token
     } = useContext(AppContext);
 
-    // Estado para controlar qué tipos están seleccionados
     const [tipoPresupuesto, setTipoPresupuesto] = useState({
         financiero: false,
         horas: false
     });
 
-    // Mostrar error si no hay ningún tipo seleccionado
     const mostrarError = !tipoPresupuesto.financiero && !tipoPresupuesto.horas;
 
     const { tipos, loading } = useTiposCatalogo(token, [
@@ -85,31 +83,13 @@ function RegistroPresupuesto() {
 
     function handleCancel() {
         setTipoPresupuesto({ financiero: false, horas: false });
-        setPresupuestoFState({
-            PresupuestoF: {
-                fuenteFinanciamiento: '',
-                descripcion: '',
-                monto: 0,
-                fechaAsignacion: '',
-                tipo: 'Financiero'
-            }
-        });
-        setPresupuestoHState({
-            PresupuestoH: {
-                descripcion: '',
-                horas: 0,
-                meses: 0,
-                fechaAsignacion: '',
-                tipo: 'Horas'
-            }
-        });
+        if (onClose) onClose();
     }
 
     function handleConfirm() {
-        console.log('Presupuesto Financiero:', PresupuestoFState.PresupuestoF);
-        console.log('Presupuesto Horas:', PresupuestoHState.PresupuestoH);
-        alert('Presupuesto guardado (simulado).');
-        // Aquí podrías agregar lógica para guardar realmente los datos, ej: API call
+
+        // mensaje de exitomuest
+        if (onClose) onClose();
     }
 
     return (

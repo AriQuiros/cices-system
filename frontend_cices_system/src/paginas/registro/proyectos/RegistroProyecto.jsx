@@ -1,5 +1,5 @@
 import { AppContext } from "../../../context/AppContext.jsx";
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { useTiposCatalogo } from '../../../hooks/useTiposCatalogo.js';
 
 import "../usuarios/Registro.css";
@@ -15,8 +15,8 @@ const getTotalFileSizeMB = (files) => {
 
 function RegistroProyecto() {
     const [errorMessage, setErrorMessage] = useState("");
-    const { proyectosState, setProyectosState, PresupuestoFState,
-        setPresupuestoFState, PresupuestoHState, setPresupuestoHState, token } = useContext(AppContext);
+    const { proyectosState, setProyectosState, presupuestoState,
+        setPresupuestoState, token } = useContext(AppContext);
     const [showPresupuesto, setShowPresupuesto] = useState(false);
 
     const { tipos, loading } = useTiposCatalogo(token, [
@@ -87,6 +87,12 @@ function RegistroProyecto() {
                 documentos: []
             }
         });
+// --------LIMPIAR PRESEUPUESTOS-----------
+        setPresupuestoState({
+            presupuestos: []
+        });
+
+        setShowPresupuesto(false);
     }
 
     // Función genérica para actualizar listas anidadas en el proyecto
@@ -191,12 +197,26 @@ function RegistroProyecto() {
                 ...proyecto.sitios.map(e => ({ nombre: e.nombre, tipo: 'SITIO' })).filter(e => e.nombre && e.nombre.trim() !== '')
             ]
         };
-        const presupuestos = [];
-        const pf = PresupuestoFState?.PresupuestoF;
-        const ph = PresupuestoHState?.PresupuestoH;
-
-        if (pf?.descripcion || pf?.monto > 0) presupuestos.push(pf);
-        if (ph?.descripcion || ph?.horas > 0) presupuestos.push(ph);
+        /*REGISTRAR PRESUPUESTO*/
+        const presupuestos = (presupuestoState.presupuestos || []).map(p => {
+            if (p.tipo === 'financiero') {
+                return {
+                    tipoPresupuesto: p.tipo,
+                    descripcion: p.descripcion,
+                    fechaAsignacion: p.fechaAsignacion,
+                    monto: p.monto,
+                    idCodigoFuenteFinanciamiento: p.fuenteFinanciamiento
+                };
+            } else if (p.tipo === 'horas') {
+                return {
+                    tipoPresupuesto: p.tipo,
+                    descripcion: p.descripcion,
+                    fechaAsignacion: p.fechaAsignacion,
+                    cantidadHorasMes: p.horas,
+                    cantidadMeses: p.meses
+                };
+            }
+        });
 
         const formData = new FormData();
 
@@ -266,8 +286,7 @@ function RegistroProyecto() {
                 handleFileChange={handleFileChange}
                 showPresupuesto={showPresupuesto}
                 setShowPresupuesto={setShowPresupuesto}
-                financiero={PresupuestoFState}
-                horas={PresupuestoHState}
+                presupuesto={presupuestoState.presupuestos || []}
             />
         </>
     );
@@ -275,9 +294,9 @@ function RegistroProyecto() {
 
 function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
                   handleAddItem, handleRemoveItem, handleSubmit, handleFileChange,
-                  showPresupuesto, setShowPresupuesto, financiero, horas}) {
+                  showPresupuesto, setShowPresupuesto, presupuesto}) {
     const [showFechasInformes, setShowFechasInformes] = useState(false);
-
+    const inputCodigoRef = useRef(null);
     return (
         <div className="form-container">
             <form id="form-project-content" className="form-content" onSubmit={handleSubmit}>
@@ -285,7 +304,7 @@ function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
 
                 <div className="form-row">
                     <input type="text" placeholder="Código" className="input-field" required
-                           name="codigo" value={entity.codigo} onChange={handleChange}/>
+                           name="codigo" ref={inputCodigoRef} value={entity.codigo} onChange={handleChange}/>
                     <input type="text" placeholder="Nombre" className="input-field" required
                            name="nombre" value={entity.nombre} onChange={handleChange}/>
                     <input type="text" placeholder="Unidad de Origen: CICES" className="input-field" required
@@ -542,7 +561,6 @@ function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
                     </div>
                 </div>
 
-
                 <label className="checkbox-group">
                     <input type="checkbox" checked={showFechasInformes}
                            onChange={() => setShowFechasInformes(!showFechasInformes)}
@@ -600,28 +618,45 @@ function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
                         ))}
                     </>
                 )}
-                <button type="button" className="submit-btn"  id="submit-project-btn" onClick={() => setShowPresupuesto(true)}
+                <button type="button" className="submit-btn"  id="submit-project-btn"  onClick={() => {
+                    if (!entity.codigo?.trim()) {
+                        if (inputCodigoRef.current) {
+                            inputCodigoRef.current.focus();
+                        }
+                        return;
+                    }
+                    setShowPresupuesto(true);
+                }}
                 >Establecer presupuesto
                 </button>
-                {showPresupuesto && <RegistroPresupuesto onClose={() => setShowPresupuesto(false)} />}
-
-                {(financiero.descripcion || financiero.monto > 0 || horas.descripcion || horas.horas > 0) && (
-                    <div style={{ marginTop: "1rem" }}>
+                {showPresupuesto && (
+                    <RegistroPresupuesto
+                        onClose={() => setShowPresupuesto(false)}
+                        editable={false}
+                    />
+                )}
+                {presupuesto && presupuesto.length > 0 && (
+                    <div>
                         <h4>Presupuesto:</h4>
-
-                        {financiero.descripcion || financiero.monto > 0 ? (
-                            <div>
-                                <strong>Financiero:</strong> {financiero.descripcion} - ${financiero.monto}
+                        {presupuesto.map((item, index) => (
+                            <div key={index} className="input-group">
+                                <strong>{item.tipo === 'financiero' ? 'Financiero' : 'Horas'}:</strong> {item.descripcion} <br />
+                                {item.tipo === 'financiero' ? (
+                                    <>
+                                        Monto: ₡{item.monto} <br />
+                                        Fuente: {item.fuenteFinanciamiento} <br />
+                                    </>
+                                ) : (
+                                    <>
+                                        Horas: {item.horas}h / {item.meses}m <br />
+                                    </>
+                                )}
+                                <em>Fecha de asignación:</em> {item.fechaAsignacion || 'Sin fecha'}
                             </div>
-                        ) : null}
-
-                        {horas.descripcion || horas.horas > 0 ? (
-                            <div>
-                                <strong>Horas:</strong> {horas.descripcion} - {horas.horas}h / {horas.meses}m
-                            </div>
-                        ) : null}
+                        ))}
                     </div>
                 )}
+
                 <fieldset id="input-project-group" className="input-group">
                     <legend>
                         Documentos Relacionados

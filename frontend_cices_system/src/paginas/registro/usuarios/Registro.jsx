@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Registro.css";
-import RegistroInvestigador from "./RegistroInvestigador";
+import RegistroInvestigador from "./RegistroInvestigador.jsx";
 
 
 function Registro() {

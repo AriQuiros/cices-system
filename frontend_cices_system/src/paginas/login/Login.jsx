@@ -77,7 +77,7 @@ function Login() {
                     msg = mins > 0 ? `Cuenta bloqueada. Intenta en ${formatMMSS(mins * 60)}` : "Cuenta bloqueada temporalmente.";
                     if (mins > 0) startCountdown(mins);
                 } else {
-                    try { const j = await res.json(); if (j?.error) msg = j.error; } catch {}
+                    try { const j = await res.json(); if (j?.error) msg = j.error;z } catch {}
                 }
                 setLocalError(msg);
                 return;

@@ -12,6 +12,7 @@ header {
   background: #0FC3F3;
   padding: 0px 5px;
   position: relative;
+  max-height: 85px;
 }
 
 .page-name {
@@ -160,6 +161,7 @@ header {
 main {
   flex: 1;
   background: #fff;
+  margin-top: 98px;
 }
 
 /* --- FOOTER --- */

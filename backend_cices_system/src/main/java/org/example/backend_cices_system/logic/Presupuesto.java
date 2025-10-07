@@ -20,6 +20,8 @@ import java.util.Set;
 public class Presupuesto {
     @Id
     @Column(name = "ID_PRESUPUESTO", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_PRESUPUESTO")
+    @SequenceGenerator(name = "SEC_PRESUPUESTO", sequenceName = "SEC_PRESUPUESTO", allocationSize = 1)
     private Short id;
 
     @NotNull

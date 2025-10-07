@@ -109,24 +109,21 @@ export default function AppProvider({ children }) {
     });
 
     /***************Presupuestos*********************/
-    const [PresupuestoFState, setPresupuestoFState] = useState({
-        PresupuestoF: {
-            fuenteFinanciamiento: '',
-            descripcion: '',
-            monto: 0,
-            fechaAsignacion: '',
-            tipo: 'Financiero'
-        }
-    });
-    const [PresupuestoHState, setPresupuestoHState] = useState({
-        PresupuestoH: {
-            descripcion: '',
-            horas: 0,
-            meses: 0,
-            fechaAsignacion: '',
-            tipo: 'Horas'
-        }
-    });
+    const [presupuestoState, setPresupuestoState] = useState(
+        {
+            financiero: {
+                descripcion: '',
+                fechaAsignacion: '',
+                monto: 0,
+                fuenteFinanciamiento: ''
+            },
+            horas: {
+                descripcion: '',
+                fechaAsignacion: '',
+                horas: 0,
+                meses: 0
+            }
+        });
 
     return (
         <AppContext.Provider value={{
@@ -138,10 +135,8 @@ export default function AppProvider({ children }) {
             setProyectosState: setProyectosState,
             empleadosState: empleadosState,
             setEmpleadosState: setEmpleadosState,
-            PresupuestoFState: PresupuestoFState,
-            setPresupuestoFState: setPresupuestoFState,
-            PresupuestoHState: PresupuestoHState,
-            setPresupuestoHState: setPresupuestoHState
+            presupuestoState: presupuestoState,
+            setPresupuestoState: setPresupuestoState
         }}>
             {children}
         </AppContext.Provider>

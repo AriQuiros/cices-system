@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useState} from "react";
 import './App.css';
 import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
 
@@ -7,46 +7,26 @@ import logoCICES from '../public/images/logoCICES.png';
 import logoCICES2 from '../public/images/logoCICES2.png';
 
 import Login from "./paginas/login/Login";
-import Registro from "./paginas/registro/Registro";
-import RegistroProyecto from "./paginas/registro/RegistroProyecto";
+import Registro from "./paginas/registro/usuarios/Registro.jsx";
+import RegistroProyecto from "./paginas/registro/proyectos/RegistroProyecto.jsx";
+import RegistroPresupuesto from "./paginas/registro/proyectos/RegistroPresupuesto.jsx";
 import Director from "./paginas/director/Director";
 import Administrador from "./paginas/administrador/Administrador.jsx";
 import Certificacion from "./paginas/certificacion/Certificacion.jsx";
 import Investigador from "./paginas/investigador/Investigador.jsx";
-import RegistroInvestigador from "./paginas/registro/RegistroInvestigador.jsx";
+import RegistroInvestigador from "./paginas/registro/usuarios/RegistroInvestigador.jsx";
 
 
 import AppProvider from "./context/AppProvider.jsx";
 import {AppContext} from "./context/AppContext.jsx";
 
-function useElementHeight() {
-    const ref = useRef(null);
-    const [height, setHeight] = useState(0);
-
-    useEffect(() => {
-        const updateHeight = () => {
-            if (ref.current) {
-                setHeight(ref.current.offsetHeight);
-            }
-        };
-
-        updateHeight();
-        window.addEventListener('resize', updateHeight);
-        return () => window.removeEventListener('resize', updateHeight);
-    }, []);
-
-    return [ref, height];
-}
-
 function App() {
-    const [headerRef, headerHeight] = useElementHeight();
-
     return (
         <AppProvider>
         <div className = "app-container">
             <BrowserRouter>
-                <Header innerRef={headerRef} />
-                <Main style={{ paddingTop: `${headerHeight}px` }} />
+                <Header/>
+                <Main/>
                 <Footer />
             </BrowserRouter>
         </div>
@@ -55,25 +35,28 @@ function App() {
 }
 
 
-function Main({ style }){
+function Main(){
     return(
-        <main style={style}>
+        <main>
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/Registro" element={<Registro />} />
-                    <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
                     <Route path="/RegistroInvestigador" element={<RegistroInvestigador />} />
-                    <Route path="/director" element={<Director />} />
-                    <Route path="/administrador" element={<Administrador />} />
                     <Route path="/certificacion" element={<Certificacion />} />
                     <Route path="/investigador" element={<Investigador />} />
+
+                    <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
+                    <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto />} />
+
+                    <Route path="/director" element={<Director />} />
+                    <Route path="/administrador" element={<Administrador />} />
                 </Routes>
         </main>
     );
 }
 
 
-function Header({ innerRef }) {
+function Header() {
     const {user: usuario, logout: cerrarSesion} = useContext(AppContext);
     const navigate = useNavigate();
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -87,7 +70,7 @@ function Header({ innerRef }) {
     }
 
     return (
-        <header ref={innerRef}>
+        <header>
             <div className="header-content">
                 <div className="page-name">Sistema de Información del CICES</div>
                 <div className="logos">

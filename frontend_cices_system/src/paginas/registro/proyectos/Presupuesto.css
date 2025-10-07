@@ -1,0 +1,21 @@
+.inline-group{justify-content: center}
+
+.actions{justify-content: flex-end}
+
+.error-message{
+    text-align: center;
+    width: auto;
+}
+.btn-cancel, .btn-confirm, .btn{flex:none; width: auto;}
+.popup{max-width: none;}
+
+.form-row{
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        flex-direction: column;
+    }
+}

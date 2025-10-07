@@ -97,7 +97,34 @@ export default function AppProvider({ children }) {
             sitios: [{ nombre: '' }],
             fechaInicio: '',
             fechaFinalizacion: '',
+            fechasInformes:[
+                {
+                    descripcion: '',
+                    fechaEntrega:'',
+                    estado:''
+                }
+            ],
             documentos: []
+        }
+    });
+
+    /***************Presupuestos*********************/
+    const [PresupuestoFState, setPresupuestoFState] = useState({
+        PresupuestoF: {
+            fuenteFinanciamiento: '',
+            descripcion: '',
+            monto: 0,
+            fechaAsignacion: '',
+            tipo: 'Financiero'
+        }
+    });
+    const [PresupuestoHState, setPresupuestoHState] = useState({
+        PresupuestoH: {
+            descripcion: '',
+            horas: 0,
+            meses: 0,
+            fechaAsignacion: '',
+            tipo: 'Horas'
         }
     });
 
@@ -110,7 +137,11 @@ export default function AppProvider({ children }) {
             proyectosState: proyectosState,
             setProyectosState: setProyectosState,
             empleadosState: empleadosState,
-            setEmpleadosState: setEmpleadosState
+            setEmpleadosState: setEmpleadosState,
+            PresupuestoFState: PresupuestoFState,
+            setPresupuestoFState: setPresupuestoFState,
+            PresupuestoHState: PresupuestoHState,
+            setPresupuestoHState: setPresupuestoHState
         }}>
             {children}
         </AppContext.Provider>

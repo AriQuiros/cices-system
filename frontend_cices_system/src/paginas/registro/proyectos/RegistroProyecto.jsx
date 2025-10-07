@@ -1,8 +1,8 @@
-import { AppContext } from "../../context/AppContext.jsx";
+import { AppContext } from "../../../context/AppContext.jsx";
 import { useContext, useState } from "react";
-import { useTiposCatalogo } from '../../hooks/useTiposCatalogo';
+import { useTiposCatalogo } from '../../../hooks/useTiposCatalogo.js';
 
-import "./Registro.css";
+import "../usuarios/Registro.css";
 import "./RegistroProyecto.css";
 
 const MAX_TOTAL_SIZE_MB = 10;
@@ -73,6 +73,11 @@ function RegistroProyecto() {
                 sitios: [{ nombre: '' }],
                 fechaInicio: '',
                 fechaFinalizacion: '',
+                fechasInformes: [{
+                    descripcion: '',
+                    fechaEntrega: '',
+                    estado: ''
+                }],
                 documentos: []
             }
         });
@@ -84,7 +89,7 @@ function RegistroProyecto() {
 
         // Si el campo es "cantidad", forzar valor no negativo
         if (lastKey === "cantidad") {
-            value = Math.max(0, value);
+            value = value === '' ? '' : Math.max(Number(value), 0);
         }
 
         // path: array con la ruta dentro de proyecto, ej: ['objetivosEspecificos', 0, 'categoria']
@@ -172,6 +177,13 @@ function RegistroProyecto() {
             tipoProyecto: proyecto.tipo,
             detallesProyectos: "",
             objetivosEspecificos: proyecto.objetivosEspecificos,
+            fechasInformes:[
+                {
+                    descripcion: '',
+                    fechaEntrega:'',
+                    estado:''
+                }
+            ],
             documentos: [],
             entidadesVinculadas: [
                 ...proyecto.unidades.map(e => ({ nombre: e.nombre, tipo: 'UNIDAD' })).filter(e => e.nombre && e.nombre.trim() !== ''),
@@ -237,6 +249,8 @@ function RegistroProyecto() {
 
 function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
                   handleAddItem, handleRemoveItem, handleSubmit, handleFileChange }) {
+    const [showFechasInformes, setShowFechasInformes] = useState(false);
+
     return (
         <div className="form-container">
             <form id="form-project-content" className="form-content" onSubmit={handleSubmit}>
@@ -353,12 +367,13 @@ function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
                                             placeholder="Cantidad"
                                             id="cantidad-meta"
                                             className="input-field"
+                                            required={true}
                                             min="0"
                                             value={meta.cantidad}
                                             onChange={(e) =>
                                                 handleNestedChange(
                                                     ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "cantidad"],
-                                                    Number(e.target.value)
+                                                    e.target.value
                                                 )
                                             }
                                         />
@@ -577,9 +592,60 @@ function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
                 </fieldset>
 
                 <label className="checkbox-group">
-                    <input type="checkbox"/> Establecer Fechas de presentación de informes
+                    <input
+                        type="checkbox"
+                        checked={showFechasInformes}
+                        onChange={() => setShowFechasInformes(!showFechasInformes)}
+                    />
+                    Establecer Fechas de presentación de informes
                 </label>
 
+                {showFechasInformes && (
+                    <>
+                        <legend>Fechas de Informes</legend>
+
+                        {entity.fechasInformes.map((informe, idx) => (
+                            <div key={idx} id="inline-project-group" className="inline-group">
+                                <input
+                                    type="text"
+                                    placeholder={`Descripción del informe ${idx + 1}`}
+                                    className="input-field"
+                                    value={informe.descripcion}
+                                    onChange={(e) =>
+                                        handleNestedChange(['fechasInformes', idx, 'descripcion'], e.target.value)
+                                    }
+                                />
+                                <input
+                                    type="date"
+                                    placeholder={`Fecha de entrega ${idx + 1}`}
+                                    className="input-field"
+                                    value={informe.fechaEntrega}
+                                    onChange={(e) =>
+                                        handleNestedChange(['fechasInformes', idx, 'fechaEntrega'], e.target.value)
+                                    }
+                                />
+                                <div className="icon-buttons">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleAddItem(['fechasInformes'], { descripcion: '', fechaEntrega: '', estado: '' })
+                                        }
+                                    >
+                                        ➕
+                                    </button>
+                                    {entity.fechasInformes.length > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveItem(['fechasInformes'], idx)}
+                                        >
+                                            ❌
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </>
+                )}
                 <button type="submit" id="submit-project-btn" className="submit-btn">
                     Registrar Proyecto
                 </button>

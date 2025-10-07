@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @Table(name = "PRESENTACION_INFORME")
 public class PresentacionInforme {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_PRESENTACION_INFORME")
+    @SequenceGenerator(name = "SEC_PRESENTACION_INFORME", sequenceName = "SEC_PRESENTACION_INFORME", allocationSize = 1)
     @Column(name = "ID_PRESENTACION_INFORME", nullable = false)
     private Short id;
 
@@ -30,5 +32,9 @@ public class PresentacionInforme {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_PROYECTO")
     private Proyecto idProyecto;
+
+    @NotNull
+    @Column(name = "ID_CODIGO_ESTADO", nullable = false)
+    private Short idCodigoEstado;
 
 }

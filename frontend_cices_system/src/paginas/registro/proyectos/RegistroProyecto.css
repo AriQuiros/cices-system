@@ -116,3 +116,7 @@ input[type="file"].input-field,
     border: 1px solid red;
     border-radius: 5px;
 }
+meter{
+    width: 100%;
+    height: 1rem;
+}

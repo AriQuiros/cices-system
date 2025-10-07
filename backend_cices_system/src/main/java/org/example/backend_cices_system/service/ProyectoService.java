@@ -7,6 +7,7 @@ import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ public class ProyectoService {
     private final EntidadProyectoRepository entidadProyectoRepo;
     private final CatalogoService catalogoService;
     private final DocumentoService documentoService;
+    private final PresentacionInformeRepository presentacionInformeRepo;
 
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO dto) {
@@ -88,6 +90,31 @@ public class ProyectoService {
             entidadProyecto.setIdEntidad(entidad);
             entidadProyecto.setIdProyecto(proyecto);
             entidadProyectoRepo.save(entidadProyecto);
+        }
+
+        // Guardar presentaciones de informe
+        if (dto.getPresentacionesInforme() != null) {
+            for (InformeDTO informeDTO : dto.getPresentacionesInforme()) {
+                PresentacionInforme informe = new PresentacionInforme();
+                informe.setDescripcion(informeDTO.getDescripcion());
+                informe.setFechaPresentacion(informeDTO.getFechaPresentacion());
+                informe.setIdProyecto(proyecto);
+
+                // Lógica para determinar si el informe ya fue entregado
+                LocalDate hoy = LocalDate.now();
+                String estado;
+
+                if (informeDTO.getFechaPresentacion() != null && informeDTO.getFechaPresentacion().isBefore(hoy)) {
+                    estado = "ENTREGADO";
+                } else {
+                    estado = "PENDIENTE";
+                }
+
+                Short idEstadoInforme = catalogoService.obtenerIdCodigoPorTipoYValor("ESTADO INFORME", estado);
+                informe.setIdCodigoEstado(idEstadoInforme);
+
+                presentacionInformeRepo.save(informe);
+            }
         }
 
         return proyecto;

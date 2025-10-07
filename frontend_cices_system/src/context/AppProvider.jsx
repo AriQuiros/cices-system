@@ -97,11 +97,11 @@ export default function AppProvider({ children }) {
             sitios: [{ nombre: '' }],
             fechaInicio: '',
             fechaFinalizacion: '',
-            fechasInformes:[
+            fechasInformes: [
                 {
                     descripcion: '',
-                    fechaEntrega:'',
-                    estado:''
+                    fechaPresentacion: '',
+                    codigoEstado: ''
                 }
             ],
             documentos: []

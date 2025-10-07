@@ -23,4 +23,5 @@ public class ProyectoDTO {
     private List<ObjetivoEspecificoDTO> objetivosEspecificos;
     private List<DocumentoDTO> documentos;
     private List<EntidadVinculadaDTO> entidadesVinculadas;
+    private List<InformeDTO> presentacionesInforme;
 }

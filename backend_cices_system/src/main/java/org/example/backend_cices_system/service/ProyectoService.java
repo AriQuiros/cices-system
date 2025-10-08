@@ -8,8 +8,9 @@ import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -132,5 +133,21 @@ public class ProyectoService {
 
                     return entidadRepo.save(nuevaEntidad);
                 });
+    }
+
+    public List<ProyectoDTO> obtenerTodosLosProyectos() {
+        return proyectoRepo.findAll().stream()
+                .map(this::obtenerDTO)
+                .toList();
+    }
+
+    private ProyectoDTO obtenerDTO(Proyecto proyecto){
+            ProyectoDTO proyectoDTO = new ProyectoDTO();
+            proyectoDTO.setCodigoProyecto(proyecto.getCodigoProyecto());
+            proyectoDTO.setNombreProyecto(proyecto.getNombreProyecto());
+            proyectoDTO.setFechaInicio(proyecto.getFechaInicio());
+            proyectoDTO.setFechaFinalizacion(proyecto.getFechaFinalizacion());
+            proyectoDTO.setLineaInvestigacion(proyecto.getLineaInvestigacion());
+            return proyectoDTO;
     }
 }

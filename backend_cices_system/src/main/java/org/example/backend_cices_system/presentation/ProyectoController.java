@@ -50,4 +50,11 @@ public class ProyectoController {
         }
     }
 
+    @GetMapping("/consultar")
+    public ResponseEntity<List<ProyectoDTO>> consultarProyecto(){
+        List<ProyectoDTO> proyectoDTO = proyectoService
+                .obtenerTodosLosProyectos();
+        return ResponseEntity.ok(proyectoDTO);
+        }
+
 }

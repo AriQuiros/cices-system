@@ -15,6 +15,7 @@ import Administrador from "./paginas/administrador/Administrador.jsx";
 import Certificacion from "./paginas/certificacion/Certificacion.jsx";
 import Investigador from "./paginas/investigador/Investigador.jsx";
 import RegistroInvestigador from "./paginas/registro/usuarios/RegistroInvestigador.jsx";
+import ConsultaProyectos from "./paginas/consultaProyectos/ConsultaProyectos.jsx";
 
 
 import AppProvider from "./context/AppProvider.jsx";
@@ -47,9 +48,10 @@ function Main(){
 
                     <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
                     <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto />} />
+                    <Route path="/consultaProyectos" element={<ConsultaProyectos />} />
 
                     <Route path="/director" element={<Director />} />
-                    <Route path="/administrador" element={<Administrador />} />
+                    <Route path="/administrador" element={<ConsultaProyectos />} />
                 </Routes>
         </main>
     );
@@ -90,7 +92,7 @@ function Header() {
                                     <>
                                         <li><Link to="/director">Resumen General</Link></li>
                                         <li><Link to="/director">Gestionar Personal</Link></li>
-                                        <li><Link to="/RegistroProyecto">Gestionar Proyectos</Link></li>
+                                        <li><Link to="/consultaProyectos">Gestionar Proyectos</Link></li>
                                         <li><Link to="/director">Gastos de Proyectos</Link></li>
                                         <li><Link to="/director">Generar Reportes</Link></li>
                                         <li><Link to="/director">Notificaciones</Link></li>
@@ -107,7 +109,6 @@ function Header() {
                                         <li><Link to="/RegistroProyecto">Registar Proyecto</Link></li>
                                         <li><Link to="/administrador">Actualizar Proyecto</Link></li>
                                         <li><Link to="/administrador">Asignar Investigadores</Link></li>
-                                        <li><Link to="/administrador">Generar Reportes</Link></li>
                                         <li><Link to="/administrador">Generar Reportes</Link></li>
                                         <li><Link to="/administrador">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>

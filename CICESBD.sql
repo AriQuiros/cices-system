@@ -2,6 +2,9 @@
 
 host cls
 @config.sql
+ALTER SESSION SET NLS_LENGTH_SEMANTICS=CHARACTER;
+ALTER SESSION SET NLS_CHARACTERSET=AL32UTF8;
+ALTER SESSION SET NLS_NCHAR_CHARACTERSET=AL16UTF16;
 CREATE USER cices IDENTIFIED by cices123;
 GRANT dba to cices;
 conn cices/cices123
@@ -155,7 +158,7 @@ CREATE TABLE PERMISO_PROYECTO (
 CREATE TABLE PROYECTO (
   ID_PROYECTO NUMBER(4) NOT NULL,
   NOMBRE_PROYECTO VARCHAR2(254) NOT NULL,
-  CODIGO_PROYECTO VARCHAR2(20) NOT NULL,
+  CODIGO_PROYECTO VARCHAR2(254) NOT NULL,
   DESCRIPCION_PROYECTO CLOB,
   OBJETIVO_GENERAL CLOB,
   FECHA_INICIO DATE NOT NULL,
@@ -680,7 +683,22 @@ BEGIN
         'Desarrollo de un sistema integral para la gestión de proyectos de investigación',
         'Tecnologías de Información',
         15,
-        TO_DATE('31-12-2024', 'DD-MM-YYYY')
+        TO_DATE('31-12-2025', 'DD-MM-YYYY')
+    );
+END;
+/
+
+BEGIN
+    PRC_INS_PROYECTO(
+        SEC_PROYECTO.NEXTVAL,
+        'Observatorio para el Análisis de la Situación de Salud de los Estudiantes Universitarios',
+        'Pry01-1247-2022',
+        TO_DATE('09-05-2025', 'DD-MM-YYYY'),
+        12,
+        'Se ha estimado que mundialmente hay aproximadamente 200 millones de estudiantes universitarios; se espera incluso que en América Latina y el Caribe la cantidad de estudiantes crezca de forma acelerada en los próximos años.',
+        'Investigacion Basica',
+        15,
+        TO_DATE('11-11-2025', 'DD-MM-YYYY')
     );
 END;
 /

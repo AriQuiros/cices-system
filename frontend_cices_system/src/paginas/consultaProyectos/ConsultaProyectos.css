@@ -1,0 +1,125 @@
+.contenedor_proyectos{
+    padding: 80px;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
+}
+
+.todosLosProyectos{
+    margin-top: 1.5rem;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    background:#ffffff;
+}
+.todosLosProyectos h2{
+    color: #005DA4;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #005DA4;
+    font-weight: 600;
+}
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.label label {
+    padding: 1rem 1.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-weight: 500;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    background: white;
+    border-left: 4px solid #005DA4;
+}
+
+.filtro {
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    color: #4a5568;
+    font-size: 1rem;
+    cursor: pointer;
+    min-width: 200px;
+}
+
+.filtro:hover {
+    border-color: #005DA4;;
+}
+
+.filtro option {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #4a5568;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.contador-paginacion {
+    text-align: center;
+    margin: 20px 0;
+    padding: 12px 20px;
+    border-radius: 6px;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 30px;
+    padding: 20px 0;
+}
+
+.boton-paginacion {
+    padding: 10px 16px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.boton-paginacion:hover:not(:disabled) {
+    background: #005DA4;
+    color: white;
+    border-color: #005DA4;
+}
+
+.boton-paginacion:disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+    border-color: #d1d5db;
+}
+
+.numeros-pagina {
+    display: flex;
+    gap: 4px;
+}
+
+.numero-pagina {
+    padding: 10px 16px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    min-width: 44px;
+}
+
+.numero-pagina:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+.numero-pagina.activo {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}

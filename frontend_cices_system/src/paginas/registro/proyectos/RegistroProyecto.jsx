@@ -89,8 +89,22 @@ function RegistroProyecto() {
         });
 // --------LIMPIAR PRESEUPUESTOS-----------
         setPresupuestoState({
-            presupuestos: []
+            financiero: {
+                descripcion: '',
+                fechaAsignacion: '',
+                monto: 0,
+                fuenteFinanciamiento: '',
+                tipoPresupuesto: ''
+            },
+            horas: {
+                descripcion: '',
+                fechaAsignacion: '',
+                cantidadHorasMes: 0,
+                cantidadMeses: 0,
+                tipoPresupuesto: ''
+            }
         });
+
 
         setShowPresupuesto(false);
     }
@@ -198,25 +212,18 @@ function RegistroProyecto() {
             ]
         };
         /*REGISTRAR PRESUPUESTO*/
-        const presupuestos = (presupuestoState.presupuestos || []).map(p => {
-            if (p.tipo === 'financiero') {
-                return {
-                    tipoPresupuesto: p.tipo,
-                    descripcion: p.descripcion,
-                    fechaAsignacion: p.fechaAsignacion,
-                    monto: p.monto,
-                    idCodigoFuenteFinanciamiento: p.fuenteFinanciamiento
-                };
-            } else if (p.tipo === 'horas') {
-                return {
-                    tipoPresupuesto: p.tipo,
-                    descripcion: p.descripcion,
-                    fechaAsignacion: p.fechaAsignacion,
-                    cantidadHorasMes: p.horas,
-                    cantidadMeses: p.meses
-                };
-            }
-        });
+        const presupuestos = [];
+        if (presupuestoState.financiero.tipoPresupuesto && presupuestoState.financiero) {
+            presupuestos.push({
+                ...presupuestoState.financiero
+            });
+        }
+
+        if (presupuestoState.horas.tipoPresupuesto && presupuestoState.horas) {
+            presupuestos.push({
+                ...presupuestoState.horas
+            });
+        }
 
         const formData = new FormData();
 
@@ -286,7 +293,7 @@ function RegistroProyecto() {
                 handleFileChange={handleFileChange}
                 showPresupuesto={showPresupuesto}
                 setShowPresupuesto={setShowPresupuesto}
-                presupuesto={presupuestoState.presupuestos || []}
+                presupuesto={presupuestoState || []}
             />
         </>
     );
@@ -635,27 +642,30 @@ function Show({ types, entity, errorMessage, handleChange, handleNestedChange,
                         editable={false}
                     />
                 )}
-                {presupuesto && presupuesto.length > 0 && (
                     <div>
                         <h4>Presupuesto:</h4>
-                        {presupuesto.map((item, index) => (
-                            <div key={index} className="input-group">
-                                <strong>{item.tipo === 'financiero' ? 'Financiero' : 'Horas'}:</strong> {item.descripcion} <br />
-                                {item.tipo === 'financiero' ? (
-                                    <>
-                                        Monto: ₡{item.monto} <br />
-                                        Fuente: {item.fuenteFinanciamiento} <br />
-                                    </>
-                                ) : (
-                                    <>
-                                        Horas: {item.horas}h / {item.meses}m <br />
-                                    </>
-                                )}
-                                <em>Fecha de asignación:</em> {item.fechaAsignacion || 'Sin fecha'}
-                            </div>
-                        ))}
+                        <div className="input-group">
+                            {presupuesto.financiero.tipoPresupuesto === 'FINANCIERO' && (
+                                <>
+                                    <strong>{presupuesto.financiero.tipoPresupuesto || 'Sin tipo'}:</strong>
+                                    {presupuesto.financiero.descripcion || 'Sin descripción'} <br/>
+                                    Monto: ₡{presupuesto.financiero.monto} <br/>
+                                    Fuente: {presupuesto.financiero.fuenteFinanciamiento} <br/>
+                                    <em>Fecha de
+                                        asignación:</em> {presupuesto.financiero.fechaAsignacion || 'Sin fecha'}<br/>
+                                </>
+                            )}
+                            {presupuesto.horas.tipoPresupuesto === 'HORAS' && (
+                                <>
+                                    <br /><strong>{presupuesto.horas.tipoPresupuesto || 'Sin tipo'}:</strong>
+                                    {presupuesto.horas.descripcion || 'Sin descripción'} <br />
+                                    Horas: {presupuesto.horas.cantidadHorasMes}h / {presupuesto.horas.cantidadMeses}m <br />
+                                    <em>Fecha de asignación:</em> {presupuesto.horas.fechaAsignacion || 'Sin fecha'}
+                                </>
+                            )}
+                        </div>
+
                     </div>
-                )}
 
                 <fieldset id="input-project-group" className="input-group">
                     <legend>

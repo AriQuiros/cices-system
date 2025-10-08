@@ -2,9 +2,12 @@ package org.example.backend_cices_system.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.data.ProyectoRepository;
+import org.example.backend_cices_system.dto.PresupuestoDTO;
 import org.example.backend_cices_system.dto.ProyectoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.DocumentoService;
+import org.example.backend_cices_system.service.PresupuestoService;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/proyectos")
@@ -26,16 +30,17 @@ public class ProyectoController {
     @Autowired
     private DocumentoService documentoService;
     @Autowired
-    private ObjectMapper objectMapper;
+    private PresupuestoService presupuestoService;
 
     @PostMapping(value = "/registrar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> registrarProyecto(
             @RequestPart("proyecto") ProyectoDTO proyectoDTO,
+            @RequestPart("presupuesto") List<PresupuestoDTO> presupuestoDTOS,
             @RequestPart(value = "documentos", required = false) List<MultipartFile> documentos
     ) {
         try {
             Proyecto proyecto = proyectoService.guardarProyecto(proyectoDTO);
-
+            presupuestoService.guardarPresupuestos(presupuestoDTOS, proyecto);
             if (documentos != null && !documentos.isEmpty()) {
                 documentoService.guardarDocumentos(proyecto, documentos);
             }

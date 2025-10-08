@@ -7,7 +7,6 @@
     width: auto;
 }
 .btn-cancel, .btn-confirm, .btn{flex:none; width: auto;}
-.popup{max-width: none;}
 
 .form-row{
     flex-direction: row;
@@ -82,4 +81,14 @@
         padding: 6px 10px;
         font-size: 0.9rem;
     }
+
+    .popup{
+        width: 100%;
+    }
+}
+
+.popup {
+    max-height: 90vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }

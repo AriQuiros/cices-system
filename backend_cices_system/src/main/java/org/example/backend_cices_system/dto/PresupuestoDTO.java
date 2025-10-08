@@ -10,11 +10,11 @@ import java.time.LocalDate;
 public class PresupuestoDTO {
     private Short idProyecto;
     private LocalDate fechaAsignacion;
-    private Short idCodigoFuenteFinanciamiento;
+    private String fuenteFinanciamiento;
     private BigDecimal monto;
     private Double cantidadHorasMes;
     private Short cantidadMeses;
-    private Short idCodigoTipoPresupuesto;
+    private String tipoPresupuesto;
     private String descripcion;
 
 }

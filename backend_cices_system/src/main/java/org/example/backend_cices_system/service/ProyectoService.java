@@ -8,9 +8,11 @@ import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
-
-import static java.util.stream.Collectors.toList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,6 +98,9 @@ public class ProyectoService {
         // Guardar presentaciones de informe
         if (dto.getPresentacionesInforme() != null) {
             for (InformeDTO informeDTO : dto.getPresentacionesInforme()) {
+                if (informeDTO.getFechaPresentacion() == null || informeDTO.getDescripcion().isEmpty()) {
+                    continue;  // Si la fecha está vacía o nula, simplemente no se guarda este informe
+                }
                 PresentacionInforme informe = new PresentacionInforme();
                 informe.setDescripcion(informeDTO.getDescripcion());
                 informe.setFechaPresentacion(informeDTO.getFechaPresentacion());
@@ -133,6 +138,21 @@ public class ProyectoService {
 
                     return entidadRepo.save(nuevaEntidad);
                 });
+    }
+
+    public List<ProyectoDTO> obtenerProyectos_datosPrincipales() {
+        return proyectoRepo.findAll().stream()
+                .map(proyecto -> {
+                    ProyectoDTO dto = new ProyectoDTO();
+                    dto.setCodigoProyecto(proyecto.getCodigoProyecto());
+                    dto.setNombreProyecto(proyecto.getNombreProyecto());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public Optional<Proyecto> getProyectoById(Short id){
+        return proyectoRepo.findById(id);
     }
 
     public List<ProyectoDTO> obtenerTodosLosProyectos() {

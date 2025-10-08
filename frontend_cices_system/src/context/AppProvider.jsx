@@ -115,13 +115,15 @@ export default function AppProvider({ children }) {
                 descripcion: '',
                 fechaAsignacion: '',
                 monto: 0,
-                fuenteFinanciamiento: ''
+                fuenteFinanciamiento: '',
+                tipoPresupuesto: ''
             },
             horas: {
                 descripcion: '',
                 fechaAsignacion: '',
-                horas: 0,
-                meses: 0
+                cantidadHorasMes: 0,
+                cantidadMeses: 0,
+                tipoPresupuesto: ''
             }
         });
 

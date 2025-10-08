@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext.jsx";
-import { useTiposCatalogo } from '../../../hooks/useTiposCatalogo.js';
+import "../usuarios/RegistroInvestigador.css";
+import "../usuarios/Registro.css";
+import "./RegistroProyecto.css";
 import "./Presupuesto.css";
 
 function RegistroPresupuesto({ onClose, editable = false }) {
@@ -19,67 +21,69 @@ function RegistroPresupuesto({ onClose, editable = false }) {
         financiero: false,
         horas: false
     });
+    const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-    const [presupuestoFinanciero, setPresupuestoFinanciero] = useState({
-        descripcion: '',
-        fechaAsignacion: '',
-        monto: 0,
-        fuenteFinanciamiento: '',
-        tipo: 'financiero'
+    const [datosIniciales, setDatosIniciales] = useState({
+        tipos: {
+            "TIPO PRESUPUESTO": [],
+            "FUENTE FINANCIAMIENTO": []
+        },
+        proyectos: []
     });
-
-    const [presupuestoHoras, setPresupuestoHoras] = useState({
-        descripcion: '',
-        fechaAsignacion: '',
-        horas: 0,
-        meses: 0,
-        tipo: 'horas'
-    });
+    const [loadingInicial, setLoadingInicial] = useState(true);
 
     const mostrarError = !tipoPresupuesto.financiero && !tipoPresupuesto.horas;
 
-    const { tipos, loading } = useTiposCatalogo(token, [
-        "TIPO PRESUPUESTO",
-        "FUENTE FINANCIAMIENTO"
-    ]);
-
-    const proyectosDisponibles = [
-        { codigo: "PROY-2025-001", nombre: "Investigación en IA" },
-        { codigo: "PROY-2025-002", nombre: "Desarrollo sostenible" },
-        { codigo: "PROY-2025-003", nombre: "Educación digital" },
-    ];
-
-    const filteredProyectos = proyectosDisponibles.filter(p =>
-        p.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    // Cargar datos existentes en el estado local al montar
-    useEffect(() => {
-        if (presupuestoState.presupuestos?.length > 0) {
-            const financiero = presupuestoState.presupuestos.find(p => p.tipo === 'financiero');
-            const horas = presupuestoState.presupuestos.find(p => p.tipo === 'horas');
-
-            setTipoPresupuesto({
-                financiero: !!financiero,
-                horas: !!horas
+    async function fetchDatosIniciales() {
+        try {
+            const response = await fetch(`${API}/api/presupuesto/datos_iniciales`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
 
-            if (financiero) setPresupuestoFinanciero(financiero);
-            if (horas) setPresupuestoHoras(horas);
-        }
-    }, [presupuestoState.presupuestos]);
-    if (loading) return <p>Cargando tipos de presupuesto...</p>;
+            if (!response.ok) throw new Error("Error al cargar datos iniciales");
 
+            const data = await response.json();
+
+            setDatosIniciales(data);
+        } catch (error) {
+            console.error("Error cargando datos iniciales:", error);
+        } finally {
+            setLoadingInicial(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchDatosIniciales();
+    }, [token]);
+
+    useEffect(() => {
+        if (!loadingInicial) {
+            console.log('Reseteando tipoPresupuesto con:', presupuestoState.financiero, presupuestoState.horas);
+            setTipoPresupuesto({
+                financiero: !!presupuestoState.financiero?.descripcion || presupuestoState.financiero?.monto > 0,
+                horas: !!presupuestoState.horas?.descripcion || presupuestoState.horas?.horas > 0,
+            });
+        }
+    }, [loadingInicial, presupuestoState.financiero?.descripcion, presupuestoState.financiero?.monto, presupuestoState.horas?.descripcion, presupuestoState.horas?.horas]);
+
+    if (loadingInicial) return <p>Cargando datos iniciales...</p>;
+
+    const filteredProyectos = datosIniciales.proyectos.filter(p =>
+        p.codigoProyecto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.nombreProyecto.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     function handleSelectProyecto(proyecto) {
         setProyectosState(prev => ({
             ...prev,
             proyecto: {
-                codigo: proyecto.codigo,
-                nombre: proyecto.nombre
+                codigo: proyecto.codigoProyecto,
+                nombre: proyecto.nombreProyecto
             }
         }));
-        setSearchTerm(proyecto.codigo);
+        setSearchTerm(proyecto.codigoProyecto);
         setShowList(false);
     }
 
@@ -98,63 +102,85 @@ function RegistroPresupuesto({ onClose, editable = false }) {
 
     function handleFinancieroChange(e) {
         const { name, value } = e.target;
-        setPresupuestoFinanciero(prev => ({
+        setPresupuestoState(prev => ({
             ...prev,
-            [name]: name === "monto" ? Number(value) : value
+            financiero: {
+                ...prev.financiero,
+                [name]: name === "monto" ? Number(value) : value
+            }
         }));
     }
 
     function handleHorasChange(e) {
         const { name, value } = e.target;
-        setPresupuestoHoras(prev => ({
+        console.log(`Valor de ${name}: ${value}`);  // Verifica el valor recibido
+        setPresupuestoState(prev => ({
             ...prev,
-            [name]: ["horas", "meses"].includes(name) ? Number(value) : value
+            horas: {
+                ...prev.horas,
+                [name]: name === "cantidadHorasMes" || name === "cantidadMeses" ? (value === "" ? 0 : Number(value)) : value
+            }
         }));
     }
 
+
     function handleCancel() {
-        // Solo cerrar, no borrar ni modificar estados
         if (onClose) onClose();
     }
 
     function handleConfirm() {
-        const nuevosPresupuestos = [...(presupuestoState.presupuestos || [])];
-
-        if (tipoPresupuesto.financiero) {
-            const financieroIndex = nuevosPresupuestos.findIndex(p => p.tipo === 'financiero');
-
-            if (financieroIndex >= 0) {
-                nuevosPresupuestos[financieroIndex] = presupuestoFinanciero;
-            } else {
-                nuevosPresupuestos.push(presupuestoFinanciero);
-            }
-        } else {
-            // Si no está seleccionado, eliminar el presupuesto financiero si existe
-            const financieroIndex = nuevosPresupuestos.findIndex(p => p.tipo === 'financiero');
-            if (financieroIndex >= 0) nuevosPresupuestos.splice(financieroIndex, 1);
+        if (tipoPresupuesto.financiero && presupuestoState.financiero) {
+            setPresupuestoState(prevState => ({
+                ...prevState,
+                financiero: {
+                    ...prevState.financiero,
+                    tipoPresupuesto: 'FINANCIERO'
+                }
+            }));
         }
 
-        if (tipoPresupuesto.horas) {
-            const horasIndex = nuevosPresupuestos.findIndex(p => p.tipo === 'horas');
-
-            if (horasIndex >= 0) {
-                nuevosPresupuestos[horasIndex] = presupuestoHoras;
-            } else {
-                nuevosPresupuestos.push(presupuestoHoras);
-            }
-        } else {
-            // Si no está seleccionado, eliminar el presupuesto en horas si existe
-            const horasIndex = nuevosPresupuestos.findIndex(p => p.tipo === 'horas');
-            if (horasIndex >= 0) nuevosPresupuestos.splice(horasIndex, 1);
+        if (tipoPresupuesto.horas && presupuestoState.horas) {
+            setPresupuestoState(prevState => ({
+                ...prevState,
+                horas: {
+                    ...prevState.horas,
+                    tipoPresupuesto: 'HORAS'
+                }
+            }));
         }
-
-        setPresupuestoState(prev => ({
-            ...prev,
-            presupuestos: nuevosPresupuestos
-        }));
 
         if (onClose) onClose();
     }
+
+
+    return (
+        <Show
+            editable={editable}
+            searchTerm={searchTerm}
+            showList={showList}
+            setShowList={setShowList}
+            filteredProyectos={filteredProyectos}
+            proyectosState={proyectosState}
+            tipoPresupuesto={tipoPresupuesto}
+            handleSearchChange={handleSearchChange}
+            handleSelectProyecto={handleSelectProyecto}
+            tipos={datosIniciales.tipos}
+            handleCheckboxChange={handleCheckboxChange}
+            mostrarError={mostrarError}
+            presupuestoFinanciero={presupuestoState.financiero || {}}
+            handleFinancieroChange={handleFinancieroChange}
+            presupuestoHoras={presupuestoState.horas || {}}
+            handleHorasChange={handleHorasChange}
+            handleCancel={handleCancel}
+            handleConfirm={handleConfirm}
+        />
+    );
+}
+
+function Show({editable, searchTerm, showList, setShowList, filteredProyectos, proyectosState,
+                  tipoPresupuesto, handleSearchChange, handleSelectProyecto, tipos, handleCheckboxChange,
+                  mostrarError, presupuestoFinanciero, handleFinancieroChange, presupuestoHoras, handleHorasChange,
+                  handleCancel,handleConfirm }){
     return (
         <div className="overlay">
             <div className="popup">
@@ -176,11 +202,11 @@ function RegistroPresupuesto({ onClose, editable = false }) {
                             <ul className="search-list">
                                 {filteredProyectos.map(p => (
                                     <li
-                                        key={p.codigo}
+                                        key={p.codigoProyecto}
                                         onClick={() => handleSelectProyecto(p)}
                                         className="search-list-item"
                                     >
-                                        {p.codigo} - {p.nombre}
+                                        {p.codigoProyecto} - {p.nombreProyecto}
                                     </li>
                                 ))}
                             </ul>
@@ -290,8 +316,8 @@ function RegistroPresupuesto({ onClose, editable = false }) {
                                         className="input"
                                         placeholder="Horas presupuestarias"
                                         min="0"
-                                        name="horas"
-                                        value={presupuestoHoras.horas}
+                                        name="cantidadHorasMes"
+                                        value={presupuestoHoras.cantidadHorasMes}
                                         onChange={handleHorasChange}
                                     />
 
@@ -301,8 +327,8 @@ function RegistroPresupuesto({ onClose, editable = false }) {
                                         className="input"
                                         placeholder="Cantidad de meses"
                                         min="0"
-                                        name="meses"
-                                        value={presupuestoHoras.meses}
+                                        name="cantidadMeses"
+                                        value={presupuestoHoras.cantidadMeses}
                                         onChange={handleHorasChange}
                                     />
 

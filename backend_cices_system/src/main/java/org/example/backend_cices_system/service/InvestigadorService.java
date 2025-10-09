@@ -9,6 +9,13 @@ import org.example.backend_cices_system.logic.Investigador;
 import org.springframework.stereotype.Service;
 import org.example.backend_cices_system.dto.RegistroInvestigadorDTO;
 import org.example.backend_cices_system.dto.CertificacionDTO;
+import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.PresupuestoDTO;
+import org.example.backend_cices_system.dto.GastoDTO;
+
+import java.util.List;
+import java.math.BigDecimal;
+import java.sql.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +47,119 @@ public class InvestigadorService {
             }
         }
         return invId;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ProyectoDTO> getProyectosInvestigadorPrincipal(String nombreUsuario) {
+        String query = """
+            SELECT p.ID_PROYECTO, p.NOMBRE_PROYECTO 
+            FROM PROYECTO p
+            INNER JOIN INVESTIGADOR_PROYECTO ip ON p.ID_PROYECTO = ip.ID_PROYECTO
+            INNER JOIN ROL_PROYECTO rp ON ip.ID_ROL_PROYECTO = rp.ID_ROL_PROYECTO
+            INNER JOIN INVESTIGADOR i ON ip.ID_INVESTIGADOR = i.ID_INVESTIGADOR
+            INNER JOIN EMPLEADO e ON i.ID_EMPLEADO = e.ID_EMPLEADO
+            INNER JOIN USUARIO u ON e.ID_EMPLEADO = u.ID_EMPLEADO
+            WHERE UPPER(u.NOMBRE_USUARIO) = UPPER(:nombreUsuario)
+            AND UPPER(rp.NOMBRE_PERMISO) = 'INVESTIGADOR_PRINCIPAL'
+            """;
+        
+        List<Object[]> results = em.createNativeQuery(query)
+                .setParameter("nombreUsuario", nombreUsuario)
+                .getResultList();
+        
+        return results.stream()
+                .map(row -> {
+                    ProyectoDTO proyecto = new ProyectoDTO();
+                    proyecto.setIdProyecto(((Number) row[0]).intValue());
+                    proyecto.setNombreProyecto((String) row[1]);
+                    return proyecto;
+                })
+                .toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public PresupuestoDTO getPresupuestoProyecto(Integer idProyecto) {
+        String query = """
+            SELECT 
+                p.ID_PRESUPUESTO,
+                p.ID_PROYECTO,
+                p.MONTO,
+                p.DESCRIPCION,
+                COALESCE(SUM(g.MONTO), 0) as GASTOS_REALIZADOS
+            FROM PRESUPUESTO p
+            LEFT JOIN GASTO g ON p.ID_PRESUPUESTO = g.ID_PRESUPUESTO
+            WHERE p.ID_PROYECTO = :idProyecto
+            GROUP BY p.ID_PRESUPUESTO, p.ID_PROYECTO, p.MONTO, p.DESCRIPCION
+            """;
+        
+        List<Object[]> results = em.createNativeQuery(query)
+                .setParameter("idProyecto", idProyecto)
+                .getResultList();
+        
+        if (results.isEmpty()) {
+            return null; // No hay presupuesto para este proyecto
+        }
+        
+        Object[] row = results.get(0);
+        PresupuestoDTO presupuesto = new PresupuestoDTO();
+        presupuesto.setIdPresupuesto(((Number) row[0]).shortValue());
+        presupuesto.setIdProyecto(((Number) row[1]).shortValue());
+        
+        BigDecimal montoTotal = (BigDecimal) row[2];
+        BigDecimal gastosRealizados = (BigDecimal) row[4];
+        BigDecimal montoDisponible = montoTotal.subtract(gastosRealizados);
+        
+        presupuesto.setMonto(montoTotal);
+        presupuesto.setDescripcion((String) row[3]);
+        presupuesto.setGastosRealizados(gastosRealizados);
+        presupuesto.setMontoDisponible(montoDisponible);
+        
+        return presupuesto;
+    }
+
+    public boolean validarMontoGasto(Integer idProyecto, BigDecimal montoNuevoGasto) {
+        PresupuestoDTO presupuesto = getPresupuestoProyecto(idProyecto);
+        if (presupuesto == null) {
+            return false; // No hay presupuesto
+        }
+        
+        // Verificar que el nuevo gasto no exceda el monto disponible
+        return presupuesto.getMontoDisponible().compareTo(montoNuevoGasto) >= 0;
+    }
+
+    @Transactional
+    public boolean registrarGasto(GastoDTO gastoDTO) {
+        try {
+            // Primero validar que el monto no exceda el presupuesto
+            if (!validarMontoGasto(gastoDTO.getIdProyecto(), gastoDTO.getMonto())) {
+                return false; // Monto excede el presupuesto disponible
+            }
+
+            // Obtener el ID del presupuesto del proyecto
+            PresupuestoDTO presupuesto = getPresupuestoProyecto(gastoDTO.getIdProyecto());
+            if (presupuesto == null) {
+                return false; // No hay presupuesto para este proyecto
+            }
+
+            // Insertar el gasto en la base de datos
+            String insertQuery = """
+                INSERT INTO GASTO (ID_GASTO, ID_PRESUPUESTO, MONTO, FECHA_GASTO, CATEGORIA_GASTO, DESCRIPCION)
+                VALUES (SEC_GASTO.NEXTVAL, :idPresupuesto, :monto, :fechaGasto, :categoriaGasto, :descripcion)
+                """;
+
+            int result = em.createNativeQuery(insertQuery)
+                    .setParameter("idPresupuesto", presupuesto.getIdPresupuesto())
+                    .setParameter("monto", gastoDTO.getMonto())
+                    .setParameter("fechaGasto", Date.valueOf(gastoDTO.getFechaGasto()))
+                    .setParameter("categoriaGasto", gastoDTO.getCategoriaGasto())
+                    .setParameter("descripcion", gastoDTO.getDescripcion())
+                    .executeUpdate();
+
+            return result > 0; // Retorna true si se insertó correctamente
+
+        } catch (Exception e) {
+            System.err.println("Error al registrar gasto: " + e.getMessage());
+            return false; // Error al insertar
+        }
     }
 }

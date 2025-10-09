@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ProyectoDTO {
+    private Integer idProyecto;
     private String nombreProyecto;
     private String codigoProyecto;
     private String descripcionProyecto;

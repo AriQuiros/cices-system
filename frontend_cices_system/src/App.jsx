@@ -16,6 +16,7 @@ import Certificacion from "./paginas/certificacion/Certificacion.jsx";
 import Investigador from "./paginas/investigador/Investigador.jsx";
 import RegistroInvestigador from "./paginas/registro/usuarios/RegistroInvestigador.jsx";
 import ConsultaProyectos from "./paginas/consultaProyectos/ConsultaProyectos.jsx";
+import RegistrarGastosFinancieros from "./paginas/RegistrarGastosFinancieros/RegistrarGastosFinancieros.jsx";
 
 
 import AppProvider from "./context/AppProvider.jsx";
@@ -49,6 +50,7 @@ function Main(){
                     <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
                     <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto />} />
                     <Route path="/consultaProyectos" element={<ConsultaProyectos />} />
+                    <Route path="/registrar-gastos" element={<RegistrarGastosFinancieros />} />
 
                     <Route path="/director" element={<Director />} />
                     <Route path="/administrador" element={<ConsultaProyectos />} />
@@ -126,7 +128,7 @@ function Header() {
                                         <li><Link to="/investigador">Custodiar datos de Investigacion</Link></li>
                                         <li><Link to="/investigador">Actualizar Proyecto</Link></li>
                                         <li><Link to="/investigador">Certificaciones y Licencias</Link></li>
-                                        <li><Link to="/investigador">Registrar Gastos</Link></li>
+                                        <li><Link to="/registrar-gastos">Registrar Gastos</Link></li>
                                         <li><Link to="/investigador">Consultar Gastos</Link></li>
                                         <li><Link to="/investigador">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>

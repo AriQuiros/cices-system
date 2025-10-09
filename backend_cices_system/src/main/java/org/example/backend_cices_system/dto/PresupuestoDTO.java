@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class PresupuestoDTO {
+    private Short idPresupuesto;
     private Short idProyecto;
     private LocalDate fechaAsignacion;
     private String fuenteFinanciamiento;
@@ -16,5 +17,8 @@ public class PresupuestoDTO {
     private Short cantidadMeses;
     private String tipoPresupuesto;
     private String descripcion;
-
+    
+    // Campos adicionales para validación de gastos
+    private BigDecimal gastosRealizados;
+    private BigDecimal montoDisponible;
 }

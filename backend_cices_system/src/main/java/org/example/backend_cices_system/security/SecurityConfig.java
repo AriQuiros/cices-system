@@ -1,8 +1,10 @@
 package org.example.backend_cices_system.security;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
@@ -17,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 import java.util.List;
 
 @Configuration
@@ -30,7 +34,7 @@ public class SecurityConfig {
     SecurityFilterChain security(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults()) // usará el bean corsFilter()
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -42,10 +46,7 @@ public class SecurityConfig {
                 )
                 .httpBasic(b -> b.disable())
                 .formLogin(f -> f.disable())
-                .exceptionHandling(e -> e.authenticationEntryPoint((req,res,ex)->{
-                    // No interceptar /auth/login. Deja que el controller responda con headers/body propios.
-                    String uri = req.getRequestURI();
-                    if (uri != null && uri.endsWith("/auth/login")) return;
+                .exceptionHandling(e -> e.authenticationEntryPoint((req, res, ex) -> {
                     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     res.setContentType("application/json");
                     res.getWriter().write("{\"error\":\"unauthorized\"}");
@@ -54,18 +55,29 @@ public class SecurityConfig {
                 .build();
     }
 
+    // === CORS ===
+    // 1) Bean que Spring Security busca por nombre 'corsFilter'
     @Bean
-    CorsConfigurationSource cors() {
-        var c = new CorsConfiguration();
-        c.setAllowedOrigins(List.of("http://localhost:5173")); // origen exacto
-        c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        c.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Origin")); // incluye Authorization
-        c.setExposedHeaders(List.of("X-Login-Attempts-Remaining"));
-        c.setAllowCredentials(true);
-        var s = new UrlBasedCorsConfigurationSource();
-        s.registerCorsConfiguration("/**", c);
-        return s;
+    public CorsFilter corsFilter() {
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowCredentials(true);
+        // usa patrones para dev
+        cfg.setAllowedOriginPatterns(List.of("http://localhost:5173"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Origin"));
+        cfg.setExposedHeaders(List.of("X-Login-Attempts-Remaining"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", cfg);
+        return new CorsFilter(source);
     }
 
-
+    // 2) (Opcional) asegurar que corra primero en la cadena del contenedor
+    @Bean
+    public FilterRegistrationBean<CorsFilter> corsFilterRegistration(CorsFilter corsFilter) {
+        FilterRegistrationBean<CorsFilter> reg = new FilterRegistrationBean<>(corsFilter);
+        reg.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return reg;
+    }
 }
+

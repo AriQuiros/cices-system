@@ -2,6 +2,7 @@ package org.example.backend_cices_system.presentation;
 
 import java.util.Map;
 import java.util.List;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -108,5 +109,17 @@ public class InvestigadorController {
                 "mensaje", "Error interno del servidor: " + e.getMessage()
             ));
         }
+    }
+
+    @GetMapping("/fecha-actual")
+    public ResponseEntity<Map<String, String>> getFechaActual(Authentication auth) {
+        if (auth == null || auth.getName() == null) {
+            return ResponseEntity.status(401).build();
+        }
+        
+        LocalDate fechaActual = LocalDate.now();
+        String fechaFormateada = fechaActual.toString(); // Formato YYYY-MM-DD
+        
+        return ResponseEntity.ok(Map.of("fecha", fechaFormateada));
     }
 }

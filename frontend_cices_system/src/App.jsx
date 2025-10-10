@@ -17,6 +17,7 @@ import Investigador from "./paginas/investigador/Investigador.jsx";
 import RegistroInvestigador from "./paginas/registro/usuarios/RegistroInvestigador.jsx";
 import ConsultaProyectos from "./paginas/consultaProyectos/ConsultaProyectos.jsx";
 import RegistrarGastosFinancieros from "./paginas/RegistrarGastosFinancieros/RegistrarGastosFinancieros.jsx";
+import ProyectoInvestigador from "./paginas/consultaProyectos/ProyectoInvestigador.jsx";
 
 
 import AppProvider from "./context/AppProvider.jsx";
@@ -45,7 +46,7 @@ function Main(){
                     <Route path="/Registro" element={<Registro />} />
                     <Route path="/RegistroInvestigador" element={<RegistroInvestigador />} />
                     <Route path="/certificacion" element={<Certificacion />} />
-                    <Route path="/investigador" element={<Investigador />} />
+                    <Route path="/investigador" element={<ProyectoInvestigador />} />
 
                     <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
                     <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto />} />

@@ -3,9 +3,14 @@ package org.example.backend_cices_system.service;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
+import org.example.backend_cices_system.data.InvestigadorRepository;
+import org.example.backend_cices_system.data.ProyectoRepository;
+import org.example.backend_cices_system.data.UsuarioRepository;
 import org.example.backend_cices_system.logic.Certificacion;
 import org.example.backend_cices_system.logic.Empleado;
 import org.example.backend_cices_system.logic.Investigador;
+import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.stereotype.Service;
 import org.example.backend_cices_system.dto.RegistroInvestigadorDTO;
 import org.example.backend_cices_system.dto.CertificacionDTO;
@@ -21,6 +26,11 @@ import java.sql.Date;
 @RequiredArgsConstructor
 public class InvestigadorService {
     private final EntityManager em;
+    private final UsuarioRepository usuarioRepo;
+    private final InvestigadorRepository invRepo;
+    private final InvestigadorProyectoRepository invProyRepo;
+    private final ProyectoRepository proyectoRepo;
+
 
     @Transactional
     public Short registrarInvestigadorConCerts(RegistroInvestigadorDTO dto) {
@@ -161,5 +171,29 @@ public class InvestigadorService {
             System.err.println("Error al registrar gasto: " + e.getMessage());
             return false; // Error al insertar
         }
+    }
+
+    public List<ProyectoDTO> misProyectos(String username) {
+        var u = usuarioRepo.findActiveByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no activo"));
+        var inv = invRepo.findByIdEmpleado(u.getIdEmpleado())
+                .orElseThrow(() -> new RuntimeException("No es investigador"));
+
+        var ids = invProyRepo.findProyectoIdsByInvestigador(inv); // ← solo IDs (sin CLOB)
+        if (ids.isEmpty()) return List.of();
+
+        return proyectoRepo.findAllById(ids).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private ProyectoDTO toDTO(Proyecto p) {
+        var dto = new ProyectoDTO();
+        dto.setCodigoProyecto(p.getCodigoProyecto());
+        dto.setNombreProyecto(p.getNombreProyecto());
+        dto.setFechaInicio(p.getFechaInicio());
+        dto.setFechaFinalizacion(p.getFechaFinalizacion());
+        dto.setLineaInvestigacion(p.getLineaInvestigacion());
+        return dto;
     }
 }

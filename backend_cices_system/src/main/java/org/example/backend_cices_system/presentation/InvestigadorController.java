@@ -4,7 +4,14 @@ import java.util.Map;
 import java.util.List;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
+import org.example.backend_cices_system.data.InvestigadorRepository;
+import org.example.backend_cices_system.data.ProyectoRepository;
+import org.example.backend_cices_system.data.UsuarioRepository;
+import org.example.backend_cices_system.logic.Proyecto;
+import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.example.backend_cices_system.dto.RegistroInvestigadorDTO;
@@ -20,6 +27,10 @@ import java.math.BigDecimal;
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class InvestigadorController {
     private final InvestigadorService service;
+    private final UsuarioRepository usuarioRepo;
+    private final InvestigadorRepository invRepo;
+    private final InvestigadorProyectoRepository invProyRepo;
+    private final ProyectoService proyectoService;
 
     @PostMapping("/registrar")
     public ResponseEntity<Map<String,Object>> crear(@RequestBody RegistroInvestigadorDTO body) {
@@ -121,5 +132,19 @@ public class InvestigadorController {
         String fechaFormateada = fechaActual.toString(); // Formato YYYY-MM-DD
         
         return ResponseEntity.ok(Map.of("fecha", fechaFormateada));
+    }
+
+    @GetMapping("/mis-proyectos")
+    public ResponseEntity<?> misProyectos(Authentication auth) {
+        try {
+            String username = auth.getName(); // viene del JWT
+            return ResponseEntity.ok(service.misProyectos(username));
+        } catch (RuntimeException ex) {
+            // si el usuario no es investigador, devolver lista vacía mejor que 500
+            if (ex.getMessage()!=null && ex.getMessage().contains("No es investigador")) {
+                return ResponseEntity.ok(java.util.List.of());
+            }
+            return ResponseEntity.status(500).body(java.util.Map.of("error", ex.getMessage()));
+        }
     }
 }

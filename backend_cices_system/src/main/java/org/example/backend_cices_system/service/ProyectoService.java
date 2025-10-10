@@ -27,6 +27,9 @@ public class ProyectoService {
     private final CatalogoService catalogoService;
     private final DocumentoService documentoService;
     private final PresentacionInformeRepository presentacionInformeRepo;
+    private final UsuarioRepository usuarioRepo;
+    private final InvestigadorRepository invRepo;
+    private final InvestigadorProyectoRepository invProyRepo;
 
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO dto) {
@@ -161,7 +164,7 @@ public class ProyectoService {
                 .toList();
     }
 
-    private ProyectoDTO obtenerDTO(Proyecto proyecto){
+    public ProyectoDTO obtenerDTO(Proyecto proyecto){
             ProyectoDTO proyectoDTO = new ProyectoDTO();
             proyectoDTO.setCodigoProyecto(proyecto.getCodigoProyecto());
             proyectoDTO.setNombreProyecto(proyecto.getNombreProyecto());
@@ -169,5 +172,29 @@ public class ProyectoService {
             proyectoDTO.setFechaFinalizacion(proyecto.getFechaFinalizacion());
             proyectoDTO.setLineaInvestigacion(proyecto.getLineaInvestigacion());
             return proyectoDTO;
+    }
+
+    public List<ProyectoDTO> misProyectos(String username) {
+        var u = usuarioRepo.findActiveByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no activo"));
+        var inv = invRepo.findByIdEmpleado(u.getIdEmpleado())
+                .orElseThrow(() -> new RuntimeException("No es investigador"));
+
+        var ids = invProyRepo.findProyectoIdsByInvestigador(inv); // ← solo IDs (sin CLOB)
+        if (ids.isEmpty()) return List.of();
+
+        return proyectoRepo.findAllById(ids).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private ProyectoDTO toDTO(Proyecto p) {
+        var dto = new ProyectoDTO();
+        dto.setCodigoProyecto(p.getCodigoProyecto());
+        dto.setNombreProyecto(p.getNombreProyecto());
+        dto.setFechaInicio(p.getFechaInicio());
+        dto.setFechaFinalizacion(p.getFechaFinalizacion());
+        dto.setLineaInvestigacion(p.getLineaInvestigacion());
+        return dto;
     }
 }

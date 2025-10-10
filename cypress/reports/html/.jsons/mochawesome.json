@@ -1,0 +1,143 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-09-26T18:13:00.099Z",
+    "end": "2025-09-26T18:13:10.360Z",
+    "duration": 10261,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "446b7234-06a9-464e-a48f-d3ef7e1864e3",
+      "title": "",
+      "fullFile": "cypress\\e2e\\login_valido.cy.js",
+      "file": "cypress\\e2e\\login_valido.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "ac371b1b-c3a4-44eb-849c-053ce1471303",
+          "title": "Login Válido",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "permite login con credenciales válidas del JSON",
+              "fullTitle": "Login Válido permite login con credenciales válidas del JSON",
+              "timedOut": null,
+              "duration": 5515,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.wrap(this.usuariosValidos).each(data => {\n  // Esperar a que aparezcan los elementos del login\n  cy.get('input[name=\"username\"]', {\n    timeout: 10000\n  }).should('be.visible');\n  cy.get('input[name=\"password\"]', {\n    timeout: 10000\n  }).should('be.visible');\n  // Llenar formulario de login\n  cy.get('input[name=\"username\"]').clear().type(data.usuario);\n  cy.get('input[name=\"password\"]').clear().type(data.contrasena);\n  // Hacer clic en el botón de login\n  cy.get('button[type=\"submit\"]').click();\n  // Esperar la respuesta del servidor\n  cy.wait('@postLogin').its('response.statusCode').then(status => {\n    expect(status).to.be.oneOf([200, 201]);\n  });\n  // Verificar que se redirige correctamente después del login exitoso\n  // El login debería redirigir a una de las páginas según el rol\n  cy.url().should('not.include', '/login');\n  cy.url().should('match', /(\\/director|\\/administrador|\\/investigador|\\/dashboard)/);\n  // Si hay un mensaje de bienvenida, verificarlo\n  cy.get('body').then($body => {\n    if ($body.find('[role=\"alert\"], .toast, .success-message').length > 0) {\n      cy.contains(/bienvenid/i).should('be.visible');\n    }\n  });\n  // Volver a la página de login para la siguiente iteración si hay más usuarios\n  cy.visit('http://localhost:5173/');\n  cy.wait(1000); // Esperar a que cargue\n});",
+              "err": {},
+              "uuid": "d6f4d16f-141f-46d8-867a-885d26c1d01d",
+              "parentUUID": "ac371b1b-c3a4-44eb-849c-053ce1471303",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "muestra el formulario de login correctamente",
+              "fullTitle": "Login Válido muestra el formulario de login correctamente",
+              "timedOut": null,
+              "duration": 2288,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Verificar que los elementos del formulario están presentes con timeout\ncy.get('h2', {\n  timeout: 10000\n}).should('contain', 'Bienvenidos');\ncy.get('h3', {\n  timeout: 10000\n}).should('contain', 'Iniciar Sesión');\ncy.get('input[name=\"username\"]', {\n  timeout: 10000\n}).should('be.visible');\ncy.get('input[name=\"password\"]', {\n  timeout: 10000\n}).should('be.visible');\ncy.get('button[type=\"submit\"]', {\n  timeout: 10000\n}).should('contain', 'Login');\ncy.get('a[href=\"/Registro\"]', {\n  timeout: 10000\n}).should('contain', 'Click aquí');",
+              "err": {},
+              "uuid": "334ccb00-89d2-478f-bceb-563970691f83",
+              "parentUUID": "ac371b1b-c3a4-44eb-849c-053ce1471303",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "valida que los campos sean requeridos",
+              "fullTitle": "Login Válido valida que los campos sean requeridos",
+              "timedOut": null,
+              "duration": 2341,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Esperar a que el botón aparezca\ncy.get('button[type=\"submit\"]', {\n  timeout: 10000\n}).should('be.visible');\n// Intentar enviar formulario vacío\ncy.get('button[type=\"submit\"]').click();\n// Verificar que los campos requeridos muestran validación\ncy.get('input[name=\"username\"]:invalid').should('exist');\ncy.get('input[name=\"password\"]:invalid').should('exist');",
+              "err": {},
+              "uuid": "fd92f639-692b-4fb9-a28b-3c2e215e70a5",
+              "parentUUID": "ac371b1b-c3a4-44eb-849c-053ce1471303",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d6f4d16f-141f-46d8-867a-885d26c1d01d",
+            "334ccb00-89d2-478f-bceb-563970691f83",
+            "fd92f639-692b-4fb9-a28b-3c2e215e70a5"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 10144,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "reportDir": "cypress\\reports\\html\\.jsons"
+      },
+      "version": "6.3.0"
+    }
+  }
+}

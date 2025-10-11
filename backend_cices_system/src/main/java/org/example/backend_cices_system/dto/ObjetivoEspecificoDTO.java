@@ -8,7 +8,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ObjetivoEspecificoDTO {
-    private String tipo;
+    private Short idObjetivo;
+    private String categoria;
     private String descripcion;
     private List<MetaDTO> metas;
 }

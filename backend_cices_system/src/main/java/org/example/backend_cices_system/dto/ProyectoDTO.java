@@ -9,20 +9,20 @@ import java.util.List;
 @Getter
 @Setter
 public class ProyectoDTO {
-    private Integer idProyecto;
-    private String nombreProyecto;
-    private String codigoProyecto;
-    private String descripcionProyecto;
-    private String objetivoGeneralProyecto;
+    private Short idProyecto;
+    private String nombre;
+    private String codigo;
+    private String descripcion;
+    private String objetivoGeneral;
     private LocalDate fechaInicio;
     private LocalDate fechaFinalizacion;
     private String lineaInvestigacion;
     private String estado;
-    private String tipoProyecto;
-    private String detallesProyectos;
+    private String tipo;
+    private String detalles;
 
     private List<ObjetivoEspecificoDTO> objetivosEspecificos;
     private List<DocumentoDTO> documentos;
     private List<EntidadVinculadaDTO> entidadesVinculadas;
-    private List<InformeDTO> presentacionesInforme;
+    private List<InformeDTO> presentacionesInformes;
 }

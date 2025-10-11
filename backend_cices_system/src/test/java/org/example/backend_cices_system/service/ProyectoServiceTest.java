@@ -52,14 +52,14 @@ public class ProyectoServiceTest {
     @BeforeEach // inicializar un proyecto
     void setUp() {
         dto = new ProyectoDTO();
-        dto.setNombreProyecto("Proyecto CICES");
-        dto.setCodigoProyecto("PRJ-001");
-        dto.setDescripcionProyecto("Proyecto de IA");
-        dto.setObjetivoGeneralProyecto("Estudiar redes neuronales");
+        dto.setNombre("Proyecto CICES");
+        dto.setCodigo("PRJ-001");
+        dto.setDescripcion("Proyecto de IA");
+        dto.setObjetivoGeneral("Estudiar redes neuronales");
         dto.setFechaInicio(LocalDate.of(2025, 10, 1));
         dto.setFechaFinalizacion(LocalDate.of(2026, 10, 1));
         dto.setEstado("ACTIVO");
-        dto.setTipoProyecto("SOCIOCULTURAL");
+        dto.setTipo("SOCIOCULTURAL");
         dto.setLineaInvestigacion("Inteligencia Artificial");
         // todavia no se valida detalles, puede ser null
 
@@ -70,7 +70,7 @@ public class ProyectoServiceTest {
         meta.setIndicadores(List.of("Precisión", "Recall", "F1"));
 
         ObjetivoEspecificoDTO objetivo = new ObjetivoEspecificoDTO();
-        objetivo.setTipo("INVESTIGACIÓN");
+        objetivo.setCategoria("INVESTIGACIÓN");
         objetivo.setDescripcion("Desarrollar modelo IA");
         objetivo.setMetas(List.of(meta));
 

@@ -31,7 +31,6 @@ public class InvestigadorService {
     private final InvestigadorProyectoRepository invProyRepo;
     private final ProyectoRepository proyectoRepo;
 
-
     @Transactional
     public Short registrarInvestigadorConCerts(RegistroInvestigadorDTO dto) {
         // 1) INVESTIGADOR
@@ -80,8 +79,8 @@ public class InvestigadorService {
         return results.stream()
                 .map(row -> {
                     ProyectoDTO proyecto = new ProyectoDTO();
-                    proyecto.setIdProyecto(((Number) row[0]).intValue());
-                    proyecto.setNombreProyecto((String) row[1]);
+                    proyecto.setIdProyecto(((Short) row[0]).shortValue());
+                    proyecto.setNombre((String) row[1]);
                     return proyecto;
                 })
                 .toList();
@@ -189,8 +188,8 @@ public class InvestigadorService {
 
     private ProyectoDTO toDTO(Proyecto p) {
         var dto = new ProyectoDTO();
-        dto.setCodigoProyecto(p.getCodigoProyecto());
-        dto.setNombreProyecto(p.getNombreProyecto());
+        dto.setCodigo(p.getCodigoProyecto());
+        dto.setNombre(p.getNombreProyecto());
         dto.setFechaInicio(p.getFechaInicio());
         dto.setFechaFinalizacion(p.getFechaFinalizacion());
         dto.setLineaInvestigacion(p.getLineaInvestigacion());

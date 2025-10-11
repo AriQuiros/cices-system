@@ -2,10 +2,6 @@
 
 .actions{justify-content: flex-end}
 
-.error-message{
-    text-align: center;
-    width: auto;
-}
 .btn-cancel, .btn-confirm, .btn{flex:none; width: auto;}
 
 .form-row{

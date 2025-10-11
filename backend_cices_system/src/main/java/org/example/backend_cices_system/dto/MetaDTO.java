@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class MetaDTO {
+    private Short idMeta;
     private String tipo; // CUANTITATIVA o CUALITATIVA
     private BigDecimal cantidad; // Solo se usa si es CUANTITATIVA
     private String descripcion;

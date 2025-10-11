@@ -344,3 +344,79 @@
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
+
+/* Mensaje final de confirmación */
+.mensaje-final-confirmacion {
+    position: fixed;
+    top: 6%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4000;
+    background: #e0e0e0;
+    border: 1px solid #bdbdbd;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    padding: 18px 32px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mensaje-final-texto {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #388e3c;
+}
+
+/* Estilos para contenedores con márgenes específicos */
+.registrar-gastos-container {
+    margin-top: 60px;
+}
+
+.form-container {
+    margin-top: 40px;
+}
+
+/* Estilos para mensajes de validación */
+.validation-error {
+    color: #e74c3c;
+}
+
+.validation-success {
+    color: #2ecc71;
+}
+
+/* Estilos para campo de categoría personalizada */
+.categoria-personalizada-container {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.categoria-personalizada-container label {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.categoria-personalizada-container input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.categoria-personalizada-container input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}

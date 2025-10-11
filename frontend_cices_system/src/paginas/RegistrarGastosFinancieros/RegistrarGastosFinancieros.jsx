@@ -328,68 +328,8 @@ const RegistrarGastosFinancieros = () => {
         }
     };
 
-    // Si el usuario no está autenticado, mostrar pantalla de login requerido
-    if (!token || !user) {
-        return (
-            <div className="registrar-gastos-container" style={{marginTop: '60px'}}>
-                <div className="content" style={{textAlign: 'center'}}>
-                    <h1>Acceso Restringido</h1>
-
-                    {mensaje && (
-                        <div className={`mensaje ${tipoMensaje}`} style={{
-                            padding: '20px',
-                            marginBottom: '20px',
-                            borderRadius: '5px',
-                            backgroundColor: '#f8d7da',
-                            color: '#721c24',
-                            border: '1px solid #f5c6cb',
-                            fontSize: '16px'
-                        }}>
-                            {mensaje}
-                        </div>
-                    )}
-
-                    <p style={{marginBottom: '20px', fontSize: '16px', color: '#666'}}>
-                        Para registrar gastos financieros necesita iniciar sesión como investigador.
-                    </p>
-
-                    <button
-                        onClick={() => navigate('/login')}
-                        style={{
-                            backgroundColor: '#007bff',
-                            color: 'white',
-                            padding: '12px 24px',
-                            border: 'none',
-                            borderRadius: '5px',
-                            fontSize: '16px',
-                            cursor: 'pointer',
-                            marginRight: '10px'
-                        }}
-                    >
-                        Ir al Login
-                    </button>
-
-                    <button
-                        onClick={() => navigate('/')}
-                        style={{
-                            backgroundColor: '#6c757d',
-                            color: 'white',
-                            padding: '12px 24px',
-                            border: 'none',
-                            borderRadius: '5px',
-                            fontSize: '16px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Volver al Inicio
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="registrar-gastos-container" style={{marginTop: '60px'}}>
+        <div className="registrar-gastos-container">
             <div className="content">
                 <h1>Registrar Gastos Financieros</h1>
 
@@ -498,31 +438,14 @@ const RegistrarGastosFinancieros = () => {
 
                 {/* Mensaje final de confirmación del gasto registrado */}
                 {mostrarMensajeFinal && (
-                    <div style={{
-                        position: "fixed",
-                        top: "6%",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        zIndex: 4000,
-                        background: "#e0e0e0",
-                        border: "1px solid #bdbdbd",
-                        borderRadius: "12px",
-                        boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-                        minWidth: "320px",
-                        maxWidth: "90vw",
-                        textAlign: "center",
-                        padding: "18px 32px 16px 32px",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center"
-                    }}>
-                        <div style={{ fontWeight: "bold", fontSize: "1.1rem", marginBottom: "8px", color: "#388e3c" }}>
+                    <div className="mensaje-final-confirmacion">
+                        <div className="mensaje-final-texto">
                             El gasto se registró correctamente al Proyecto: {nombreProyectoFinal}
                         </div>
                     </div>
                 )}
 
-                <div className="form-container" style={{marginTop: '40px'}}>
+                <div className="form-container">
                     <form className="gastos-form" onSubmit={manejarEnvio}>
                         <div className="form-group">
                             <label htmlFor="proyecto">Proyecto asociado:</label>
@@ -550,12 +473,12 @@ const RegistrarGastosFinancieros = () => {
                                 ))}
                             </select>
                             {proyectos.length === 0 && !loading && (
-                                <small style={{color: '#e74c3c'}}>
+                                <small className="validation-error">
                                     No tiene proyectos asignados como investigador principal.
                                 </small>
                             )}
                             {presupuesto && (
-                                <small style={{color: '#2ecc71'}}>
+                                <small className="validation-success">
                                     Presupuesto disponible: ₡{presupuesto.montoDisponible?.toFixed(2) || '0.00'}
                                 </small>
                             )}
@@ -579,7 +502,7 @@ const RegistrarGastosFinancieros = () => {
                                 }}
                             />
                             {montoError && (
-                                <small style={{color: '#e74c3c'}}>
+                                <small className="validation-error">
                                     {montoError}
                                 </small>
                             )}
@@ -599,7 +522,7 @@ const RegistrarGastosFinancieros = () => {
                         </div>
 
                         {mostrarCategoriaPersonalizada && (
-                            <div className="form-group">
+                            <div className="form-group categoria-personalizada-container">
                                 <label htmlFor="categoriaPersonalizada">Especifique la categoría:</label>
                                 <input
                                     type="text"

@@ -77,6 +77,202 @@ input[type="radio"]{
     font-size: large;
 }
 
+/* Estilos para popups y mensajes de error/éxito */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(2px);
+}
+
+.popup-overlay-error {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(2px);
+}
+
+.popup-content {
+    position: relative;
+    background: #f3f3f3;
+    border: 1px solid #bdbdbd;
+    color: #333;
+    padding: 24px 32px 20px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+.popup-content-general {
+    position: relative;
+    background: #e0e0e0;
+    border: 1px solid #bdbdbd;
+    color: #333;
+    padding: 24px 32px 20px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+.popup-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #888;
+    cursor: pointer;
+}
+
+.popup-title-error {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #d32f2f;
+}
+
+.popup-title-success {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #388e3c;
+}
+
+.popup-message {
+    font-size: 1rem;
+}
+
+.popup-success {
+    position: fixed;
+    top: 6%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4000;
+    background: #e0e0e0;
+    border: 1px solid #bdbdbd;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    padding: 18px 32px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilos para mensajes de validación */
+.validation-error-message {
+    color: #d32f2f;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Estilos para contenedores de contraseña */
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-input {
+    padding-right: 40px !important;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilos para botón de enlace */
+.btn-link-login {
+    background: none;
+    border: none;
+    color: #1976d2;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+/* Estilos para popup de investigador */
+.investigador-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.investigador-error-bubble {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #d32f2f;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 24px;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+    z-index: 10000;
+}
+
+.investigador-popup-content {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+    padding: 32px 28px;
+    min-width: 350px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.investigador-popup-title {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
 /* --- Responsive --- */
 @media (max-width: 480px) {
     .form-content {

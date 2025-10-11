@@ -6,7 +6,7 @@ import "../usuarios/Registro.css";
 import "./RegistroProyecto.css";
 import RegistroPresupuesto from "./RegistroPresupuesto.jsx";
 
-const MAX_TOTAL_SIZE_MB = 10;
+const MAX_TOTAL_SIZE_MB = 550;
 
 const getTotalFileSizeMB = (files) => {
     return files.reduce((total, file) => total + file.size, 0) / (1024 * 1024);

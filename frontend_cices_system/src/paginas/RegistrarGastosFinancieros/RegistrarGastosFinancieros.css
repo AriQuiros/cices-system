@@ -122,15 +122,15 @@
     .registrar-gastos-container {
         padding: 10px;
     }
-    
+
     .registrar-gastos-container .content {
         padding: 20px;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .btn-cancelar,
     .btn-registrar {
         width: 100%;

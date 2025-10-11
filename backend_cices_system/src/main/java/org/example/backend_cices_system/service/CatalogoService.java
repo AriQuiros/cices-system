@@ -8,12 +8,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class CatalogoService {
     @Autowired
     private CatalogoRepository catalogoRepository;
+
+    public String obtenerValorCodigoPorId(Short idCodigo) {
+        return catalogoRepository.findById(idCodigo)
+                .map(Codigo::getValor)
+                .orElse(null);
+    }
 
     public Short obtenerIdCodigoPorTipoYValor(String nombreTipo, String valor) {
         return catalogoRepository.findByIdTipoNombreAndValor(nombreTipo, valor)

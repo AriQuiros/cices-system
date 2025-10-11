@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.presentation;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.CodigoDTO;
 import org.example.backend_cices_system.dto.PresupuestoDTO;
@@ -29,26 +30,56 @@ public class PresupuestoController {
     @Autowired
     private PresupuestoService presupuestoService;
 
-    @GetMapping("/datos_iniciales")
-    public ResponseEntity<?> obtenerDatosIniciales() {
+    @GetMapping("/datos_form")
+    public ResponseEntity<?> obtenerDatosForm() {
         try {
             // Obtener proyectos
-            List<ProyectoDTO> proyectos = proyectoService.obtenerProyectos_datosPrincipales();
+            List<ProyectoDTO> proyectos = proyectoService.obtenerProyectos_PresupuestoForm();
+            List<PresupuestoDTO> presupuestos = presupuestoService.obtenerPresupuestosPorProyectos(proyectos);
 
-            // Obtener códigos de catálogo para los tipos deseados
             List<String> tiposSolicitados = List.of("FUENTE FINANCIAMIENTO", "TIPO PRESUPUESTO");
             Map<String, List<CodigoDTO>> codigos = catalogoService.obtenerCodigosPorTipos(tiposSolicitados);
 
             // Construir respuesta
             var response = Map.of(
                     "proyectos", proyectos,
+                    "presupuestos", presupuestos,
                     "tipos", codigos
             );
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", "Error al cargar datos iniciales"));
+            return ResponseEntity.status(500).body(Map.of("error", "Error al cargar datos iniciales para el form"));
         }
+    }
+    @GetMapping("/tipos_form")
+    public ResponseEntity<?> obtenerTiposForm() {
+        try {
+            List<String> tiposSolicitados = List.of("FUENTE FINANCIAMIENTO", "TIPO PRESUPUESTO");
+            Map<String, List<CodigoDTO>> codigos = catalogoService.obtenerCodigosPorTipos(tiposSolicitados);
+
+            // Construir respuesta
+            var response = Map.of(
+                    "tipos", codigos
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error al cargar tipos para el form"));
+        }
+    }
+
+    @PostMapping(value = "/registrar", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> registrarPresupuestos(
+            @RequestPart("idProyecto") String idProyecto,
+            @RequestPart("presupuestos") List<PresupuestoDTO> presupuestos
+    ) {
+        System.out.println("ID Proyecto: " + idProyecto);
+        Proyecto proyecto = proyectoService.obtenerProyectoPorCodigo(idProyecto);
+        System.out.println("Presupuestos: " + presupuestos);
+        presupuestoService.guardarPresupuestos(presupuestos, proyecto);
+
+        return ResponseEntity.ok("Presupuesto registrado correctamente");
     }
 
 }

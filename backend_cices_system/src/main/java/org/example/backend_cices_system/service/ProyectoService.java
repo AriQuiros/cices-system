@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,33 +24,35 @@ public class ProyectoService {
     private final EntidadRepository entidadRepo;
     private final EntidadProyectoRepository entidadProyectoRepo;
     private final CatalogoService catalogoService;
-    private final DocumentoService documentoService;
     private final PresentacionInformeRepository presentacionInformeRepo;
     private final UsuarioRepository usuarioRepo;
     private final InvestigadorRepository invRepo;
     private final InvestigadorProyectoRepository invProyRepo;
 
+    public Proyecto obtenerProyectoPorCodigo(String codigo) {
+        return proyectoRepo.findByCodigoProyecto(codigo).orElse(null);
+    }
+
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO dto) {
-        if (proyectoRepo.findByCodigoProyecto(dto.getCodigoProyecto()).isPresent()) {
+        if (proyectoRepo.findByCodigoProyecto(dto.getCodigo()).isPresent()) {
             throw new IllegalArgumentException("El código del proyecto ya se encuentra registrado");
         }
         // Guardar proyecto base
         Proyecto proyecto = new Proyecto();
-        proyecto.setNombreProyecto(dto.getNombreProyecto());
-        proyecto.setCodigoProyecto(dto.getCodigoProyecto());
-        proyecto.setDescripcionProyecto(dto.getDescripcionProyecto());
-        proyecto.setObjetivoGeneral(dto.getObjetivoGeneralProyecto());
+        proyecto.setNombreProyecto(dto.getNombre());
+        proyecto.setCodigoProyecto(dto.getCodigo());
+        proyecto.setDescripcionProyecto(dto.getDescripcion());
+        proyecto.setObjetivoGeneral(dto.getObjetivoGeneral());
         proyecto.setFechaInicio(dto.getFechaInicio());
         proyecto.setFechaFinalizacion(dto.getFechaFinalizacion());
-
         Short idEstado = catalogoService.obtenerIdCodigoPorTipoYValor("ESTADO PROYECTO", dto.getEstado());
-        Short idTipoProyecto = catalogoService.obtenerIdCodigoPorTipoYValor("TIPO PROYECTO", dto.getTipoProyecto());
+        Short idTipoProyecto = catalogoService.obtenerIdCodigoPorTipoYValor("TIPO PROYECTO", dto.getTipo());
 
         proyecto.setIdCodigoEstado(idEstado);
         proyecto.setIdCodigoTipoProyecto(idTipoProyecto);
         proyecto.setLineaInvestigacion(dto.getLineaInvestigacion());
-        proyecto.setDetallesProyectos(dto.getDetallesProyectos());
+        proyecto.setDetallesProyectos(dto.getDetalles());
 
         proyecto = proyectoRepo.save(proyecto);
 
@@ -60,7 +61,7 @@ public class ProyectoService {
         for (ObjetivoEspecificoDTO objetivoDTO : dto.getObjetivosEspecificos()) {
             ObjetivoEspecifico objetivo = new ObjetivoEspecifico();
             objetivo.setIdProyecto(proyecto);
-            objetivo.setTipo(objetivoDTO.getTipo());
+            objetivo.setTipo(objetivoDTO.getCategoria());
             objetivo.setDescripcion(objetivoDTO.getDescripcion());
             objetivo = objetivoRepo.save(objetivo);
 
@@ -99,8 +100,8 @@ public class ProyectoService {
         }
 
         // Guardar presentaciones de informe
-        if (dto.getPresentacionesInforme() != null) {
-            for (InformeDTO informeDTO : dto.getPresentacionesInforme()) {
+        if (dto.getPresentacionesInformes() != null) {
+            for (InformeDTO informeDTO : dto.getPresentacionesInformes()) {
                 if (informeDTO.getFechaPresentacion() == null || informeDTO.getDescripcion().isEmpty()) {
                     continue;  // Si la fecha está vacía o nula, simplemente no se guarda este informe
                 }
@@ -143,19 +144,19 @@ public class ProyectoService {
                 });
     }
 
-    public List<ProyectoDTO> obtenerProyectos_datosPrincipales() {
-        return proyectoRepo.findAll().stream()
+    public List<ProyectoDTO> obtenerProyectos_PresupuestoForm() {
+        Short idEstado = catalogoService.obtenerIdCodigoPorTipoYValor("ESTADO PROYECTO", "ACTIVO");
+        return proyectoRepo.findByIdCodigoEstado(idEstado).stream()
                 .map(proyecto -> {
                     ProyectoDTO dto = new ProyectoDTO();
-                    dto.setCodigoProyecto(proyecto.getCodigoProyecto());
-                    dto.setNombreProyecto(proyecto.getNombreProyecto());
+                    dto.setIdProyecto(proyecto.getId());
+                    dto.setCodigo(proyecto.getCodigoProyecto());
+                    dto.setNombre(proyecto.getNombreProyecto());
+                    dto.setFechaInicio(proyecto.getFechaInicio());
+                    dto.setFechaFinalizacion(proyecto.getFechaFinalizacion());
                     return dto;
                 })
                 .collect(Collectors.toList());
-    }
-
-    public Optional<Proyecto> getProyectoById(Short id){
-        return proyectoRepo.findById(id);
     }
 
     public List<ProyectoDTO> obtenerTodosLosProyectos() {
@@ -166,8 +167,8 @@ public class ProyectoService {
 
     public ProyectoDTO obtenerDTO(Proyecto proyecto){
             ProyectoDTO proyectoDTO = new ProyectoDTO();
-            proyectoDTO.setCodigoProyecto(proyecto.getCodigoProyecto());
-            proyectoDTO.setNombreProyecto(proyecto.getNombreProyecto());
+            proyectoDTO.setCodigo(proyecto.getCodigoProyecto());
+            proyectoDTO.setNombre(proyecto.getNombreProyecto());
             proyectoDTO.setFechaInicio(proyecto.getFechaInicio());
             proyectoDTO.setFechaFinalizacion(proyecto.getFechaFinalizacion());
             proyectoDTO.setLineaInvestigacion(proyecto.getLineaInvestigacion());
@@ -190,8 +191,8 @@ public class ProyectoService {
 
     private ProyectoDTO toDTO(Proyecto p) {
         var dto = new ProyectoDTO();
-        dto.setCodigoProyecto(p.getCodigoProyecto());
-        dto.setNombreProyecto(p.getNombreProyecto());
+        dto.setCodigo(p.getCodigoProyecto());
+        dto.setNombre(p.getNombreProyecto());
         dto.setFechaInicio(p.getFechaInicio());
         dto.setFechaFinalizacion(p.getFechaFinalizacion());
         dto.setLineaInvestigacion(p.getLineaInvestigacion());

@@ -85,19 +85,21 @@ export default function AppProvider({ children }) {
                     metas: [
                         {
                             tipo: '',
-                            cantidad: 0,
+                            cantidad: 1,
                             descripcion: '',
                             indicadores: ['']
                         }
                     ]
                 }
             ],
-            unidades: [{ nombre: '' }],
-            instituciones: [{ nombre: '' }],
-            sitios: [{ nombre: '' }],
+            entidadesVinculadas: {
+                instituciones: [{ nombre: '' }],
+                unidades: [{ nombre: '' }],
+                sitios: [{ nombre: '' }]
+            },
             fechaInicio: '',
             fechaFinalizacion: '',
-            fechasInformes: [
+            presentacionesInformes: [
                 {
                     descripcion: '',
                     fechaPresentacion: '',

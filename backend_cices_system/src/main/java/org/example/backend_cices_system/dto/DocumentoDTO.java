@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DocumentoDTO {
+    private Short idDocumento;
     private String nombreDocumento;
     private String directorio;
 }

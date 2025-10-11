@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface ProyectoRepository extends JpaRepository<Proyecto, Short> {
     Optional<Proyecto> findByCodigoProyecto(String codigoProyecto);
+    List<Proyecto> findByIdCodigoEstado(Short idCodigoEstado);
 }

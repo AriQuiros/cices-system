@@ -138,3 +138,76 @@
     font-size: 0.8rem;
 }
 
+/* Estilos para el popup overlay específico del investigador */
+.investigador-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Burbuja de error específica para investigador */
+.investigador-error-bubble {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #d32f2f;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 24px;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+    z-index: 10000;
+}
+
+/* Contenido del popup del investigador */
+.investigador-popup-content {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+    padding: 32px 28px;
+    min-width: 350px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Título del popup */
+.investigador-popup-title {
+    text-align: center;
+    margin-bottom: 18px;
+    margin: 0 0 20px;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 600;
+    color: var(--text-strong);
+}
+
+/* Título de sección */
+.section-title {
+    margin: 20px 0 12px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-strong);
+}
+
+/* Mensaje de error del formulario */
+.form-error {
+    color: #d32f2f;
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: center;
+    background: #fdecea;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    border: 1px solid #ffcdd2;
+}
+

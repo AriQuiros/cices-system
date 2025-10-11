@@ -12,6 +12,8 @@ function Registro() {
     const [errorCorreo, setErrorCorreo] = useState("");
     // Estado para error de formato de teléfono
     const [errorTelefono, setErrorTelefono] = useState("");
+    // Estado para error de formato de contraseña
+    const [errorFormatoContrasena, setErrorFormatoContrasena] = useState("");
     const [tiposIdentificacion, setTiposIdentificacion] = useState([]);
     // Estado para mostrar popup de éxito
     const [popupExito, setPopupExito] = useState(false);
@@ -95,6 +97,16 @@ function Registro() {
                 setErrorTelefono("El teléfono no debe contener letras");
             } else {
                 setErrorTelefono("");
+            }
+            return;
+        }
+        if (name === "contrasena") {
+            setFormData(prev => ({ ...prev, contrasena: value }));
+            // Validar longitud mínima de contraseña
+            if (value && value.length < 8) {
+                setErrorFormatoContrasena("La contraseña debe tener al menos 8 caracteres");
+            } else {
+                setErrorFormatoContrasena("");
             }
             return;
         }
@@ -196,6 +208,11 @@ function Registro() {
             setErrorTelefono("El teléfono no debe contener letras");
             return;
         }
+        // Validación de longitud mínima de contraseña
+        if (formData.contrasena && formData.contrasena.length < 8) {
+            setErrorFormatoContrasena("La contraseña debe tener al menos 8 caracteres");
+            return;
+        }
         // Validación de coincidencia de contraseñas
         if (formData.contrasena !== formData.confirmarContrasena) {
             setErrorContrasena("Las contraseñas no coinciden");
@@ -250,6 +267,7 @@ function Registro() {
                 setErrorCorreo("");
                 setErrorTelefono("");
                 setErrorContrasena("");
+                setErrorFormatoContrasena("");
                 setMostrarPopup(false);
                 setDatosInvestigador(null);
                 setPopupExito(true);
@@ -310,49 +328,17 @@ function Registro() {
                     <small className="input-message">Sin guiones</small>
                 </div>
                 {popupIdentificacion && (
-                    <div style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100vw",
-                        height: "100vh",
-                        zIndex: 2000,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "rgba(0,0,0,0.35)",
-                        backdropFilter: "blur(2px)"
-                    }}>
-                        <div style={{
-                            position: "relative",
-                            background: "#f3f3f3",
-                            border: "1px solid #bdbdbd",
-                            color: "#333",
-                            padding: "24px 32px 20px 32px",
-                            borderRadius: "12px",
-                            boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-                            minWidth: "320px",
-                            maxWidth: "90vw",
-                            textAlign: "center"
-                        }}>
+                    <div className="popup-overlay">
+                        <div className="popup-content">
                             <button
                                 onClick={() => setPopupIdentificacion(false)}
-                                style={{
-                                    position: "absolute",
-                                    top: "8px",
-                                    right: "12px",
-                                    background: "none",
-                                    border: "none",
-                                    fontSize: "1.2rem",
-                                    color: "#888",
-                                    cursor: "pointer"
-                                }}
+                                className="popup-close-btn"
                                 aria-label="Cerrar"
                             >&#10005;</button>
-                            <div style={{ fontWeight: "bold", fontSize: "1.1rem", marginBottom: "8px", color: "#d32f2f" }}>
+                            <div className="popup-title-error">
                                 Error al registrar
                             </div>
-                            <div style={{ fontSize: "1rem" }}>
+                            <div className="popup-message">
                                 El número de identificación y/o correo no se pueden repetir
                             </div>
                         </div>
@@ -370,7 +356,7 @@ function Registro() {
                     <small className="input-message">Sin guiones</small>
                 </div>
                 {errorTelefono && (
-                    <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+                    <div className="validation-error-message">
                         {errorTelefono}
                     </div>
                 )}
@@ -383,41 +369,24 @@ function Registro() {
                     onChange={handleChange}
                 />
                 {errorCorreo && (
-                    <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+                    <div className="validation-error-message">
                         {errorCorreo}
                     </div>
                 )}
                 <div className="input-group">
-                    <div style={{ position: 'relative', width: '100%' }}>
+                    <div className="password-container">
                         <input
                             type={mostrarContrasena ? "text" : "password"}
                             name="contrasena"
                             placeholder="Contraseña"
-                            className="input-field"
+                            className="input-field password-input"
                             value={formData.contrasena}
                             onChange={handleChange}
-                            style={{ paddingRight: '40px' }}
                         />
                         <button
                             type="button"
                             onClick={() => setMostrarContrasena(!mostrarContrasena)}
-                            style={{
-                                position: 'absolute',
-                                right: '10px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '16px',
-                                color: '#666',
-                                padding: '0',
-                                width: '24px',
-                                height: '24px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}
+                            className="password-toggle-btn"
                             aria-label={mostrarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
                         >
                             {mostrarContrasena ? "👁️" : "👁️‍🗨️"}
@@ -425,37 +394,25 @@ function Registro() {
                     </div>
                     <small className="input-message">Mínimo 8 caracteres</small>
                 </div>
+                {errorFormatoContrasena && (
+                    <div className="validation-error-message">
+                        {errorFormatoContrasena}
+                    </div>
+                )}
                 <div className="input-group">
-                    <div style={{ position: 'relative', width: '100%' }}>
+                    <div className="password-container">
                         <input
                             type={mostrarConfirmarContrasena ? "text" : "password"}
                             name="confirmarContrasena"
                             placeholder="Confirmar contraseña"
-                            className="input-field"
+                            className="input-field password-input"
                             value={formData.confirmarContrasena}
                             onChange={handleChange}
-                            style={{ paddingRight: '40px' }}
                         />
                         <button
                             type="button"
                             onClick={() => setMostrarConfirmarContrasena(!mostrarConfirmarContrasena)}
-                            style={{
-                                position: 'absolute',
-                                right: '10px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '16px',
-                                color: '#666',
-                                padding: '0',
-                                width: '24px',
-                                height: '24px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}
+                            className="password-toggle-btn"
                             aria-label={mostrarConfirmarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
                         >
                             {mostrarConfirmarContrasena ? "👁️" : "👁️‍🗨️"}
@@ -463,7 +420,7 @@ function Registro() {
                     </div>
                 </div>
                 {errorContrasena && (
-                    <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+                    <div className="validation-error-message">
                         {errorContrasena}
                     </div>
                 )}
@@ -499,15 +456,6 @@ function Registro() {
                 <button
                     type="button"
                     className="btn-link-login"
-                    style={{
-                        background: "none",
-                        border: "none",
-                        color: "#1976d2",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                        marginTop: "10px",
-                        fontSize: "1rem"
-                    }}
                     onClick={() => window.location.href = "/"}
                 >
                     Ingresar en mi cuenta
@@ -530,74 +478,25 @@ function Registro() {
             )}
             {/* Popup de éxito visual */}
             {popupExito && (
-                <div style={{
-                    position: "fixed",
-                    top: "6%",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    zIndex: 4000,
-                    background: "#e0e0e0",
-                    border: "1px solid #bdbdbd",
-                    borderRadius: "12px",
-                    boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-                    minWidth: "320px",
-                    maxWidth: "90vw",
-                    textAlign: "center",
-                    padding: "18px 32px 16px 32px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                }}>
-                    <div style={{ fontWeight: "bold", fontSize: "1.1rem", marginBottom: "8px", color: "#388e3c" }}>
+                <div className="popup-success">
+                    <div className="popup-title-success">
                         Usuario registrado exitosamente
                     </div>
                 </div>
             )}
             {/* Popup de error visual */}
             {popupError.visible && (
-                <div style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100vw",
-                    height: "100vh",
-                    zIndex: 3000,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "rgba(0,0,0,0.35)",
-                    backdropFilter: "blur(2px)"
-                }}>
-                    <div style={{
-                        position: "relative",
-                        background: "#e0e0e0",
-                        border: "1px solid #bdbdbd",
-                        color: "#333",
-                        padding: "24px 32px 20px 32px",
-                        borderRadius: "12px",
-                        boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-                        minWidth: "320px",
-                        maxWidth: "90vw",
-                        textAlign: "center"
-                    }}>
+                <div className="popup-overlay-error">
+                    <div className="popup-content-general">
                         <button
                             onClick={() => setPopupError({ visible: false, mensaje: "" })}
-                            style={{
-                                position: "absolute",
-                                top: "8px",
-                                right: "12px",
-                                background: "none",
-                                border: "none",
-                                fontSize: "1.2rem",
-                                color: "#888",
-                                cursor: "pointer"
-                            }}
+                            className="popup-close-btn"
                             aria-label="Cerrar"
                         >&#10005;</button>
-                        <div style={{ fontWeight: "bold", fontSize: "1.1rem", marginBottom: "8px", color: "#d32f2f" }}>
+                        <div className="popup-title-error">
                             Error al intentar registrar el usuario
                         </div>
-                        <div style={{ fontSize: "1rem" }}>
+                        <div className="popup-message">
                             {popupError.mensaje}
                         </div>
                     </div>

@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 @Data
 public class GastoDTO {
-    //comentario para que se suba al github- borrar despues
     private Integer idProyecto;
     private BigDecimal monto;
     private LocalDate fechaGasto;

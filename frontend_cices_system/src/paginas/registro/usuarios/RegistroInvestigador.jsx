@@ -134,29 +134,16 @@ function RegistroInvestigador({ onClose, onConfirm }) {
     }, []);
 
     return (
-        <div style={{
-            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-            background: 'rgba(0,0,0,0.35)', zIndex: 9999, display: 'flex',
-            alignItems: 'center', justifyContent: 'center'
-        }}>
+        <div className="investigador-popup-overlay">
             {/* Burbuja de error de campos base */}
             {errorBubbleVisible && (
-                <div style={{
-                    position: 'absolute', top: '8%', left: '50%', transform: 'translateX(-50%)',
-                    background: '#d32f2f', color: '#fff', padding: '12px 28px',
-                    borderRadius: '24px', fontWeight: 'bold', fontSize: '16px',
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.18)', zIndex: 10000
-                }}>
+                <div className="investigador-error-bubble">
                     Debe completar institución de origen, unidad académica y grado académico para confirmar.
                 </div>
             )}
 
-            <div style={{
-                background: '#fff', borderRadius: '16px', boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
-                padding: '32px 28px', minWidth: '350px', maxWidth: '95vw',
-                maxHeight: '90vh', overflowY: 'auto', position: 'relative'
-            }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '18px' }}>Registro Investigador</h2>
+            <div className="investigador-popup-content">
+                <h2 className="investigador-popup-title">Registro Investigador</h2>
 
                 <form className="form" onSubmit={handleSubmit}>
                     {/* Base */}

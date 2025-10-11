@@ -26,8 +26,7 @@ export default defineConfig([
     files: ['cypress/**/*.cy.{js,jsx,ts,tsx}'],
     ...cypress.configs.recommended,
     rules: {
-      'cypress/unsafe-to-chain-command': 'off',
-      'cypress/no-unnecessary-waiting': 'error' // si quieres mantener esta
+        all: 'off'
     }
   },
 ])

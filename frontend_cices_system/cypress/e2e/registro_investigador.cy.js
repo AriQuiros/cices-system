@@ -7,7 +7,7 @@ describe('Registro Investigadores', () => {
     })
 
     it('debería registrar a todos los investigadores del JSON', function () {
-        this.investigadores.forEach((data, index) => {
+        this.investigadores.forEach((data) => {
             // --- Formulario principal ---
             cy.get('input[name="nombre"]').clear().type(data.nombreCompleto)
             cy.get('input[name="nacionalidad"]').clear().type(data.nacionalidad)

@@ -200,14 +200,16 @@ export default function AsignarInvestigador() {
                                     />
                                     {showSugs && sugs.length > 0 && (
                                         <ul className="aix__suggest">
-                                            {sugs.map((s) => (
-                                                <li key={s.id} onMouseDown={() => { setQProyecto(s.codigo); setShowSugs(false); }}>
+                                            {sugs.map(s => (
+                                                <li key={s.id}
+                                                    onMouseDown={() => { setQProyecto(s.codigo); setShowSugs(false); }}>
                                                     <span className="aix__suggest-code">{s.codigo}</span>
                                                     <span className="aix__suggest-name">{s.nombre}</span>
                                                 </li>
                                             ))}
                                         </ul>
                                     )}
+
                                 </div>
                                 <button onClick={buscarProyecto}>Seleccionar</button>
                             </div>

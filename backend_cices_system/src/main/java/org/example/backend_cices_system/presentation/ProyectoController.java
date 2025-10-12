@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.dto.PresupuestoDTO;
 import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.ProyectoMiniDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.DocumentoService;
 import org.example.backend_cices_system.service.PresupuestoService;
@@ -67,5 +68,11 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoService.obtenerProyectoDTOPorId(id.shortValue()));
     }
 
+    @GetMapping("/suggest")
+    public List<ProyectoMiniDTO> suggest(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "10") int limit) {
+        return proyectoService.suggest(q, org.springframework.data.domain.PageRequest.of(0, limit));
+    }
 
 }

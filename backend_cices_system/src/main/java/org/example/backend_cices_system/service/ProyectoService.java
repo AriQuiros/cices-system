@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -245,4 +246,9 @@ public class ProyectoService {
         return proyectoDTO;
     }
 
+    public List<ProyectoMiniDTO> suggest(String q, Pageable pg) {
+        String qq = (q == null) ? null : q.trim();
+        if (qq == null || qq.isEmpty()) return List.of();
+        return proyectoRepo.suggest(qq, pg);
+    }
 }

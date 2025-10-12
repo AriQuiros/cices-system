@@ -278,7 +278,7 @@ const RegistrarGastosFinancieros = () => {
 
                 // Guardar los detalles del gasto registrado
                 const detallesGasto = {
-                    nombreProyecto: proyectoSeleccionado?.nombreProyecto || 'Proyecto desconocido',
+                    nombreProyecto: proyectoSeleccionado?.nombre || 'Proyecto desconocido',
                     monto: gastoData.monto,
                     categoria: gastoData.categoriaGasto,
                     fecha: gastoData.fechaGasto,
@@ -468,7 +468,7 @@ const RegistrarGastosFinancieros = () => {
                                 </option>
                                 {proyectos.map((proyecto) => (
                                     <option key={proyecto.idProyecto} value={proyecto.idProyecto}>
-                                        {proyecto.nombreProyecto}
+                                        {proyecto.nombre}
                                     </option>
                                 ))}
                             </select>

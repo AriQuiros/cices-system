@@ -22,6 +22,7 @@ import ProyectoInvestigador from "./paginas/consultaProyectos/ProyectoInvestigad
 
 import AppProvider from "./context/AppProvider.jsx";
 import {AppContext} from "./context/AppContext.jsx";
+import AsignarInvestigador from "./paginas/asignacionesInvestigadores/AsignarInvestigador.jsx";
 
 function App() {
     return (
@@ -52,6 +53,9 @@ function Main(){
                     <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto />} />
                     <Route path="/consultaProyectos" element={<ConsultaProyectos />} />
                     <Route path="/registrar-gastos" element={<RegistrarGastosFinancieros />} />
+
+                    <Route path="/AsignarInvestigador" element={<AsignarInvestigador />} />
+
 
                     <Route path="/director" element={<Director />} />
                     <Route path="/administrador" element={<ConsultaProyectos />} />
@@ -111,7 +115,7 @@ function Header() {
                                     <>
                                         <li><Link to="/RegistroProyecto">Registar Proyecto</Link></li>
                                         <li><Link to="/administrador">Actualizar Proyecto</Link></li>
-                                        <li><Link to="/administrador">Asignar Investigadores</Link></li>
+                                        <li><Link to="/AsignarInvestigador">Asignar Investigadores</Link></li>
                                         <li><Link to="/administrador">Generar Reportes</Link></li>
                                         <li><Link to="/administrador">Notificaciones</Link></li>
                                         <li><Link to="/perfil">Perfil</Link></li>

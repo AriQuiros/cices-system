@@ -1,0 +1,147 @@
+/* src/components/AsignarInvestigadores.css */
+/* Paleta del mock */
+:root{
+    --bg:#f2f4f7;
+    --panel:#e9ecef;
+    --card:#ffffff;
+    --stroke:#d8dde6;
+    --stroke-soft:#eef2f7;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --blue:#0b5fae;
+    --blue-strong:#0a4f92;
+    --green:#68d357;
+    --green-strong:#54b746;
+    --danger:#8b1f1f;
+    --danger-bg:#b63a3a;
+}
+
+/* Layout general */
+.aix{margin:0px 20px 20px 20px;display:flex;flex-direction:column;gap:14px;color:var(--text);}
+.aix__header h2{margin:0px 20px 20px 20px;font-size:18px;font-weight:700}
+.aix__msg{margin-left:auto;font-size:.9rem;color:#0f5132;background:#d4edda;padding:4px 10px;border-radius:6px}
+
+/* Barra superior (gris) */
+.aix__toolbar{background:var(--panel);border:1px solid var(--stroke);border-radius:14px;padding:14px}
+.aix__row{display:flex;gap:18px;align-items:flex-end;}
+.aix__field{display:grid;gap:6px;min-width:220px}
+.aix__field label{font-weight:600;font-size:.95rem}
+.aix__field input,.aix__field select{
+    height:38px;padding:0 12px;border:1px solid var(--stroke);border-radius:10px;background:#fff;outline:none;
+}
+.aix__field input:focus,.aix__field select:focus{border-color:#b7c3d6;box-shadow:0 0 0 3px #b7c3d633}
+.aix__dates{display:flex;gap:18px}
+.aix__dates>div{display:grid;gap:6px}
+.aix__dates span{font-size:.88rem;color:var(--muted)}
+
+/* Botones */
+.btn{height:38px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
+.btn--blue{background:var(--blue);color:#fff}
+.btn--blue:hover{background:var(--blue-strong)}
+.btn--green{background:var(--green);color:#fff}
+.btn--green:hover{background:var(--green-strong)}
+.btn--danger{background:var(--danger-bg);color:#fff;border:1px solid var(--danger);border-radius:18px;padding:6px 14px;height:auto}
+.btn--mini{padding:6px 12px;height:auto;border-radius:16px;background:var(--blue);color:#fff;border:0}
+.aix__actions{margin-left:auto;display:flex;gap:12px}
+
+/* Grid principal */
+.aix__grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+@media (max-width:1024px){.aix__grid{grid-template-columns:1fr}}
+
+/* Tarjetas */
+.aix__card{background:var(--card);border:1px solid var(--stroke);border-radius:16px;padding:14px;display:grid;gap:12px}
+
+/* Buscador de proyecto */
+.aix__projectsearch label{font-weight:700}
+.aix__projectsearch__row{display:flex;gap:10px}
+.aix__projectsearch__row input{flex:1;height:38px;border:1px solid var(--stroke);border-radius:10px;padding:0 12px}
+.aix__projectsearch__row button{border-radius:12px;background:var(--blue);color:#fff;border:0;padding:0 16px}
+
+/* Tarjeta de proyecto seleccionada */
+.aix__project{border:1px solid var(--stroke);background:#eef2f7;border-radius:14px;padding:12px}
+.aix__project__head{display:flex;justify-content:space-between;align-items:center}
+.aix__project__head h3{margin:0;font-size:16px;color:#0b5fae}
+.badge{padding:4px 10px;border-radius:12px;font-size:.8rem;font-weight:700}
+.badge--green{background:#e6f7e8;color:#1e6f2d;border:1px solid #b9e5c1}
+.badge--gray{background:#f0f2f5;color:#495057;border:1px solid #d6dbe3}
+.aix__project__meta{display:grid;gap:6px}
+.aix__project__meta b{color:#0b5fae}
+.aix__project.--placeholder{color:var(--muted);font-style:italic;padding:10px}
+
+/* Tabla de asignados como filas tipo tarjeta */
+.aix__table{width:100%;border-collapse:separate;border-spacing:0 10px}
+.aix__table thead th{font-size:.9rem;color:#333;text-align:left;padding:0 10px}
+.aix__table tbody tr{background:#f8fafc;border:1px solid var(--stroke);border-radius:12px}
+.aix__table tbody td{padding:10px}
+.aix__table tbody tr td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+.aix__table tbody tr td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+.aix__empty{text-align:center;color:var(--muted);padding:16px}
+
+/* Panel derecho: disponibles */
+.aix__right{background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:12px}
+.aix__available__head{display:flex;gap:10px;align-items:center}
+.aix__available__head label{font-weight:700}
+.aix__right input{flex:1;height:36px;border:1px solid var(--stroke);border-radius:10px;padding:0 12px;background:#fff}
+
+/* Lista de disponibles */
+.aix__list{list-style:none;margin:0;padding:0;display:grid;gap:12px;max-height:520px;overflow:auto}
+.aix__listitem{border:1px solid var(--stroke);border-radius:14px;padding:12px;background:#f6f9fc;display:grid;gap:6px;align-items:center}
+.aix__listitem.is-active{box-shadow:0 0 0 3px #0b5fae33;background:#eef5ff}
+.aix__listitem__name{font-weight:700;color:#0b5fae}
+.aix__listitem__unit{font-size:.9rem;color:#384152}
+
+/* Etiquetas de estado y “Quitar” como píldoras */
+.badge-pill{border-radius:16px;padding:4px 10px;font-size:.82rem}
+
+/* Separadores */
+.aix__left .aix__card + .aix__card{margin-top:2px}
+
+
+/* --- Hotfix layout: header fijo y desbordes --- */
+
+/* deja espacio bajo el header de tu app (ajusta si tu navbar mide distinto) */
+.aix{ margin-top: 16px; }
+
+
+/* ===== Mobile fixes ===== */
+@media (max-width: 768px){
+    .aix{ margin:12px 10px; }
+
+    /* filas superiores fluidas */
+    .aix__row{ flex-wrap: wrap; gap:12px; }
+    .aix__field{ min-width: 100%; }
+    .aix__dates{ width:100%; justify-content: space-between; }
+    .aix__dates>div{ width:48%; }
+
+    /* botones grandes y sin desborde */
+    .aix__actions{ width:100%; margin-left:0; gap:10px; }
+    .aix__actions .btn{ flex:1 1 0; width:100%; }
+
+    /* grilla a una columna y sin cortes */
+    .aix__grid{ grid-template-columns: 1fr; }
+    .aix__left, .aix__right, .aix__card, .aix__project,
+    .aix__projectsearch__row{ min-width:0; }
+
+    /* buscadores apilados */
+    .aix__projectsearch__row{ flex-wrap: wrap; }
+    .aix__projectsearch__row input{ width:100%; }
+    .aix__projectsearch__row button{ width:100%; height:40px; }
+
+    .aix__available__head{ flex-wrap: wrap; }
+    .aix__right input{ width:100%; }
+
+    /* lista sin altura fija */
+    .aix__list{ max-height: none; }
+
+    /* tabla desplazable horizontal si hace falta */
+    .aix__table{ display:block; width:100%; overflow-x:auto; }
+    .aix__table table{ width:100%; }
+}
+
+/* dispositivos muy estrechos */
+@media (max-width: 420px){
+    .aix{ margin:8px; }
+    .aix__header h2{ font-size:16px; }
+    .btn{ height:40px; border-radius:10px; }
+    .aix__field input,.aix__field select{ height:40px; }
+}

@@ -129,6 +129,64 @@ export default function AppProvider({ children }) {
             }
         });
 
+    /************* ASIGNAR INVESTIGADORES *************/
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+
+    const searchInvestigadores = async (q = "") => {
+        const res = await fetch(`${apiUrl}/investigadores?q=${encodeURIComponent(q)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return await res.json(); // [{id,nombre,unidad}]
+    };
+
+    const searchProyecto = async (q = "") => {
+        if (!q) return null;
+        const res = await fetch(`${apiUrl}/proyectos/search?q=${encodeURIComponent(q)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!data) return null;
+        return {
+            id: data.id,
+            codigo: data.codigo,
+            nombre: data.nombre,
+            estado: data.estado,
+            linea: data.linea,
+            periodo: { ini: data.ini, fin: data.fin },
+            horasPlanificadas: Number(data.horas_planificadas || 0),
+            asignados: { count: Number(data.asignados_cnt || 0), horas: Number(data.horas_comprometidas || 0) },
+        };
+    };
+
+    const listarAsignados = async (proyectoId, q = "") => {
+        const res = await fetch(`${apiUrl}/proyectos/${proyectoId}/asignados?q=${encodeURIComponent(q)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return await res.json(); // [{id,nombre,rol,periodo:{ini,fin},horas,estado}]
+    };
+
+    const listarRolesProyecto = async () => {
+        const res = await fetch(`${apiUrl}/catalogos/roles-proyecto`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return await res.json(); // [{id,nombre}]
+    };
+
+    const agregarAsignacion = async (p) => {
+        await fetch(`${apiUrl}/proyectos/${p.proyectoId}/asignaciones`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify(p),
+        });
+    };
+
+    const quitarAsignacion = async ({ proyectoId, investigadorId }) => {
+        await fetch(`${apiUrl}/proyectos/${proyectoId}/asignaciones/${investigadorId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    };
+
     return (
         <AppContext.Provider value={{
             user,
@@ -140,9 +198,19 @@ export default function AppProvider({ children }) {
             empleadosState: empleadosState,
             setEmpleadosState: setEmpleadosState,
             presupuestoState: presupuestoState,
-            setPresupuestoState: setPresupuestoState
+            setPresupuestoState: setPresupuestoState,
+            searchInvestigadores,
+            searchProyecto,
+            listarAsignados,
+            listarRolesProyecto,
+            agregarAsignacion,
+            quitarAsignacion,
         }}>
             {children}
         </AppContext.Provider>
     );
+
+
+
+
 }

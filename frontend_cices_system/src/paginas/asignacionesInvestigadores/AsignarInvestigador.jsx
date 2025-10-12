@@ -11,6 +11,7 @@ export default function AsignarInvestigador() {
         listarRolesProyecto,
         agregarAsignacion,
         quitarAsignacion,
+        sugerirProyectos,
     } = useContext(AppContext);
 
     // Form superior
@@ -24,6 +25,10 @@ export default function AsignarInvestigador() {
     // Proyecto
     const [qProyecto, setQProyecto] = useState("");
     const [proyecto, setProyecto] = useState(null);
+
+    // Sugerencias
+    const [sugs, setSugs] = useState([]);
+    const [showSugs, setShowSugs] = useState(false);
 
     // Listas
     const [roles, setRoles] = useState([]);
@@ -41,41 +46,51 @@ export default function AsignarInvestigador() {
 
     useEffect(() => {
         let alive = true;
-        searchInvestigadores(filtroInv).then((r) => alive && setDisp(r));
+        searchInvestigadores(filtroInv).then((r) => alive && setDisp(r || []));
         return () => { alive = false; };
     }, [filtroInv, searchInvestigadores]);
 
+    // cargar asignados cuando haya proyecto.id
     useEffect(() => {
-        if (!proyecto) return;
+        if (!proyecto?.id) { setAsignados([]); return; }
         let alive = true;
-        listarAsignados(proyecto.id, qAsignados).then((r) => alive && setAsignados(r));
+        listarAsignados(proyecto.id, qAsignados)
+            .then((r) => alive && setAsignados(Array.isArray(r) ? r : []));
         return () => { alive = false; };
-    }, [proyecto, qAsignados, listarAsignados]);
+    }, [proyecto?.id, qAsignados, listarAsignados]);
+
+    // sugerencias con debounce
+    useEffect(() => {
+        const q = qProyecto.trim();
+        if (!q) { setSugs([]); setShowSugs(false); return; }
+        const id = setTimeout(async () => {
+            try {
+                const r = await sugerirProyectos(q);
+                setSugs(r || []);
+                setShowSugs(true);
+            } catch { setSugs([]); setShowSugs(false); }
+        }, 250);
+        return () => clearTimeout(id);
+    }, [qProyecto, sugerirProyectos]);
 
     const limpiar = () => {
-        setFiltroInv("");
-        setRolId("");
-        setHorasMes("");
-        setMeses("");
-        setIni("");
-        setFin("");
-        setSeleccionado(null);
-        setMsg("");
+        setFiltroInv(""); setRolId(""); setHorasMes("");
+        setMeses(""); setIni(""); setFin("");
+        setSeleccionado(null); setMsg("");
     };
 
     const buscarProyecto = async () => {
-        setLoading(true);
-        setMsg("");
+        setLoading(true); setMsg("");
         try {
             const p = await searchProyecto(qProyecto.trim());
             setProyecto(p);
-            if (p) setAsignados(await listarAsignados(p.id, ""));
-            else setAsignados([]);
+            setAsignados(p ? await listarAsignados(p.id, "") : []);
+            if (!p) setMsg("Proyecto no encontrado");
         } catch {
+            setProyecto(null);
+            setAsignados([]);
             setMsg("Error al buscar proyecto");
-        } finally {
-            setLoading(false);
-        }
+        } finally { setLoading(false); }
     };
 
     const agregar = async () => {
@@ -96,11 +111,8 @@ export default function AsignarInvestigador() {
             setAsignados(await listarAsignados(proyecto.id, qAsignados));
             setMsg("Asignación registrada");
             limpiar();
-        } catch {
-            setMsg("No fue posible asignar");
-        } finally {
-            setLoading(false);
-        }
+        } catch { setMsg("No fue posible asignar"); }
+        finally { setLoading(false); }
     };
 
     const quitar = async (id) => {
@@ -109,9 +121,7 @@ export default function AsignarInvestigador() {
         try {
             await quitarAsignacion({ proyectoId: proyecto.id, investigadorId: id });
             setAsignados(await listarAsignados(proyecto.id, qAsignados));
-        } finally {
-            setLoading(false);
-        }
+        } finally { setLoading(false); }
     };
 
     return (
@@ -125,41 +135,31 @@ export default function AsignarInvestigador() {
                 <div className="aix__row">
                     <div className="aix__field">
                         <label>Investigador</label>
-                        <input
-                            placeholder="Nombre"
-                            value={filtroInv}
-                            onChange={(e) => setFiltroInv(e.target.value)}
-                        />
+                        <input placeholder="Nombre" value={filtroInv}
+                               onChange={(e) => setFiltroInv(e.target.value)} />
                     </div>
 
                     <div className="aix__field">
-                        <label>Rol</label>
+                        <label>Tipo de Participación</label>
                         <select value={rolId} onChange={(e) => setRolId(e.target.value)}>
                             <option value="">Seleccione</option>
-                            {roles.map((r) => (
-                                <option key={r.id} value={r.id}>{r.nombre}</option>
-                            ))}
+                            <option value="1">Investigador Principal</option>
+                            <option value="2">Colaborador</option>
                         </select>
                     </div>
 
                     <div className="aix__field">
                         <label>Horas asignadas</label>
-                        <input
-                            placeholder="Ej. 120"
-                            inputMode="numeric"
-                            value={horasMes}
-                            onChange={(e) => setHorasMes(e.target.value.replace(/[^\d]/g, ""))}
-                        />
+                        <input placeholder="Ej. 120" inputMode="numeric"
+                               value={horasMes}
+                               onChange={(e) => setHorasMes(e.target.value.replace(/[^\d]/g, ""))} />
                     </div>
 
                     <div className="aix__field">
                         <label>Meses</label>
-                        <input
-                            placeholder="Ej. 6"
-                            inputMode="numeric"
-                            value={meses}
-                            onChange={(e) => setMeses(e.target.value.replace(/[^\d]/g, ""))}
-                        />
+                        <input placeholder="Ej. 6" inputMode="numeric"
+                               value={meses}
+                               onChange={(e) => setMeses(e.target.value.replace(/[^\d]/g, ""))} />
                     </div>
                 </div>
 
@@ -189,12 +189,26 @@ export default function AsignarInvestigador() {
                     <div className="aix__card">
                         <div className="aix__projectsearch">
                             <label>Proyecto seleccionado</label>
-                            <div className="aix__projectsearch__row">
-                                <input
-                                    placeholder="Código/Nombre"
-                                    value={qProyecto}
-                                    onChange={(e) => setQProyecto(e.target.value)}
-                                />
+                            <div className="aix__projectsearch__row aix__projectsearch__wrap">
+                                <div className="aix__projectsearch__input">
+                                    <input
+                                        placeholder="Código"
+                                        value={qProyecto}
+                                        onChange={(e) => { setQProyecto(e.target.value); setShowSugs(true); }}
+                                        onFocus={() => sugs.length && setShowSugs(true)}
+                                        onBlur={() => setTimeout(() => setShowSugs(false), 150)}
+                                    />
+                                    {showSugs && sugs.length > 0 && (
+                                        <ul className="aix__suggest">
+                                            {sugs.map((s) => (
+                                                <li key={s.id} onMouseDown={() => { setQProyecto(s.codigo); setShowSugs(false); }}>
+                                                    <span className="aix__suggest-code">{s.codigo}</span>
+                                                    <span className="aix__suggest-name">{s.nombre}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
                                 <button onClick={buscarProyecto}>Seleccionar</button>
                             </div>
                         </div>
@@ -233,16 +247,11 @@ export default function AsignarInvestigador() {
                         <table className="aix__table">
                             <thead>
                             <tr>
-                                <th>Investigador</th>
-                                <th>Rol</th>
-                                <th>Período</th>
-                                <th>Horas</th>
-                                <th>Estado</th>
-                                <th></th>
+                                <th>Investigador</th><th>Rol</th><th>Período</th><th>Horas</th><th>Estado</th><th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            {asignados.map((a) => (
+                            {(asignados || []).map((a) => (
                                 <tr key={a.id}>
                                     <td>{a.nombre}</td>
                                     <td>{a.rol}</td>
@@ -252,7 +261,7 @@ export default function AsignarInvestigador() {
                                     <td><button className="btn btn--danger" onClick={() => quitar(a.id)}>Quitar</button></td>
                                 </tr>
                             ))}
-                            {asignados.length === 0 && (
+                            {(!asignados || asignados.length === 0) && (
                                 <tr><td className="aix__empty" colSpan="6">No hay asignaciones</td></tr>
                             )}
                             </tbody>
@@ -264,24 +273,21 @@ export default function AsignarInvestigador() {
                     <div className="aix__card">
                         <div className="aix__available__head">
                             <label>Investigadores disponibles</label>
-                            <input
-                                placeholder="Nombre, especialidad o unidad"
-                                value={filtroInv}
-                                onChange={(e) => setFiltroInv(e.target.value)}
-                            />
+                            <input placeholder="Nombre" value={filtroInv}
+                                   onChange={(e) => setFiltroInv(e.target.value)} />
                         </div>
                         <ul className="aix__list">
                             {disp.map((i) => (
                                 <li
                                     key={i.id}
                                     className={`aix__listitem ${seleccionado?.id === i.id ? "is-active" : ""}`}
-                                    onClick={() => setSeleccionado(i)}
+                                    onClick={() => { setSeleccionado(i); setFiltroInv(i.nombre); }}
                                 >
                                     <div className="aix__listitem__name">{i.nombre}</div>
                                     <div className="aix__listitem__unit">Unidad: {i.unidad}</div>
                                     <button
                                         className="btn btn--mini"
-                                        onClick={(e) => { e.stopPropagation(); setSeleccionado(i); }}
+                                        onClick={(e) => { e.stopPropagation(); setSeleccionado(i); setFiltroInv(i.nombre); }}
                                     >
                                         Seleccionar
                                     </button>
@@ -298,6 +304,6 @@ export default function AsignarInvestigador() {
 
 function fmt(s) {
     if (!s) return "";
-    const [y, m, d] = s.split("-"); // yyyy-mm-dd
+    const [y, m, d] = s.split("-");
     return `${d}/${m}/${y}`;
 }

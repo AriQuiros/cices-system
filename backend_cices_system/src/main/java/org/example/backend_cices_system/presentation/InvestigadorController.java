@@ -8,16 +8,13 @@ import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
 import org.example.backend_cices_system.data.InvestigadorRepository;
 import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.data.UsuarioRepository;
+import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
-import org.example.backend_cices_system.dto.RegistroInvestigadorDTO;
-import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.PresupuestoDTO;
-import org.example.backend_cices_system.dto.GastoDTO;
 import org.example.backend_cices_system.service.InvestigadorService;
 import java.math.BigDecimal;
 
@@ -147,4 +144,11 @@ public class InvestigadorController {
             return ResponseEntity.status(500).body(java.util.Map.of("error", ex.getMessage()));
         }
     }
+
+    @GetMapping("/investigadores")
+    public List<InvestigadorDTO> investigadores(@RequestParam(required=false) String q){
+        return service.buscarInvestigadores(q);
+    }
+
+
 }

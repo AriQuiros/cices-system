@@ -1,26 +1,27 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
 import org.example.backend_cices_system.data.InvestigadorRepository;
 import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.data.UsuarioRepository;
+import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.Certificacion;
 import org.example.backend_cices_system.logic.Empleado;
 import org.example.backend_cices_system.logic.Investigador;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.stereotype.Service;
-import org.example.backend_cices_system.dto.RegistroInvestigadorDTO;
-import org.example.backend_cices_system.dto.CertificacionDTO;
-import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.PresupuestoDTO;
-import org.example.backend_cices_system.dto.GastoDTO;
 
 import java.util.List;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Map;
+
+import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.dto.InvestigadorDTO;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,8 @@ public class InvestigadorService {
     private final InvestigadorRepository invRepo;
     private final InvestigadorProyectoRepository invProyRepo;
     private final ProyectoRepository proyectoRepo;
+    private final InvestigadorRepository repo;
+
 
     @Transactional
     public Short registrarInvestigadorConCerts(RegistroInvestigadorDTO dto) {
@@ -195,4 +198,11 @@ public class InvestigadorService {
         dto.setLineaInvestigacion(p.getLineaInvestigacion());
         return dto;
     }
+
+    public List<InvestigadorDTO> buscarInvestigadores(String q){
+        return invRepo.buscarInvestigadores((q==null || q.isBlank())? null : q);
+    }
+
+
+
 }

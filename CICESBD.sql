@@ -1,4 +1,24 @@
 -- sqlplus system/root @CICESBD.sql
+-- Para los select en terminal
+-- SET LINESIZE 200
+-- SET PAGESIZE 50
+-- SET WRAP OFF
+-- SET TRIMSPOOL ON
+-- SET FEEDBACK ON
+-- SET HEADING ON
+
+-- Configuración UTF-8 para caracteres especiales
+SET PAGESIZE 0
+SET LINESIZE 1000
+SET TRIMSPOOL ON
+SET SERVEROUTPUT ON
+
+-- Configurar el charset a UTF-8
+ALTER SESSION SET NLS_LANGUAGE = 'SPANISH';
+ALTER SESSION SET NLS_TERRITORY = 'SPAIN';
+ALTER SESSION SET NLS_CHARACTERSET = 'AL32UTF8';
+ALTER SESSION SET NLS_NCHAR_CHARACTERSET = 'AL16UTF16';
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MM-YYYY';
 
 host cls
 @config.sql
@@ -132,7 +152,9 @@ CREATE TABLE INVESTIGADOR_PROYECTO (
   ID_INVESTIGADOR NUMBER(4) NOT NULL,
   ID_ROL_PROYECTO NUMBER(4) NOT NULL,
   ID_PROYECTO NUMBER(4) NOT NULL,
-  ACTIVIDAD_PROYECTO CLOB
+  ACTIVIDAD_PROYECTO CLOB,
+  FECHA_INICIO_INVESTIGADOR DATE NOT NULL,
+  FECHA_FIN_INVESTIGADOR DATE
 );
 
 CREATE TABLE ROL_PROYECTO (
@@ -155,7 +177,7 @@ CREATE TABLE PERMISO_PROYECTO (
 CREATE TABLE PROYECTO (
   ID_PROYECTO NUMBER(4) NOT NULL,
   NOMBRE_PROYECTO VARCHAR2(254) NOT NULL,
-  CODIGO_PROYECTO VARCHAR2(20) NOT NULL,
+  CODIGO_PROYECTO VARCHAR2(254) NOT NULL,
   DESCRIPCION_PROYECTO CLOB,
   OBJETIVO_GENERAL CLOB,
   FECHA_INICIO DATE NOT NULL,
@@ -581,6 +603,16 @@ end PRC_INS_PRESUPUESTO;
 /
 show error
 
+CREATE OR REPLACE PROCEDURE PRC_INS_INVESTIGADOR_PROYECTO(Pid_investigador_proyecto in number, Pid_investigador in number, Pid_rol_proyecto in number, Pid_proyecto in number,
+ Pactividad_proyecto in clob, Pfecha_inicio_investigador in date, Pfecha_fin_investigador in date) is
+begin 
+insert into INVESTIGADOR_PROYECTO(ID_INVESTIGADOR_PROYECTO, ID_INVESTIGADOR, ID_ROL_PROYECTO, ID_PROYECTO, ACTIVIDAD_PROYECTO, FECHA_INICIO_INVESTIGADOR, FECHA_FIN_INVESTIGADOR)
+values (Pid_investigador_proyecto, Pid_investigador, Pid_rol_proyecto, Pid_proyecto, Pactividad_proyecto, Pfecha_inicio_investigador, Pfecha_fin_investigador);
+commit;
+end PRC_INS_INVESTIGADOR_PROYECTO;
+/
+show error
+
 PROMPT VISTAS PARA LLENAR LOS COMBOBOX
 
 CREATE OR REPLACE VIEW IDENTIFICACION as
@@ -659,7 +691,7 @@ ORDER BY 1;
 PROMPT PRUEBAS
 
 PROMPT EJECUTAR PROCEDIMIENTOS
-EXECUTE PRC_INS_EMPLEADO(SEC_EMPLEADO.NEXTVAL, 'prueba base de datos', 'costarricense', 1, '11111111', 'example@ucr.ac.cr', '88888888');
+EXECUTE PRC_INS_EMPLEADO(SEC_EMPLEADO.NEXTVAL, 'Prueba Base de Datos', 'Costarricense', 1, '11111111', 'example@ucr.ac.cr', '88888888');
 
 EXECUTE PRC_INS_INVESTIGADOR(SEC_INVESTIGADOR.NEXTVAL, 1, 'medicina', 'ucr', 6);
 
@@ -674,12 +706,12 @@ EXECUTE PRC_INS_CERTIFICACION(SEC_CERTIFICACION.NEXTVAL, 1,  'patito', 8 , TO_DA
 BEGIN
     PRC_INS_PROYECTO(
         SEC_PROYECTO.NEXTVAL,
-        'Sistema de Gestión de Investigación',
+        'Sistema de Gestion de Investigacion',
         '2024-001',
         TO_DATE('31-1-2024', 'DD-MM-YYYY'),
         14 ,
-        'Desarrollo de un sistema integral para la gestión de proyectos de investigación',
-        'Tecnologías de Información',
+        'Desarrollo de un sistema integral para la gestion de proyectos de investigacion',
+        'Tecnologias de Informacion',
         15,
         TO_DATE('31-12-2024', 'DD-MM-YYYY')
     );
@@ -687,10 +719,9 @@ END;
 /
 
 
-EXECUTE PRC_INS_PRESUPUESTO(SEC_PRESUPUESTO.NEXTVAL, 1, 'Investigacion' ,SYSDATE, 24 , 500000.00, 40, 12,25);
+EXECUTE PRC_INS_PRESUPUESTO(SEC_PRESUPUESTO.NEXTVAL, 1, 'Investigacion' ,SYSDATE, 24 , 500000.00, 40, 12, 25);
 
-insert into INVESTIGADOR_PROYECTO(ID_INVESTIGADOR_PROYECTO, ID_INVESTIGADOR, ID_ROL_PROYECTO, ID_PROYECTO)
-values(SEC_INVESTIGADOR_PROYECTO.NEXTVAL, 1, 1, 1);
+EXECUTE PRC_INS_INVESTIGADOR_PROYECTO(SEC_INVESTIGADOR_PROYECTO.NEXTVAL, 1, 2, 1, 'Investigador principal del proyecto', TO_DATE('31-1-2024', 'DD-MM-YYYY'), NULL);
 
 EXECUTE PRC_INS_HORAS_ASIGNADAS(SEC_HORAS_ASIGNADAS.NEXTVAL, 1, 1, 10.5, 12, 18);
 
@@ -714,6 +745,73 @@ WHERE NOT EXISTS (SELECT 1 FROM ROL WHERE UPPER(NOMBRE_ROL) = 'ADMINISTRADOR');
 
 COMMIT;
 
+PROMPT SCRIPT PARA PROYECTO PRUEBA CON INVESTIGADOR PRINCIPAL
+
+-- Buscar el ID del investigador "prueba" 
+-- SELECT i.ID_INVESTIGADOR, e.NOMBRE_COMPLETO FROM INVESTIGADOR i 
+-- JOIN EMPLEADO e ON i.ID_EMPLEADO = e.ID_EMPLEADO 
+-- WHERE e.NOMBRE_COMPLETO = 'prueba';
+
+-- Script para crear proyecto prueba y asignar investigador principal
+BEGIN
+    -- Crear el proyecto prueba
+    PRC_INS_PROYECTO(
+        SEC_PROYECTO.NEXTVAL,
+        'Proyecto de Prueba para Investigador',
+        'PRUEBA-001',
+        TO_DATE('13-10-2025', 'DD-MM-YYYY'),
+        14, -- Estado ACTIVO
+        'Proyecto de prueba para validar la asignacion de investigador principal',
+        'Investigacion y Desarrollo',
+        15, -- Tipo BIOMEDICO OBSERVACIONAL
+        TO_DATE('13-10-2026', 'DD-MM-YYYY')
+    );
+    
+    -- Obtener el ultimo ID de proyecto creado
+    DECLARE
+        v_proyecto_id NUMBER;
+        v_investigador_id NUMBER;
+    BEGIN
+        -- Obtener el ID del proyecto recien creado
+        SELECT MAX(ID_PROYECTO) INTO v_proyecto_id FROM PROYECTO;
+        
+        -- Obtener el ID del investigador "prueba" 
+        SELECT i.ID_INVESTIGADOR INTO v_investigador_id 
+        FROM INVESTIGADOR i 
+        JOIN EMPLEADO e ON i.ID_EMPLEADO = e.ID_EMPLEADO 
+        WHERE e.NOMBRE_COMPLETO = 'prueba';
+        
+        -- Asignar el investigador como investigador principal del proyecto
+        PRC_INS_INVESTIGADOR_PROYECTO(
+            SEC_INVESTIGADOR_PROYECTO.NEXTVAL,
+            v_investigador_id,
+            2, -- ROL: INVESTIGADOR_PRINCIPAL
+            v_proyecto_id,
+            'Investigador principal responsable del proyecto de prueba',
+            TO_DATE('13-10-2025', 'DD-MM-YYYY'), -- Fecha inicio mismo dia del proyecto
+            NULL -- Sin fecha fin, sigue activo
+        );
+        
+        -- Crear presupuesto inicial para el proyecto
+        PRC_INS_PRESUPUESTO(
+            SEC_PRESUPUESTO.NEXTVAL,
+            v_proyecto_id,
+            'Presupuesto inicial proyecto prueba',
+            TO_DATE('13-10-2025', 'DD-MM-YYYY'),
+            24, -- ORDINARIO
+            100000.00, -- 100,000 colones
+            40, -- 40 horas por mes
+            12, -- 12 meses
+            25 -- FINANCIERO
+        );
+        
+        COMMIT;
+        
+        DBMS_OUTPUT.PUT_LINE('Proyecto creado con ID: ' || v_proyecto_id);
+        DBMS_OUTPUT.PUT_LINE('Investigador asignado con ID: ' || v_investigador_id);
+    END;
+END;
+/
 
 EXIT
 

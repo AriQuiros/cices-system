@@ -54,7 +54,9 @@ const RegistrarGastosFinancieros = () => {
     // Función para verificar si hay gastos anteriores guardados
     const verificarGastosAnteriores = () => {
         try {
-            const ultimoGastoGuardado = localStorage.getItem('ultimoGastoRegistrado');
+            // Usar el ID del usuario para crear una clave única
+            const claveUsuario = `ultimoGastoRegistrado_${user?.id || 'anonimo'}`;
+            const ultimoGastoGuardado = localStorage.getItem(claveUsuario);
             const hayGastos = ultimoGastoGuardado !== null && ultimoGastoGuardado !== '';
             setHayGastosAnteriores(hayGastos);
             return hayGastos;
@@ -68,7 +70,9 @@ const RegistrarGastosFinancieros = () => {
     // Función para cargar el último gasto del localStorage
     const cargarUltimoGasto = () => {
         try {
-            const ultimoGastoGuardado = localStorage.getItem('ultimoGastoRegistrado');
+            // Usar el ID del usuario para crear una clave única
+            const claveUsuario = `ultimoGastoRegistrado_${user?.id || 'anonimo'}`;
+            const ultimoGastoGuardado = localStorage.getItem(claveUsuario);
             if (ultimoGastoGuardado) {
                 const gasto = JSON.parse(ultimoGastoGuardado);
                 setGastoRegistrado(gasto);
@@ -291,8 +295,10 @@ const RegistrarGastosFinancieros = () => {
 
                 // Guardar el gasto en localStorage para poder verlo después
                 try {
-                    localStorage.setItem('ultimoGastoRegistrado', JSON.stringify(detallesGasto));
-                    console.log('Gasto guardado en localStorage para consulta posterior');
+                    // Usar el ID del usuario para crear una clave única
+                    const claveUsuario = `ultimoGastoRegistrado_${user?.id || 'anonimo'}`;
+                    localStorage.setItem(claveUsuario, JSON.stringify(detallesGasto));
+                    console.log('Gasto guardado en localStorage para consulta posterior del usuario:', user?.id);
                     // Actualizar el estado para mostrar el botón de "Ver Último Gasto"
                     setHayGastosAnteriores(true);
                 } catch (error) {

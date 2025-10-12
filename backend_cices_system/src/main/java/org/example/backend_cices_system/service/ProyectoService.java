@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.*;
@@ -9,10 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class ProyectoService {
     private final UsuarioRepository usuarioRepo;
     private final InvestigadorRepository invRepo;
     private final InvestigadorProyectoRepository invProyRepo;
+
 
     public Proyecto obtenerProyectoPorCodigo(String codigo) {
         return proyectoRepo.findByCodigoProyecto(codigo).orElse(null);
@@ -250,5 +252,17 @@ public class ProyectoService {
         String qq = (q == null) ? null : q.trim();
         if (qq == null || qq.isEmpty()) return List.of();
         return proyectoRepo.suggest(qq, pg);
+    }
+    public ProyectoResumenDTO buscarResumen(String q) {
+        var list = proyectoRepo.buscarResumen(q.trim(), org.springframework.data.domain.PageRequest.of(0,1));
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    // Servicio
+    public List<AsignadoDTO> listarAsignados(int proyectoId, String q) {
+        return proyectoRepo.asignados(proyectoId, q == null ? "" : q.trim())
+                .stream()
+                .map(AsignadoDTO::of) // of(ProyectoRepository.AsignadoRow r)
+                .toList();
     }
 }

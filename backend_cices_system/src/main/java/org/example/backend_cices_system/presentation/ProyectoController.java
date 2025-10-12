@@ -3,9 +3,7 @@ package org.example.backend_cices_system.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.ProyectoRepository;
-import org.example.backend_cices_system.dto.PresupuestoDTO;
-import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.ProyectoMiniDTO;
+import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.DocumentoService;
 import org.example.backend_cices_system.service.PresupuestoService;
@@ -73,6 +71,18 @@ public class ProyectoController {
             @RequestParam String q,
             @RequestParam(defaultValue = "10") int limit) {
         return proyectoService.suggest(q, org.springframework.data.domain.PageRequest.of(0, limit));
+    }
+
+    @GetMapping("/search")
+    public ProyectoResumenDTO search(@RequestParam String q) {
+        return proyectoService.buscarResumen(q);
+    }
+
+    @GetMapping("/{id}/asignados")
+    public ResponseEntity<List<AsignadoDTO>> listarAsignados(
+            @PathVariable int id,
+            @RequestParam(defaultValue = "") String q) {
+        return ResponseEntity.ok(proyectoService.listarAsignados(id, q));
     }
 
 }

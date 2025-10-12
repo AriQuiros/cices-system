@@ -192,7 +192,7 @@ export default function AsignarInvestigador() {
                             <div className="aix__projectsearch__row aix__projectsearch__wrap">
                                 <div className="aix__projectsearch__input">
                                     <input
-                                        placeholder="Código"
+                                        placeholder="Código o Nombre"
                                         value={qProyecto}
                                         onChange={(e) => { setQProyecto(e.target.value); setShowSugs(true); }}
                                         onFocus={() => sugs.length && setShowSugs(true)}

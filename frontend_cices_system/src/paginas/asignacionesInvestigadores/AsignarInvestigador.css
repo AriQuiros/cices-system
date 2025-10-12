@@ -59,7 +59,7 @@
 
 /* Tarjeta de proyecto seleccionada */
 .aix__project{border:1px solid var(--stroke);background:#eef2f7;border-radius:14px;padding:12px}
-.aix__project__head{display:flex;justify-content:space-between;align-items:center}
+.aix__project__head{display:flex;justify-content:space-between;align-items:center; margin-bottom: 20px}
 .aix__project__head h3{margin:0;font-size:16px;color:#0b5fae}
 .badge{padding:4px 10px;border-radius:12px;font-size:.8rem;font-weight:700}
 .badge--green{background:#e6f7e8;color:#1e6f2d;border:1px solid #b9e5c1}

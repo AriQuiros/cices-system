@@ -60,6 +60,12 @@ public class ProyectoController {
         List<ProyectoDTO> proyectoDTO = proyectoService
                 .obtenerTodosLosProyectos();
         return ResponseEntity.ok(proyectoDTO);
-        }
+    }
+
+    @GetMapping("/consultar/{id}")
+    public ResponseEntity<ProyectoDTO> consultarProyecto(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(proyectoService.obtenerProyectoDTOPorId(id.shortValue()));
+    }
+
 
 }

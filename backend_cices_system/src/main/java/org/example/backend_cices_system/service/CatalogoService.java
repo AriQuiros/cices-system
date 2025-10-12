@@ -61,5 +61,9 @@ public class CatalogoService {
                 .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
                 .collect(Collectors.toList());
     }
+
+    public CodigoDTO obtenerCodigoPorId(Short id) {
+        return catalogoRepository.findCodigoById(id);
+    }
 }
 

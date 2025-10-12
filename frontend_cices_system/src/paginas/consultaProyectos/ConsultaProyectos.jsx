@@ -110,6 +110,9 @@ function ConsultaProyectos() {
         setPaginaActual(1);
     };
 
+    const handleClickProyecto = async(id) => {
+        window.open(`/consultar/${id}`, "_blank");
+    }
 
     return(
         <div className="contenedor_proyectos">
@@ -147,9 +150,10 @@ function ConsultaProyectos() {
                 <h2>Lista de Proyectos</h2>
                 <div className="label">
                     {proyectosPaginaActual.map(proyecto => (
-                        <label key={proyecto.codigoProyecto}>
-                            <h3>{proyecto.nombreProyecto}</h3>
-                            <p>Código: {proyecto.codigoProyecto}</p>
+                        <label key={proyecto.idProyecto}
+                               onClick={() => handleClickProyecto(proyecto.idProyecto)}>
+                            <h3>{proyecto.nombre}</h3>
+                            <p>Código: {proyecto.codigo}</p>
                             <p>Fecha Inicio: {proyecto.fechaInicio}</p>
                             <p>Fecha finalización: {proyecto.fechaFinalizacion}</p>
                             <p>Línea de investigación: {proyecto.lineaInvestigacion}</p>

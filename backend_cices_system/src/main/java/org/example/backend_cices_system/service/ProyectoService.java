@@ -159,22 +159,6 @@ public class ProyectoService {
                 .collect(Collectors.toList());
     }
 
-    public List<ProyectoDTO> obtenerTodosLosProyectos() {
-        return proyectoRepo.findAll().stream()
-                .map(this::obtenerDTO)
-                .toList();
-    }
-
-    public ProyectoDTO obtenerDTO(Proyecto proyecto){
-            ProyectoDTO proyectoDTO = new ProyectoDTO();
-            proyectoDTO.setCodigo(proyecto.getCodigoProyecto());
-            proyectoDTO.setNombre(proyecto.getNombreProyecto());
-            proyectoDTO.setFechaInicio(proyecto.getFechaInicio());
-            proyectoDTO.setFechaFinalizacion(proyecto.getFechaFinalizacion());
-            proyectoDTO.setLineaInvestigacion(proyecto.getLineaInvestigacion());
-            return proyectoDTO;
-    }
-
     public List<ProyectoDTO> misProyectos(String username) {
         var u = usuarioRepo.findActiveByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no activo"));
@@ -198,4 +182,67 @@ public class ProyectoService {
         dto.setLineaInvestigacion(p.getLineaInvestigacion());
         return dto;
     }
+
+    /********CONSULTA DE PROYECTOS***********/
+
+    /***********CONSULTA GENRERAL DE TODOS LOS PROYECTOS**********/
+    public List<ProyectoDTO> obtenerTodosLosProyectos() {
+        return proyectoRepo.findAll().stream()
+                .map(this::obtenerDTO)
+                .toList();
+    }
+
+    public ProyectoDTO obtenerDTO(Proyecto proyecto){
+
+        ProyectoDTO proyectoDTO = new ProyectoDTO();
+        proyectoDTO.setIdProyecto(proyecto.getId());
+        proyectoDTO.setCodigo(proyecto.getCodigoProyecto());
+        proyectoDTO.setNombre(proyecto.getNombreProyecto());
+        proyectoDTO.setFechaInicio(proyecto.getFechaInicio());
+        proyectoDTO.setFechaFinalizacion(proyecto.getFechaFinalizacion());
+        proyectoDTO.setLineaInvestigacion(proyecto.getLineaInvestigacion());
+        return proyectoDTO;
+    }
+
+    /**************CONSULTA DE UN PROYECTO ESPECIFICO***************/
+
+    public Proyecto proyectoPorId(Short id){
+        return proyectoRepo.findProyectoById(id);
+    }
+
+    public List<EntidadProyecto> listaDeEntidades(Proyecto proyecto) {
+        return entidadProyectoRepo.findEntidadProyectoByIdProyecto(proyecto);
+    }
+
+    public CodigoDTO obtenerEstado(Short id){
+        return catalogoService.obtenerCodigoPorId(id);
+    }
+
+    public CodigoDTO obtenerTipoUnidad(Short id){
+        return catalogoService.obtenerCodigoPorId(id);
+    }
+
+    public ProyectoDTO obtenerProyectoDTOPorId(Short id){
+        Proyecto proyecto = proyectoPorId(id);
+
+        ProyectoDTO proyectoDTO = new ProyectoDTO();
+        proyectoDTO.setCodigo(proyecto.getCodigoProyecto());
+        proyectoDTO.setNombre(proyecto.getNombreProyecto());
+        proyectoDTO.setFechaInicio(proyecto.getFechaInicio());
+        proyectoDTO.setFechaFinalizacion(proyecto.getFechaFinalizacion());
+        proyectoDTO.setLineaInvestigacion(proyecto.getLineaInvestigacion());
+        proyectoDTO.setEstado(obtenerEstado(proyecto.getIdCodigoEstado()).getValor());
+        proyectoDTO.setDescripcion(proyecto.getDescripcionProyecto());
+        proyectoDTO.setObjetivoGeneral(proyecto.getObjetivoGeneral());
+        proyectoDTO.setDetalles(proyecto.getDetallesProyectos());
+
+        List<EntidadVinculadaDTO> entidadesDTO = listaDeEntidades(proyecto).stream()
+                .map(ep -> new EntidadVinculadaDTO(ep.getIdEntidad().getNombre(),
+                        obtenerTipoUnidad(ep.getIdEntidad().getIdCodigoTipo()).getValor()))
+                .collect(Collectors.toList());
+        proyectoDTO.setEntidadesVinculadas(entidadesDTO);
+
+        return proyectoDTO;
+    }
+
 }

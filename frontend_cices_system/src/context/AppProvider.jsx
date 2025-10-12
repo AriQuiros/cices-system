@@ -190,6 +190,16 @@ export default function AppProvider({ children }) {
         });
     };
 
+    const sugerirProyectos = async (q = "") => {
+        if (!q) return [];
+        const res = await fetch(`${apiUrl}/proyectos/suggest?q=${encodeURIComponent(q)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) return [];
+        // [{id,codigo,nombre}]
+        return await res.json();
+    };
+
     return (
         <AppContext.Provider value={{
             user,
@@ -208,6 +218,7 @@ export default function AppProvider({ children }) {
             listarRolesProyecto,
             agregarAsignacion,
             quitarAsignacion,
+            sugerirProyectos,
         }}>
             {children}
         </AppContext.Provider>

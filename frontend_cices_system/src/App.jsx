@@ -23,6 +23,7 @@ import ProyectoInvestigador from "./paginas/consultaProyectos/ProyectoInvestigad
 import AppProvider from "./context/AppProvider.jsx";
 import {AppContext} from "./context/AppContext.jsx";
 import AsignarInvestigador from "./paginas/asignacionesInvestigadores/AsignarInvestigador.jsx";
+import ProyectoSeleccionado from "./paginas/consultaProyectos/ProyectoSeleccionado.jsx";
 
 function App() {
     return (
@@ -59,6 +60,7 @@ function Main(){
 
                     <Route path="/director" element={<Director />} />
                     <Route path="/administrador" element={<ConsultaProyectos />} />
+                    <Route path="/consultar/:id" element={<ProyectoSeleccionado />} />
                 </Routes>
         </main>
     );

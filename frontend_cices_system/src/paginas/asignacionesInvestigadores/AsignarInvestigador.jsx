@@ -238,7 +238,7 @@ export default function AsignarInvestigador() {
                             <label>Investigadores asignados</label>
                             <div className="aix__projectsearch__row">
                                 <input
-                                    placeholder="Nombre, especialidad o unidad"
+                                    placeholder="Nombre"
                                     value={qAsignados}
                                     onChange={(e) => setQAsignados(e.target.value)}
                                 />
@@ -249,7 +249,7 @@ export default function AsignarInvestigador() {
                         <table className="aix__table">
                             <thead>
                             <tr>
-                                <th>Investigador</th><th>Rol</th><th>Período</th><th>Horas</th><th>Estado</th><th></th>
+                                <th>Investigador</th><th>Tipo de Participación</th><th>Período</th><th>Horas</th><th>Estado</th><th></th>
                             </tr>
                             </thead>
                             <tbody>

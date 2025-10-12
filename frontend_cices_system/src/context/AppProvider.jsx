@@ -130,14 +130,15 @@ export default function AppProvider({ children }) {
         });
 
     /************* ASIGNAR INVESTIGADORES *************/
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
     const searchInvestigadores = async (q = "") => {
-        const res = await fetch(`${apiUrl}/investigadores?q=${encodeURIComponent(q)}`, {
+        const res = await fetch(`${apiUrl}/investigador/investigadores?q=${encodeURIComponent(q)}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         return await res.json(); // [{id,nombre,unidad}]
     };
+
 
     const searchProyecto = async (q = "") => {
         if (!q) return null;
@@ -166,11 +167,13 @@ export default function AppProvider({ children }) {
     };
 
     const listarRolesProyecto = async () => {
-        const res = await fetch(`${apiUrl}/catalogos/roles-proyecto`, {
+        const res = await fetch(`${apiUrl}/catalogos/roles`, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        return await res.json(); // [{id,nombre}]
+        if (!res.ok) throw new Error("Error al listar roles");
+        return await res.json(); // [{id, nombre}]
     };
+
 
     const agregarAsignacion = async (p) => {
         await fetch(`${apiUrl}/proyectos/${p.proyectoId}/asignaciones`, {

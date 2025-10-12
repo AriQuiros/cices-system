@@ -41,7 +41,7 @@
 .btn--green{background:var(--green);color:#fff}
 .btn--green:hover{background:var(--green-strong)}
 .btn--danger{background:var(--danger-bg);color:#fff;border:1px solid var(--danger);border-radius:18px;padding:6px 14px;height:auto}
-.btn--mini{padding:6px 12px;height:auto;border-radius:16px;background:var(--blue);color:#fff;border:0}
+.btn--mini{padding:6px 15px;height:auto;border-radius:16px;background:var(--blue);color:#fff;border:0}
 .aix__actions{margin-left:auto;display:flex;gap:12px}
 
 /* Grid principal */
@@ -145,3 +145,37 @@
     .btn{ height:40px; border-radius:10px; }
     .aix__field input,.aix__field select{ height:40px; }
 }
+
+/* Ajusta tamaño del botón "Seleccionar" en la lista de investigadores */
+.aix__listitem .btn--mini {
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 10px;
+    height: 30px;
+    line-height: 1;
+    width: auto;
+    align-self: flex-start;
+}
+
+/* Opcional: alinear a la derecha del item sin ocupar todo el ancho */
+.aix__listitem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.aix__projectsearch__wrap{ position: relative; }
+.aix__projectsearch__input{ position: relative; flex:1; }
+.aix__suggest{
+    position:absolute; top:40px; left:0; right:0;
+    background:#fff; border:1px solid var(--stroke);
+    border-radius:10px; max-height:260px; overflow:auto; z-index:20;
+    box-shadow:0 6px 18px rgba(0,0,0,.08); padding:6px 0; margin:0; list-style:none;
+}
+.aix__suggest li{
+    display:flex; gap:10px; align-items:center; padding:8px 12px; cursor:pointer;
+}
+.aix__suggest li:hover{ background:#f3f6fb; }
+.aix__suggest-code{ font-weight:700; color:#0b5fae; min-width:90px; }
+.aix__suggest-name{ color:#374151; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }

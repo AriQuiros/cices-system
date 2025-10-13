@@ -34,7 +34,8 @@ export default function AsignarInvestigador() {
     const [roles, setRoles] = useState([]);
     const [disp, setDisp] = useState([]);
     const [seleccionado, setSeleccionado] = useState(null);
-    const [asignados, setAsignados] = useState([]);
+    const [asignadosSrv, setAsignadosSrv] = useState([]);   // desde backend
+    const [pendientes, setPendientes] = useState([]);       // solo UI
     const [qAsignados, setQAsignados] = useState("");
 
     const [loading, setLoading] = useState(false);
@@ -50,12 +51,12 @@ export default function AsignarInvestigador() {
         return () => { alive = false; };
     }, [filtroInv, searchInvestigadores]);
 
-    // cargar asignados cuando haya proyecto.id
+    // cargar asignados del servidor
     useEffect(() => {
-        if (!proyecto?.id) { setAsignados([]); return; }
+        if (!proyecto?.id) { setAsignadosSrv([]); return; }
         let alive = true;
         listarAsignados(proyecto.id, qAsignados)
-            .then((r) => alive && setAsignados(Array.isArray(r) ? r : []));
+            .then((r) => alive && setAsignadosSrv(Array.isArray(r) ? r : []));
         return () => { alive = false; };
     }, [proyecto?.id, qAsignados, listarAsignados]);
 
@@ -64,19 +65,16 @@ export default function AsignarInvestigador() {
         const q = qProyecto.trim();
         if (!q) { setSugs([]); setShowSugs(false); return; }
         const id = setTimeout(async () => {
-            try {
-                const r = await sugerirProyectos(q);
-                setSugs(r || []);
-                setShowSugs(true);
-            } catch { setSugs([]); setShowSugs(false); }
+            try { setSugs((await sugerirProyectos(q)) || []); setShowSugs(true); }
+            catch { setSugs([]); setShowSugs(false); }
         }, 250);
         return () => clearTimeout(id);
     }, [qProyecto, sugerirProyectos]);
 
-    const limpiar = () => {
+    const limpiarFormulario = () => {
         setFiltroInv(""); setRolId(""); setHorasMes("");
         setMeses(""); setIni(""); setFin("");
-        setSeleccionado(null); setMsg("");
+        setSeleccionado(null);
     };
 
     const buscarProyecto = async () => {
@@ -84,48 +82,94 @@ export default function AsignarInvestigador() {
         try {
             const p = await searchProyecto(qProyecto.trim());
             setProyecto(p);
-            setAsignados(p ? await listarAsignados(p.id, "") : []);
+            setPendientes([]); // limpiar buffer al cambiar proyecto
+            setAsignadosSrv(p ? await listarAsignados(p.id, "") : []);
             if (!p) setMsg("Proyecto no encontrado");
         } catch {
-            setProyecto(null);
-            setAsignados([]);
+            setProyecto(null); setAsignadosSrv([]); setPendientes([]);
             setMsg("Error al buscar proyecto");
         } finally { setLoading(false); }
     };
 
-    const agregar = async () => {
+    const agregar = () => {
         if (!proyecto) return setMsg("Seleccione un proyecto");
         if (!seleccionado) return setMsg("Seleccione un investigador");
         if (!rolId) return setMsg("Seleccione un rol");
-        try {
-            setLoading(true);
-            await agregarAsignacion({
-                proyectoId: proyecto.id,
-                investigadorId: seleccionado.id,
-                rolProyectoId: Number(rolId),
-                horasMes: Number(horasMes || 0),
-                meses: Number(meses || 1),
-                ini: ini || proyecto.periodo?.ini,
-                fin: fin || proyecto.periodo?.fin,
-            });
-            setAsignados(await listarAsignados(proyecto.id, qAsignados));
-            setMsg("Asignación registrada");
-            limpiar();
-        } catch { setMsg("No fue posible asignar"); }
-        finally { setLoading(false); }
+
+        const rolNombre = roles.find(r => String(r.id) === String(rolId))?.nombre ?? "";
+
+        const item = {
+            id: `_tmp_${Date.now()}`, temp: true,
+            investigadorId: seleccionado.id,
+            rolId: Number(rolId),
+            nombre: seleccionado.nombre,
+            rol: rolNombre,                      // ← ahora sí aparece
+            ini: (ini || proyecto.periodo?.ini) || "",
+            fin: (fin || proyecto.periodo?.fin) || "",
+            horasMes: Number(horasMes || 0),
+            meses: Number(meses || 1),
+            horas: Number(horasMes || 0) * Number(meses || 1),
+            estado: "Nuevo",
+            periodo: { ini: (ini || proyecto.periodo?.ini) || "", fin: (fin || proyecto.periodo?.fin) || "" }
+        };
+        setPendientes(prev => [...prev, item]);
+        setMsg("Añadido a la lista. Recuerde Guardar.");
+        limpiarFormulario();
     };
 
-    const quitar = async (id) => {
+
+    const quitar = async (row) => {
         if (!proyecto) return;
+        // si es temporal, solo quita del buffer
+        if (row?.temp || String(row?.id).startsWith("_tmp_")) {
+            setPendientes(prev => prev.filter(p => p.id !== row.id));
+            return;
+        }
+        // existente → backend
         setLoading(true);
         try {
-            await quitarAsignacion({ proyectoId: proyecto.id, investigadorId: id });
-            setAsignados(await listarAsignados(proyecto.id, qAsignados));
+            await quitarAsignacion({ proyectoId: proyecto.id, investigadorId: row.id });
+            setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
         } finally { setLoading(false); }
     };
 
+    // Guardar todo lo pendiente
+    const onGuardar = async () => {
+        if (!proyecto) return setMsg("Seleccione un proyecto");
+        if (pendientes.length === 0) return setMsg("No hay cambios por guardar");
+        setLoading(true);
+        try {
+            await Promise.all(pendientes.map(p =>
+                agregarAsignacion({
+                    proyectoId: proyecto.id,
+                    investigadorId: p.investigadorId,
+                    rolProyectoId: p.rolId,
+                    horasMes: p.horasMes,
+                    meses: p.meses,
+                    ini: p.ini,
+                    fin: p.fin,
+                })
+            ));
+            setPendientes([]);
+            setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
+            setMsg("Cambios guardados");
+        } catch {
+            setMsg("No fue posible guardar");
+        } finally { setLoading(false); }
+    };
+
+    // Cancelar descarta pendientes y recarga server
+    const onCancelar = async () => {
+        setPendientes([]);
+        if (proyecto?.id) setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
+        limpiarFormulario();
+        setMsg("Cambios descartados");
+    };
+
+    const filas = [...asignadosSrv, ...pendientes];
+
     return (
-        <div className="aix">
+        <div className="aix aix--hassticky">
             <div className="aix__header">
                 <h2>Asignar investigador a este proyecto</h2>
                 {msg && <span className="aix__msg">{msg}</span>}
@@ -143,9 +187,13 @@ export default function AsignarInvestigador() {
                         <label>Tipo de Participación</label>
                         <select value={rolId} onChange={(e) => setRolId(e.target.value)}>
                             <option value="">Seleccione</option>
-                            <option value="1">Investigador Principal</option>
-                            <option value="2">Colaborador</option>
+                            {roles.map(r => (
+                                <option key={r.id} value={r.id}>{r.nombre}</option>
+                            ))}
                         </select>
+
+
+
                     </div>
 
                     <div className="aix__field">
@@ -178,7 +226,7 @@ export default function AsignarInvestigador() {
                         </div>
                     </div>
                     <div className="aix__actions">
-                        <button className="btn btn--green" onClick={limpiar}>Limpiar</button>
+                        <button className="btn btn--green" onClick={limpiarFormulario}>Limpiar</button>
                         <button className="btn btn--blue" onClick={agregar} disabled={loading}>Agregar</button>
                     </div>
                 </div>
@@ -209,7 +257,6 @@ export default function AsignarInvestigador() {
                                             ))}
                                         </ul>
                                     )}
-
                                 </div>
                                 <button onClick={buscarProyecto}>Seleccionar</button>
                             </div>
@@ -253,17 +300,25 @@ export default function AsignarInvestigador() {
                             </tr>
                             </thead>
                             <tbody>
-                            {(asignados || []).map((a) => (
+                            {(filas || []).map((a) => (
                                 <tr key={a.id}>
                                     <td>{a.nombre}</td>
                                     <td>{a.rol}</td>
                                     <td>{fmt(a.periodo?.ini)} - {fmt(a.periodo?.fin)}</td>
                                     <td>{a.horas} h</td>
-                                    <td><span className="badge badge--gray">{a.estado || "Vigente"}</span></td>
-                                    <td><button className="btn btn--danger" onClick={() => quitar(a.id)}>Quitar</button></td>
+                                    <td>
+                    <span className={`badge ${a.temp ? "badge--blue" : "badge--gray"}`}>
+                      {a.estado || "Vigente"}
+                    </span>
+                                    </td>
+                                    <td>
+                                        <button className="btn btn--danger" onClick={() => quitar(a)}>
+                                            {a.temp ? "Quitar (pend.)" : "Quitar"}
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
-                            {(!asignados || asignados.length === 0) && (
+                            {(!filas || filas.length === 0) && (
                                 <tr><td className="aix__empty" colSpan="6">No hay asignaciones</td></tr>
                             )}
                             </tbody>
@@ -299,6 +354,16 @@ export default function AsignarInvestigador() {
                         </ul>
                     </div>
                 </section>
+            </div>
+
+            {/* barra fija inferior */}
+            <div className="aix__stickybar">
+                <div className="aix__stickybar__inner">
+                    <button className="btn btn--gray" onClick={onCancelar}>Cancelar</button>
+                    <button className="btn btn--blue" onClick={onGuardar} disabled={loading || pendientes.length===0}>
+                        Guardar {pendientes.length ? `(${pendientes.length})` : ""}
+                    </button>
+                </div>
             </div>
         </div>
     );

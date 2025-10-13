@@ -1,6 +1,8 @@
 package org.example.backend_cices_system.presentation;
 
+import org.example.backend_cices_system.data.RolProyectoRepository;
 import org.example.backend_cices_system.data.RolRepository;
+import org.example.backend_cices_system.dto.RolSimpleDTO;
 import org.example.backend_cices_system.logic.Rol;
 
 import org.example.backend_cices_system.data.RolRepository;
@@ -22,6 +24,8 @@ public class CatalogoController {
     private RolRepository rolRepository;
     @Autowired
     private CatalogoService catalogoService;
+    @Autowired
+    private RolProyectoRepository rolProyectoRepository;
 
     @GetMapping("/roles")
     public ResponseEntity<List<Rol>> obtenerRoles() {
@@ -47,4 +51,15 @@ public class CatalogoController {
     public ResponseEntity<List<CodigoDTO>> obtenerTiposCertificacion() {
         return ResponseEntity.ok(catalogoService.obtenerTiposCertificacion());
     }
+
+    @GetMapping("/roles-proyecto")
+    public List<Map<String,Object>> rolesProyecto() {
+        return rolProyectoRepository.listar().stream()
+                .map(r -> Map.<String,Object>of(
+                        "id", String.valueOf(r.getId()),               // frontend usa String
+                        "nombre", r.getNombrePermiso()                 // texto visible
+                ))
+                .toList();
+    }
+
 }

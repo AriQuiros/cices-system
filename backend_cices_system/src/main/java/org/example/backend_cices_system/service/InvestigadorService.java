@@ -203,7 +203,7 @@ public class InvestigadorService {
 
     private ProyectoDTO toDTO(Proyecto p) {
         var dto = new ProyectoDTO();
-        dto.setIdProyecto(p.getIdProyecto());
+        dto.setIdProyecto(p.getId());
         dto.setCodigo(p.getCodigoProyecto());
         dto.setNombre(p.getNombreProyecto());
         dto.setFechaInicio(p.getFechaInicio());

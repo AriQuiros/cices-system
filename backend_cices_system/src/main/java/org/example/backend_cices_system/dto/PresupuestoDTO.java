@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+
 @Getter
 @Setter
 public class PresupuestoDTO {
@@ -21,4 +23,16 @@ public class PresupuestoDTO {
     // Campos adicionales para validación de gastos
     private BigDecimal gastosRealizados;
     private BigDecimal montoDisponible;
+
+    public PresupuestoDTO() {
+    }
+
+    public PresupuestoDTO(Short idPresupuesto, String fuenteFinanciamiento, BigDecimal monto, String tipoPresupuesto, String descripcion  ) {
+        this.idPresupuesto = idPresupuesto;
+        this.fuenteFinanciamiento = fuenteFinanciamiento;
+        this.monto = monto;
+        this.tipoPresupuesto = tipoPresupuesto;
+        this.descripcion = descripcion;
+
+    }
 }

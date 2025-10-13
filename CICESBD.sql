@@ -763,7 +763,7 @@ BEGIN
         14, -- Estado ACTIVO
         'Proyecto de prueba para validar la asignacion de investigador principal',
         'Investigacion y Desarrollo',
-        15, -- Tipo BIOMEDICO OBSERVACIONAL
+        16, -- Tipo BIOMEDICO OBSERVACIONAL
         TO_DATE('13-10-2026', 'DD-MM-YYYY')
     );
     

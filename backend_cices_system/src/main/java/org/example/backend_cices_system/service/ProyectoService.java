@@ -9,6 +9,7 @@ import org.example.backend_cices_system.logic.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +31,8 @@ public class ProyectoService {
     private final UsuarioRepository usuarioRepo;
     private final InvestigadorRepository invRepo;
     private final InvestigadorProyectoRepository invProyRepo;
+    private final PresupuestoRepository presupuestoRepo;
+    private final DocumentoRepository documentoRepo;
 
 
     public Proyecto obtenerProyectoPorCodigo(String codigo) {
@@ -217,16 +220,103 @@ public class ProyectoService {
         return entidadProyectoRepo.findEntidadProyectoByIdProyecto(proyecto);
     }
 
-    public CodigoDTO obtenerEstado(Short id){
-        return catalogoService.obtenerCodigoPorId(id);
+    public List<EntidadVinculadaDTO> listaEntidadesDTO(Proyecto proyecto) {
+        return listaDeEntidades(proyecto).stream()
+                .map(ep -> new EntidadVinculadaDTO(ep.getIdEntidad().getNombre(),
+                        obtenerTipo(ep.getIdEntidad().getIdCodigoTipo()).getValor()))
+                .collect(Collectors.toList());
     }
 
-    public CodigoDTO obtenerTipoUnidad(Short id){
-        return catalogoService.obtenerCodigoPorId(id);
+    public CodigoDTO obtenerTipo(Short id){
+        return Optional.ofNullable(catalogoService.obtenerCodigoPorId(id)).orElse(null);
     }
+
+    public List<ObjetivoEspecifico> listaDeObjetivosEspecificos(Proyecto proyecto) {
+        return objetivoRepo.findObjetivoEspecificoByIdProyecto(proyecto);
+    }
+
+    public List<ObjetivoEspecificoDTO> listaDeObjetivosEspecificosDTO(Proyecto proyecto) {
+        return listaDeObjetivosEspecificos(proyecto).stream()
+                .map(ob -> {
+                    ObjetivoEspecificoDTO dto = new ObjetivoEspecificoDTO(ob.getId(), ob.getTipo(), ob.getDescripcion());
+                    dto.setMetas(listaDeMetasDTO(ob));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<Meta> listaDeMetas(ObjetivoEspecifico objetivoEspecifico){
+        return metaRepo.findMetaByIdObjetivo(objetivoEspecifico);
+    }
+
+    public List<Indicador> listaDeIndicadores(Meta meta){
+        return indicadorRepo.findIndicadorByIdMeta(meta);
+    }
+
+    public List<String> listaDeIndicadoresDTO(Meta meta){
+        return listaDeIndicadores(meta).stream().map(Indicador::getDescripcion).collect(Collectors.toList());
+    }
+
+    public List<MetaDTO> listaDeMetasDTO(ObjetivoEspecifico objetivoEspecifico){
+        return listaDeMetas(objetivoEspecifico).stream()
+                .map(m -> {
+                    String tipo = obtenerTipo(m.getIdCodigoTipo()).getValor();
+                    BigDecimal cantidad = "cuantitativa".equalsIgnoreCase(tipo) ? m.getCantidad() : null;
+                    MetaDTO dto = new MetaDTO(tipo, m.getDescripcion(), cantidad);
+                    dto.setIndicadores(listaDeIndicadoresDTO(m));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+    }
+
+
+    public List<Presupuesto> listaDePresupuestos(Proyecto proyecto){
+        return Optional.ofNullable(presupuestoRepo.findPresupuestoByIdProyecto(proyecto)).orElse(Collections.emptyList());
+    }
+
+    public List<PresupuestoDTO> listaDePresupuestosDTO(Proyecto proyecto){
+        return listaDePresupuestos(proyecto).stream()
+                .map(p -> {
+                    String fuente = Optional.ofNullable(obtenerTipo(p.getIdCodigoFuenteFinanciamiento()))
+                            .map(CodigoDTO::getValor)
+                            .orElse("Desconocido");
+                    String tipo = Optional.ofNullable(obtenerTipo(p.getIdCodigoTipoPresupuesto()))
+                            .map(CodigoDTO::getValor)
+                            .orElse("Desconocido");
+
+                    return new PresupuestoDTO(p.getId(), fuente, p.getMonto(), tipo, p.getDescripcion());
+                })
+                .collect(Collectors.toList());
+    }
+    public List<Documento> listaDeDocumentos(Proyecto proyecto){
+        return Optional.ofNullable(documentoRepo.findDocumentoByIdProyecto(proyecto)).orElse(Collections.emptyList());
+    }
+
+    public List<DocumentoDTO> listaDeDocumentosDTO(Proyecto proyecto){
+        return listaDeDocumentos(proyecto).stream()
+                .map(d -> new DocumentoDTO(d.getId(),d.getNombreDocumento(), d.getDirectorio()))
+                .collect(Collectors.toList());
+    }
+
+    public List<PresentacionInforme> listaDePresentaciones(Proyecto proyecto){
+        return Optional.ofNullable(presentacionInformeRepo.findPresentacionInformeByIdProyecto(proyecto)).orElse(Collections.emptyList());
+    }
+
+
+    public List<InformeDTO> listaDeInformesDTO(Proyecto proyecto){
+        return listaDePresentaciones(proyecto).stream()
+                .map(i -> new InformeDTO(i.getId(),i.getDescripcion(), i.getFechaPresentacion()))
+                .collect(Collectors.toList());
+    }
+
 
     public ProyectoDTO obtenerProyectoDTOPorId(Short id){
         Proyecto proyecto = proyectoPorId(id);
+
+        if (proyecto == null) {
+            throw new RuntimeException("Proyecto no encontrado con ID: " + id);
+        }
 
         ProyectoDTO proyectoDTO = new ProyectoDTO();
         proyectoDTO.setCodigo(proyecto.getCodigoProyecto());
@@ -234,17 +324,17 @@ public class ProyectoService {
         proyectoDTO.setFechaInicio(proyecto.getFechaInicio());
         proyectoDTO.setFechaFinalizacion(proyecto.getFechaFinalizacion());
         proyectoDTO.setLineaInvestigacion(proyecto.getLineaInvestigacion());
-        proyectoDTO.setEstado(obtenerEstado(proyecto.getIdCodigoEstado()).getValor());
+        proyectoDTO.setTipoProyecto(obtenerTipo(proyecto.getIdCodigoTipoProyecto()).getValor());
+        proyectoDTO.setTipoProyecto(obtenerTipo(proyecto.getIdCodigoTipoProyecto()).getValor());
+        proyectoDTO.setEstado(obtenerTipo(proyecto.getIdCodigoEstado()).getValor());
         proyectoDTO.setDescripcion(proyecto.getDescripcionProyecto());
         proyectoDTO.setObjetivoGeneral(proyecto.getObjetivoGeneral());
         proyectoDTO.setDetalles(proyecto.getDetallesProyectos());
-
-        List<EntidadVinculadaDTO> entidadesDTO = listaDeEntidades(proyecto).stream()
-                .map(ep -> new EntidadVinculadaDTO(ep.getIdEntidad().getNombre(),
-                        obtenerTipoUnidad(ep.getIdEntidad().getIdCodigoTipo()).getValor()))
-                .collect(Collectors.toList());
-        proyectoDTO.setEntidadesVinculadas(entidadesDTO);
-
+        proyectoDTO.setEntidadesVinculadas(listaEntidadesDTO(proyecto));
+        proyectoDTO.setObjetivosEspecificos(listaDeObjetivosEspecificosDTO(proyecto));
+        proyectoDTO.setPresupuestos(listaDePresupuestosDTO(proyecto));
+        proyectoDTO.setDocumentos(listaDeDocumentosDTO(proyecto));
+        proyectoDTO.setPresentacionesInformes(listaDeInformesDTO(proyecto));
         return proyectoDTO;
     }
 

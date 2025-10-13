@@ -166,13 +166,17 @@ export default function AppProvider({ children }) {
         return await res.json(); // [{id,nombre,rol,periodo:{ini,fin},horas,estado}]
     };
 
+    // AppProvider.jsx
     const listarRolesProyecto = async () => {
-        const res = await fetch(`${apiUrl}/catalogos/roles`, {
+        const res = await fetch(`${apiUrl}/catalogos/roles-proyecto`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) throw new Error("Error al listar roles");
         return await res.json(); // [{id, nombre}]
     };
+
+
+
 
 
     const agregarAsignacion = async (p) => {

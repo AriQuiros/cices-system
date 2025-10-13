@@ -11,4 +11,13 @@ public class InformeDTO {
     private String descripcion;
     private LocalDate fechaPresentacion;
     private String codigoEstado;
+
+    public InformeDTO() {
+    }
+
+    public InformeDTO(Short idInforme, String descripcion, LocalDate fechaPresentacion ) {
+        this.idInforme = idInforme;
+        this.descripcion = descripcion;
+        this.fechaPresentacion = fechaPresentacion;
+    }
 }

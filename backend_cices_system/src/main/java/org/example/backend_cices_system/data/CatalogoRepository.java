@@ -14,4 +14,5 @@ public interface CatalogoRepository extends JpaRepository<Codigo, Short> {
     List<Codigo> findByIdTipoId(Short idTipo);
     Optional<Codigo> findByIdTipoNombreAndValor(String nombre, String valor);
     CodigoDTO findCodigoById(Short id);
+
 }

@@ -67,7 +67,7 @@ public class ProyectoServiceTest {
         meta.setTipo("CUANTITATIVA");
         meta.setCantidad(BigDecimal.valueOf(3));
         meta.setDescripcion("Tres prototipos");
-        meta.setIndicadores(List.of("Precisión", "Recall", "F1"));
+       // meta.setIndicadores(List.of("Precisión", "Recall", "F1"));
 
         ObjetivoEspecificoDTO objetivo = new ObjetivoEspecificoDTO();
         objetivo.setCategoria("INVESTIGACIÓN");

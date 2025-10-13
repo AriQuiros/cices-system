@@ -17,11 +17,13 @@ public class ProyectoDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFinalizacion;
     private String lineaInvestigacion;
+    private String tipoProyecto;
     private String estado;
     private String tipo;
     private String detalles;
 
     private List<ObjetivoEspecificoDTO> objetivosEspecificos;
+    private List<PresupuestoDTO> presupuestos;
     private List<DocumentoDTO> documentos;
     private List<EntidadVinculadaDTO> entidadesVinculadas;
     private List<InformeDTO> presentacionesInformes;

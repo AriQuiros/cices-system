@@ -12,4 +12,13 @@ public class ObjetivoEspecificoDTO {
     private String categoria;
     private String descripcion;
     private List<MetaDTO> metas;
+
+    public ObjetivoEspecificoDTO() {
+    }
+
+    public ObjetivoEspecificoDTO(Short idObjetivo, String categoria, String descripcion) {
+        this.idObjetivo = idObjetivo;
+        this.categoria = categoria;
+        this.descripcion = descripcion;
+    }
 }

@@ -14,4 +14,13 @@ public class MetaDTO {
     private BigDecimal cantidad; // Solo se usa si es CUANTITATIVA
     private String descripcion;
     private List<String> indicadores;
+
+    public MetaDTO() {
+    }
+
+    public MetaDTO(String tipo,String descripcion, BigDecimal cantidad) {
+        this.tipo = tipo;
+        this.cantidad = cantidad;
+        this.descripcion = descripcion;
+    }
 }

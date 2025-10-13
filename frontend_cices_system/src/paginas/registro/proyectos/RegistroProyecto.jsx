@@ -363,11 +363,11 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                 <h2>Registrar Proyecto</h2>
 
                 <div className="form-row">
-                    <input type="text" placeholder="Código" className="input-field" required
+                    <input type="text" placeholder="Código" className="input-field" required maxLength={252}
                            name="codigo" ref={inputCodigoRef} value={entity.codigo} onChange={handleChange}/>
-                    <input type="text" placeholder="Nombre" className="input-field" required
+                    <input type="text" placeholder="Nombre" className="input-field" required maxLength={252}
                            name="nombre" value={entity.nombre} onChange={handleChange}/>
-                    <input type="text" placeholder="Unidad de Origen: CICES" className="input-field" required
+                    <input type="text" placeholder="Unidad de Origen: CICES" className="input-field" required  maxLength={252}
                            name="unidadOrigen" value={entity.unidadOrigen} onChange={handleChange}/>
                 </div>
 
@@ -387,7 +387,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                         ))}
                     </select>
 
-                    <input type="text" placeholder="Línea de investigación" className="input-field" required
+                    <input type="text" placeholder="Línea de investigación" className="input-field" required  maxLength={252}
                            name="lineaInvestigacion" value={entity.lineaInvestigacion} onChange={handleChange}/>
                 </div>
 
@@ -529,6 +529,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 type="text"
                                 placeholder={`Nombre de la institución ${idxInst + 1}`}
                                 className="input-field"
+                                maxLength={252}
                                 value={institucion.nombre}
                                 onChange={(e) =>
                                     handleNestedChange(
@@ -569,6 +570,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 placeholder={`Nombre de la unidad ${idxUnidad + 1}`}
                                 className="input-field"
                                 value={unidad.nombre}
+                                maxLength={252}
                                 onChange={(e) =>
                                     handleNestedChange(
                                         ["entidadesVinculadas", "unidades", idxUnidad, "nombre"],
@@ -608,6 +610,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 placeholder={`Nombre del sitio ${idxSitio + 1}`}
                                 className="input-field"
                                 value={sitio.nombre}
+                                maxLength={252}
                                 onChange={(e) =>
                                     handleNestedChange(
                                         ["entidadesVinculadas", "sitios", idxSitio, "nombre"],
@@ -672,6 +675,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                     placeholder={`Descripción del informe ${idx + 1}`}
                                     className="input-field"
                                     value={informe.descripcion}
+                                    maxLength={252}
                                     onChange={(e) =>
                                         handleNestedChange(['presentacionesInformes', idx, 'descripcion'], e.target.value)
                                     }

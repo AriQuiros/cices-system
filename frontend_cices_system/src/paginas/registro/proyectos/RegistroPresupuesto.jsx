@@ -420,6 +420,7 @@ function Show({editable, existe, searchTerm, showList, setShowList, filteredProy
                                             readOnly={existe.financiero}
                                             className="input"
                                             placeholder="Descripción corta"
+                                            maxLength={50}
                                             name="descripcion"
                                             value={presupuestoFinanciero.descripcion}
                                             onChange={handleFinancieroChange}
@@ -459,6 +460,7 @@ function Show({editable, existe, searchTerm, showList, setShowList, filteredProy
                                         <input
                                             type="text" required={tipoPresupuesto.horas}
                                             readOnly={existe.horas}
+                                            maxLength={50}
                                             className="input"
                                             placeholder="Descripción corta"
                                             name="descripcion"

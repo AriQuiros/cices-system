@@ -1,10 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import org.example.backend_cices_system.data.*;
-import org.example.backend_cices_system.dto.EntidadVinculadaDTO;
-import org.example.backend_cices_system.dto.MetaDTO;
-import org.example.backend_cices_system.dto.ObjetivoEspecificoDTO;
-import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +39,7 @@ public class ProyectoServiceTest {
     @Mock
     private CatalogoService catalogoService;
     @Mock
-    private DocumentoService documentoService;
+    private PresentacionInformeRepository presentacionInformeRepo;
 
     @InjectMocks
     private ProyectoService proyectoService;
@@ -67,7 +64,7 @@ public class ProyectoServiceTest {
         meta.setTipo("CUANTITATIVA");
         meta.setCantidad(BigDecimal.valueOf(3));
         meta.setDescripcion("Tres prototipos");
-       // meta.setIndicadores(List.of("Precisión", "Recall", "F1"));
+        meta.setIndicadores(List.of("Precisión", "Recall", "F1"));
 
         ObjetivoEspecificoDTO objetivo = new ObjetivoEspecificoDTO();
         objetivo.setCategoria("INVESTIGACIÓN");
@@ -151,6 +148,49 @@ public class ProyectoServiceTest {
         verify(entidadRepo, never()).save(any());
         verify(entidadProyectoRepo, never()).save(any());
     }
+
+    @Test
+    void testGuardarProyecto_conFechasDeInformes() {
+        when(proyectoRepo.findByCodigoProyecto("PRJ-001")).thenReturn(Optional.empty());
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("ESTADO PROYECTO", "ACTIVO")).thenReturn((short) 1);
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO PROYECTO", "SOCIOCULTURAL")).thenReturn((short) 2);
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO META", "CUANTITATIVA")).thenReturn((short) 3);
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO ENTIDAD", "INSTITUCION")).thenReturn((short) 4);
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO ENTIDAD", "UNIDAD")).thenReturn((short) 5);
+        when(catalogoService.obtenerIdCodigoPorTipoYValor(eq("ESTADO INFORME"), anyString()))
+                .thenAnswer(invocation -> {
+                    String estado = invocation.getArgument(1);
+                    if ("ENTREGADO".equals(estado)) return (short) 10;
+                    if ("PENDIENTE".equals(estado)) return (short) 20;
+                    return (short) 0;
+                });
+
+        when(entidadRepo.findByNombreIgnoreCase(any())).thenReturn(Optional.empty());
+        when(entidadRepo.save(any())).thenAnswer(inv -> inv.getArguments()[0]);
+        when(proyectoRepo.save(any())).thenAnswer(inv -> inv.getArguments()[0]);
+        when(objetivoRepo.save(any())).thenAnswer(inv -> inv.getArguments()[0]);
+        when(metaRepo.save(any())).thenAnswer(inv -> inv.getArguments()[0]);
+        when(indicadorRepo.save(any())).thenAnswer(inv -> inv.getArguments()[0]);
+        when(entidadProyectoRepo.save(any())).thenAnswer(inv -> inv.getArguments()[0]);
+        when(presentacionInformeRepo.save(any())).thenAnswer(inv -> inv.getArguments()[0]);
+
+        // Agregar informes a dto
+        InformeDTO informeEntregado = new InformeDTO();
+        informeEntregado.setDescripcion("Informe entregado");
+        informeEntregado.setFechaPresentacion(LocalDate.now().minusDays(1)); // fecha pasada
+
+        InformeDTO informePendiente = new InformeDTO();
+        informePendiente.setDescripcion("Informe pendiente");
+        informePendiente.setFechaPresentacion(LocalDate.now().plusDays(5)); // fecha futura
+
+        dto.setPresentacionesInformes(List.of(informeEntregado, informePendiente));
+
+        Proyecto saved = proyectoService.guardarProyecto(dto);
+
+        assertNotNull(saved);
+        verify(presentacionInformeRepo, times(2)).save(any(PresentacionInforme.class));
+    }
+
 
 }
 

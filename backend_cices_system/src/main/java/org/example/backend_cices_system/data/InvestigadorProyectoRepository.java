@@ -20,4 +20,24 @@ public interface InvestigadorProyectoRepository extends JpaRepository<Investigad
         where ip.idInvestigador = :inv
     """)
     List<Short> findProyectoIdsByInvestigador(@Param("inv") Investigador inv);
+
+    @Query("""
+    select distinct p.id
+    from InvestigadorProyecto ip
+    join ip.idProyecto p
+    where ip.idInvestigador = :inv
+      and (ip.fechaFinInvestigador is null or ip.fechaFinInvestigador >= CURRENT_DATE)
+""")
+    List<Short> findProyectoIdsVigentesByInvestigador(@Param("inv") Investigador inv);
+
+    @Query("""
+    select distinct p.id
+    from InvestigadorProyecto ip
+    join ip.idProyecto p
+    where ip.idInvestigador = :inv
+      and ip.fechaFinInvestigador < CURRENT_DATE
+""")
+    List<Short> findProyectoIdsFinalizadosByInvestigador(@Param("inv") Investigador inv);
+
+
 }

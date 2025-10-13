@@ -188,7 +188,7 @@ public class InvestigadorService {
             var inv = invRepo.findByIdEmpleado(u.getIdEmpleado())
                     .orElseThrow(() -> new RuntimeException("No es investigador"));
 
-            var ids = invProyRepo.findProyectoIdsByInvestigador(inv); // ← solo IDs (sin CLOB)
+            var ids = invProyRepo.findProyectoIdsVigentesByInvestigador(inv); // ← solo IDs (sin CLOB)
             if (ids.isEmpty()) return List.of();
 
             return proyectoRepo.findAllById(ids).stream()

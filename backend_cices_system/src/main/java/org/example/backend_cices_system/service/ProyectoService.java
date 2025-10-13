@@ -165,29 +165,6 @@ public class ProyectoService {
                 .collect(Collectors.toList());
     }
 
-    public List<ProyectoDTO> misProyectos(String username) {
-        var u = usuarioRepo.findActiveByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no activo"));
-        var inv = invRepo.findByIdEmpleado(u.getIdEmpleado())
-                .orElseThrow(() -> new RuntimeException("No es investigador"));
-
-        var ids = invProyRepo.findProyectoIdsByInvestigador(inv); // ← solo IDs (sin CLOB)
-        if (ids.isEmpty()) return List.of();
-
-        return proyectoRepo.findAllById(ids).stream()
-                .map(this::toDTO)
-                .toList();
-    }
-
-    private ProyectoDTO toDTO(Proyecto p) {
-        var dto = new ProyectoDTO();
-        dto.setCodigo(p.getCodigoProyecto());
-        dto.setNombre(p.getNombreProyecto());
-        dto.setFechaInicio(p.getFechaInicio());
-        dto.setFechaFinalizacion(p.getFechaFinalizacion());
-        dto.setLineaInvestigacion(p.getLineaInvestigacion());
-        return dto;
-    }
 
     /********CONSULTA DE PROYECTOS***********/
 

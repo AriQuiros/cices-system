@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Entity
@@ -37,5 +39,12 @@ public class InvestigadorProyecto {
     @Lob
     @Column(name = "ACTIVIDAD_PROYECTO")
     private String actividadProyecto;
+
+    @NotNull
+    @Column(name = "FECHA_INICIO_INVESTIGADOR", nullable = false)
+    private LocalDate fechaInicioInvestigador;
+
+    @Column(name = "FECHA_FIN_INVESTIGADOR")
+    private LocalDate fechaFinInvestigador;
 
 }

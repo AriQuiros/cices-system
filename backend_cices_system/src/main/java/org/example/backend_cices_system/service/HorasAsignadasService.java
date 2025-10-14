@@ -2,7 +2,7 @@
 package org.example.backend_cices_system.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend_cices_system.data.HorasAsignadaRepository;
+import org.example.backend_cices_system.data.HorasAsignadasRepository;
 import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
 import org.example.backend_cices_system.dto.InvestigadorHorasDTO;
 import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
@@ -21,7 +21,7 @@ public class HorasAsignadasService {
 
     @Autowired
     private final InvestigadorProyectoRepository invProjRepo;
-    private final HorasAsignadaRepository horasRepo;
+    private final HorasAsignadasRepository horasRepo;
 
     public ResumenHorasProyectoDTO obtenerHorasPorProyecto(Short proyectoId) {
 

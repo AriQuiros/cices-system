@@ -45,4 +45,6 @@ public interface InvestigadorProyectoRepository extends JpaRepository<Investigad
     boolean existsByIdProyectoAndIdInvestigador(Proyecto proyecto, Investigador investigador);
     Optional<InvestigadorProyecto> findByIdProyectoAndIdInvestigador(Proyecto proyecto, Investigador investigador);
 
+    List<InvestigadorProyecto> findByIdProyecto_Id(Short proyectoId);
+
 }

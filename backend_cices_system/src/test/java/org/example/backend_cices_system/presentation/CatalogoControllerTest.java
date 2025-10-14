@@ -1,8 +1,10 @@
 package org.example.backend_cices_system.presentation;
 
+import org.example.backend_cices_system.data.RolProyectoRepository;
 import org.example.backend_cices_system.data.RolRepository;
 import org.example.backend_cices_system.dto.CodigoDTO;
 import org.example.backend_cices_system.logic.Rol;
+import org.example.backend_cices_system.logic.RolProyecto;
 import org.example.backend_cices_system.service.CatalogoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,10 +27,14 @@ public class CatalogoControllerTest {
     private RolRepository rolRepository;
 
     @Mock
+    private RolProyectoRepository rolProyectoRepository;
+
+    @Mock
     private CatalogoService catalogoService;
 
     @InjectMocks
     private CatalogoController catalogoController;
+
 
     //se hace un test por cada peticion
     @Test
@@ -118,6 +124,32 @@ public class CatalogoControllerTest {
         assertNotNull(response);
         assertEquals(tipos, response.getBody());
         verify(catalogoService, times(1)).obtenerTiposCertificacion();
+    }
+
+    @Test
+    void rolesProyecto_devuelveListaMapeadaCorrectamente() {
+        // datos simulados
+        RolProyecto r1 = new RolProyecto();
+        r1.setId((short) 1);
+        r1.setNombrePermiso("COLABORADOR");
+
+        RolProyecto r2 = new RolProyecto();
+        r2.setId((short) 2);
+        r2.setNombrePermiso("INVESTIGADOR_PRINCIPAL");
+
+        when(rolProyectoRepository.listar()).thenReturn(List.of(r1, r2));
+
+        // ejecución
+        List<Map<String, Object>> resultado = catalogoController.rolesProyecto();
+
+        // verificación
+        assertEquals(2, resultado.size());
+        assertEquals("1", resultado.get(0).get("id"));
+        assertEquals("COLABORADOR", resultado.get(0).get("nombre"));
+        assertEquals("2", resultado.get(1).get("id"));
+        assertEquals("INVESTIGADOR_PRINCIPAL", resultado.get(1).get("nombre"));
+
+        verify(rolProyectoRepository).listar();
     }
 }
 

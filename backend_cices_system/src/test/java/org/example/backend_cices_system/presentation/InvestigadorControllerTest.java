@@ -2,6 +2,7 @@ package org.example.backend_cices_system.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.backend_cices_system.dto.GastoDTO;
+import org.example.backend_cices_system.dto.InvestigadorDTO;
 import org.example.backend_cices_system.service.InvestigadorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,11 +18,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @ExtendWith(MockitoExtension.class)
 public class InvestigadorControllerTest {
@@ -159,4 +163,32 @@ public class InvestigadorControllerTest {
 
         verify(investigadorService, times(1)).registrarGasto(any(GastoDTO.class));
     }
+
+    @Test
+    void investigadores_devuelveListaCorrecta() {
+        InvestigadorDTO i1 = new InvestigadorDTO((short)1, "Ana", "Biomedicina");
+        InvestigadorDTO i2 = new InvestigadorDTO((short)2, "Luis", "Química");
+
+        when(investigadorService.buscarInvestigadores("a"))
+                .thenReturn(List.of(i1, i2));
+
+        List<InvestigadorDTO> res = investigadorController.investigadores("a"); // instancia
+
+        assertEquals(2, res.size());
+        assertEquals((short)1, res.get(0).id());
+        assertEquals("Ana", res.get(0).nombre());
+        assertEquals("Biomedicina", res.get(0).unidad());
+        verify(investigadorService).buscarInvestigadores("a");
+    }
+
+    @Test
+    void investigadores_conParametroNuloLlamaServiceConNull() {
+        when(investigadorService.buscarInvestigadores(null)).thenReturn(List.of());
+
+        List<InvestigadorDTO> res = investigadorController.investigadores(null); // instancia
+
+        assertTrue(res.isEmpty());
+        verify(investigadorService).buscarInvestigadores(null);
+    }
+
 }

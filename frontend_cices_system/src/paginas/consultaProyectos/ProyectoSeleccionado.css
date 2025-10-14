@@ -1,5 +1,5 @@
 .proyecto-container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 40px auto;
     padding: 30px 40px;
     background-color: #ffffff;
@@ -56,6 +56,26 @@ thead th {
     padding: 10px;
     text-align: center;
     border: 1px solid #ccc;
+}
+
+thead td{
+    text-align: center;
+    padding: 4px;
+    border: 1px solid #ddd;
+}
+
+table tbody {
+    background-color: #eef5ff;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tbody td {
+    text-align: center;
+    padding: 4px;
+    border: 1px solid #ddd;
 }
 
 

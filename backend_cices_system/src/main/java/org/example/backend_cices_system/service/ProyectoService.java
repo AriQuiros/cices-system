@@ -35,6 +35,7 @@ public class ProyectoService {
     private final RolProyectoRepository rolProyectoRepo;
     private final HorasAsignadasRepository horasAsignadasRepo;
     private final EntityManager em;
+    private final CertificacionRepository certificacionRepo;
 
     public Proyecto obtenerProyectoPorCodigo(String codigo) {
         return proyectoRepo.findByCodigoProyecto(codigo).orElse(null);
@@ -288,19 +289,30 @@ public class ProyectoService {
                 .collect(Collectors.toList());
     }
 
+    public List<Certificacion> listaDeCertificaciones(Investigador investigador){
+        return Optional.ofNullable(certificacionRepo.findCertificacionByIdInvestigador(investigador)).orElse(Collections.emptyList());
+    }
+
+    public List<CertificacionesDTO> listaDeCertificacionesDTO(Investigador investigador){
+        return listaDeCertificaciones(investigador).stream().map(c -> new CertificacionesDTO(c.getNombreCertificacion(),
+                obtenerTipo(c.getIdCodigoTipoCertificacion()).getValor(),
+                c.getFechaExpiracion(),obtenerTipo(c.getIdCodigoTipoEstado()).getValor() )).collect(Collectors.toList());
+    }
+
     public List<InvestigadorProyecto> listaDeInvestigadoresProyecto(Proyecto proyecto){
         return Optional.ofNullable(invProyRepo.findInvestigadoresByIdProyecto(proyecto)).orElse(Collections.emptyList());
     }
 
     public List<InvestigadorProyectoDTO> listaDeInvestigadoresDTO(Proyecto proyecto){
         return listaDeInvestigadoresProyecto(proyecto).stream()
-                .map(i -> new InvestigadorProyectoDTO(i.getIdRolProyecto().getNombrePermiso(),
-                        i.getIdInvestigador().getIdEmpleado().getNombreCompleto(), i.getIdInvestigador().getIdEmpleado().getIdentificacion(),
-                        obtenerTipo(i.getIdInvestigador().getIdCodigoGradoAcademico()).getValor(), i.getIdInvestigador().getInstitucionOrigen(),
-                        i.getIdInvestigador().getUnidadAcademica()
-                        )).collect(Collectors.toList());
+                .map(i -> {
+                    InvestigadorProyectoDTO dto =  new InvestigadorProyectoDTO(i.getIdRolProyecto().getNombrePermiso(),
+                            i.getIdInvestigador().getIdEmpleado().getNombreCompleto(), i.getIdInvestigador().getIdEmpleado().getIdentificacion(),
+                            obtenerTipo(i.getIdInvestigador().getIdCodigoGradoAcademico()).getValor(), i.getIdInvestigador().getInstitucionOrigen(),
+                            i.getIdInvestigador().getUnidadAcademica(), listaDeCertificacionesDTO(i.getIdInvestigador()));
+                    return dto;
+                }).collect(Collectors.toList());
     }
-
 
     public ProyectoDTO obtenerProyectoDTOPorId(Short id){
         Proyecto proyecto = proyectoPorId(id);

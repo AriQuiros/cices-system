@@ -62,20 +62,45 @@ function ProyectoSeleccionado() {
                     <th>GRADO ACADEMICO</th>
                     <th>INSTITUCION</th>
                     <th>UNIDAD</th>
+                    <th>CERTIFICACIONES</th>
                 </tr>
                 </thead>
                 <tbody>
                 {proyecto.investigadoresProyectos?.map((ent) => (
-                    <tr key={ent.id}>
-                        <td>{ent.rolProyecto?.toLowerCase()
-                            .replace(/_/g, ' ')
-                            .replace(/^\w/, c => c.toUpperCase())}</td>
-                        <td>{ent.nombre}</td>
-                        <td>{ent.cedula}</td>
-                        <td>{ent.gradoAcademico?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
-                        <td>{ent.institucion}</td>
-                        <td>{ent.unidadAcademica}</td>
-                    </tr>
+                    <>
+                        <tr key={ent.id}>
+                            <td>{ent.rolProyecto?.toLowerCase()
+                                .replace(/_/g, ' ')
+                                .replace(/^\w/, c => c.toUpperCase())}</td>
+                            <td>{ent.nombre}</td>
+                            <td>{ent.cedula}</td>
+                            <td>{ent.gradoAcademico?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
+                            <td>{ent.institucion}</td>
+                            <td>{ent.unidadAcademica}</td>
+                            {ent.certificaciones?.length > 0 && (
+                                <table  className="tablaCertificaciones">
+                                    <thead>
+                                    <tr>
+                                        <th>NOMBRE</th>
+                                        <th>TIPO</th>
+                                        <th>FECHA EXPIRACION</th>
+                                        <th>ESTADO</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {ent.certificaciones.map((cert, i) => (
+                                        <tr key={i}>
+                                            <td>{cert.nombre}</td>
+                                            <td>{cert.tipoCertificacion?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
+                                            <td>{cert.fechaExpiracion}</td>
+                                            <td>{cert.estado?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </tr>
+                    </>
                 ))}
                 </tbody>
             </table>
@@ -96,32 +121,32 @@ function ProyectoSeleccionado() {
                             <td>{ent.descripcion}</td>
                         </tr>
                         {ent.metas?.length > 0 && (
-                                    <table>
-                                        <thead>
-                                        <tr>
-                                            <th>TIPO</th>
-                                            <th>CANTIDAD</th>
-                                            <th>DESCRIPCIÓN</th>
-                                            <th>INDICADORES</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {ent.metas.map((meta, i) => (
-                                            <tr key={i}>
-                                                <td>{meta.tipo?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
-                                                <td>{meta.cantidad ?? "-"}</td>
-                                                <td>{meta.descripcion}</td>
-                                                <td>
-                                                    <ul>
-                                                        {meta.indicadores?.map((indicador, j) => (
-                                                            <li key={j}>{indicador.descripcion ?? indicador}</li>
-                                                        ))}
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>TIPO</th>
+                                    <th>CANTIDAD</th>
+                                    <th>DESCRIPCIÓN</th>
+                                    <th>INDICADORES</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {ent.metas.map((meta, i) => (
+                                    <tr key={i}>
+                                        <td>{meta.tipo?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
+                                        <td>{meta.cantidad ?? "-"}</td>
+                                        <td>{meta.descripcion}</td>
+                                        <td>
+                                            <ul>
+                                                {meta.indicadores?.map((indicador, j) => (
+                                                    <li key={j}>{indicador.descripcion ?? indicador}</li>
+                                                ))}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
                         )}
                         {(!ent.metas || ent.metas.length === 0) && (
                             <tr>

@@ -175,16 +175,17 @@ export default function AppProvider({ children }) {
         return await res.json(); // [{id, nombre}]
     };
 
-
-
-
-
     const agregarAsignacion = async (p) => {
-        await fetch(`${apiUrl}/proyectos/${p.proyectoId}/asignaciones`, {
+        const r = await fetch(`${apiUrl}/proyectos/${p.proyectoId}/asignaciones`, {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify(p),
         });
+        if (!r.ok) {
+            const txt = await r.text();
+            throw new Error(r.status === 409 ? "Duplicado" : txt || "Error");
+        }
+
     };
 
     const quitarAsignacion = async ({ proyectoId, investigadorId }) => {

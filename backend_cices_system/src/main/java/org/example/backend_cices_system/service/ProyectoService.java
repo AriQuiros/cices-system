@@ -33,7 +33,9 @@ public class ProyectoService {
     private final InvestigadorProyectoRepository invProyRepo;
     private final PresupuestoRepository presupuestoRepo;
     private final DocumentoRepository documentoRepo;
-
+    private final RolProyectoRepository rolProyectoRepo;
+    private final HorasAsignadasRepository horasAsignadasRepo;
+    private final EntityManager em;
 
     public Proyecto obtenerProyectoPorCodigo(String codigo) {
         return proyectoRepo.findByCodigoProyecto(codigo).orElse(null);
@@ -346,4 +348,88 @@ public class ProyectoService {
                 .map(AsignadoDTO::of) // of(ProyectoRepository.AsignadoRow r)
                 .toList();
     }
+
+    // ProyectoService.java
+    @Transactional
+    public void agregarAsignacion(short proyectoId, AsignacionReqDTO req) {
+        Proyecto p = Optional.ofNullable(proyectoRepo.findProyectoById(proyectoId))
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no existe"));
+
+        Investigador inv = invRepo.findById(req.investigadorId())
+                .orElseThrow(() -> new IllegalArgumentException("Investigador no existe"));
+
+        if (invProyRepo.existsByIdProyectoAndIdInvestigador(p, inv)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT,
+                    "El investigador ya está asignado a este proyecto"
+            );
+        }
+
+        RolProyecto rol = rolProyectoRepo.findById(req.rolProyectoId())
+                .orElseThrow(() -> new IllegalArgumentException("Rol inválido"));
+
+        // en ProyectoService.agregarAsignacion(...)
+        LocalDate ini = Optional.ofNullable(req.ini()).orElse(p.getFechaInicio());
+        LocalDate fin = req.fin(); // puede ser null
+
+        InvestigadorProyecto ip = new InvestigadorProyecto();
+        ip.setId(nextVal("SEC_INVESTIGADOR_PROYECTO"));
+        ip.setIdInvestigador(inv);
+        ip.setIdProyecto(p);
+        ip.setIdRolProyecto(rol);
+        ip.setFechaInicioInvestigador(ini);          // ← LocalDate
+        ip.setFechaFinInvestigador(fin);             // ← LocalDate
+        invProyRepo.save(ip);
+
+        Integer horasMes = req.horasMes();
+        Integer meses = req.meses();
+        if (horasMes != null && horasMes > 0 && meses != null && meses > 0) {
+            Short idTipoHorasPresupuesto =
+                    catalogoService.obtenerIdCodigoPorTipoYValor("TIPO PRESUPUESTO", "HORAS");
+            Presupuesto pres = presupuestoRepo
+                    .findFirstByIdProyectoAndIdCodigoTipoPresupuesto(p, idTipoHorasPresupuesto)
+                    .orElseThrow(() -> new IllegalStateException("No hay presupuesto de HORAS para el proyecto"));
+
+            HorasAsignada ha = new HorasAsignada();          // usa la clase real de tu modelo
+            ha.setId(nextVal("SEC_HORAS_ASIGNADAS"));
+            ha.setIdInvestigadorProyecto(ip);
+            ha.setIdPresupuesto(pres);
+            ha.setCantidadHorasMes(horasMes.doubleValue());
+            ha.setCantidadMeses(meses.shortValue());
+            Short idTipoHoras =
+                    catalogoService.obtenerIdCodigoPorTipoYValor("TIPO HORAS", "TIEMPO COMPLETO");
+            ha.setIdCodigoTipoHoras(idTipoHoras);
+            horasAsignadasRepo.save(ha);
+        }
+
+    }
+
+    @Transactional
+    public void quitarAsignacion(short proyectoId, short investigadorId) {
+        Proyecto p = Optional.ofNullable(proyectoRepo.findProyectoById(proyectoId))
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no existe"));
+
+        Investigador inv = invRepo.findById(investigadorId)
+                .orElseThrow(() -> new IllegalArgumentException("Investigador no existe"));
+
+        InvestigadorProyecto ip = invProyRepo
+                .findByIdProyectoAndIdInvestigador(p, inv)
+                .orElseThrow(() -> new IllegalArgumentException("Asignación no existe"));
+
+        // elimina horas primero por FK
+        horasAsignadasRepo.deleteByIdInvestigadorProyecto(ip);
+        invProyRepo.delete(ip);
+    }
+
+    private Short nextVal(String seq) {
+        Number n = (Number) em.createNativeQuery("SELECT " + seq + ".NEXTVAL FROM DUAL").getSingleResult();
+        return n.shortValue();
+    }
+
+
+
+
 }
+
+
+

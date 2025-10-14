@@ -96,6 +96,13 @@ export default function AsignarInvestigador() {
         if (!seleccionado) return setMsg("Seleccione un investigador");
         if (!rolId) return setMsg("Seleccione un rol");
 
+        const yaAsignadoSrv = asignadosSrv.some(a => String(a.id) === String(seleccionado.id));
+        const yaEnPend = pendientes.some(p => String(p.investigadorId) === String(seleccionado.id));
+        if (yaAsignadoSrv || yaEnPend) {
+            setMsg("Ese investigador ya está asignado o pendiente");
+            return;
+        }
+
         const rolNombre = roles.find(r => String(r.id) === String(rolId))?.nombre ?? "";
 
         const item = {

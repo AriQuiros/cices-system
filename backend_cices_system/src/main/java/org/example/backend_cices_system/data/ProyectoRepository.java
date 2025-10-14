@@ -18,6 +18,7 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Short> {
     Optional<Proyecto> findByCodigoProyecto(String codigoProyecto);
     List<Proyecto> findByIdCodigoEstado(Short idCodigoEstado);
     Proyecto findProyectoById(Short id);
+
     @Query("""
     select new org.example.backend_cices_system.dto.ProyectoMiniDTO(
       p.id, p.codigoProyecto, p.nombreProyecto)

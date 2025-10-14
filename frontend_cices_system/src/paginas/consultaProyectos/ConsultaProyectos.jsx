@@ -1,5 +1,7 @@
 import {useEffect, useState} from "react";
 import "./ConsultaProyectos.css";
+import { Link } from "react-router-dom";
+
 
 function ConsultaProyectos() {
     const [proyectos, setProyectos] = useState([]);
@@ -150,14 +152,20 @@ function ConsultaProyectos() {
                 <h2>Lista de Proyectos</h2>
                 <div className="label">
                     {proyectosPaginaActual.map(proyecto => (
-                        <label key={proyecto.idProyecto}
-                               onClick={() => handleClickProyecto(proyecto.idProyecto)}>
+                        <div key={proyecto.idProyecto}>
                             <h3>{proyecto.nombre}</h3>
                             <p>Código: {proyecto.codigo}</p>
                             <p>Fecha Inicio: {proyecto.fechaInicio}</p>
                             <p>Fecha finalización: {proyecto.fechaFinalizacion}</p>
                             <p>Línea de investigación: {proyecto.lineaInvestigacion}</p>
-                        </label>
+                            <Link to={`/proyectos/${proyecto.idProyecto}/horas`} className="ver-horas-link">
+                                Ver horas asignadas
+                            </Link>{" "}
+                            <Link to={`/consultar/${proyecto.idProyecto}`} className="ver-horas-link">
+                                Ver más
+                            </Link>
+
+                        </div>
                     ))}
                 </div>
 

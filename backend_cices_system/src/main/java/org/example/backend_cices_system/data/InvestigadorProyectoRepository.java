@@ -41,5 +41,6 @@ public interface InvestigadorProyectoRepository extends JpaRepository<Investigad
 
     List<InvestigadorProyecto> findInvestigadoresByIdProyecto(Proyecto proyecto);
 
+    List<InvestigadorProyecto> findByIdProyecto_Id(Short proyectoId);
 
 }

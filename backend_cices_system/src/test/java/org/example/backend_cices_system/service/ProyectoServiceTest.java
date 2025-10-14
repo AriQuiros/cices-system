@@ -1,14 +1,17 @@
 package org.example.backend_cices_system.service;
 
+import jakarta.persistence.EntityManager;
 import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,6 +22,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;import jakarta.persistence.Query;
+import org.springframework.web.server.ResponseStatusException;
+
+
 
 @ExtendWith(MockitoExtension.class)
 public class ProyectoServiceTest {
@@ -45,6 +52,15 @@ public class ProyectoServiceTest {
     private DocumentoRepository documentoRepo;
     @Mock
     private InvestigadorProyectoRepository investigadorProyectoRepo;
+
+    @Mock
+    EntityManager em;
+    @Mock 
+    private InvestigadorRepository invRepo;
+    @Mock 
+    private RolProyectoRepository rolProyectoRepo;
+    @Mock 
+    private HorasAsignadasRepository horasAsignadasRepo;
 
     @InjectMocks
     private ProyectoService proyectoService;
@@ -330,6 +346,191 @@ public class ProyectoServiceTest {
         assertEquals("Proyecto no encontrado con ID: 99", ex.getMessage());
     }
 
+    @Test
+    void suggest_null_o_blanco_devuelve_vacio() {
+        var pg = PageRequest.of(0, 5);
+        assertThat(proyectoService.suggest(null, pg)).isEmpty();
+        assertThat(proyectoService.suggest("   ", pg)).isEmpty();
+        verifyNoInteractions(proyectoRepo);
+    }
+
+    @Test
+    void suggest_ok_llama_repo() {
+        var pg = PageRequest.of(0, 5);
+        var esperado = List.of(
+                new ProyectoMiniDTO((short)1, "P-001", "A"),
+                new ProyectoMiniDTO((short)2, "P-002", "B")
+        );
+        when(proyectoRepo.suggest("bio", pg)).thenReturn(esperado);
+
+        var out = proyectoService.suggest("bio", pg);
+
+        assertThat(out).hasSize(2);
+        assertThat(out.get(0).codigo()).isEqualTo("P-001");
+        verify(proyectoRepo).suggest("bio", pg);
+    }
+
+    /* ---------- buscarResumen ---------- */
+
+    @Test
+    void buscarResumen_ret_first_o_null() {
+        var dto = new ProyectoResumenDTO((short)7,"P-007","X","ACTIVO","Bio",
+                LocalDate.of(2025,1,1), LocalDate.of(2025,12,31),200,3,150);
+
+        when(proyectoRepo.buscarResumen("q", PageRequest.of(0,1))).thenReturn(List.of(dto));
+        assertThat(proyectoService.buscarResumen(" q ")).isEqualTo(dto);
+
+        when(proyectoRepo.buscarResumen("z", PageRequest.of(0,1))).thenReturn(List.of());
+        assertThat(proyectoService.buscarResumen("z")).isNull();
+    }
+
+    /* ---------- listarAsignados ---------- */
+
+    interface AsignadoRowMock extends ProyectoRepository.AsignadoRow {}
+    @Test
+    void listarAsignados_mapea_row_a_dto() {
+        var row = mock(AsignadoRowMock.class);
+        when(row.getId()).thenReturn((short)3);
+        when(row.getNombre()).thenReturn("Ana");
+        when(row.getRol()).thenReturn("INVESTIGADOR");
+        when(row.getIni()).thenReturn(LocalDate.of(2025,1,1));
+        when(row.getFin()).thenReturn(LocalDate.of(2025,12,31));
+        when(row.getHoras()).thenReturn(new BigDecimal("100.0"));
+        when(row.getEstado()).thenReturn("ACTIVO");
+
+        when(proyectoRepo.asignados(10, "")).thenReturn(List.of(row));
+
+        var out = proyectoService.listarAsignados(10, "   ");
+
+        assertThat(out).hasSize(1);
+        var a0 = out.get(0);
+        assertThat(a0.id()).isEqualTo((short)3);
+        assertThat(a0.nombre()).isEqualTo("Ana");
+        assertThat(a0.rol()).isEqualTo("INVESTIGADOR");
+        assertThat(a0.estado()).isEqualTo("ACTIVO");
+        verify(proyectoRepo).asignados(10, "");
+    }
+
+    /* ---------- agregarAsignacion ---------- */
+
+    @Test
+    void agregarAsignacion_ok_crea_ip_y_horas_si_corresponde() {
+        short proyectoId = 9;
+        var req = new AsignacionReqDTO((short)3,(short)2,40,6,null,null);
+
+        var p = new Proyecto(); p.setId(proyectoId); p.setFechaInicio(LocalDate.of(2025,1,1));
+        when(proyectoRepo.findProyectoById(proyectoId)).thenReturn(p);
+
+        var inv = new Investigador(); inv.setId((short)3);
+        when(invRepo.findById((short)3)).thenReturn(Optional.of(inv));
+
+        when(investigadorProyectoRepo.existsByIdProyectoAndIdInvestigador(p, inv)).thenReturn(false);
+
+        var rol = new RolProyecto(); rol.setId((short)2);
+        when(rolProyectoRepo.findById((short)2)).thenReturn(Optional.of(rol));
+
+        // secuencias
+        var q = mock(Query.class);
+        when(em.createNativeQuery(startsWith("SELECT SEC_INVESTIGADOR_PROYECTO.NEXTVAL"))).thenReturn(q);
+        when(em.createNativeQuery(startsWith("SELECT SEC_HORAS_ASIGNADAS.NEXTVAL"))).thenReturn(q);
+        when(q.getSingleResult()).thenReturn(1).thenReturn(2);
+
+        // presupuesto HORAS
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO PRESUPUESTO", "HORAS")).thenReturn((short)11);
+        var pres = new Presupuesto();
+        when(presupuestoRepo.findFirstByIdProyectoAndIdCodigoTipoPresupuesto(p, (short)11)).thenReturn(Optional.of(pres));
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO HORAS", "TIEMPO COMPLETO")).thenReturn((short)22);
+
+        proyectoService.agregarAsignacion(proyectoId, req);
+
+        ArgumentCaptor<InvestigadorProyecto> ipCap = ArgumentCaptor.forClass(InvestigadorProyecto.class);
+        verify(investigadorProyectoRepo).save(ipCap.capture());
+        var ip = ipCap.getValue();
+        assertThat(ip.getIdProyecto()).isEqualTo(p);
+        assertThat(ip.getIdInvestigador()).isEqualTo(inv);
+        assertThat(ip.getIdRolProyecto()).isEqualTo(rol);
+        assertThat(ip.getFechaInicioInvestigador()).isEqualTo(LocalDate.of(2025,1,1));
+        assertThat(ip.getFechaFinInvestigador()).isNull();
+
+        ArgumentCaptor<HorasAsignada> haCap = ArgumentCaptor.forClass(HorasAsignada.class);
+        verify(horasAsignadasRepo).save(haCap.capture());
+        var ha = haCap.getValue();
+        assertThat(ha.getIdInvestigadorProyecto()).isEqualTo(ip);
+        assertThat(ha.getIdPresupuesto()).isEqualTo(pres);
+        assertThat(ha.getCantidadHorasMes()).isEqualTo(40.0);
+        assertThat(ha.getCantidadMeses()).isEqualTo((short)6);
+        assertThat(ha.getIdCodigoTipoHoras()).isEqualTo((short)22);
+    }
+
+    @Test
+    void agregarAsignacion_conflicto_ya_asignado_lanza_409() {
+        short proyectoId = 9;
+        var req = new AsignacionReqDTO((short)3,(short)2,null,null,null,null);
+
+        var p = new Proyecto(); p.setId(proyectoId); p.setFechaInicio(LocalDate.now());
+        when(proyectoRepo.findProyectoById(proyectoId)).thenReturn(p);
+
+        var inv = new Investigador(); inv.setId((short)3);
+        when(invRepo.findById((short)3)).thenReturn(Optional.of(inv));
+
+        when(investigadorProyectoRepo.existsByIdProyectoAndIdInvestigador(p, inv)).thenReturn(true);
+
+        assertThatThrownBy(() -> proyectoService.agregarAsignacion(proyectoId, req))
+                .isInstanceOf(ResponseStatusException.class);
+
+        verify(investigadorProyectoRepo, never()).save(any());
+        verify(horasAsignadasRepo, never()).save(any());
+    }
+
+    @Test
+    void agregarAsignacion_sin_presupuesto_horas_lanza_IllegalState() {
+        short proyectoId = 9;
+        var req = new AsignacionReqDTO((short)3,(short)2,10,2,null,null);
+
+        var p = new Proyecto(); p.setId(proyectoId); p.setFechaInicio(LocalDate.now());
+        when(proyectoRepo.findProyectoById(proyectoId)).thenReturn(p);
+
+        var inv = new Investigador(); inv.setId((short)3);
+        when(invRepo.findById((short)3)).thenReturn(Optional.of(inv));
+        when(investigadorProyectoRepo.existsByIdProyectoAndIdInvestigador(p, inv)).thenReturn(false);
+
+        var rol = new RolProyecto(); rol.setId((short)2);
+        when(rolProyectoRepo.findById((short)2)).thenReturn(Optional.of(rol));
+
+        var q = mock(Query.class);
+        when(em.createNativeQuery(anyString())).thenReturn(q);
+        when(q.getSingleResult()).thenReturn(1).thenReturn(2);
+
+        when(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO PRESUPUESTO", "HORAS")).thenReturn((short)11);
+        when(presupuestoRepo.findFirstByIdProyectoAndIdCodigoTipoPresupuesto(p, (short)11)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> proyectoService.agregarAsignacion(proyectoId, req))
+                .isInstanceOf(IllegalStateException.class);
+
+        verify(investigadorProyectoRepo).save(any(InvestigadorProyecto.class));
+        verify(horasAsignadasRepo, never()).save(any());
+    }
+
+    /* ---------- quitarAsignacion ---------- */
+
+    @Test
+    void quitarAsignacion_ok_borra_horas_y_asignacion() {
+        short proyectoId = 9, investigadorId = 3;
+
+        var p = new Proyecto(); p.setId(proyectoId);
+        when(proyectoRepo.findProyectoById(proyectoId)).thenReturn(p);
+
+        var inv = new Investigador(); inv.setId(investigadorId);
+        when(invRepo.findById(investigadorId)).thenReturn(Optional.of(inv));
+
+        var ip = new InvestigadorProyecto();
+        when(investigadorProyectoRepo.findByIdProyectoAndIdInvestigador(p, inv)).thenReturn(Optional.of(ip));
+
+        proyectoService.quitarAsignacion(proyectoId, investigadorId);
+
+        verify(horasAsignadasRepo).deleteByIdInvestigadorProyecto(ip);
+        verify(investigadorProyectoRepo).delete(ip);
+    }
 
 
 

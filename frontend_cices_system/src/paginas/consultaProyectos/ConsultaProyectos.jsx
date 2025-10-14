@@ -41,17 +41,17 @@ function ConsultaProyectos() {
         if (valorBusqueda) {
             switch (campoFiltro) {
                 case "varios":
-                    resultados = resultados.filter(proyectos => proyectos.nombreProyecto.toLowerCase().includes(valorBusqueda.toLowerCase()) ||
-                        proyectos.codigoProyecto.toLowerCase().includes(valorBusqueda.toLowerCase()) || proyectos.lineaInvestigacion.toLowerCase().includes(valorBusqueda.toLowerCase()) ||
+                    resultados = resultados.filter(proyectos => proyectos.nombre.toLowerCase().includes(valorBusqueda.toLowerCase()) ||
+                        proyectos.codigo.toLowerCase().includes(valorBusqueda.toLowerCase()) || proyectos.lineaInvestigacion.toLowerCase().includes(valorBusqueda.toLowerCase()) ||
                         proyectos.fechaInicio.toLowerCase().includes(valorBusqueda.toLowerCase()) || proyectos.fechaFinalizacion.toLowerCase().includes(valorBusqueda.toLowerCase()));
                     break;
 
                 case "nombre":
-                    resultados = resultados.filter(proyectos => proyectos.nombreProyecto.toLowerCase().includes(valorBusqueda.toLowerCase()));
+                    resultados = resultados.filter(proyectos => proyectos.nombre.toLowerCase().includes(valorBusqueda.toLowerCase()));
                     break;
 
                 case "codigo":
-                    resultados = resultados.filter(proyectos => proyectos.codigoProyecto.toLowerCase().includes(valorBusqueda.toLowerCase()));
+                    resultados = resultados.filter(proyectos => proyectos.codigo.toLowerCase().includes(valorBusqueda.toLowerCase()));
                     break;
 
                 case "lineaInvestigacion":

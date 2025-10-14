@@ -1,20 +1,34 @@
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import { AppContext } from "./AppContext.jsx";
 
 const parseJwt = (t) => { try { return JSON.parse(atob(t.split(".")[1])); } catch { return null; } };
 
 const loadAuth = () => {
     try {
+        // 1) Formato completo {user,token,exp}
         const raw = sessionStorage.getItem("auth") || localStorage.getItem("auth");
-        if (!raw) return { user: null, token: null, exp: 0 };
-        const obj = JSON.parse(raw);
-        const expMs = (obj?.exp ?? 0) * 1000;
-        if (expMs && expMs < Date.now()) {
-            sessionStorage.removeItem("auth"); localStorage.removeItem("auth");
-            return { user: null, token: null, exp: 0 };
+        if (raw) {
+            const obj = JSON.parse(raw);
+            const expMs = (obj?.exp ?? 0) * 1000;
+            if (expMs && expMs < Date.now()) {
+                sessionStorage.removeItem("auth"); localStorage.removeItem("auth");
+                return { user: null, token: null, exp: 0 };
+            }
+            return { user: obj.user ?? null, token: obj.token ?? null, exp: obj.exp ?? 0 };
         }
-        return { user: obj.user ?? null, token: obj.token ?? null, exp: obj.exp ?? 0 };
-    } catch { return { user: null, token: null, exp: 0 }; }
+
+        // 2) Token plano (E2E/Cypress): "token"
+        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+        if (token) {
+            const p = parseJwt(token);
+            const exp = p?.exp ?? 0; // si no es JWT, 0 = sin temporizador
+            return { user: null, token, exp };
+        }
+
+        return { user: null, token: null, exp: 0 };
+    } catch {
+        return { user: null, token: null, exp: 0 };
+    }
 };
 
 export default function AppProvider({ children }) {
@@ -28,8 +42,8 @@ export default function AppProvider({ children }) {
             const p = parseJwt(token);
             const expMs = (p?.exp ?? 0) * 1000;
             const delay = expMs - Date.now();
-            if (delay > 0) id = setTimeout(() => logout(), delay);
-            else logout();
+            if (expMs && delay > 0) id = setTimeout(() => logout(), delay);
+            else if (expMs && delay <= 0) logout();
         }
         return () => id && clearTimeout(id);
     }, [token]);
@@ -46,99 +60,19 @@ export default function AppProvider({ children }) {
     const logout = () => {
         setUser(null);
         setToken(null);
-        sessionStorage.removeItem("auth");
-        localStorage.removeItem("auth");
+        sessionStorage.removeItem("auth"); localStorage.removeItem("auth");
+        sessionStorage.removeItem("token"); localStorage.removeItem("token");
     };
 
-    /************EMPLEADOS***************/
-    const [empleadosState, setEmpleadosState] = useState({
-        empleado: {
-            nombre: "",
-            nacionalidad: "",
-            tipoIdentificacion: "",
-            identificacion: "",
-            telefono: "",
-            correo: "",
-            contrasena: "",
-            roles: [{
-                id: "",
-                nombre: ""
-            }]
-        }
-    });
-
-    /********PROYECTOS**********/
-    const [proyectosState, setProyectosState] = useState({
-        proyecto: {
-            codigo: '',
-            nombre: '',
-            unidadOrigen: '',
-            estado: '',
-            tipo: '',
-            lineaInvestigacion: '',
-            descripcion: '',
-            objetivoGeneral: '',
-            objetivosEspecificos: [
-                {
-                    categoria: '',
-                    descripcion: '',
-                    metas: [
-                        {
-                            tipo: '',
-                            cantidad: 1,
-                            descripcion: '',
-                            indicadores: ['']
-                        }
-                    ]
-                }
-            ],
-            entidadesVinculadas: {
-                instituciones: [{ nombre: '' }],
-                unidades: [{ nombre: '' }],
-                sitios: [{ nombre: '' }]
-            },
-            fechaInicio: '',
-            fechaFinalizacion: '',
-            presentacionesInformes: [
-                {
-                    descripcion: '',
-                    fechaPresentacion: '',
-                    codigoEstado: ''
-                }
-            ],
-            documentos: []
-        }
-    });
-
-    /***************Presupuestos*********************/
-    const [presupuestoState, setPresupuestoState] = useState(
-        {
-            financiero: {
-                descripcion: '',
-                fechaAsignacion: '',
-                monto: 0,
-                fuenteFinanciamiento: '',
-                tipoPresupuesto: ''
-            },
-            horas: {
-                descripcion: '',
-                fechaAsignacion: '',
-                cantidadHorasMes: 0,
-                cantidadMeses: 0,
-                tipoPresupuesto: ''
-            }
-        });
-
-    /************* ASIGNAR INVESTIGADORES *************/
+    // API base para otros métodos
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
     const searchInvestigadores = async (q = "") => {
         const res = await fetch(`${apiUrl}/investigador/investigadores?q=${encodeURIComponent(q)}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        return await res.json(); // [{id,nombre,unidad}]
+        return await res.json();
     };
-
 
     const searchProyecto = async (q = "") => {
         if (!q) return null;
@@ -148,12 +82,8 @@ export default function AppProvider({ children }) {
         const data = await res.json();
         if (!data) return null;
         return {
-            id: data.id,
-            codigo: data.codigo,
-            nombre: data.nombre,
-            estado: data.estado,
-            linea: data.linea,
-            periodo: { ini: data.ini, fin: data.fin },
+            id: data.id, codigo: data.codigo, nombre: data.nombre, estado: data.estado,
+            linea: data.linea, periodo: { ini: data.ini, fin: data.fin },
             horasPlanificadas: Number(data.horas_planificadas || 0),
             asignados: { count: Number(data.asignados_cnt || 0), horas: Number(data.horas_comprometidas || 0) },
         };
@@ -163,16 +93,15 @@ export default function AppProvider({ children }) {
         const res = await fetch(`${apiUrl}/proyectos/${proyectoId}/asignados?q=${encodeURIComponent(q)}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        return await res.json(); // [{id,nombre,rol,periodo:{ini,fin},horas,estado}]
+        return await res.json();
     };
 
-    // AppProvider.jsx
     const listarRolesProyecto = async () => {
         const res = await fetch(`${apiUrl}/catalogos/roles-proyecto`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) throw new Error("Error al listar roles");
-        return await res.json(); // [{id, nombre}]
+        return await res.json();
     };
 
     const agregarAsignacion = async (p) => {
@@ -185,7 +114,6 @@ export default function AppProvider({ children }) {
             const txt = await r.text();
             throw new Error(r.status === 409 ? "Duplicado" : txt || "Error");
         }
-
     };
 
     const quitarAsignacion = async ({ proyectoId, investigadorId }) => {
@@ -201,35 +129,35 @@ export default function AppProvider({ children }) {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) return [];
-        // [{id,codigo,nombre}]
         return await res.json();
     };
 
     return (
         <AppContext.Provider value={{
-            user,
-            token,
-            login,
-            logout,
-            proyectosState: proyectosState,
-            setProyectosState: setProyectosState,
-            empleadosState: empleadosState,
-            setEmpleadosState: setEmpleadosState,
-            presupuestoState: presupuestoState,
-            setPresupuestoState: setPresupuestoState,
-            searchInvestigadores,
-            searchProyecto,
-            listarAsignados,
-            listarRolesProyecto,
-            agregarAsignacion,
-            quitarAsignacion,
-            sugerirProyectos,
+            user, token, login, logout,
+            proyectosState: useState({
+                proyecto: {
+                    codigo:'', nombre:'', unidadOrigen:'', estado:'', tipo:'', lineaInvestigacion:'',
+                    descripcion:'', objetivoGeneral:'', objetivosEspecificos:[{ categoria:'', descripcion:'', metas:[{ tipo:'', cantidad:1, descripcion:'', indicadores:[''] }]}],
+                    entidadesVinculadas:{ instituciones:[{nombre:''}], unidades:[{nombre:''}], sitios:[{nombre:''}] },
+                    fechaInicio:'', fechaFinalizacion:'', presentacionesInformes:[{ descripcion:'', fechaPresentacion:'', codigoEstado:'' }],
+                    documentos:[]
+                }
+            })[0], // mantiene API pública igual que antes si ya la usas
+            setProyectosState: useState()[1],
+            empleadosState: useState({
+                empleado:{ nombre:'', nacionalidad:'', tipoIdentificacion:'', identificacion:'', telefono:'', correo:'', contrasena:'', roles:[{id:'', nombre:''}] }
+            })[0],
+            setEmpleadosState: useState()[1],
+            presupuestoState: useState({
+                financiero:{ descripcion:'', fechaAsignacion:'', monto:0, fuenteFinanciamiento:'', tipoPresupuesto:'' },
+                horas:{ descripcion:'', fechaAsignacion:'', cantidadHorasMes:0, cantidadMeses:0, tipoPresupuesto:'' }
+            })[0],
+            setPresupuestoState: useState()[1],
+            searchInvestigadores, searchProyecto, listarAsignados,
+            listarRolesProyecto, agregarAsignacion, quitarAsignacion, sugerirProyectos,
         }}>
             {children}
         </AppContext.Provider>
     );
-
-
-
-
 }

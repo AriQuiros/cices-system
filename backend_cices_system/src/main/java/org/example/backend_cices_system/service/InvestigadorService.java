@@ -27,7 +27,6 @@ public class InvestigadorService {
     private final InvestigadorRepository invRepo;
     private final InvestigadorProyectoRepository invProyRepo;
     private final ProyectoRepository proyectoRepo;
-    private final InvestigadorRepository repo;
 
 
     @Transactional

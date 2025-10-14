@@ -6,7 +6,6 @@ import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.DocumentoService;
-import org.example.backend_cices_system.service.HorasAsignadasService;
 import org.example.backend_cices_system.service.PresupuestoService;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +30,6 @@ public class ProyectoController {
     private DocumentoService documentoService;
     @Autowired
     private PresupuestoService presupuestoService;
-    @Autowired
-    private  HorasAsignadasService horasService;
-
 
     @PostMapping(value = "/registrar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> registrarProyecto(
@@ -88,8 +84,21 @@ public class ProyectoController {
             @RequestParam(defaultValue = "") String q) {
         return ResponseEntity.ok(proyectoService.listarAsignados(id, q));
     }
-    @GetMapping("/{id}/horas-asignadas")
-    public ResponseEntity<?> horasPorProyecto(@PathVariable Short id) {
-        return ResponseEntity.ok(horasService.obtenerHorasPorProyecto(id));
+
+    // ProyectoController.java
+    @PostMapping("/{id}/asignaciones")
+    public ResponseEntity<Void> crearAsignacion(@PathVariable int id,
+                                                @RequestBody AsignacionReqDTO req) {
+        proyectoService.agregarAsignacion((short) id, req);
+        return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{id}/asignaciones/{investigadorId}")
+    public ResponseEntity<Void> eliminarAsignacion(@PathVariable int id,
+                                                   @PathVariable short investigadorId) {
+        proyectoService.quitarAsignacion((short) id, investigadorId);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

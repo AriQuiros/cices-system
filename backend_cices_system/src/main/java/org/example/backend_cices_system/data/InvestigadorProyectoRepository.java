@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InvestigadorProyectoRepository extends JpaRepository<InvestigadorProyecto, Short> {
     @Query("select count(distinct ip.idInvestigador.id) from InvestigadorProyecto ip")
@@ -41,6 +42,7 @@ public interface InvestigadorProyectoRepository extends JpaRepository<Investigad
 
     List<InvestigadorProyecto> findInvestigadoresByIdProyecto(Proyecto proyecto);
 
-    List<InvestigadorProyecto> findByIdProyecto_Id(Short proyectoId);
+    boolean existsByIdProyectoAndIdInvestigador(Proyecto proyecto, Investigador investigador);
+    Optional<InvestigadorProyecto> findByIdProyectoAndIdInvestigador(Proyecto proyecto, Investigador investigador);
 
 }

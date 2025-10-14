@@ -1,0 +1,34 @@
+[
+    {
+        "idProyecto": 1,
+        "monto": "99999999,00",
+        "fechaGasto": "2025-10-13",
+        "categoriaGasto": "equipo",
+        "descripcion": "Monto que excede el presupuesto disponible",
+        "errorEsperado": "presupuesto"
+    },
+    {
+        "idProyecto": 1,
+        "monto": "",
+        "fechaGasto": "2025-10-13",
+        "categoriaGasto": "equipo",
+        "descripcion": "Prueba con monto vacío",
+        "errorEsperado": "campos_requeridos"
+    },
+    {
+        "idProyecto": 1,
+        "monto": "1500,00",
+        "fechaGasto": "2025-12-31",
+        "categoriaGasto": "equipo",
+        "descripcion": "Fecha futura no permitida",
+        "errorEsperado": "fecha_futura"
+    },
+    {
+        "idProyecto": "",
+        "monto": "1500,00",
+        "fechaGasto": "2025-10-13",
+        "categoriaGasto": "equipo",
+        "descripcion": "Sin proyecto seleccionado",
+        "errorEsperado": "proyecto_requerido"
+    }
+]

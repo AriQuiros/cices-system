@@ -1,0 +1,23 @@
+[
+    {
+        "idProyecto": 1,
+        "monto": "1500.00",
+        "fechaGasto": "2025-10-13",
+        "categoriaGasto": "equipo",
+        "descripcion": "Compra de laptop para investigación de campo"
+    },
+    {
+        "idProyecto": 2,
+        "monto": "250.75",
+        "fechaGasto": "2025-10-12",
+        "categoriaGasto": "materiales",
+        "descripcion": "Papelería y suministros para el proyecto"
+    },
+    {
+        "idProyecto": 1,
+        "monto": "999.99",
+        "fechaGasto": "2025-10-11",
+        "categoriaGasto": "transporte",
+        "descripcion": "Viáticos para trabajo de campo"
+    }
+]

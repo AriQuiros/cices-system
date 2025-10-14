@@ -3,6 +3,8 @@ package org.example.backend_cices_system.data;
 import org.example.backend_cices_system.dto.InvestigadorDTO;
 import org.example.backend_cices_system.logic.Empleado;
 import org.example.backend_cices_system.logic.Investigador;
+import org.example.backend_cices_system.logic.InvestigadorProyecto;
+import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +22,7 @@ public interface InvestigadorRepository extends JpaRepository<Investigador,Short
        order by e.nombreCompleto
     """)
     List<InvestigadorDTO> buscarInvestigadores(@Param("q") String q);
+
 
 
 }

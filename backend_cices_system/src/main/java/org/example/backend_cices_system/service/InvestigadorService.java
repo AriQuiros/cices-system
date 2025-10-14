@@ -180,23 +180,31 @@ public class InvestigadorService {
         try {
             var u = usuarioRepo.findActiveByUsername(username)
                     .orElseThrow(() -> new RuntimeException("Usuario no activo"));
+
             var inv = invRepo.findByIdEmpleado(u.getIdEmpleado())
                     .orElseThrow(() -> new RuntimeException("No es investigador"));
 
-            var ids = invProyRepo.findProyectoIdsVigentesByInvestigador(inv); // ← solo IDs (sin CLOB)
+            var ids = invProyRepo.findProyectoIdsVigentesByInvestigador(inv);
             if (ids.isEmpty()) return List.of();
 
             return proyectoRepo.findAllById(ids).stream()
                     .map(this::toDTO)
                     .toList();
-        } catch (Exception e) {
+
+        } catch (RuntimeException e) {
+            // 👇 deja pasar errores esperados
+            if ("Usuario no activo".equals(e.getMessage()) || "No es investigador".equals(e.getMessage())) {
+                throw e;
+            }
+            // 👇 solo envuelve los demás
             System.err.println("Error al obtener mis proyectos para el usuario: " + username + " - " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Error al cargar mis proyectos", e);
         }
     }
 
-    private ProyectoDTO toDTO(Proyecto p) {
+
+    public ProyectoDTO toDTO(Proyecto p) {
         var dto = new ProyectoDTO();
         dto.setIdProyecto(p.getId());
         dto.setCodigo(p.getCodigoProyecto());

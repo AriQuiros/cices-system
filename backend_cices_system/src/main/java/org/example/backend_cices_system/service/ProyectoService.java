@@ -1,7 +1,6 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.*;

@@ -39,5 +39,7 @@ public interface InvestigadorProyectoRepository extends JpaRepository<Investigad
 """)
     List<Short> findProyectoIdsFinalizadosByInvestigador(@Param("inv") Investigador inv);
 
+    List<InvestigadorProyecto> findInvestigadoresByIdProyecto(Proyecto proyecto);
+
 
 }

@@ -34,9 +34,9 @@ function ProyectoSeleccionado() {
             <p>Código: {proyecto.codigo}</p>
             <p>Fecha Inicio: {proyecto.fechaInicio}</p>
             <p>Fecha Finalizacion: {proyecto.fechaFinalizacion}</p>
-            <p>Estado: {proyecto.estado}</p>
+            <p>Estado: {proyecto.estado?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</p>
             <p>Linea de Investigacion: {proyecto.lineaInvestigacion}</p>
-            <p>Tipo: {proyecto.tipoProyecto}</p>
+            <p>Tipo: {proyecto.tipoProyecto?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</p>
 
 
             <div className="titulo">DESCRIPCION</div>
@@ -53,6 +53,32 @@ function ProyectoSeleccionado() {
             </ul>
             {/*<h3>ADSCRIPCIONES</h3>*/}
             <div className="titulo">INVESTIGADORES</div>
+            <table>
+                <thead>
+                <tr>
+                    <th>ROL</th>
+                    <th>NOMBRE COMPLETO</th>
+                    <th>CEDULA</th>
+                    <th>GRADO ACADEMICO</th>
+                    <th>INSTITUCION</th>
+                    <th>UNIDAD</th>
+                </tr>
+                </thead>
+                <tbody>
+                {proyecto.investigadoresProyectos?.map((ent) => (
+                    <tr key={ent.id}>
+                        <td>{ent.rolProyecto?.toLowerCase()
+                            .replace(/_/g, ' ')
+                            .replace(/^\w/, c => c.toUpperCase())}</td>
+                        <td>{ent.nombre}</td>
+                        <td>{ent.cedula}</td>
+                        <td>{ent.gradoAcademico?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
+                        <td>{ent.institucion}</td>
+                        <td>{ent.unidadAcademica}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
             <div className="titulo">OBJETIVOS ESPECIFICOS</div>
             <table>
                 <thead>
@@ -69,11 +95,7 @@ function ProyectoSeleccionado() {
                             <td>{ent.categoria}</td>
                             <td>{ent.descripcion}</td>
                         </tr>
-
-                        {/* Fila de encabezado de metas */}
                         {ent.metas?.length > 0 && (
-                            <tr>
-                                <td colSpan={2}>
                                     <table>
                                         <thead>
                                         <tr>
@@ -86,7 +108,7 @@ function ProyectoSeleccionado() {
                                         <tbody>
                                         {ent.metas.map((meta, i) => (
                                             <tr key={i}>
-                                                <td>{meta.tipo}</td>
+                                                <td>{meta.tipo?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
                                                 <td>{meta.cantidad ?? "-"}</td>
                                                 <td>{meta.descripcion}</td>
                                                 <td>
@@ -100,14 +122,10 @@ function ProyectoSeleccionado() {
                                         ))}
                                         </tbody>
                                     </table>
-                                </td>
-                            </tr>
                         )}
-
-                        {/* Mensaje si no hay metas */}
                         {(!ent.metas || ent.metas.length === 0) && (
                             <tr>
-                                <td colSpan={2}>
+                                <td>
                                     <em>No hay metas asociadas a este objetivo</em>
                                 </td>
                             </tr>
@@ -130,8 +148,8 @@ function ProyectoSeleccionado() {
                 <tbody>
                 {proyecto.presupuestos?.map((ent) => (
                     <tr key={ent.idPresupuesto}>
-                        <td>{ent.fuenteFinanciamiento}</td>
-                        <td>{ent.tipoPresupuesto}</td>
+                        <td>{ent.fuenteFinanciamiento?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
+                        <td>{ent.tipoPresupuesto?.toLowerCase().replace(/^\w/, c => c.toUpperCase())}</td>
                         <td>{ent.descripcion}</td>
                         <td>{ent.monto}</td>
                     </tr>

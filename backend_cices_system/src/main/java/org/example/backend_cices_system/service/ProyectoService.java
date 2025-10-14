@@ -287,6 +287,19 @@ public class ProyectoService {
                 .collect(Collectors.toList());
     }
 
+    public List<InvestigadorProyecto> listaDeInvestigadoresProyecto(Proyecto proyecto){
+        return Optional.ofNullable(invProyRepo.findInvestigadoresByIdProyecto(proyecto)).orElse(Collections.emptyList());
+    }
+
+    public List<InvestigadorProyectoDTO> listaDeInvestigadoresDTO(Proyecto proyecto){
+        return listaDeInvestigadoresProyecto(proyecto).stream()
+                .map(i -> new InvestigadorProyectoDTO(i.getIdRolProyecto().getNombrePermiso(),
+                        i.getIdInvestigador().getIdEmpleado().getNombreCompleto(), i.getIdInvestigador().getIdEmpleado().getIdentificacion(),
+                        obtenerTipo(i.getIdInvestigador().getIdCodigoGradoAcademico()).getValor(), i.getIdInvestigador().getInstitucionOrigen(),
+                        i.getIdInvestigador().getUnidadAcademica()
+                        )).collect(Collectors.toList());
+    }
+
 
     public ProyectoDTO obtenerProyectoDTOPorId(Short id){
         Proyecto proyecto = proyectoPorId(id);
@@ -312,6 +325,7 @@ public class ProyectoService {
         proyectoDTO.setPresupuestos(listaDePresupuestosDTO(proyecto));
         proyectoDTO.setDocumentos(listaDeDocumentosDTO(proyecto));
         proyectoDTO.setPresentacionesInformes(listaDeInformesDTO(proyecto));
+        proyectoDTO.setInvestigadoresProyectos(listaDeInvestigadoresDTO(proyecto));
         return proyectoDTO;
     }
 

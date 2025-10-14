@@ -1,0 +1,37 @@
+.ver-mas-btn {
+    background-color: #005DA4; /* verde agradable */
+    color: white; /* texto blanco */
+    padding: 8px 15px; /* espacio interno */
+    font-size: 12px; /* tamaño de letra */
+    border: none; /* sin borde */
+    border-radius: 8px; /* bordes redondeados */
+    cursor: pointer; /* cursor de mano */
+    transition: all 0.3s ease; /* animación suave */
+}
+
+.ver-mas-btn:hover {
+    background-color: #00528f; /* verde más oscuro al pasar el mouse */
+    transform: scale(1.05); /* ligero aumento de tamaño */
+}
+
+.ver-mas-btn:active {
+    background-color: #004980; /* verde aún más oscuro al hacer click */
+    transform: scale(0.98); /* efecto presionado */
+}
+.label div {
+    padding: 1rem 1.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-weight: 500;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    background: white;
+    border-left: 4px solid #005DA4;
+}
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-family: Arial, sans-serif;
+    font-size: large;
+}

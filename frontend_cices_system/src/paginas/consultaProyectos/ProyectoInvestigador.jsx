@@ -2,6 +2,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 import "./ProyectoInvestigador.css";
+import {Link} from "react-router-dom";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -129,6 +130,9 @@ export default function ProyectoInvestigador() {
         setValorBusqueda("");
         setPaginaActual(1);
     };
+    const handleClickProyecto = async(id) => {
+        window.open(`/consultar/${id}`, "_blank");
+    }
 
     if (loading) return <div className="contenedor_proyectos"><p>Cargando…</p></div>;
 
@@ -178,13 +182,19 @@ export default function ProyectoInvestigador() {
                     <>
                         <div className="label">
                             {pagina.map((p) => (
-                                <label key={p.codigoProyecto}>
+                                <div key={p.codigoProyecto}>
                                     <h3>{p.nombreProyecto}</h3>
                                     <p>Código: {p.codigoProyecto}</p>
                                     <p>Fecha inicio: {p.fechaInicio}</p>
                                     <p>Fecha finalización: {p.fechaFinalizacion}</p>
                                     <p>Línea de investigación: {p.lineaInvestigacion}</p>
-                                </label>
+                                    <button onClick={() => handleClickProyecto(p.idProyecto)}
+                                            className="ver-mas-btn"> Ver más
+                                    </button>
+                                    <Link to={`/proyectos/${p.idProyecto}/horas`} className="ver-horas-link">
+                                        Ver horas asignadas
+                                    </Link>
+                                </div>
                             ))}
                         </div>
 

@@ -2,7 +2,5 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/CICESBD.sql" dialect="OracleSqlPlus" />
-    <file url="file://$PROJECT_DIR$/backend_cices_system/src/main/java/org/example/backend_cices_system/service/InvestigadorService.java" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/insertar_usuarios.sql" dialect="Oracle" />
   </component>
 </project>

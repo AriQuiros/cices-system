@@ -188,12 +188,12 @@ export default function ProyectoInvestigador() {
                                     <p>Fecha inicio: {p.fechaInicio}</p>
                                     <p>Fecha finalización: {p.fechaFinalizacion}</p>
                                     <p>Línea de investigación: {p.lineaInvestigacion}</p>
-                                    <button onClick={() => handleClickProyecto(p.idProyecto)}
-                                            className="ver-mas-btn"> Ver más
-                                    </button>
-                                    <Link to={`/proyectos/${p.idProyecto}/horas`} className="ver-horas-link">
-                                        Ver horas asignadas
+                                    <Link to={`/consultar/${p.idProyecto}`} className="ver-horas-link">
+                                        Ver más
                                     </Link>
+                                    {/*<Link to={`/proyectos/${p.idProyecto}/horas`} className="ver-horas-link">*/}
+                                    {/*    Ver horas asignadas*/}
+                                    {/*</Link>*/}
                                 </div>
                             ))}
                         </div>

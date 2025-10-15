@@ -15,18 +15,19 @@
 }
 
 .btn-volver {
-    text-decoration: none;
-    border: 1px solid #d1d5db;
     padding: 8px 12px;
-    border-radius: 6px;
-    background: #fff;
-    color: #374151;
-    transition: all 0.2s ease;
+    border: 1px solid #005DA4;
+    background: #005DA4;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    min-width: 30px;
+    text-decoration: none;
 }
 .btn-volver:hover {
-    background: #005DA4;
+    background: #00528f;
     color: #fff;
-    border-color: #005DA4;
+    border-color: #00528f;
 }
 
 .pha-totales {

@@ -23,6 +23,55 @@ const RegistrarGastosFinancieros = () => {
     const [mostrarCategoriaPersonalizada, setMostrarCategoriaPersonalizada] = useState(false); // Para mostrar campo de texto personalizado
     const [categoriaPersonalizada, setCategoriaPersonalizada] = useState(''); // Para almacenar la categoría personalizada
 
+    // Función para obtener identificador único del usuario
+    const obtenerIdUsuario = () => {
+        if (!user) {
+            console.warn('No hay usuario logueado');
+            return 'anonimo';
+        }
+        
+        // USAR USERNAME en lugar de ID para evitar problemas con recreación de BD
+        // El username es único y no se reutiliza como los IDs numéricos
+        const userId = user.username || user.id || user.nombreCompleto || 'anonimo';
+        console.log('Identificador único del usuario generado:', userId);
+        console.log('Datos del usuario completos:', user);
+        return userId;
+    };
+
+    // Función para limpiar gastos de otros usuarios del localStorage
+    const limpiarGastosOtrosUsuarios = () => {
+        try {
+            const userId = obtenerIdUsuario();
+            const claveUsuarioActual = `ultimoGastoRegistrado_${userId}`;
+            
+            console.log('Limpiando localStorage de otros usuarios...');
+            console.log('Usuario actual ID:', userId);
+            console.log('Clave actual a conservar:', claveUsuarioActual);
+            
+            // Obtener todas las claves del localStorage
+            const todasLasClaves = Object.keys(localStorage);
+            
+            // Filtrar solo las claves relacionadas con gastos registrados de otros usuarios
+            const clavesGastos = todasLasClaves.filter(clave => 
+                clave.startsWith('ultimoGastoRegistrado_') && clave !== claveUsuarioActual
+            );
+            
+            console.log('Claves de otros usuarios encontradas:', clavesGastos);
+            
+            // Eliminar las claves de otros usuarios
+            let eliminadas = 0;
+            clavesGastos.forEach(clave => {
+                localStorage.removeItem(clave);
+                eliminadas++;
+                console.log(`Eliminada clave: ${clave}`);
+            });
+            
+            console.log(`Limpieza completada. ${eliminadas} claves eliminadas`);
+        } catch (error) {
+            console.error('Error al limpiar localStorage:', error);
+        }
+    };
+
     // Función para obtener la fecha actual del servidor
     const obtenerFechaServidor = async () => {
         try {
@@ -54,9 +103,15 @@ const RegistrarGastosFinancieros = () => {
     // Función para verificar si hay gastos anteriores guardados
     const verificarGastosAnteriores = () => {
         try {
-            // Usar el ID del usuario para crear una clave única
-            const claveUsuario = `ultimoGastoRegistrado_${user?.id || 'anonimo'}`;
+            const userId = obtenerIdUsuario();
+            const claveUsuario = `ultimoGastoRegistrado_${userId}`;
+            
+            console.log('Verificando gastos anteriores para usuario:', user);
+            console.log('Clave localStorage generada:', claveUsuario);
+            
             const ultimoGastoGuardado = localStorage.getItem(claveUsuario);
+            console.log('Contenido guardado en localStorage:', ultimoGastoGuardado);
+            
             const hayGastos = ultimoGastoGuardado !== null && ultimoGastoGuardado !== '';
             setHayGastosAnteriores(hayGastos);
             return hayGastos;
@@ -70,9 +125,15 @@ const RegistrarGastosFinancieros = () => {
     // Función para cargar el último gasto del localStorage
     const cargarUltimoGasto = () => {
         try {
-            // Usar el ID del usuario para crear una clave única
-            const claveUsuario = `ultimoGastoRegistrado_${user?.id || 'anonimo'}`;
+            const userId = obtenerIdUsuario();
+            const claveUsuario = `ultimoGastoRegistrado_${userId}`;
+            
+            console.log('Cargando último gasto para usuario:', user);
+            console.log('Clave localStorage para cargar:', claveUsuario);
+            
             const ultimoGastoGuardado = localStorage.getItem(claveUsuario);
+            console.log('Datos cargados del localStorage:', ultimoGastoGuardado);
+            
             if (ultimoGastoGuardado) {
                 const gasto = JSON.parse(ultimoGastoGuardado);
                 setGastoRegistrado(gasto);
@@ -99,9 +160,23 @@ const RegistrarGastosFinancieros = () => {
 
     // useEffect para verificar gastos anteriores y obtener fecha del servidor al cargar el componente
     useEffect(() => {
-        verificarGastosAnteriores();
         if (token && user) {
+            console.log('TOKEN y USER disponibles');
+            console.log('Usuario logueado completo:', user);
+            console.log('ID del usuario:', user.id);
+            console.log('Username del usuario:', user.username);
+            console.log('Roles del usuario:', user.roles);
+            
+            // Limpiar gastos de otros usuarios primero
+            limpiarGastosOtrosUsuarios();
+            
+            // Luego verificar gastos del usuario actual
+            verificarGastosAnteriores();
+            
+            // Obtener fecha del servidor
             obtenerFechaServidor();
+        } else {
+            console.warn('No hay token o usuario disponible');
         }
     }, [token, user]);
 
@@ -295,10 +370,16 @@ const RegistrarGastosFinancieros = () => {
 
                 // Guardar el gasto en localStorage para poder verlo después
                 try {
-                    // Usar el ID del usuario para crear una clave única
-                    const claveUsuario = `ultimoGastoRegistrado_${user?.id || 'anonimo'}`;
+                    const userId = obtenerIdUsuario();
+                    const claveUsuario = `ultimoGastoRegistrado_${userId}`;
+                    
+                    console.log('Guardando gasto para usuario:', user);
+                    console.log('Clave localStorage para guardar:', claveUsuario);
+                    console.log('Datos a guardar:', detallesGasto);
+                    
                     localStorage.setItem(claveUsuario, JSON.stringify(detallesGasto));
-                    console.log('Gasto guardado en localStorage para consulta posterior del usuario:', user?.id);
+                    console.log('Gasto guardado exitosamente en localStorage');
+                    
                     // Actualizar el estado para mostrar el botón de "Ver Último Gasto"
                     setHayGastosAnteriores(true);
                 } catch (error) {
@@ -345,7 +426,7 @@ const RegistrarGastosFinancieros = () => {
                         onClick={cargarUltimoGasto}
                         className="btn-ultimo-gasto"
                     >
-                        📋 Ver Último Gasto Registrado
+                        Ver Último Gasto Registrado
                     </button>
                 )}
 
@@ -387,7 +468,7 @@ const RegistrarGastosFinancieros = () => {
                             >×</button>
 
                             <div className={`titulo ${esGastoReciente ? 'reciente' : 'anterior'}`}>
-                                {esGastoReciente ? "✅ Nuevo Gasto Registrado" : "📋 Último Gasto Registrado"}
+                                {esGastoReciente ? "Nuevo Gasto Registrado" : "Último Gasto Registrado"}
                             </div>
 
                             <div className="contenido">

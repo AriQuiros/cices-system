@@ -34,8 +34,8 @@ export default function AsignarInvestigador() {
     const [roles, setRoles] = useState([]);
     const [disp, setDisp] = useState([]);
     const [seleccionado, setSeleccionado] = useState(null);
-    const [asignadosSrv, setAsignadosSrv] = useState([]);   // desde backend
-    const [pendientes, setPendientes] = useState([]);       // solo UI
+    const [asignadosSrv, setAsignadosSrv] = useState([]); // desde backend
+    const [pendientes, setPendientes] = useState([]);     // solo UI
     const [qAsignados, setQAsignados] = useState("");
 
     const [loading, setLoading] = useState(false);
@@ -91,17 +91,37 @@ export default function AsignarInvestigador() {
         } finally { setLoading(false); }
     };
 
+    // ---- Validación de fechas y período ----
+    function validarFechasYPeriodo({ iniForm, finForm, periodo }) {
+        const iniEff = (iniForm || periodo?.ini || "").trim();
+        const finEff = (finForm || periodo?.fin || "").trim();
+
+        if (iniEff && finEff && new Date(finEff) < new Date(iniEff)) {
+            return { ok: false, msg: "La fecha fin no puede ser menor que la fecha de inicio" };
+        }
+        if (iniEff && periodo?.ini && new Date(iniEff) < new Date(periodo.ini)) {
+            return { ok: false, msg: "Inicio fuera del período del proyecto" };
+        }
+        if (finEff && periodo?.fin && new Date(finEff) > new Date(periodo.fin)) {
+            return { ok: false, msg: "Fin fuera del período del proyecto" };
+        }
+        return { ok: true, iniEff, finEff };
+    }
+    // ----------------------------------------
+
     const agregar = () => {
+        setMsg("");
         if (!proyecto) return setMsg("Seleccione un proyecto");
         if (!seleccionado) return setMsg("Seleccione un investigador");
         if (!rolId) return setMsg("Seleccione un rol");
 
         const yaAsignadoSrv = asignadosSrv.some(a => String(a.id) === String(seleccionado.id));
         const yaEnPend = pendientes.some(p => String(p.investigadorId) === String(seleccionado.id));
-        if (yaAsignadoSrv || yaEnPend) {
-            setMsg("Ese investigador ya está asignado o pendiente");
-            return;
-        }
+        if (yaAsignadoSrv || yaEnPend) return setMsg("Ese investigador ya está asignado o pendiente");
+
+        // validar fechas aquí
+        const v = validarFechasYPeriodo({ iniForm: ini, finForm: fin, periodo: proyecto?.periodo });
+        if (!v.ok) return setMsg(v.msg);
 
         const rolNombre = roles.find(r => String(r.id) === String(rolId))?.nombre ?? "";
 
@@ -110,29 +130,27 @@ export default function AsignarInvestigador() {
             investigadorId: seleccionado.id,
             rolId: Number(rolId),
             nombre: seleccionado.nombre,
-            rol: rolNombre,                      // ← ahora sí aparece
-            ini: (ini || proyecto.periodo?.ini) || "",
-            fin: (fin || proyecto.periodo?.fin) || "",
+            rol: rolNombre,
+            ini: v.iniEff || "",
+            fin: v.finEff || "",
             horasMes: Number(horasMes || 0),
             meses: Number(meses || 1),
             horas: Number(horasMes || 0) * Number(meses || 1),
             estado: "Nuevo",
-            periodo: { ini: (ini || proyecto.periodo?.ini) || "", fin: (fin || proyecto.periodo?.fin) || "" }
+            periodo: { ini: v.iniEff || "", fin: v.finEff || "" }
         };
+
         setPendientes(prev => [...prev, item]);
         setMsg("Añadido a la lista. Recuerde Guardar.");
         limpiarFormulario();
     };
 
-
     const quitar = async (row) => {
         if (!proyecto) return;
-        // si es temporal, solo quita del buffer
         if (row?.temp || String(row?.id).startsWith("_tmp_")) {
             setPendientes(prev => prev.filter(p => p.id !== row.id));
             return;
         }
-        // existente → backend
         setLoading(true);
         try {
             await quitarAsignacion({ proyectoId: proyecto.id, investigadorId: row.id });
@@ -175,11 +193,20 @@ export default function AsignarInvestigador() {
 
     const filas = [...asignadosSrv, ...pendientes];
 
+    const fechasInvalidas = !validarFechasYPeriodo({
+        iniForm: ini, finForm: fin, periodo: proyecto?.periodo
+    }).ok;
+
     return (
         <div className="aix aix--hassticky">
             <div className="aix__header">
                 <h2>Asignar investigador a este proyecto</h2>
-                {msg && <span className="aix__msg">{msg}</span>}
+                {msg && <span className={`aix__msg ${msg.toLowerCase().includes("error") || msg.toLowerCase().includes("menor") || msg.toLowerCase().includes("fuera") ? "aix__msg--error" : ""}`}>{msg}</span>}
+                {fechasInvalidas && (
+                    <span className="aix__msg aix__msg--error">
+            La fecha fin no puede ser menor que la fecha de inicio o fuera del período del proyecto
+          </span>
+                )}
             </div>
 
             <div className="aix__toolbar">
@@ -198,9 +225,6 @@ export default function AsignarInvestigador() {
                                 <option key={r.id} value={r.id}>{r.nombre}</option>
                             ))}
                         </select>
-
-
-
                     </div>
 
                     <div className="aix__field">
@@ -234,7 +258,13 @@ export default function AsignarInvestigador() {
                     </div>
                     <div className="aix__actions">
                         <button className="btn btn--green" onClick={limpiarFormulario}>Limpiar</button>
-                        <button className="btn btn--blue" onClick={agregar} disabled={loading}>Agregar</button>
+                        <button
+                            className="btn btn--blue"
+                            onClick={agregar}
+                            disabled={loading || fechasInvalidas}
+                        >
+                            Agregar
+                        </button>
                     </div>
                 </div>
             </div>

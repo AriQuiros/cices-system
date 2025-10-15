@@ -119,7 +119,54 @@
 }
 
 .numero-pagina.activo {
-    background: #3b82f6;
+    background: #005DA4;
     color: white;
-    border-color: #3b82f6;
+    border-color: #005DA4;
+}
+
+.ver-horas-link{
+    padding: 8px 12px;
+    border: 1px solid #005DA4;
+    background: #005DA4;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    min-width: 30px;
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .paginacion {
+        flex-direction: column;
+        gap: 12px;
+        padding: 10px 0;
+    }
+
+    .contador-paginacion {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    .boton-paginacion,
+    .numero-pagina {
+        padding: 8px 12px;
+        font-size: 14px;
+        min-width: 36px;
+    }
+
+    .numeros-pagina {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .label {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .ver-horas-link {
+        padding: 6px 10px;
+        font-size: 13px;
+        min-width: 24px;
+    }
 }

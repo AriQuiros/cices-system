@@ -132,7 +132,7 @@ header {
 
   .divider nav ul.Menu.show {
     display: flex;
-    background: #ccc;
+    background: white;
     border-radius: 4px;
     padding: 20px;
   }
@@ -369,5 +369,75 @@ footer {
     min-width: 150px;
   }
 }
+.navbar-item {
+  position: relative;
+}
 
+.navbar {
+  position: relative;
+  display: inline-block;
+  color: #005DA4;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Cuando pasás el mouse, se despliega el menú */
+.navbar:hover .dropdown {
+  display: block;
+}
+
+.navbar-logo {
+  color: #005DA4;;
+  text-decoration: none;
+}
+
+.arrow {
+  margin-left: 10px;
+}
+
+/* Dropdown oculto inicialmente */
+.dropdown {
+  display: none;
+  position: absolute;
+  background-color: white;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  padding: 0;
+  margin: 0;
+  z-index: 100;
+}
+.navbar-item.active .dropdown {
+  display: flex;
+}
+/* Estilos de los enlaces del menú */
+.dropdown li {
+  list-style: none;
+}
+
+.dropdown li a {
+  display: block;
+  color: #005DA4;
+  text-decoration: none;
+  padding: 10px 16px;
+  font-weight: normal;
+}
+
+.dropdown li a:hover {
+  background-color: #e5e7eb;
+}
+
+@media (min-width: 768px) {
+  .navbar-item:hover .dropdown {
+    display: flex;
+  }
+
+  .navbar-logo .arrow {
+    display: none;
+  }
+}
 

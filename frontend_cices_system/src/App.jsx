@@ -75,6 +75,7 @@ function Header() {
     const {user: usuario, logout: cerrarSesion} = useContext(AppContext);
     const navigate = useNavigate();
     const [menuAbierto, setMenuAbierto] = useState(false);
+    const [submenuAbierto, setSubmenuAbierto] = useState(false);
 
     //obtener rol de usuario
     const rol = usuario?.roles?.[0];
@@ -103,13 +104,30 @@ function Header() {
                             <>
                                 {rol === 'DIRECTOR' && (
                                     <>
-                                        <li><Link to="/director">Resumen General</Link></li>
-                                        <li><Link to="/director">Gestionar Personal</Link></li>
-                                        <li><Link to="/consultaProyectos">Gestionar Proyectos</Link></li>
-                                        <li><Link to="/director">Gastos de Proyectos</Link></li>
-                                        <li><Link to="/director">Generar Reportes</Link></li>
-                                        <li><Link to="/director">Notificaciones</Link></li>
-                                        <li><Link to="/perfil">Perfil</Link></li>
+                                        <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Resumen General</Link></li>
+                                        <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Gestionar Personal</Link></li>
+
+                                        <li className={`navbar-item ${submenuAbierto ? 'active' : ''}`}>
+                                            <nav className="navbar">
+                                                <div className="navbar-logo"
+                                                     onClick={() => setSubmenuAbierto(!submenuAbierto)}>
+                                                    Gestión de Proyectos
+                                                    <span className="arrow">{submenuAbierto ? '▲' : '▼'}</span>
+                                                </div>
+                                                <ul className="dropdown">
+                                                    <li>
+                                                        <Link to="/consultaProyectos" onClick={() => setMenuAbierto(false)}>Consultar Proyectos</Link>
+                                                    </li>
+                                                    <li>
+                                                        <Link to="/RegistroProyecto" onClick={() => setMenuAbierto(false)}>Registar Proyectos</Link>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </li>
+                                        <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Gastos de Proyectos</Link></li>
+                                        <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Generar Reportes</Link></li>
+                                        <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Notificaciones</Link></li>
+                                        <li><Link to="/perfil" onClick={() => setMenuAbierto(false)}>Perfil</Link></li>
                                         <li>
                                             <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
                                             </button>
@@ -119,12 +137,12 @@ function Header() {
 
                                 {rol === 'ADMINISTRADOR' && (
                                     <>
-                                        <li><Link to="/RegistroProyecto">Registar Proyecto</Link></li>
-                                        <li><Link to="/administrador">Actualizar Proyecto</Link></li>
-                                        <li><Link to="/AsignarInvestigador">Asignar Investigadores</Link></li>
-                                        <li><Link to="/administrador">Generar Reportes</Link></li>
-                                        <li><Link to="/administrador">Notificaciones</Link></li>
-                                        <li><Link to="/perfil">Perfil</Link></li>
+                                        <li><Link to="/RegistroProyecto" onClick={() => setMenuAbierto(false)}>Registar Proyecto</Link></li>
+                                        <li><Link to="/consultaProyectos" onClick={() => setMenuAbierto(false)}>Actualizar Proyecto</Link></li>
+                                        <li><Link to="/AsignarInvestigador" onClick={() => setMenuAbierto(false)}>Asignar Investigadores</Link></li>
+                                        <li><Link to="/administrador" onClick={() => setMenuAbierto(false)}>Generar Reportes</Link></li>
+                                        <li><Link to="/administrador" onClick={() => setMenuAbierto(false)}>Notificaciones</Link></li>
+                                        <li><Link to="/perfil" onClick={() => setMenuAbierto(false)}>Perfil</Link></li>
                                         <li>
                                             <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
                                             </button>
@@ -134,15 +152,15 @@ function Header() {
 
                                 {rol === 'INVESTIGADOR' && (
                                     <>
-                                        <li><Link to="/investigador">Historial de Participacion</Link></li>
-                                        <li><Link to="/investigador">Mis Proyectos</Link></li>
-                                        <li><Link to="/investigador">Custodiar datos de Investigacion</Link></li>
-                                        <li><Link to="/investigador">Actualizar Proyecto</Link></li>
-                                        <li><Link to="/investigador">Certificaciones y Licencias</Link></li>
-                                        <li><Link to="/registrar-gastos">Registrar Gastos</Link></li>
-                                        <li><Link to="/investigador">Consultar Gastos</Link></li>
-                                        <li><Link to="/investigador">Notificaciones</Link></li>
-                                        <li><Link to="/perfil">Perfil</Link></li>
+                                        <li><Link to="/investigador" onClick={() => setMenuAbierto(false)}>Historial de Participacion</Link></li>
+                                        <li><Link to="/investigador" onClick={() => setMenuAbierto(false)}>Mis Proyectos</Link></li>
+                                        <li><Link to="/investigador" onClick={() => setMenuAbierto(false)}>Custodiar datos de Investigacion</Link></li>
+                                        <li><Link to="/investigador" onClick={() => setMenuAbierto(false)}>Actualizar Proyecto</Link></li>
+                                        <li><Link to="/investigador" onClick={() => setMenuAbierto(false)}>Certificaciones y Licencias</Link></li>
+                                        <li><Link to="/registrar-gastos" onClick={() => setMenuAbierto(false)}>Registrar Gastos</Link></li>
+                                        <li><Link to="/investigador" onClick={() => setMenuAbierto(false)}>Consultar Gastos</Link></li>
+                                        <li><Link to="/investigador" onClick={() => setMenuAbierto(false)}>Notificaciones</Link></li>
+                                        <li><Link to="/perfil" onClick={() => setMenuAbierto(false)}>Perfil</Link></li>
                                         <li>
                                             <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion
                                             </button>

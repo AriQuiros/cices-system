@@ -160,7 +160,7 @@ function ConsultaProyectos() {
                             <p>Línea de investigación: {proyecto.lineaInvestigacion}</p>
                             <Link to={`/proyectos/${proyecto.idProyecto}/horas`} className="ver-horas-link">
                                 Ver horas asignadas
-                            </Link>{" "}
+                            </Link>
                             <Link to={`/consultar/${proyecto.idProyecto}`} className="ver-horas-link">
                                 Ver más
                             </Link>
@@ -176,7 +176,7 @@ function ConsultaProyectos() {
                             disabled={paginaActual === 1}
                             className="boton-paginacion"
                         >
-                            ← Anterior
+                            Anterior
                         </button>
 
                         <div className="numeros-pagina">
@@ -196,7 +196,7 @@ function ConsultaProyectos() {
                             disabled={paginaActual === totalPaginas}
                             className="boton-paginacion"
                         >
-                            Siguiente →
+                            Siguiente
                         </button>
                     </div>
                 )}

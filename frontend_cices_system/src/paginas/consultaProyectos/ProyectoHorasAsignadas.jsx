@@ -14,6 +14,11 @@ export default function ProyectoHorasAsignadas() {
     const [err, setErr] = useState("");
 
     useEffect(() => {
+        console.log("Horas Asignadas:", data);
+    }, [data]);
+
+
+    useEffect(() => {
         let cancel = false;
 
         (async () => {
@@ -44,23 +49,24 @@ export default function ProyectoHorasAsignadas() {
     if (err) return (
         <div className="pha-wrap">
             <div className="pha-card error">Error: {err}</div>
-            <Link to={`/proyectos/${id}`} className="btn-volver">← Volver</Link>
+            <Link to={`/administrador`} className="btn-volver">← Volver</Link>
         </div>
     );
     if (!data) return null;
 
-    const { investigadores = [], totalHorasAsignadas = 0, totalHorasDisponibles = 0 } = data;
+
+    const { proyectoNombre = '', investigadores = [], totalHorasAsignadas = 0, totalHorasDisponibles = 0 } = data;
 
     return (
         <div className="pha-wrap">
             <div className="pha-header">
-                <h2>Horas asignadas — Proyecto #{id}</h2>
-                <Link to={`/proyectos/${id}`} className="btn-volver">← Volver al proyecto</Link>
+                <h2>Horas asignadas — Proyecto {proyectoNombre}</h2>
+                <Link to={`/administrador`} className="btn-volver">← Volver</Link>
             </div>
 
             <div className="pha-totales">
                 <div className="badge">
-                    <span>Total horas asignadas/mes</span>
+                    <span>Total horas asignadas al mes</span>
                     <strong>{totalHorasAsignadas}</strong>
                 </div>
                 <div className="badge">
@@ -78,7 +84,7 @@ export default function ProyectoHorasAsignadas() {
                     <thead>
                     <tr>
                         <th>Investigador</th>
-                        <th>Horas/mes asignadas</th>
+                        <th>Horas asignadas al mes</th>
                         <th>Meses</th>
                     </tr>
                     </thead>

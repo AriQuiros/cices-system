@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class InvestigadorHorasDTO {
     private Short idInvestigador;
+    private String tipoHoras;
     private String nombreCompleto;
     private double horasMesAsignadas; // suma de CANTIDAD_HORAS_MES
     private int mesesTotales;         // suma de CANTIDAD_MESES

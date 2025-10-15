@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,10 @@ public class HorasAsignadasService {
         for (InvestigadorProyecto ip : ips) {
             Short idInv = ip.getIdInvestigador().getId();
             String nombre = ip.getIdInvestigador().getIdEmpleado().getNombreCompleto();
+            Short tipoHoras = horas.stream()
+                    .map(HorasAsignada::getIdCodigoTipoHoras)
+                    .findFirst()
+                    .orElse(null); // o un valor por defecto, por ejemplo (short) 0
 
             double sumHorasMes = 0d;
             int sumMeses = 0;
@@ -56,7 +61,7 @@ public class HorasAsignadasService {
                 sumMeses    += Optional.ofNullable(h.getCantidadMeses()).orElse((short)0);
             }
 
-            investigadores.add(new InvestigadorHorasDTO(idInv, nombre, sumHorasMes, sumMeses));
+            investigadores.add(new InvestigadorHorasDTO(idInv,cargaHoraria(tipoHoras), nombre, sumHorasMes, sumMeses));
         }
 
         // 3) Total horas asignadas (suma de todas las filas)
@@ -100,6 +105,17 @@ public class HorasAsignadasService {
             case 20, 22 -> 20;     // MEDIO TIEMPO / (p. ej. tipo horas de presupuesto)
             case 21 -> 10;         // CUARTO TIEMPO
             default -> 0;
+        };
+    }
+
+    private String cargaHoraria(Short codigo) {
+        if (codigo == null) return "";
+        return switch (codigo) {
+            case 19 -> "Tiempo Completo";
+            case 20 -> "Medio Tiempo";
+            case 21 -> "Cuarto Tiempo";
+            case  22 -> "Apoyo Estudiantil";
+            default -> "";
         };
     }
 

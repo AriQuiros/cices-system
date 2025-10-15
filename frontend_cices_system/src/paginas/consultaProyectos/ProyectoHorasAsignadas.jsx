@@ -85,6 +85,7 @@ export default function ProyectoHorasAsignadas() {
                     <tr>
                         <th>Investigador</th>
                         <th>Horas asignadas al mes</th>
+                        <th>Carga Horaria</th>
                         <th>Meses</th>
                     </tr>
                     </thead>
@@ -93,6 +94,7 @@ export default function ProyectoHorasAsignadas() {
                         <tr key={inv.idInvestigador}>
                             <td>{inv.nombreCompleto}</td>
                             <td>{inv.horasMesAsignadas}</td>
+                            <td>{inv.tipoHoras}</td>
                             <td>{inv.mesesTotales}</td>
                         </tr>
                     ))}
@@ -101,11 +103,11 @@ export default function ProyectoHorasAsignadas() {
                     )}
                     </tbody>
                     <tfoot>
-                    <tr>
-                        <th>Totales</th>
-                        <th>{totalHorasAsignadas}</th>
-                        <th>—</th>
-                    </tr>
+                    {/*<tr>*/}
+                    {/*    <th>Totales</th>*/}
+                    {/*    <th>{totalHorasAsignadas}</th>*/}
+                    {/*    <th>—</th>*/}
+                    {/*</tr>*/}
                     </tfoot>
                 </table>
             </div>

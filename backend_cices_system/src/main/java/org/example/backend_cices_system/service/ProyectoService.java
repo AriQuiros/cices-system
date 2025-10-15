@@ -6,6 +6,7 @@ import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -370,26 +372,38 @@ public class ProyectoService {
                 .orElseThrow(() -> new IllegalArgumentException("Investigador no existe"));
 
         if (invProyRepo.existsByIdProyectoAndIdInvestigador(p, inv)) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                    org.springframework.http.HttpStatus.CONFLICT,
-                    "El investigador ya está asignado a este proyecto"
-            );
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El investigador ya está asignado a este proyecto");
         }
 
         RolProyecto rol = rolProyectoRepo.findById(req.rolProyectoId())
                 .orElseThrow(() -> new IllegalArgumentException("Rol inválido"));
 
-        // en ProyectoService.agregarAsignacion(...)
+        // --- Validaciones de fechas ---
         LocalDate ini = Optional.ofNullable(req.ini()).orElse(p.getFechaInicio());
-        LocalDate fin = req.fin(); // puede ser null
+        Objects.requireNonNull(ini, "Fecha de inicio no puede ser nula");
+
+        LocalDate fin = Optional.ofNullable(req.fin()).orElse(p.getFechaFinalizacion());
+
+        if (fin != null && fin.isBefore(ini)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fecha fin menor que fecha de inicio");
+        }
+
+        if (ini.isBefore(p.getFechaInicio())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inicio fuera del período del proyecto");
+        }
+
+        if (p.getFechaFinalizacion() != null && fin != null && fin.isAfter(p.getFechaFinalizacion())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fin fuera del período del proyecto");
+        }
+        // --- Fin validaciones ---
 
         InvestigadorProyecto ip = new InvestigadorProyecto();
         ip.setId(nextVal("SEC_INVESTIGADOR_PROYECTO"));
         ip.setIdInvestigador(inv);
         ip.setIdProyecto(p);
         ip.setIdRolProyecto(rol);
-        ip.setFechaInicioInvestigador(ini);          // ← LocalDate
-        ip.setFechaFinInvestigador(fin);             // ← LocalDate
+        ip.setFechaInicioInvestigador(ini);
+        ip.setFechaFinInvestigador(fin);
         invProyRepo.save(ip);
 
         Integer horasMes = req.horasMes();
@@ -401,7 +415,7 @@ public class ProyectoService {
                     .findFirstByIdProyectoAndIdCodigoTipoPresupuesto(p, idTipoHorasPresupuesto)
                     .orElseThrow(() -> new IllegalStateException("No hay presupuesto de HORAS para el proyecto"));
 
-            HorasAsignada ha = new HorasAsignada();          // usa la clase real de tu modelo
+            HorasAsignada ha = new HorasAsignada();
             ha.setId(nextVal("SEC_HORAS_ASIGNADAS"));
             ha.setIdInvestigadorProyecto(ip);
             ha.setIdPresupuesto(pres);
@@ -412,8 +426,8 @@ public class ProyectoService {
             ha.setIdCodigoTipoHoras(idTipoHoras);
             horasAsignadasRepo.save(ha);
         }
-
     }
+
 
     @Transactional
     public void quitarAsignacion(short proyectoId, short investigadorId) {

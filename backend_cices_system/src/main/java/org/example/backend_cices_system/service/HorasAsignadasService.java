@@ -4,10 +4,12 @@ package org.example.backend_cices_system.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.HorasAsignadasRepository;
 import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
+import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.dto.InvestigadorHorasDTO;
 import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.HorasAsignada;
 import org.example.backend_cices_system.logic.InvestigadorProyecto;
+import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +23,11 @@ public class HorasAsignadasService {
 
     @Autowired
     private final InvestigadorProyectoRepository invProjRepo;
+    private final ProyectoRepository proyectoRepo;
     private final HorasAsignadasRepository horasRepo;
 
     public ResumenHorasProyectoDTO obtenerHorasPorProyecto(Short proyectoId) {
+
 
         // 1) Traer relacion investigador-proyecto (para nombres)
         List<InvestigadorProyecto> ips = invProjRepo.findByIdProyecto_Id(proyectoId);
@@ -78,11 +82,15 @@ public class HorasAsignadasService {
 
         // 5) Construir DTO
         ResumenHorasProyectoDTO dto = new ResumenHorasProyectoDTO();
+        dto.setProyectoNombre(proyectoRepo.findProyectoById(proyectoId).getNombreProyecto());
         dto.setProyectoId(proyectoId);
         dto.setInvestigadores(investigadores);
         dto.setTotalHorasAsignadas(totalHorasAsignadas);
         dto.setTotalHorasDisponibles(totalHorasDisponibles);
+        System.out.println("DTO completo: " + dto);
+
         return dto;
+
     }
 
     private int mapTipoHoras(Short codigo) {

@@ -1,15 +1,131 @@
 /* src/paginas/proyecto/ProyectoHorasAsignadas.css */
-.pha-wrap { padding: 80px; background:#f8f9fa; min-height: calc(100vh - 140px); }
-.pha-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-.btn-volver { text-decoration:none; border:1px solid #d1d5db; padding:8px 12px; border-radius:6px; background:#fff; color:#374151; }
-.btn-volver:hover { background:#005DA4; color:#fff; border-color:#005DA4; }
-.pha-totales { display:flex; gap:12px; margin:12px 0 20px; flex-wrap:wrap; }
-.badge { background:#fff; border:1px solid #e2e8f0; border-left:4px solid #005DA4; padding:10px 14px; border-radius:6px; min-width:220px; }
-.badge span { display:block; font-size:0.9rem; color:#4a5568; }
-.badge strong { font-size:1.25rem; color:#111827; }
-.pha-card { background:#fff; border:1px solid #e9ecef; border-radius:8px; padding:1rem; }
-.pha-card.error { border-left:4px solid #ef4444; color:#991b1b; background:#fff7f7; }
-.pha-table { width:100%; border-collapse:collapse; }
-.pha-table th, .pha-table td { border:1px solid #e5e7eb; padding:10px; text-align:left; }
-.pha-table thead th { background:#f3f4f6; color:#1f2937; }
-.pha-table tfoot th { background:#f9fafb; }
+.pha-wrap {
+    padding: 80px;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
+}
+
+.pha-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-volver {
+    text-decoration: none;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #fff;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+.btn-volver:hover {
+    background: #005DA4;
+    color: #fff;
+    border-color: #005DA4;
+}
+
+.pha-totales {
+    display: flex;
+    gap: 12px;
+    margin: 12px 0 20px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #005DA4;
+    padding: 10px 14px;
+    border-radius: 6px;
+    min-width: 220px;
+    flex: 1 1 220px;
+}
+.badge span {
+    display: block;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+.badge strong {
+    font-size: 1.25rem;
+    color: #111827;
+}
+
+.pha-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+}
+.pha-card.error {
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+    background: #fff7f7;
+}
+
+.pha-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+.pha-table th,
+.pha-table td {
+    border: 1px solid #e5e7eb;
+    padding: 10px;
+    text-align: left;
+}
+.pha-table thead th {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+.pha-table tfoot th {
+    background: #f9fafb;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 1024px) {
+    .pha-wrap {
+        padding: 40px;
+    }
+}
+
+/* --- Ajuste solo para móviles --- */
+@media (max-width: 768px) {
+    .pha-totales {
+        gap: 8px;
+        margin: 8px 0 16px;
+    }
+
+    .badge {
+        min-width: 100%;
+        padding: 6px 10px;       /* más compacto */
+    }
+
+    .badge span {
+        font-size: 0.8rem;       /* texto más pequeño */
+    }
+
+    .badge strong {
+        font-size: 1rem;         /* valor más discreto */
+    }
+}
+
+@media (max-width: 480px) {
+    .badge {
+        padding: 5px 8px;
+    }
+
+    .badge span {
+        font-size: 0.75rem;
+    }
+
+    .badge strong {
+        font-size: 0.9rem;
+    }
+}
+
+

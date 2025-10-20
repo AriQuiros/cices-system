@@ -73,16 +73,17 @@ export default function ProyectoHorasAsignadas() {
                     <span>Total horas disponibles</span>
                     <strong>{totalHorasDisponibles}</strong>
                 </div>
-                <div className="badge">
-                    <span>Investigadores</span>
-                    <strong>{investigadores.length}</strong>
-                </div>
+                {/*<div className="badge">*/}
+                {/*    <span>Investigadores</span>*/}
+                {/*    <strong>{investigadores.length}</strong>*/}
+                {/*</div>*/}
             </div>
 
             <div className="pha-card">
                 <table className="pha-table">
                     <thead>
                     <tr>
+                        <th>#</th>
                         <th>Investigador</th>
                         <th>Horas asignadas al mes</th>
                         <th>Carga Horaria</th>
@@ -90,8 +91,9 @@ export default function ProyectoHorasAsignadas() {
                     </tr>
                     </thead>
                     <tbody>
-                    {investigadores.map(inv => (
+                    {investigadores.map((inv, index) => (
                         <tr key={inv.idInvestigador}>
+                            <th>{index + 1}</th>
                             <td>{inv.nombreCompleto}</td>
                             <td>{inv.horasMesAsignadas}</td>
                             <td>{inv.tipoHoras}</td>
@@ -99,7 +101,7 @@ export default function ProyectoHorasAsignadas() {
                         </tr>
                     ))}
                     {investigadores.length === 0 && (
-                        <tr><td colSpan={3}><em>No hay registros.</em></td></tr>
+                        <tr><td colSpan={3}><em>No hay Investigadores.</em></td></tr>
                     )}
                     </tbody>
                     <tfoot>

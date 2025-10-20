@@ -4,10 +4,12 @@ package org.example.backend_cices_system.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.HorasAsignadasRepository;
 import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
+import org.example.backend_cices_system.data.PresupuestoRepository;
 import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.dto.InvestigadorHorasDTO;
 import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.HorasAsignada;
+import org.example.backend_cices_system.logic.Presupuesto;
 import org.example.backend_cices_system.logic.InvestigadorProyecto;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class HorasAsignadasService {
     private final InvestigadorProyectoRepository invProjRepo;
     private final ProyectoRepository proyectoRepo;
     private final HorasAsignadasRepository horasRepo;
+    private final PresupuestoRepository presupuestoRepo;
 
     public ResumenHorasProyectoDTO obtenerHorasPorProyecto(Short proyectoId) {
 
@@ -65,11 +67,14 @@ public class HorasAsignadasService {
         }
 
         // 3) Total horas asignadas (suma de todas las filas)
-        double totalHorasAsignadas = horas.stream()
-                .map(HorasAsignada::getCantidadHorasMes)
-                .filter(Objects::nonNull)
-                .mapToDouble(Double::doubleValue)
-                .sum();
+        Optional<Proyecto> proyecto = proyectoRepo.findById(proyectoId);
+
+        double totalHorasAsignadas = presupuestoRepo.findByIdProyecto(proyecto.orElseThrow())
+                .map(Presupuesto::getCantidadHorasMes)
+                .orElse(0.0);
+
+
+
 
         // 4) Total horas disponibles
         // Regla por investigador: si tiene varias filas con distintos tipos,

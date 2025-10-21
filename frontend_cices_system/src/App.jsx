@@ -109,22 +109,30 @@ function Header() {
 
                                         <li className={`navbar-item ${submenuAbierto ? 'active' : ''}`}>
                                             <nav className="navbar">
-                                                <div className="navbar-logo"
-                                                     onClick={() => setSubmenuAbierto(!submenuAbierto)}>
+                                                <div className="navbar-logo">
                                                     Gestión de Proyectos
                                                     <span className="arrow">{submenuAbierto ? '▲' : '▼'}</span>
                                                 </div>
                                                 <ul className="dropdown">
                                                     <li>
-                                                        <Link to="/consultaProyectos" onClick={() => setMenuAbierto(false)}>Consultar Proyectos</Link>
+                                                        <Link to="/consultaProyectos"
+                                                              onClick={() => setMenuAbierto(false)}>Consultar
+                                                            Proyectos</Link>
                                                     </li>
                                                     <li>
-                                                        <Link to="/RegistroProyecto" onClick={() => setMenuAbierto(false)}>Registar Proyectos</Link>
+                                                        <Link to="/RegistroProyecto"
+                                                              onClick={() => setMenuAbierto(false)}>Registar
+                                                            Proyectos</Link>
+                                                    </li>
+                                                    <li>
+                                                        <Link to="/asignarInvestigador"
+                                                              onClick={() => setMenuAbierto(false)}>Asignar Investigadores</Link>
                                                     </li>
                                                 </ul>
                                             </nav>
                                         </li>
-                                        <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Gastos de Proyectos</Link></li>
+                                        <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Gastos de
+                                            Proyectos</Link></li>
                                         <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Generar Reportes</Link></li>
                                         <li><Link to="/director" onClick={() => setMenuAbierto(false)}>Notificaciones</Link></li>
                                         <li><Link to="/perfil" onClick={() => setMenuAbierto(false)}>Perfil</Link></li>
@@ -138,6 +146,7 @@ function Header() {
                                 {rol === 'ADMINISTRADOR' && (
                                     <>
                                         <li><Link to="/RegistroProyecto" onClick={() => setMenuAbierto(false)}>Registar Proyecto</Link></li>
+                                        <li><Link to="/consultaProyectos" onClick={() => setMenuAbierto(false)}>Consultar Proyectos</Link></li>
                                         <li><Link to="/consultaProyectos" onClick={() => setMenuAbierto(false)}>Actualizar Proyecto</Link></li>
                                         <li><Link to="/AsignarInvestigador" onClick={() => setMenuAbierto(false)}>Asignar Investigadores</Link></li>
                                         <li><Link to="/administrador" onClick={() => setMenuAbierto(false)}>Generar Reportes</Link></li>

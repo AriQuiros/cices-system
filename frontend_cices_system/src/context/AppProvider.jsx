@@ -135,7 +135,11 @@ export default function AppProvider({ children }) {
 
     const searchInvestigadores = async (q = "") => {
         const res = await fetch(`${apiUrl}/investigador/investigadores?q=${encodeURIComponent(q)}`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${token}`,
+            }
+
         });
         return await res.json(); // [{id,nombre,unidad}]
     };
@@ -164,7 +168,11 @@ export default function AppProvider({ children }) {
 
     const listarAsignados = async (proyectoId, q = "") => {
         const res = await fetch(`${apiUrl}/proyectos/${proyectoId}/asignados?q=${encodeURIComponent(q)}`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${token}`,
+            }
+
         });
         return await res.json(); // [{id,nombre,rol,periodo:{ini,fin},horas,estado}]
     };
@@ -182,8 +190,8 @@ export default function AppProvider({ children }) {
         const r = await fetch(`${apiUrl}/proyectos/${p.proyectoId}/asignaciones`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(p),
         });
@@ -203,7 +211,11 @@ export default function AppProvider({ children }) {
     const sugerirProyectos = async (q = "") => {
         if (!q) return [];
         const res = await fetch(`${apiUrl}/proyectos/suggest?q=${encodeURIComponent(q)}`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${token}`,
+            }
+
         });
         if (!res.ok) return []; // [{id,codigo,nombre}]
         return await res.json();

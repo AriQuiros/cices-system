@@ -78,8 +78,8 @@ const RegistrarGastosFinancieros = () => {
             const response = await fetch('http://localhost:8080/api/investigador/fecha-actual', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json; charset=utf-8",
+                    Authorization: `Bearer ${token}`,
                 }
             });
 
@@ -194,8 +194,8 @@ const RegistrarGastosFinancieros = () => {
                 const response = await fetch('http://localhost:8080/api/investigador/proyectos-principal', {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                        "Content-Type": "application/json; charset=utf-8",
+                        Authorization: `Bearer ${token}`,
                     }
                 });
 

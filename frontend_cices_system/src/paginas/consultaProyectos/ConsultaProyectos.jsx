@@ -10,14 +10,13 @@ function ConsultaProyectos() {
 
     //estado para filtros
     const [campoFiltro, setCampoFiltro] = useState("varios");
-    const [valorBusqueda, setValorBusqueda] = useState(() => {
-        return localStorage.getItem('valorBusqueda') || '';});
+    const [valorBusqueda, setValorBusqueda] = useState("");
         const [filtroEstado, setFiltroEstado] = useState("");
 
         //paginacion
         const [paginaActual, setPaginaActual] = useState(1);
         //Eventualmente cambiar a 8 por pagina
-        const [proyectosPorPagina] = useState(1);
+        const [proyectosPorPagina] = useState(2);
 
 
         useEffect(() => {
@@ -117,10 +116,6 @@ function ConsultaProyectos() {
             setFiltroEstado("");
             setPaginaActual(1);
         };
-
-        const handleClickProyecto = async (id) => {
-            window.open(`/consultar/${id}`, "_blank");
-        }
 
         return (
             <div className="contenedor_proyectos">

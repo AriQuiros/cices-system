@@ -103,4 +103,15 @@ table tbody td {
 }
 
 
+@media (min-width: 1024px) and (max-width: 1366px) {
+.main{
+    padding: 100px;
+}
+    .botonVolver{
+        margin: 1%;
+    }
+
+}
+
+
 

@@ -170,3 +170,11 @@
         min-width: 24px;
     }
 }
+
+@media (min-width: 1024px) and (max-width: 1366px) {
+    .contenedor_proyectos {
+        padding: 90px;
+    }
+
+
+}

@@ -149,12 +149,12 @@ function RegistroInvestigador({ onClose, onConfirm }) {
                     {/* Base */}
                     <input
                         className="input" type="text" name="institucion"
-                        placeholder="Institución de origen" value={formData.institucion}
+                        placeholder="Institución de origen (Propia)" value={formData.institucion}
                         onChange={handleChange}
                     />
                     <input
                         className="input" type="text" name="unidadAcademica"
-                        placeholder="Unidad académica" value={formData.unidadAcademica}
+                        placeholder="Unidad académica (Propia)" value={formData.unidadAcademica}
                         onChange={handleChange}
                     />
 
@@ -178,7 +178,8 @@ function RegistroInvestigador({ onClose, onConfirm }) {
                     </div>
 
                     {/* <<< NUEVO >>> Certificaciones dentro del mismo pop-up */}
-                    <h3 className="section-title">Certificaciones</h3>
+                    <h3 className="section-title">Certificaciones (capacitaciones, cursos, etc.)</h3>
+                    <p className="info-text">No es obligatorio ingresar una certificación en este momento</p>
 
                     <div className="rows-group">
                         {certificaciones.map((c, idx) => (

@@ -100,13 +100,15 @@
 
 .btn{
   flex: 1;
-  min-width: 120px;
-  height: 46px;
+  min-width: 140px; /* aumentado desde 120px */
+  height: 54px; /* aumentado desde 46px */
   border-radius: 10px;
   border: none;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  font-size: 1.05rem; /* un poco más grande */
+  padding: 0 18px; /* espacio horizontal extra */
 }
 .btn-cancel{ background: var(--cancel); }
 .btn-confirm{ background: var(--confirm); }
@@ -199,6 +201,14 @@
     color: var(--text-strong);
 }
 
+/* Texto informativo */
+.info-text {
+    margin: -8px 0 12px 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
 /* Mensaje de error del formulario */
 .form-error {
     color: #d32f2f;
@@ -210,4 +220,3 @@
     border-radius: var(--radius);
     border: 1px solid #ffcdd2;
 }
-

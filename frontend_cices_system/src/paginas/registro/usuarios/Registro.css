@@ -29,6 +29,19 @@
     flex-direction: column;
 }
 
+.input-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.input-label-error {
+    color: #d32f2f !important;
+}
+
 .input-message {
     font-size: 0.8rem;
     color: #555;
@@ -285,5 +298,3 @@ input[type="radio"]{
         width: 100%;
     }
 }
-
-

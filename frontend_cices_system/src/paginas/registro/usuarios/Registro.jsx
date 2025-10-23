@@ -286,46 +286,65 @@ function Registro() {
         <div className="form-container">
             <form className="form-content" onSubmit={handleSubmit}>
                 <h2>Registro</h2>
-                <input
-                    type="text"
-                    name="nombre"
-                    placeholder="Nombre completo"
-                    className="input-field"
-                    value={formData.nombre}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="nacionalidad"
-                    placeholder="Nacionalidad"
-                    className="input-field"
-                    value={formData.nacionalidad}
-                    onChange={handleChange}
-                />
-                <select
-                    className="input-field"
-                    name="tipoIdentificacion"
-                    value={formData.tipoIdentificacion}
-                    onChange={handleChange}
-                >
-                    <option value="">Identificación</option>
-                    {tiposIdentificacion.map(tipo => (
-                        <option key={tipo.id} value={tipo.valor}>
-                            {tipo.despliegue ? tipo.despliegue.charAt(0).toUpperCase() + tipo.despliegue.slice(1).toLowerCase() : ""}
-                        </option>
-                    ))}
-                </select>
+
                 <div className="input-group">
+                    <label htmlFor="nombre" className="input-label">Nombre Completo</label>
                     <input
+                        id="nombre"
+                        type="text"
+                        name="nombre"
+                        placeholder="Ingrese su nombre completo"
+                        className="input-field"
+                        value={formData.nombre}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="input-group">
+                    <label htmlFor="nacionalidad" className="input-label">Nacionalidad</label>
+                    <input
+                        id="nacionalidad"
+                        type="text"
+                        name="nacionalidad"
+                        placeholder="Ingrese su nacionalidad"
+                        className="input-field"
+                        value={formData.nacionalidad}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="input-group">
+                    <label htmlFor="tipoIdentificacion" className="input-label">Tipo de Identificación</label>
+                    <select
+                        id="tipoIdentificacion"
+                        className="input-field"
+                        name="tipoIdentificacion"
+                        value={formData.tipoIdentificacion}
+                        onChange={handleChange}
+                    >
+                        <option value="">identificación</option>
+                        {tiposIdentificacion.map(tipo => (
+                            <option key={tipo.id} value={tipo.valor}>
+                                {tipo.despliegue ? tipo.despliegue.charAt(0).toUpperCase() + tipo.despliegue.slice(1).toLowerCase() : ""}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="input-group">
+                    <label htmlFor="identificacion" className={`input-label ${popupIdentificacion ? 'input-label-error' : ''}`}>
+                        Número de Identificación
+                    </label>
+                    <input
+                        id="identificacion"
                         type="text"
                         name="identificacion"
-                        placeholder="Número de identificación"
+                        placeholder="Sin guiones"
                         className="input-field"
                         value={formData.identificacion}
                         onChange={handleChange}
                         onBlur={verificarIdentificacion}
                     />
-                    <small className="input-message">Sin guiones</small>
                 </div>
                 {popupIdentificacion && (
                     <div className="popup-overlay">
@@ -345,10 +364,14 @@ function Registro() {
                     </div>
                 )}
                 <div className="input-group">
+                    <label htmlFor="telefono" className={`input-label ${errorTelefono ? 'input-label-error' : ''}`}>
+                        Número de teléfono
+                    </label>
                     <input
+                        id="telefono"
                         type="tel"
                         name="telefono"
-                        placeholder="Teléfono"
+                        placeholder="Ejemplo: (+506)88888888"
                         className="input-field"
                         value={formData.telefono}
                         onChange={handleChange}
@@ -360,25 +383,35 @@ function Registro() {
                         {errorTelefono}
                     </div>
                 )}
-                <input
-                    type="email"
-                    name="correo"
-                    placeholder="Correo electrónico: example@ucr.ac.cr"
-                    className="input-field"
-                    value={formData.correo}
-                    onChange={handleChange}
-                />
+                <div className="input-group">
+                    <label htmlFor="correo" className={`input-label ${errorCorreo ? 'input-label-error' : ''}`}>
+                        Correo Electrónico
+                    </label>
+                    <input
+                        id="correo"
+                        type="email"
+                        name="correo"
+                        placeholder="example@ucr.ac.cr"
+                        className="input-field"
+                        value={formData.correo}
+                        onChange={handleChange}
+                    />
+                </div>
                 {errorCorreo && (
                     <div className="validation-error-message">
                         {errorCorreo}
                     </div>
                 )}
                 <div className="input-group">
+                    <label htmlFor="contrasena" className={`input-label ${errorFormatoContrasena ? 'input-label-error' : ''}`}>
+                        Contraseña
+                    </label>
                     <div className="password-container">
                         <input
+                            id="contrasena"
                             type={mostrarContrasena ? "text" : "password"}
                             name="contrasena"
-                            placeholder="Contraseña"
+                            placeholder="********"
                             className="input-field password-input"
                             value={formData.contrasena}
                             onChange={handleChange}
@@ -400,11 +433,15 @@ function Registro() {
                     </div>
                 )}
                 <div className="input-group">
+                    <label htmlFor="confirmarContrasena" className={`input-label ${errorContrasena ? 'input-label-error' : ''}`}>
+                        Confirmar Contraseña
+                    </label>
                     <div className="password-container">
                         <input
+                            id="confirmarContrasena"
                             type={mostrarConfirmarContrasena ? "text" : "password"}
                             name="confirmarContrasena"
-                            placeholder="Confirmar contraseña"
+                            placeholder="********"
                             className="input-field password-input"
                             value={formData.confirmarContrasena}
                             onChange={handleChange}
@@ -458,7 +495,7 @@ function Registro() {
                     className="btn-link-login"
                     onClick={() => window.location.href = "/"}
                 >
-                    Ingresar en mi cuenta
+                    Ingresar en mi cuenta (Log in)
                 </button>
             </form>
             {idRolInvestigador && formData.roles.includes(idRolInvestigador) && mostrarPopup && (
@@ -507,3 +544,4 @@ function Registro() {
 }
 
 export default Registro;
+

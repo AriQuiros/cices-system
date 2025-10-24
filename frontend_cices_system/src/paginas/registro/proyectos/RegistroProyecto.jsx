@@ -17,6 +17,7 @@ function RegistroProyecto() {
     const { proyectosState, setProyectosState, presupuestoState,
         setPresupuestoState, token } = useContext(AppContext);
     const [showPresupuesto, setShowPresupuesto] = useState(false);
+    const [popupExito, setPopupExito] = useState(false);
 
     const { tipos, loading } = useTiposCatalogo(token, [
         "ESTADO PROYECTO",
@@ -322,7 +323,14 @@ function RegistroProyecto() {
                 }
 
                 console.log('Proyecto registrado:', data);
-                setErrores({}); // limpia los errores anteriores
+                setErrores({});
+                handleClear();
+
+                // Mostrar popup de éxito
+                setPopupExito(true);
+
+                // Ocultar popup automáticamente después de 4 segundos
+                setTimeout(() => setPopupExito(false), 4000);
 
                 handleClear();
             })
@@ -348,6 +356,14 @@ function RegistroProyecto() {
                 setShowPresupuesto={setShowPresupuesto}
                 presupuesto={presupuestoState || []}
             />
+            {/* Popup de éxito visual */}
+            {popupExito && (
+                <div className="popup-success">
+                    <div className="popup-title-success">
+                        Proyecto registrado exitosamente
+                    </div>
+                </div>
+            )}
         </>
     );
 }
@@ -367,8 +383,6 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                            name="codigo" ref={inputCodigoRef} value={entity.codigo} onChange={handleChange}/>
                     <input type="text" placeholder="Nombre" className="input-field" required maxLength={252}
                            name="nombre" value={entity.nombre} onChange={handleChange}/>
-                    <input type="text" placeholder="Unidad de Origen: CICES" className="input-field" required  maxLength={252}
-                           name="unidadOrigen" value={entity.unidadOrigen} onChange={handleChange}/>
                 </div>
 
                 <div className="form-row">
@@ -420,13 +434,13 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                             </div>
                         </legend>
 
-                        <input type="text" placeholder="Categoría" className="input-field" required
+                        <input type="text" name="categoriaObjetivo" placeholder="Categoría" className="input-field" required
                                value={objetivo.categoria}
                                onChange={e =>
                                    handleNestedChange(["objetivosEspecificos", idxObjetivo, "categoria"], e.target.value)
                                }
                         />
-                        <textarea placeholder="Descripción del objetivo" className="input-field" rows="4" required
+                        <textarea placeholder="Descripción del objetivo" name="descripcionObjetivo"  className="input-field" rows="4" required
                                   value={objetivo.descripcion}
                                   onChange={e =>
                                       handleNestedChange(["objetivosEspecificos", idxObjetivo, "descripcion"], e.target.value)
@@ -454,7 +468,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 </legend>
 
                                 <div className="form-row">
-                                    <select id="tipo-meta" className="input-field" required
+                                    <select id="tipo-meta" className="input-field" required name="tipoMeta"
                                             value={meta.tipo}
                                             onChange={(e) =>
                                                 handleNestedChange(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "tipo"], e.target.value)
@@ -469,7 +483,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                     </select>
 
                                     {meta.tipo === "CUANTITATIVA" && (
-                                        <input type="number" placeholder="Cantidad" id="cantidad-meta"
+                                        <input type="number" placeholder="Cantidad" id="cantidad-meta" name="cantidadMeta"
                                                className="input-field"
                                                required={true} min="1" value={meta.cantidad} onChange={(e) =>
                                             handleNestedChange(
@@ -481,7 +495,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                     )}
                                 </div>
 
-                                <textarea placeholder="Descripción de la meta" className="input-field" required
+                                <textarea placeholder="Descripción de la meta" className="input-field" required name="descripcionMeta"
                                           value={meta.descripcion}
                                           onChange={(e) =>
                                               handleNestedChange(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "descripcion"], e.target.value)
@@ -491,7 +505,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 <label><br/>Indicadores</label>
                                 {meta.indicadores.map((indicador, idxIndicador) => (
                                     <div key={idxIndicador} id="inline-project-group" className="inline-group">
-                                        <input type="text" placeholder={`Indicador ${idxIndicador + 1}`}
+                                        <input type="text" placeholder={`Indicador ${idxIndicador + 1}`} name="indicador"
                                                className="input-field" value={indicador} onChange={(e) =>
                                             handleNestedChange(
                                                 ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores", idxIndicador],
@@ -530,6 +544,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 placeholder={`Nombre de la institución ${idxInst + 1}`}
                                 className="input-field"
                                 maxLength={252}
+                                name="nombreInstitucion"
                                 value={institucion.nombre}
                                 onChange={(e) =>
                                     handleNestedChange(
@@ -571,6 +586,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 className="input-field"
                                 value={unidad.nombre}
                                 maxLength={252}
+                                name="nombreUnidad"
                                 onChange={(e) =>
                                     handleNestedChange(
                                         ["entidadesVinculadas", "unidades", idxUnidad, "nombre"],
@@ -610,6 +626,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 placeholder={`Nombre del sitio ${idxSitio + 1}`}
                                 className="input-field"
                                 value={sitio.nombre}
+                                name="nombreSitio"
                                 maxLength={252}
                                 onChange={(e) =>
                                     handleNestedChange(
@@ -672,6 +689,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                             <div key={idx} id="inline-project-group" className="inline-group">
                                 <input
                                     type="text" required={showFechasInformes}
+                                    name={"descripcionInforme"}
                                     placeholder={`Descripción del informe ${idx + 1}`}
                                     className="input-field"
                                     value={informe.descripcion}
@@ -683,6 +701,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                                 <div className={"input-group"}>
                                 <input
                                     type="date" required={showFechasInformes} min={entity.fechaInicio || ''}
+                                    name={"fechaInforme"}
                                     placeholder={`Fecha de presentación ${idx + 1}`}
                                     className={`input-field ${errores[`presentacionesInformes.${idx}.fechaPresentacion`] ? 'input-error' : ''}`}
                                     value={informe.fechaPresentacion}
@@ -718,7 +737,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                         ))}
                     </>
                 )}
-                <button type="button" className="submit-btn" id="submit-project-btn" onClick={() => {
+                <button type="button" className="submit-btn" name="btnEstablecerPresupuesto" id="submit-project-btn" onClick={() => {
                     if (!entity.codigo?.trim()) {
                         if (inputCodigoRef.current) {
                             inputCodigoRef.current.focus();
@@ -767,6 +786,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
 
                     <div className="form-row">
                         <input
+                            name="documento"
                             type="file"
                             multiple
                             onChange={handleFileChange}
@@ -801,7 +821,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                         {errores["general"]}
                     </div>
                 )}
-                <button type="submit" id="submit-project-btn" className="submit-btn">
+                <button type="submit"  name="btnRegistrarProyecto"  id="submit-project-btn" className="submit-btn">
                     Registrar Proyecto
                 </button>
 

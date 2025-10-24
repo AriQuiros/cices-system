@@ -1,0 +1,62 @@
+{
+  "codigo": "Pry02-1247-2021",
+  "nombre": "Observatorio para el Análisis de la Situación de Salud de los Estudiantes Universitarios",
+  "unidadOrigen": "02025100-CENTRO INV EN CUIDADO DE ENFERMERIA Y SALUD CICES",
+  "estado": "Activo",
+  "tipo": "Biomedico observacional",
+  "lineaInvestigacion": "Investigacion Basica",
+  "descripcion": "Se ha estimado que mundialmente hay aproximadamente 200 millones de estudiantes universitarios.",
+  "objetivoGeneral": "Analizar la situación de salud de la población estudiantil universitaria",
+  "objetivosEspecificos":[{
+    "categoria": "Investigación",
+    "descripcion":  "Describir las características sociodemográficas y académicas del estudiantado.",
+    "metas": [
+      {
+        "tipo": "Cualitativa",
+        "descripcion": "Descripción de las características sociodemográficas y académicas del estudiantado",
+        "indicadores": [
+          {
+            "indicador": "Al menos una base de datos con la información sociodemográfica y académica"
+          }
+        ]
+      }
+    ]
+  }
+  ],
+  "institucionesParticipantes": [
+    {
+      "institucion": "Universidad de Costa Rica",
+      "unidadesParticipante": [
+        {
+          "unidad": "01040305 ESCUELA DE EDUCACION FISICA Y DEPORTES"
+        }
+      ],
+      "sitio": "San Jose"
+    }
+  ],
+  "fechaInicio": "2025-09-17",
+  "fechaFinalizacion": "2025-11-23",
+  "presentacionesInformes": [
+    {
+      "descripcion": "Informe parcial 1",
+      "fechaPresentacion": "2025-10-15"
+    }
+  ],
+  "documentos": [],
+  "presupuestos": [
+    {
+      "tipoPresupuesto": "FINANCIERO",
+      "fuenteFinanciamiento": "ORDINARIO",
+      "descripcion": "Presupuesto de materiales",
+      "monto": 100000,
+      "fechaAsignacion": "2025-09-20"
+    },
+    {
+      "tipoPresupuesto": "HORAS",
+      "descripcion": "Horas de investigación",
+      "cantidadHorasMes": 40,
+      "cantidadMeses": 3,
+      "fechaAsignacion": "2025-09-21"
+    }
+  ]
+}

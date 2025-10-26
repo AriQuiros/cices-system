@@ -14,6 +14,9 @@ export default function AsignarInvestigador() {
         sugerirProyectos,
     } = useContext(AppContext);
 
+    // --- UI local ---
+    const [helpOpen, setHelpOpen] = useState(false);
+
     // Form superior
     const [filtroInv, setFiltroInv] = useState("");
     const [rolId, setRolId] = useState("");
@@ -34,8 +37,8 @@ export default function AsignarInvestigador() {
     const [roles, setRoles] = useState([]);
     const [disp, setDisp] = useState([]);
     const [seleccionado, setSeleccionado] = useState(null);
-    const [asignadosSrv, setAsignadosSrv] = useState([]); // desde backend
-    const [pendientes, setPendientes] = useState([]);     // solo UI
+    const [asignadosSrv, setAsignadosSrv] = useState([]);
+    const [pendientes, setPendientes] = useState([]);
     const [qAsignados, setQAsignados] = useState("");
 
     const [loading, setLoading] = useState(false);
@@ -51,7 +54,6 @@ export default function AsignarInvestigador() {
         return () => { alive = false; };
     }, [filtroInv, searchInvestigadores]);
 
-    // cargar asignados del servidor
     useEffect(() => {
         if (!proyecto?.id) { setAsignadosSrv([]); return; }
         let alive = true;
@@ -60,7 +62,6 @@ export default function AsignarInvestigador() {
         return () => { alive = false; };
     }, [proyecto?.id, qAsignados, listarAsignados]);
 
-    // sugerencias con debounce
     useEffect(() => {
         const q = qProyecto.trim();
         if (!q) { setSugs([]); setShowSugs(false); return; }
@@ -70,6 +71,14 @@ export default function AsignarInvestigador() {
         }, 250);
         return () => clearTimeout(id);
     }, [qProyecto, sugerirProyectos]);
+
+    // Cerrar con ESC
+    useEffect(() => {
+        if (!helpOpen) return;
+        const onKey = (e) => { if (e.key === "Escape") setHelpOpen(false); };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [helpOpen]);
 
     const limpiarFormulario = () => {
         setFiltroInv(""); setRolId(""); setHorasMes("");
@@ -82,7 +91,7 @@ export default function AsignarInvestigador() {
         try {
             const p = await searchProyecto(qProyecto.trim());
             setProyecto(p);
-            setPendientes([]); // limpiar buffer al cambiar proyecto
+            setPendientes([]);
             setAsignadosSrv(p ? await listarAsignados(p.id, "") : []);
             if (!p) setMsg("Proyecto no encontrado");
         } catch {
@@ -91,11 +100,9 @@ export default function AsignarInvestigador() {
         } finally { setLoading(false); }
     };
 
-    // ---- Validación de fechas y período ----
     function validarFechasYPeriodo({ iniForm, finForm, periodo }) {
         const iniEff = (iniForm || periodo?.ini || "").trim();
         const finEff = (finForm || periodo?.fin || "").trim();
-
         if (iniEff && finEff && new Date(finEff) < new Date(iniEff)) {
             return { ok: false, msg: "La fecha fin no puede ser menor que la fecha de inicio" };
         }
@@ -107,7 +114,6 @@ export default function AsignarInvestigador() {
         }
         return { ok: true, iniEff, finEff };
     }
-    // ----------------------------------------
 
     const agregar = () => {
         setMsg("");
@@ -119,7 +125,6 @@ export default function AsignarInvestigador() {
         const yaEnPend = pendientes.some(p => String(p.investigadorId) === String(seleccionado.id));
         if (yaAsignadoSrv || yaEnPend) return setMsg("Ese investigador ya está asignado o pendiente");
 
-        // validar fechas aquí
         const v = validarFechasYPeriodo({ iniForm: ini, finForm: fin, periodo: proyecto?.periodo });
         if (!v.ok) return setMsg(v.msg);
 
@@ -158,7 +163,6 @@ export default function AsignarInvestigador() {
         } finally { setLoading(false); }
     };
 
-    // Guardar todo lo pendiente
     const onGuardar = async () => {
         if (!proyecto) return setMsg("Seleccione un proyecto");
         if (pendientes.length === 0) return setMsg("No hay cambios por guardar");
@@ -183,7 +187,6 @@ export default function AsignarInvestigador() {
         } finally { setLoading(false); }
     };
 
-    // Cancelar descarta pendientes y recarga server
     const onCancelar = async () => {
         setPendientes([]);
         if (proyecto?.id) setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
@@ -192,16 +195,68 @@ export default function AsignarInvestigador() {
     };
 
     const filas = [...asignadosSrv, ...pendientes];
-
-    const fechasInvalidas = !validarFechasYPeriodo({
-        iniForm: ini, finForm: fin, periodo: proyecto?.periodo
-    }).ok;
+    const fechasInvalidas = !validarFechasYPeriodo({ iniForm: ini, finForm: fin, periodo: proyecto?.periodo }).ok;
 
     return (
         <div className="aix aix--hassticky">
+            {/* Botón fijo de ayuda */}
+            <button
+                type="button"
+                aria-haspopup="dialog"
+                aria-expanded={helpOpen}
+                aria-controls="aixHelpDialog"
+                onClick={() => setHelpOpen(true)}
+                style={styles.helpBtn}
+            >
+                Ayuda
+            </button>
+
+            {/* Popup de ayuda */}
+            {helpOpen && (
+                <div role="dialog" aria-modal="true" id="aixHelpDialog" style={styles.modalBackdrop} onClick={() => setHelpOpen(false)}>
+                    <div style={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+                        <div style={styles.modalHead}>
+                            <h3 style={{ margin: 0 }}>¿Cómo asignar un investigador?</h3>
+                            <button type="button" aria-label="Cerrar" onClick={() => setHelpOpen(false)} style={styles.closeBtn}>×</button>
+                        </div>
+                        <div style={styles.modalBody}>
+                            <ol style={{ paddingLeft: "1.25rem", margin: 0 }}>
+                                <li style={styles.li}>
+                                    En el panel inferior izquierdo <b>“Proyecto Seleccionado”</b>, en la barra de búsqueda escriba el código del proyecto y presione <b>Seleccionar</b>.
+                                </li>
+                                <li style={styles.li}>
+                                    En el panel inferior derecho <b>“Investigadores disponibles”</b>, busque por nombre y presione <b>Seleccionar</b>.
+                                </li>
+                                <li style={styles.li}>
+                                    Complete los datos del panel superior central y presione <b>Agregar</b>.
+                                </li>
+                                <li style={styles.li}>
+                                    Presione <b>Guardar</b>.
+                                </li>
+                            </ol>
+                        </div>
+                        <div style={styles.modalFoot}>
+                            <button type="button" className="btn btn--blue" onClick={() => setHelpOpen(false)}>Entendido</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="aix__header">
                 <h2>Asignar investigador a este proyecto</h2>
-                {msg && <span className={`aix__msg ${msg.toLowerCase().includes("error") || msg.toLowerCase().includes("menor") || msg.toLowerCase().includes("fuera") ? "aix__msg--error" : ""}`}>{msg}</span>}
+                {msg && (
+                    <span
+                        className={`aix__msg ${
+                            msg.toLowerCase().includes("error") ||
+                            msg.toLowerCase().includes("menor") ||
+                            msg.toLowerCase().includes("fuera")
+                                ? "aix__msg--error"
+                                : ""
+                        }`}
+                    >
+            {msg}
+          </span>
+                )}
                 {fechasInvalidas && (
                     <span className="aix__msg aix__msg--error">
             La fecha fin no puede ser menor que la fecha de inicio o fuera del período del proyecto
@@ -213,15 +268,14 @@ export default function AsignarInvestigador() {
                 <div className="aix__row">
                     <div className="aix__field">
                         <label>Investigador</label>
-                        <input placeholder="Nombre" value={filtroInv}
-                               onChange={(e) => setFiltroInv(e.target.value)} />
+                        <input placeholder="Nombre" value={filtroInv} onChange={(e) => setFiltroInv(e.target.value)} />
                     </div>
 
                     <div className="aix__field">
                         <label>Tipo de Participación</label>
                         <select value={rolId} onChange={(e) => setRolId(e.target.value)}>
                             <option value="">Seleccione</option>
-                            {roles.map(r => (
+                            {roles.map((r) => (
                                 <option key={r.id} value={r.id}>{r.nombre}</option>
                             ))}
                         </select>
@@ -229,16 +283,22 @@ export default function AsignarInvestigador() {
 
                     <div className="aix__field">
                         <label>Carga académica</label>
-                        <input placeholder="Ej. 120" inputMode="numeric"
-                               value={horasMes}
-                               onChange={(e) => setHorasMes(e.target.value.replace(/[^\d]/g, ""))} />
+                        <input
+                            placeholder="Ej. 120"
+                            inputMode="numeric"
+                            value={horasMes}
+                            onChange={(e) => setHorasMes(e.target.value.replace(/[^\d]/g, ""))}
+                        />
                     </div>
 
                     <div className="aix__field">
                         <label>Meses</label>
-                        <input placeholder="Ej. 6" inputMode="numeric"
-                               value={meses}
-                               onChange={(e) => setMeses(e.target.value.replace(/[^\d]/g, ""))} />
+                        <input
+                            placeholder="Ej. 6"
+                            inputMode="numeric"
+                            value={meses}
+                            onChange={(e) => setMeses(e.target.value.replace(/[^\d]/g, ""))}
+                        />
                     </div>
                 </div>
 
@@ -258,11 +318,7 @@ export default function AsignarInvestigador() {
                     </div>
                     <div className="aix__actions">
                         <button className="btn btn--green" onClick={limpiarFormulario}>Limpiar</button>
-                        <button
-                            className="btn btn--blue"
-                            onClick={agregar}
-                            disabled={loading || fechasInvalidas}
-                        >
+                        <button className="btn btn--blue" onClick={agregar} disabled={loading || fechasInvalidas}>
                             Agregar
                         </button>
                     </div>
@@ -285,9 +341,11 @@ export default function AsignarInvestigador() {
                                     />
                                     {showSugs && sugs.length > 0 && (
                                         <ul className="aix__suggest">
-                                            {sugs.map(s => (
-                                                <li key={s.id}
-                                                    onMouseDown={() => { setQProyecto(s.codigo); setShowSugs(false); }}>
+                                            {sugs.map((s) => (
+                                                <li
+                                                    key={s.id}
+                                                    onMouseDown={() => { setQProyecto(s.codigo); setShowSugs(false); }}
+                                                >
                                                     <span className="aix__suggest-code">{s.codigo}</span>
                                                     <span className="aix__suggest-name">{s.nombre}</span>
                                                 </li>
@@ -344,9 +402,9 @@ export default function AsignarInvestigador() {
                                     <td>{fmt(a.periodo?.ini)} - {fmt(a.periodo?.fin)}</td>
                                     <td>{a.horas} h</td>
                                     <td>
-                    <span className={`badge ${a.temp ? "badge--blue" : "badge--gray"}`}>
-                      {a.estado || "Vigente"}
-                    </span>
+                      <span className={`badge ${a.temp ? "badge--blue" : "badge--gray"}`}>
+                        {a.estado || "Vigente"}
+                      </span>
                                     </td>
                                     <td>
                                         <button className="btn btn--danger" onClick={() => quitar(a)}>
@@ -367,8 +425,7 @@ export default function AsignarInvestigador() {
                     <div className="aix__card">
                         <div className="aix__available__head">
                             <label>Investigadores disponibles</label>
-                            <input placeholder="Nombre" value={filtroInv}
-                                   onChange={(e) => setFiltroInv(e.target.value)} />
+                            <input placeholder="Nombre" value={filtroInv} onChange={(e) => setFiltroInv(e.target.value)} />
                         </div>
                         <ul className="aix__list">
                             {disp.map((i) => (
@@ -397,7 +454,7 @@ export default function AsignarInvestigador() {
             <div className="aix__stickybar">
                 <div className="aix__stickybar__inner">
                     <button className="btn btn--gray" onClick={onCancelar}>Cancelar</button>
-                    <button className="btn btn--blue" onClick={onGuardar} disabled={loading || pendientes.length===0}>
+                    <button className="btn btn--blue" onClick={onGuardar} disabled={loading || pendientes.length === 0}>
                         Guardar {pendientes.length ? `(${pendientes.length})` : ""}
                     </button>
                 </div>
@@ -411,3 +468,66 @@ function fmt(s) {
     const [y, m, d] = s.split("-");
     return `${d}/${m}/${y}`;
 }
+
+// --- estilos inline mínimos para mantener el JSX autocontenido ---
+const styles = {
+    helpBtn: {
+        position: "fixed",
+        top: 150,              // bajo el header fijo (~98px)
+        right: 16,
+        zIndex: 2000,
+        padding: "8px 20px",
+        borderRadius: 8,
+        border: "2px solid #005DA4",
+        background: "#fff",
+        color: "#005DA4",
+        fontWeight: 700,
+        cursor: "pointer",
+    },
+    modalBackdrop: {
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,.4)",
+        zIndex: 3000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+    },
+    modalCard: {
+        width: "min(720px, 96vw)",
+        background: "#fff",
+        borderRadius: 12,
+        boxShadow: "0 20px 60px rgba(0,0,0,.25)",
+        overflow: "hidden",
+    },
+    modalHead: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "14px 16px",
+        borderBottom: "1px solid #e6eef5",
+    },
+    closeBtn: {
+        background: "transparent",
+        border: "none",
+        fontSize: 24,
+        lineHeight: 1,
+        cursor: "pointer",
+        color: "#2c3e50",
+    },
+    modalBody: {
+        padding: "16px",
+        color: "#2c3e50",
+        fontSize: 15,
+        lineHeight: 1.5,
+    },
+    modalFoot: {
+        padding: "12px 16px",
+        borderTop: "1px solid #e6eef5",
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 8,
+    },
+    li: { marginBottom: 8 },
+};

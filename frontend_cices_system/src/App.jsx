@@ -112,7 +112,7 @@ function Header() {
                             <>
                                 {rol === "DIRECTOR" && (
                                     <>
-                                        <BtnLink to="/director" onClick={() => setMenuAbierto(false)}>
+                                        <BtnLink to="/director" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Resumen General
                                         </BtnLink>
 
@@ -122,57 +122,21 @@ function Header() {
 
                                         {/* Dropdown Gestión de Proyectos */}
                                         <li className={`navbar-item ${submenuAbierto ? "active" : ""}`}>
-                                            <div
-                                                className="navbar-logo"
-                                                onClick={() => setSubmenuAbierto((v) => !v)}
-                                                role="button"
-                                                tabIndex={0}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Enter" || e.key === " ") setSubmenuAbierto((v) => !v);
-                                                }}
+                                            <button
+                                                type="button"
+                                                className={`btn btn--link nav-toggle ${submenuAbierto ? "is-active" : ""}`}
+                                                onClick={() => setSubmenuAbierto(v => !v)}
                                             >
                                                 Gestión de Proyectos <span className="arrow">{submenuAbierto ? "▲" : "▼"}</span>
-                                            </div>
+                                            </button>
 
                                             <ul className={`dropdown ${submenuAbierto ? "show" : ""}`}>
-                                                <li>
-                                                    <NavLink
-                                                        to="/consultaProyectos"
-                                                        onClick={() => {
-                                                            setMenuAbierto(false);
-                                                            setSubmenuAbierto(false);
-                                                        }}
-                                                        className="dropdown-link"
-                                                    >
-                                                        Consultar Proyectos
-                                                    </NavLink>
-                                                </li>
-                                                <li>
-                                                    <NavLink
-                                                        to="/RegistroProyecto"
-                                                        onClick={() => {
-                                                            setMenuAbierto(false);
-                                                            setSubmenuAbierto(false);
-                                                        }}
-                                                        className="dropdown-link"
-                                                    >
-                                                        Registrar Proyectos
-                                                    </NavLink>
-                                                </li>
-                                                <li>
-                                                    <NavLink
-                                                        to="/AsignarInvestigador"
-                                                        onClick={() => {
-                                                            setMenuAbierto(false);
-                                                            setSubmenuAbierto(false);
-                                                        }}
-                                                        className="dropdown-link"
-                                                    >
-                                                        Asignar Investigadores
-                                                    </NavLink>
-                                                </li>
+                                                <li><NavLink to="/consultaProyectos" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Consultar Proyectos</NavLink></li>
+                                                <li><NavLink to="/RegistroProyecto" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Registrar Proyectos</NavLink></li>
+                                                <li><NavLink to="/AsignarInvestigador" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Asignar Investigadores</NavLink></li>
                                             </ul>
                                         </li>
+
 
                                         <BtnLink to="/director" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Gastos de Proyectos
@@ -188,9 +152,7 @@ function Header() {
                                         </BtnLink>
 
                                         <li>
-                                            <button className="btn btn--danger" onClick={dirigirLogin}>
-                                                Cerrar Sesión
-                                            </button>
+                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion </button>
                                         </li>
                                     </>
                                 )}
@@ -227,26 +189,23 @@ function Header() {
 
                                 {rol === "INVESTIGADOR" && (
                                     <>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)}>
+                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Historial de Participación
                                         </BtnLink>
                                         <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Mis Proyectos
                                         </BtnLink>
                                         <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Custodiar datos de Investigación
+                                            Custodia de Datos
                                         </BtnLink>
                                         <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Actualizar Proyecto
                                         </BtnLink>
                                         <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Certificaciones y Licencias
+                                            Certificaciones
                                         </BtnLink>
-                                        <BtnLink to="/registrar-gastos" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Registrar Gastos
-                                        </BtnLink>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Consultar Gastos
+                                        <BtnLink to="/gastos" onClick={() => setMenuAbierto(false)} variant="ghost">
+                                            Gestion de Gastos
                                         </BtnLink>
                                         <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Notificaciones
@@ -256,9 +215,7 @@ function Header() {
                                         </BtnLink>
 
                                         <li>
-                                            <button className="btn btn--danger" onClick={dirigirLogin}>
-                                                Cerrar Sesión
-                                            </button>
+                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion </button>
                                         </li>
                                     </>
                                 )}

@@ -496,7 +496,7 @@ function Registro() {
                     className="btn-link-login"
                     onClick={() => window.location.href = "/"}
                 >
-                    Ingresar en mi cuenta (Log in)
+                    Iniciar Sesión
                 </button>
             </form>
             {idRolInvestigador && formData.roles.includes(idRolInvestigador) && mostrarPopup && (

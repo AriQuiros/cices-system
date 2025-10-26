@@ -441,3 +441,120 @@ footer {
   }
 }
 
+
+
+
+
+/* Botones base */
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5rem;
+    padding:.5rem 1rem;
+    min-height:38px;
+    border:2px solid transparent;
+    border-radius:8px;
+    font-weight:600;
+    text-decoration:none;
+    cursor:pointer;
+    transition:transform .06s ease, background-color .2s ease, box-shadow .2s ease;
+    line-height:1;
+}
+
+/* Variantes */
+.btn--primary{
+    background:#005DA4;
+    color:#fff;
+    border-color:#005DA4;
+}
+.btn--primary:hover{ background:#004b82; border-color:#004b82; }
+.btn--primary.is-active{ box-shadow:0 0 0 3px rgba(0,93,164,.25); }
+
+.btn--ghost{
+    background:#ffffff;
+    color:#005DA4;
+    border-color:#8ec5ea;
+}
+.btn--ghost:hover{ background:#e9f5ff; }
+
+.btn--danger{
+    background:#ffffff;
+    color:#c62828;
+    border-color:#8ec5ea;
+}
+.btn--danger:hover{ background: #0a4f92; }
+
+/* Estado focus accesible */
+.btn:focus-visible{
+    outline:none;
+    box-shadow:0 0 0 3px #fff, 0 0 0 6px #0FC3F3;
+}
+
+/* En el header: que los <li> no rompan el layout */
+.Menu{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:.5rem;
+}
+.Menu li{ list-style:none; }
+
+/* Hover de enlaces heredados que no sean .btn */
+.divider nav ul.Menu li a:not(.btn):hover{
+    background:transparent;
+}
+
+/* Dropdown coherente con botones */
+.navbar{ padding:0; }
+.navbar-logo{
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+    padding:.5rem .75rem;
+    border-radius:8px;
+    color:#005DA4;
+    font-weight:600;
+    cursor:pointer;
+}
+.navbar-logo:hover{ background:#e9f5ff; }
+
+.dropdown{
+    display:none;
+    position:absolute;
+    top:110%;
+    left:0;
+    background:#fff;
+    border:1px solid #e6eef5;
+    border-radius:10px;
+    min-width:240px;
+    box-shadow:0 8px 24px rgba(0,0,0,.12);
+    padding:.5rem;
+    z-index:1000;
+}
+.dropdown.show{ display:block; }
+
+.dropdown li a{
+    display:block;
+    padding:.6rem .75rem;
+    border-radius:6px;
+    color:#005DA4;
+    text-decoration:none;
+    font-weight:500;
+}
+.dropdown li a:hover{ background:#e9f5ff; }
+
+/* Móvil */
+@media (max-width:768px){
+    .divider nav ul.Menu{
+        flex-direction:column;
+        align-items:stretch;
+    }
+    .btn{ width:100%; }
+    .dropdown{
+        position:static;
+        box-shadow:none;
+        border:1px solid #e6eef5;
+        margin-top:.25rem;
+    }
+}

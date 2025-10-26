@@ -220,9 +220,7 @@ function Header() {
                                         </BtnLink>
 
                                         <li>
-                                            <BtnLink to="/login" onClick={dirigirLogin} variant="ghost">
-                                                Cerrar Sesión
-                                            </BtnLink>
+                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion </button>
                                         </li>
                                     </>
                                 )}

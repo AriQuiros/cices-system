@@ -228,7 +228,7 @@ export default function AsignarInvestigador() {
                     </div>
 
                     <div className="aix__field">
-                        <label>Horas asignadas</label>
+                        <label>Carga académica</label>
                         <input placeholder="Ej. 120" inputMode="numeric"
                                value={horasMes}
                                onChange={(e) => setHorasMes(e.target.value.replace(/[^\d]/g, ""))} />

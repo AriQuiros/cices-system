@@ -98,10 +98,11 @@ header {
   font-size: 15px;
 }
 
-.Menu button:hover{
-  background: #004080;
-  color: white;
+.Menu button.cerrarSesionbtn:hover {
+    background: #004080;
+    color: white;
 }
+
 
 .menu-toggle {
   display: none;
@@ -369,29 +370,11 @@ footer {
     min-width: 150px;
   }
 }
+
 .navbar-item {
   position: relative;
 }
 
-.navbar {
-  position: relative;
-  display: inline-block;
-  color: #005DA4;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* Cuando pasás el mouse, se despliega el menú */
-.navbar:hover .dropdown {
-  display: block;
-}
-
-.navbar-logo {
-  color: #005DA4;;
-  text-decoration: none;
-}
 
 .arrow {
   margin-left: 10px;
@@ -443,6 +426,43 @@ footer {
 
 
 
+
+/* botón trigger con el mismo look de BtnLink ghost */
+.nav-toggle {
+    position: relative;
+    background: white;
+    border: none;
+    color: #005DA4;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    }
+
+.dropdown { top: calc(100% + 6px); left: 0; }
+
+
+
+
+
+.btn--link {
+    background: white;
+    border: none;
+    color: #005DA4;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+}
+/* coloca esto DESPUÉS de la regla .btn--link */
+.Menu .btn.btn--link.nav-toggle { color:#005DA4; }            /* rojo base */
+@media (hover:hover){
+    .Menu .btn.btn--link.nav-toggle:hover { color:#fff; }       /* mantén hover blanco si quieres */
+}
+
+
+.btn--link:hover {
+    background:#005DA4;
+    color: white;
+}
 
 
 /* Botones base */
@@ -498,12 +518,8 @@ footer {
     align-items:center;
     gap:.5rem;
 }
-.Menu li{ list-style:none; }
 
-/* Hover de enlaces heredados que no sean .btn */
-.divider nav ul.Menu li a:not(.btn):hover{
-    background:transparent;
-}
+
 
 /* Dropdown coherente con botones */
 .navbar{ padding:0; }
@@ -542,7 +558,6 @@ footer {
     text-decoration:none;
     font-weight:500;
 }
-.dropdown li a:hover{ background:#e9f5ff; }
 
 /* Móvil */
 @media (max-width:768px){

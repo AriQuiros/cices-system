@@ -219,3 +219,129 @@
     cursor: pointer;
 }
 .btn.btn--gray:hover { background: #d1d5db; }
+
+/* Botón fijo */
+.help-fab{
+    position: fixed; top:10px; right:12px; z-index:1100;
+    padding:.5rem .9rem; border-radius:999px;
+    border:2px solid #005DA4; background:#fff; color:#005DA4; font-weight:700;
+    cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+.help-fab:hover{ background:#e9f5ff; }
+
+/* Overlay + modal */
+.help-overlay{
+    position: fixed; inset:0; background:rgba(0,0,0,.35);
+    z-index:1200; display:flex; align-items:center; justify-content:center; padding:16px;
+}
+.help-modal{
+    width:min(640px,96vw); background:#fff; border-radius:12px;
+    box-shadow:0 10px 32px rgba(0,0,0,.25); overflow:hidden;
+}
+.help-modal__head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px; border-bottom:1px solid #eef3f8;
+}
+.help-close{
+    border:none; background:transparent; font-size:1.5rem; line-height:1; cursor:pointer; color:#4b5563;
+}
+.help-close:hover{ color:#111827; }
+.help-modal__body{ padding:16px 18px; }
+.help-modal__body ol{ margin:0; padding-left:1.25rem; }
+.help-modal__body li{ margin:.5rem 0; }
+.help-modal__foot{ display:flex; justify-content:flex-end; gap:.5rem; padding:12px 16px; border-top:1px solid #eef3f8; }
+
+/* Reusa tu botón azul */
+.btn.btn--blue{ background:#005DA4; color:#fff; border:2px solid #005DA4; }
+.btn.btn--blue:hover{ background:#004b82; border-color:#004b82; }
+
+
+/* Botón fijo de ayuda */
+.aix-help{
+    position: fixed;
+    top: 110px;            /* debajo del header fijo (~98px) */
+    right: 16px;
+    z-index: 2000;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 2px solid #005DA4;
+    background: #fff;
+    color: #005DA4;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+}
+@media (hover:hover){
+    .aix-help:hover{ background:#e9f5ff; }
+}
+
+/* Backdrop del modal */
+.aix-help__backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+/* Tarjeta del modal */
+.aix-help__card{
+    width: min(720px, 96vw);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    overflow: hidden;
+}
+
+/* Encabezado modal */
+.aix-help__head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e6eef5;
+}
+
+.aix-help__close{
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #2c3e50;
+}
+@media (hover:hover){
+    .aix-help__close:hover{ color:#000; }
+}
+
+/* Cuerpo modal */
+.aix-help__body{
+    padding: 16px;
+    color: #2c3e50;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.aix-help__body ol{
+    padding-left: 1.25rem;
+    margin: 0;
+}
+.aix-help__body li{ margin-bottom: 8px; }
+
+/* Pie modal */
+.aix-help__foot{
+    padding: 12px 16px;
+    border-top: 1px solid #e6eef5;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* Accesibilidad: foco visible */
+.aix-help:focus-visible,
+.aix-help__close:focus-visible{
+    outline: none;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 6px #0FC3F3;
+}

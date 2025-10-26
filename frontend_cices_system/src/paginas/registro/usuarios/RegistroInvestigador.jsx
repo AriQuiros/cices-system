@@ -149,12 +149,12 @@ function RegistroInvestigador({ onClose, onConfirm }) {
                     {/* Base */}
                     <input
                         className="input" type="text" name="institucion"
-                        placeholder="Institución de origen (Propia)" value={formData.institucion}
+                        placeholder="Institución de origen (ej: UCR)" value={formData.institucion}
                         onChange={handleChange}
                     />
                     <input
                         className="input" type="text" name="unidadAcademica"
-                        placeholder="Unidad académica (Propia)" value={formData.unidadAcademica}
+                        placeholder="Unidad académica (ej: Escuela de ...)" value={formData.unidadAcademica}
                         onChange={handleChange}
                     />
 
@@ -179,7 +179,9 @@ function RegistroInvestigador({ onClose, onConfirm }) {
 
                     {/* <<< NUEVO >>> Certificaciones dentro del mismo pop-up */}
                     <h3 className="section-title">Certificaciones (capacitaciones, cursos, etc.)</h3>
-                    <p className="info-text">No es obligatorio ingresar una certificación en este momento</p>
+                    <p>En este apartado se pueden registrar acreditaciones o licencias profesionales <br/>
+                        que requieran para la partición en los proyectos.</p>
+                    <p className="info-text"> No es obligatorio ingresar una certificación en este momento</p>
 
                     <div className="rows-group">
                         {certificaciones.map((c, idx) => (

@@ -391,6 +391,7 @@ function Registro() {
                         id="correo"
                         type="email"
                         name="correo"
+                        pattern="*.@ucr.ac.cr"
                         placeholder="example@ucr.ac.cr"
                         className="input-field"
                         value={formData.correo}

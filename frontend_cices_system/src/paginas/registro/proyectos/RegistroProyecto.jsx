@@ -379,7 +379,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                 <h2>Registrar Proyecto</h2>
 
                 <div className="form-row">
-                    <input type="text" placeholder="Código" className="input-field" required maxLength={252}
+                    <input type="text" placeholder="Código (prefijo: 840)" className="input-field" required maxLength={252}
                            name="codigo" ref={inputCodigoRef} value={entity.codigo} onChange={handleChange}/>
                     <input type="text" placeholder="Nombre" className="input-field" required maxLength={252}
                            name="nombre" value={entity.nombre} onChange={handleChange}/>
@@ -401,7 +401,7 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                         ))}
                     </select>
 
-                    <input type="text" placeholder="Línea de investigación" className="input-field" required  maxLength={252}
+                    <input type="text" placeholder="Línea de investigación (área en el que se desarrolla el proyecto) ej: Entorno laboral" className="input-field" required  maxLength={252}
                            name="lineaInvestigacion" value={entity.lineaInvestigacion} onChange={handleChange}/>
                 </div>
 
@@ -434,12 +434,6 @@ function Show({ types, entity, errores, handleChange, handleNestedChange,
                             </div>
                         </legend>
 
-                        <input type="text" name="categoriaObjetivo" placeholder="Categoría" className="input-field" required
-                               value={objetivo.categoria}
-                               onChange={e =>
-                                   handleNestedChange(["objetivosEspecificos", idxObjetivo, "categoria"], e.target.value)
-                               }
-                        />
                         <textarea placeholder="Descripción del objetivo" name="descripcionObjetivo"  className="input-field" rows="4" required
                                   value={objetivo.descripcion}
                                   onChange={e =>

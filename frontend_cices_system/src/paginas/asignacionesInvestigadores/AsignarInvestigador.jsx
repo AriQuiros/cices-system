@@ -42,7 +42,16 @@ export default function AsignarInvestigador() {
     const [qAsignados, setQAsignados] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [msg, setMsg] = useState("");
+
+    // --- TOASTS ---
+    const [toasts, setToasts] = useState([]); // {id, text, variant}
+    const dismissToast = (id) =>
+        setToasts((ts) => ts.filter((t) => t.id !== id));
+    const pushToast = (text, variant = "info", ms = 3800) => {
+        const id = `t_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+        setToasts((ts) => [...ts, { id, text, variant }]);
+        if (ms > 0) setTimeout(() => dismissToast(id), ms);
+    };
 
     useEffect(() => {
         listarRolesProyecto().then(setRoles).catch(() => setRoles([]));
@@ -51,23 +60,40 @@ export default function AsignarInvestigador() {
     useEffect(() => {
         let alive = true;
         searchInvestigadores(filtroInv).then((r) => alive && setDisp(r || []));
-        return () => { alive = false; };
+        return () => {
+            alive = false;
+        };
     }, [filtroInv, searchInvestigadores]);
 
     useEffect(() => {
-        if (!proyecto?.id) { setAsignadosSrv([]); return; }
+        if (!proyecto?.id) {
+            setAsignadosSrv([]);
+            return;
+        }
         let alive = true;
-        listarAsignados(proyecto.id, qAsignados)
-            .then((r) => alive && setAsignadosSrv(Array.isArray(r) ? r : []));
-        return () => { alive = false; };
+        listarAsignados(proyecto.id, qAsignados).then(
+            (r) => alive && setAsignadosSrv(Array.isArray(r) ? r : [])
+        );
+        return () => {
+            alive = false;
+        };
     }, [proyecto?.id, qAsignados, listarAsignados]);
 
     useEffect(() => {
         const q = qProyecto.trim();
-        if (!q) { setSugs([]); setShowSugs(false); return; }
+        if (!q) {
+            setSugs([]);
+            setShowSugs(false);
+            return;
+        }
         const id = setTimeout(async () => {
-            try { setSugs((await sugerirProyectos(q)) || []); setShowSugs(true); }
-            catch { setSugs([]); setShowSugs(false); }
+            try {
+                setSugs((await sugerirProyectos(q)) || []);
+                setShowSugs(true);
+            } catch {
+                setSugs([]);
+                setShowSugs(false);
+            }
         }, 250);
         return () => clearTimeout(id);
     }, [qProyecto, sugerirProyectos]);
@@ -75,29 +101,39 @@ export default function AsignarInvestigador() {
     // Cerrar con ESC
     useEffect(() => {
         if (!helpOpen) return;
-        const onKey = (e) => { if (e.key === "Escape") setHelpOpen(false); };
+        const onKey = (e) => {
+            if (e.key === "Escape") setHelpOpen(false);
+        };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, [helpOpen]);
 
     const limpiarFormulario = () => {
-        setFiltroInv(""); setRolId(""); setHorasMes("");
-        setMeses(""); setIni(""); setFin("");
+        setFiltroInv("");
+        setRolId("");
+        setHorasMes("");
+        setMeses("");
+        setIni("");
+        setFin("");
         setSeleccionado(null);
     };
 
     const buscarProyecto = async () => {
-        setLoading(true); setMsg("");
+        setLoading(true);
         try {
             const p = await searchProyecto(qProyecto.trim());
             setProyecto(p);
             setPendientes([]);
             setAsignadosSrv(p ? await listarAsignados(p.id, "") : []);
-            if (!p) setMsg("Proyecto no encontrado");
+            if (!p) pushToast("Proyecto no encontrado", "error");
         } catch {
-            setProyecto(null); setAsignadosSrv([]); setPendientes([]);
-            setMsg("Error al buscar proyecto");
-        } finally { setLoading(false); }
+            setProyecto(null);
+            setAsignadosSrv([]);
+            setPendientes([]);
+            pushToast("Error al buscar proyecto", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     function validarFechasYPeriodo({ iniForm, finForm, periodo }) {
@@ -107,31 +143,41 @@ export default function AsignarInvestigador() {
             return { ok: false, msg: "La fecha fin no puede ser menor que la fecha de inicio" };
         }
         if (iniEff && periodo?.ini && new Date(iniEff) < new Date(periodo.ini)) {
-            return { ok: false, msg: "Inicio fuera del período del proyecto" };
+            return { ok: false, msg: "Fecha de Inicio fuera del período del proyecto" };
         }
         if (finEff && periodo?.fin && new Date(finEff) > new Date(periodo.fin)) {
-            return { ok: false, msg: "Fin fuera del período del proyecto" };
+            return { ok: false, msg: "Fecha de Fin fuera del período del proyecto" };
         }
         return { ok: true, iniEff, finEff };
     }
 
     const agregar = () => {
-        setMsg("");
-        if (!proyecto) return setMsg("Seleccione un proyecto");
-        if (!seleccionado) return setMsg("Seleccione un investigador");
-        if (!rolId) return setMsg("Seleccione un rol");
+        if (!proyecto) return pushToast("Seleccione un proyecto", "error");
+        if (!seleccionado) return pushToast("Seleccione un investigador", "error");
+        if (!rolId) return pushToast("Seleccione un rol", "error");
 
-        const yaAsignadoSrv = asignadosSrv.some(a => String(a.id) === String(seleccionado.id));
-        const yaEnPend = pendientes.some(p => String(p.investigadorId) === String(seleccionado.id));
-        if (yaAsignadoSrv || yaEnPend) return setMsg("Ese investigador ya está asignado o pendiente");
+        const yaAsignadoSrv = asignadosSrv.some(
+            (a) => String(a.id) === String(seleccionado.id)
+        );
+        const yaEnPend = pendientes.some(
+            (p) => String(p.investigadorId) === String(seleccionado.id)
+        );
+        if (yaAsignadoSrv || yaEnPend)
+            return pushToast("Ese investigador ya está asignado o pendiente", "error");
 
-        const v = validarFechasYPeriodo({ iniForm: ini, finForm: fin, periodo: proyecto?.periodo });
-        if (!v.ok) return setMsg(v.msg);
+        const v = validarFechasYPeriodo({
+            iniForm: ini,
+            finForm: fin,
+            periodo: proyecto?.periodo,
+        });
+        if (!v.ok) return pushToast(v.msg, "error");
 
-        const rolNombre = roles.find(r => String(r.id) === String(rolId))?.nombre ?? "";
+        const rolNombre =
+            roles.find((r) => String(r.id) === String(rolId))?.nombre ?? "";
 
         const item = {
-            id: `_tmp_${Date.now()}`, temp: true,
+            id: `_tmp_${Date.now()}`,
+            temp: true,
             investigadorId: seleccionado.id,
             rolId: Number(rolId),
             nombre: seleccionado.nombre,
@@ -142,63 +188,109 @@ export default function AsignarInvestigador() {
             meses: Number(meses || 1),
             horas: Number(horasMes || 0) * Number(meses || 1),
             estado: "Nuevo",
-            periodo: { ini: v.iniEff || "", fin: v.finEff || "" }
+            periodo: { ini: v.iniEff || "", fin: v.finEff || "" },
         };
 
-        setPendientes(prev => [...prev, item]);
-        setMsg("Añadido a la lista. Recuerde Guardar.");
+        setPendientes((prev) => [...prev, item]);
+        pushToast("Añadido a la lista. Recuerde Guardar.", "info");
         limpiarFormulario();
     };
 
     const quitar = async (row) => {
         if (!proyecto) return;
         if (row?.temp || String(row?.id).startsWith("_tmp_")) {
-            setPendientes(prev => prev.filter(p => p.id !== row.id));
+            setPendientes((prev) => prev.filter((p) => p.id !== row.id));
             return;
         }
         setLoading(true);
         try {
             await quitarAsignacion({ proyectoId: proyecto.id, investigadorId: row.id });
             setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
-        } finally { setLoading(false); }
+            pushToast("Asignación eliminada", "success");
+        } catch {
+            pushToast("No fue posible eliminar", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const onGuardar = async () => {
-        if (!proyecto) return setMsg("Seleccione un proyecto");
-        if (pendientes.length === 0) return setMsg("No hay cambios por guardar");
+        if (!proyecto) return pushToast("Seleccione un proyecto", "error");
+        if (pendientes.length === 0)
+            return pushToast("No hay cambios por guardar", "info");
         setLoading(true);
         try {
-            await Promise.all(pendientes.map(p =>
-                agregarAsignacion({
-                    proyectoId: proyecto.id,
-                    investigadorId: p.investigadorId,
-                    rolProyectoId: p.rolId,
-                    horasMes: p.horasMes,
-                    meses: p.meses,
-                    ini: p.ini,
-                    fin: p.fin,
-                })
-            ));
+            await Promise.all(
+                pendientes.map((p) =>
+                    agregarAsignacion({
+                        proyectoId: proyecto.id,
+                        investigadorId: p.investigadorId,
+                        rolProyectoId: p.rolId,
+                        horasMes: p.horasMes,
+                        meses: p.meses,
+                        ini: p.ini,
+                        fin: p.fin,
+                    })
+                )
+            );
             setPendientes([]);
             setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
-            setMsg("Cambios guardados");
+            pushToast("Cambios guardados", "success");
         } catch {
-            setMsg("No fue posible guardar");
-        } finally { setLoading(false); }
+            pushToast("No fue posible guardar", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const onCancelar = async () => {
         setPendientes([]);
-        if (proyecto?.id) setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
+        if (proyecto?.id)
+            setAsignadosSrv(await listarAsignados(proyecto.id, qAsignados));
         limpiarFormulario();
-        setMsg("Cambios descartados");
+        pushToast("Cambios descartados", "info");
     };
 
     const filas = [...asignadosSrv, ...pendientes];
-    const fechasInvalidas = !validarFechasYPeriodo({ iniForm: ini, finForm: fin, periodo: proyecto?.periodo }).ok;
 
     return (
         <div className="aix aix--hassticky">
+            {/* keyframes locales para animación */}
+            <style>{`@keyframes slideIn{from{transform:translateY(-8px);opacity:.0}to{transform:translateY(0);opacity:1}}`}</style>
+
+            {/* TOASTS */}
+            <div style={toastStyles.container} aria-live="polite" aria-atomic="true">
+                {toasts.map((t) => (
+                    <div
+                        key={t.id}
+                        role="status"
+                        style={{
+                            ...toastStyles.toast,
+                            ...(t.variant === "error"
+                                ? toastStyles.error
+                                : t.variant === "success"
+                                    ? toastStyles.success
+                                    : toastStyles.info),
+                        }}
+                        onClick={() => dismissToast(t.id)}
+                    >
+                        <span style={toastStyles.dot} />
+                        <div style={toastStyles.text}>{t.text}</div>
+                        <button
+                            type="button"
+                            style={toastStyles.close}
+                            aria-label="Cerrar"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                dismissToast(t.id);
+                            }}
+                        >
+                            ×
+                        </button>
+                    </div>
+                ))}
+            </div>
+
             {/* Botón fijo de ayuda */}
             <button
                 type="button"
@@ -213,22 +305,39 @@ export default function AsignarInvestigador() {
 
             {/* Popup de ayuda */}
             {helpOpen && (
-                <div role="dialog" aria-modal="true" id="aixHelpDialog" style={styles.modalBackdrop} onClick={() => setHelpOpen(false)}>
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    id="aixHelpDialog"
+                    style={styles.modalBackdrop}
+                    onClick={() => setHelpOpen(false)}
+                >
                     <div style={styles.modalCard} onClick={(e) => e.stopPropagation()}>
                         <div style={styles.modalHead}>
                             <h3 style={{ margin: 0 }}>¿Cómo asignar un investigador?</h3>
-                            <button type="button" aria-label="Cerrar" onClick={() => setHelpOpen(false)} style={styles.closeBtn}>×</button>
+                            <button
+                                type="button"
+                                aria-label="Cerrar"
+                                onClick={() => setHelpOpen(false)}
+                                style={styles.closeBtn}
+                            >
+                                ×
+                            </button>
                         </div>
                         <div style={styles.modalBody}>
                             <ol style={{ paddingLeft: "1.25rem", margin: 0 }}>
                                 <li style={styles.li}>
-                                    En el panel inferior izquierdo <b>“Proyecto Seleccionado”</b>, en la barra de búsqueda escriba el código del proyecto y presione <b>Seleccionar</b>.
+                                    En el panel inferior izquierdo <b>“Proyecto Seleccionado”</b>, en la
+                                    barra de búsqueda escriba el código del proyecto y presione{" "}
+                                    <b>Seleccionar</b>.
                                 </li>
                                 <li style={styles.li}>
-                                    En el panel inferior derecho <b>“Investigadores disponibles”</b>, busque por nombre y presione <b>Seleccionar</b>.
+                                    En el panel inferior derecho <b>“Investigadores disponibles”</b>,
+                                    busque por nombre y presione <b>Seleccionar</b>.
                                 </li>
                                 <li style={styles.li}>
-                                    Complete los datos del panel superior central y presione <b>Agregar</b>.
+                                    Complete los datos del panel superior central y presione{" "}
+                                    <b>Agregar</b>.
                                 </li>
                                 <li style={styles.li}>
                                     Presione <b>Guardar</b>.
@@ -236,7 +345,13 @@ export default function AsignarInvestigador() {
                             </ol>
                         </div>
                         <div style={styles.modalFoot}>
-                            <button type="button" className="btn btn--blue" onClick={() => setHelpOpen(false)}>Entendido</button>
+                            <button
+                                type="button"
+                                className="btn btn--blue"
+                                onClick={() => setHelpOpen(false)}
+                            >
+                                Entendido
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -244,31 +359,13 @@ export default function AsignarInvestigador() {
 
             <div className="aix__header">
                 <h2>Asignar investigador a este proyecto</h2>
-                {msg && (
-                    <span
-                        className={`aix__msg ${
-                            msg.toLowerCase().includes("error") ||
-                            msg.toLowerCase().includes("menor") ||
-                            msg.toLowerCase().includes("fuera")
-                                ? "aix__msg--error"
-                                : ""
-                        }`}
-                    >
-            {msg}
-          </span>
-                )}
-                {fechasInvalidas && (
-                    <span className="aix__msg aix__msg--error">
-            La fecha fin no puede ser menor que la fecha de inicio o fuera del período del proyecto
-          </span>
-                )}
             </div>
 
             <div className="aix__toolbar">
                 <div className="aix__row">
                     <div className="aix__field">
                         <label>Investigador</label>
-                        <input placeholder="Nombre" value={filtroInv} onChange={(e) => setFiltroInv(e.target.value)} />
+                        <input placeholder="Nombre" value={filtroInv} disabled />
                     </div>
 
                     <div className="aix__field">
@@ -276,7 +373,9 @@ export default function AsignarInvestigador() {
                         <select value={rolId} onChange={(e) => setRolId(e.target.value)}>
                             <option value="">Seleccione</option>
                             {roles.map((r) => (
-                                <option key={r.id} value={r.id}>{r.nombre}</option>
+                                <option key={r.id} value={r.id}>
+                                    {r.nombre}
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -287,7 +386,9 @@ export default function AsignarInvestigador() {
                             placeholder="Ej. 120"
                             inputMode="numeric"
                             value={horasMes}
-                            onChange={(e) => setHorasMes(e.target.value.replace(/[^\d]/g, ""))}
+                            onChange={(e) =>
+                                setHorasMes(e.target.value.replace(/[^\d]/g, ""))
+                            }
                         />
                     </div>
 
@@ -308,17 +409,31 @@ export default function AsignarInvestigador() {
                         <div className="aix__dates">
                             <div>
                                 <span>Inicio</span>
-                                <input type="date" value={ini} onChange={(e) => setIni(e.target.value)} />
+                                <input
+                                    type="date"
+                                    value={ini}
+                                    onChange={(e) => setIni(e.target.value)}
+                                />
                             </div>
                             <div>
                                 <span>Fin</span>
-                                <input type="date" value={fin} onChange={(e) => setFin(e.target.value)} />
+                                <input
+                                    type="date"
+                                    value={fin}
+                                    onChange={(e) => setFin(e.target.value)}
+                                />
                             </div>
                         </div>
                     </div>
                     <div className="aix__actions">
-                        <button className="btn btn--green" onClick={limpiarFormulario}>Limpiar</button>
-                        <button className="btn btn--blue" onClick={agregar} disabled={loading || fechasInvalidas}>
+                        <button className="btn btn--green" onClick={limpiarFormulario}>
+                            Limpiar
+                        </button>
+                        <button
+                            className="btn btn--blue"
+                            onClick={agregar}
+                            disabled={loading}
+                        >
                             Agregar
                         </button>
                     </div>
@@ -335,7 +450,10 @@ export default function AsignarInvestigador() {
                                     <input
                                         placeholder="Código o Nombre"
                                         value={qProyecto}
-                                        onChange={(e) => { setQProyecto(e.target.value); setShowSugs(true); }}
+                                        onChange={(e) => {
+                                            setQProyecto(e.target.value);
+                                            setShowSugs(true);
+                                        }}
                                         onFocus={() => sugs.length && setShowSugs(true)}
                                         onBlur={() => setTimeout(() => setShowSugs(false), 150)}
                                     />
@@ -344,7 +462,10 @@ export default function AsignarInvestigador() {
                                             {sugs.map((s) => (
                                                 <li
                                                     key={s.id}
-                                                    onMouseDown={() => { setQProyecto(s.codigo); setShowSugs(false); }}
+                                                    onMouseDown={() => {
+                                                        setQProyecto(s.codigo);
+                                                        setShowSugs(false);
+                                                    }}
                                                 >
                                                     <span className="aix__suggest-code">{s.codigo}</span>
                                                     <span className="aix__suggest-name">{s.nombre}</span>
@@ -360,18 +481,32 @@ export default function AsignarInvestigador() {
                         {proyecto ? (
                             <div className="aix__project">
                                 <div className="aix__project__head">
-                                    <h3>{proyecto.codigo} {proyecto.nombre}</h3>
+                                    <h3>
+                                        {proyecto.codigo} {proyecto.nombre}
+                                    </h3>
                                     <span className="badge badge--green">{proyecto.estado}</span>
                                 </div>
                                 <div className="aix__project__meta">
-                                    <div><b>Línea:</b> {proyecto.linea}</div>
-                                    <div><b>Período:</b> {fmt(proyecto.periodo?.ini)} - {fmt(proyecto.periodo?.fin)}</div>
-                                    <div><b>Horas planificadas:</b> {proyecto.horasPlanificadas} h</div>
-                                    <div><b>Estado de asignaciones:</b> {proyecto.asignados?.count} asignados - {proyecto.asignados?.horas}h comprometidas</div>
+                                    <div>
+                                        <b>Línea:</b> {proyecto.linea}
+                                    </div>
+                                    <div>
+                                        <b>Período:</b> {fmt(proyecto.periodo?.ini)} -{" "}
+                                        {fmt(proyecto.periodo?.fin)}
+                                    </div>
+                                    <div>
+                                        <b>Horas planificadas:</b> {proyecto.horasPlanificadas} h
+                                    </div>
+                                    <div>
+                                        <b>Estado de asignaciones:</b> {proyecto.asignados?.count} asignados -{" "}
+                                        {proyecto.asignados?.horas}h comprometidas
+                                    </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="aix__project --placeholder">Sin proyecto seleccionado</div>
+                            <div className="aix__project --placeholder">
+                                Sin proyecto seleccionado
+                            </div>
                         )}
                     </div>
 
@@ -391,7 +526,12 @@ export default function AsignarInvestigador() {
                         <table className="aix__table">
                             <thead>
                             <tr>
-                                <th>Investigador</th><th>Tipo de Participación</th><th>Período</th><th>Horas</th><th>Estado</th><th></th>
+                                <th>Investigador</th>
+                                <th>Tipo de Participación</th>
+                                <th>Período</th>
+                                <th>Horas</th>
+                                <th>Estado</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -399,10 +539,14 @@ export default function AsignarInvestigador() {
                                 <tr key={a.id}>
                                     <td>{a.nombre}</td>
                                     <td>{a.rol}</td>
-                                    <td>{fmt(a.periodo?.ini)} - {fmt(a.periodo?.fin)}</td>
+                                    <td>
+                                        {fmt(a.periodo?.ini)} - {fmt(a.periodo?.fin)}
+                                    </td>
                                     <td>{a.horas} h</td>
                                     <td>
-                      <span className={`badge ${a.temp ? "badge--blue" : "badge--gray"}`}>
+                      <span
+                          className={`badge ${a.temp ? "badge--blue" : "badge--gray"}`}
+                      >
                         {a.estado || "Vigente"}
                       </span>
                                     </td>
@@ -414,7 +558,11 @@ export default function AsignarInvestigador() {
                                 </tr>
                             ))}
                             {(!filas || filas.length === 0) && (
-                                <tr><td className="aix__empty" colSpan="6">No hay asignaciones</td></tr>
+                                <tr>
+                                    <td className="aix__empty" colSpan="6">
+                                        No hay asignaciones
+                                    </td>
+                                </tr>
                             )}
                             </tbody>
                         </table>
@@ -425,20 +573,33 @@ export default function AsignarInvestigador() {
                     <div className="aix__card">
                         <div className="aix__available__head">
                             <label>Investigadores disponibles</label>
-                            <input placeholder="Nombre" value={filtroInv} onChange={(e) => setFiltroInv(e.target.value)} />
+                            <input
+                                placeholder="Nombre"
+                                value={filtroInv}
+                                onChange={(e) => setFiltroInv(e.target.value)}
+                            />
                         </div>
                         <ul className="aix__list">
                             {disp.map((i) => (
                                 <li
                                     key={i.id}
-                                    className={`aix__listitem ${seleccionado?.id === i.id ? "is-active" : ""}`}
-                                    onClick={() => { setSeleccionado(i); setFiltroInv(i.nombre); }}
+                                    className={`aix__listitem ${
+                                        seleccionado?.id === i.id ? "is-active" : ""
+                                    }`}
+                                    onClick={() => {
+                                        setSeleccionado(i);
+                                        setFiltroInv(i.nombre);
+                                    }}
                                 >
                                     <div className="aix__listitem__name">{i.nombre}</div>
                                     <div className="aix__listitem__unit">Unidad: {i.unidad}</div>
                                     <button
                                         className="btn btn--mini"
-                                        onClick={(e) => { e.stopPropagation(); setSeleccionado(i); setFiltroInv(i.nombre); }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSeleccionado(i);
+                                            setFiltroInv(i.nombre);
+                                        }}
                                     >
                                         Seleccionar
                                     </button>
@@ -453,8 +614,14 @@ export default function AsignarInvestigador() {
             {/* barra fija inferior */}
             <div className="aix__stickybar">
                 <div className="aix__stickybar__inner">
-                    <button className="btn btn--gray" onClick={onCancelar}>Cancelar</button>
-                    <button className="btn btn--blue" onClick={onGuardar} disabled={loading || pendientes.length === 0}>
+                    <button className="btn btn--gray" onClick={onCancelar}>
+                        Cancelar
+                    </button>
+                    <button
+                        className="btn btn--blue"
+                        onClick={onGuardar}
+                        disabled={loading || pendientes.length === 0}
+                    >
                         Guardar {pendientes.length ? `(${pendientes.length})` : ""}
                     </button>
                 </div>
@@ -473,7 +640,7 @@ function fmt(s) {
 const styles = {
     helpBtn: {
         position: "fixed",
-        top: 150,              // bajo el header fijo (~98px)
+        top: 150, // bajo el header fijo (~98px)
         right: 16,
         zIndex: 2000,
         padding: "8px 20px",
@@ -530,4 +697,71 @@ const styles = {
         gap: 8,
     },
     li: { marginBottom: 8 },
+};
+
+const toastStyles = {
+    container: {
+        position: "fixed",
+        top: 190,
+        right: "14%",                  // centrado horizontal
+        transform: "translateX(50%)",  // centrado visual
+        zIndex: 4000,
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+        maxWidth: "min(420px, 90vw)",
+        pointerEvents: "none",
+    },
+    toast: {
+        display: "grid",
+        gridTemplateColumns: "10px 1fr auto",
+        alignItems: "start",
+        gap: 10,
+        padding: "10px 12px",
+        borderRadius: 10,
+        boxShadow: "0 10px 30px rgba(0,0,0,.2)",
+        pointerEvents: "auto",
+        animation: "slideIn .2s ease-out",
+    },
+    // variantes
+    error: {
+        borderLeft: "10px solid #E63946",
+        background: "#FDECEE",
+        border: "1px solid #F8D7DA",
+        color: "#7A1C21",
+    },
+    success: {
+        borderLeft: "10px solid #2BA84A",
+        background: "#E6F9ED",
+        border: "1px solid #C2F0D2",
+        color: "#1B5E20",
+    },
+    info: {
+        borderLeft: "10px solid #3A86FF",
+        background: "#E6F9ED",
+        border: "1px solid #C2F0D2",
+        color: "#1B5E20",
+    },
+    dot: {
+        width: 10,
+        height: 10,
+        borderRadius: "50%",
+        marginTop: 4,
+        background: "currentColor",
+        opacity: 0.0,
+    },
+    text: {
+        fontSize: 14,
+        lineHeight: 1.35,
+        paddingRight: 6,
+    },
+    close: {
+        fontSize: 18,
+        lineHeight: 1,
+        cursor: "pointer",
+        padding: 0,
+        background: "transparent",
+        border: "none",
+        color: "inherit",
+    },
 };

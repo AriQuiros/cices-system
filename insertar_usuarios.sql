@@ -68,7 +68,7 @@ END;
 /
  
 /* =====================================================
-   INVESTIGADOR 2: Yamileth Chacón Araya (105540538)
+   INVESTIGADOR 2: Yamileth Chacon Araya (105540538)
    ===================================================== */
 DECLARE
   v_id_empleado NUMBER; v_id_empleado_exist NUMBER;
@@ -88,7 +88,7 @@ BEGIN
     v_id_empleado := v_id_empleado_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
-    PRC_INS_EMPLEADO(v_id_empleado,'Yamileth Chacón Araya','Costarricense',v_id_tipo_id,'105540538','yamileth.chacon@ucr.ac.cr','88881003');
+    PRC_INS_EMPLEADO(v_id_empleado,'Yamileth Chacon Araya','Costarricense',v_id_tipo_id,'105540538','yamileth.chacon@ucr.ac.cr','88881003');
   END;
 
   BEGIN
@@ -142,7 +142,7 @@ BEGIN
     v_id_empleado := v_id_empleado_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
-    PRC_INS_EMPLEADO(v_id_empleado,'Cynthia Córdoba López','Costarricense',v_id_tipo_id,'303910277','cynthia.cordoba@ucr.ac.cr','88881004');
+    PRC_INS_EMPLEADO(v_id_empleado,'Cynthia Cordoba Lopez','Costarricense',v_id_tipo_id,'303910277','cynthia.cordoba@ucr.ac.cr','88881004');
   END;
 
   BEGIN
@@ -150,7 +150,7 @@ BEGIN
     v_id_invest := v_id_invest_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_INVESTIGADOR.NEXTVAL INTO v_id_invest FROM DUAL;
-    PRC_INS_INVESTIGADOR(v_id_invest,v_id_empleado,'Escuela de Psicología','Universidad de Costa Rica',v_id_grado);
+    PRC_INS_INVESTIGADOR(v_id_invest,v_id_empleado,'Escuela de Psicologia','Universidad de Costa Rica',v_id_grado);
   END;
 
   BEGIN
@@ -196,7 +196,7 @@ BEGIN
     v_id_empleado := v_id_empleado_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
-    PRC_INS_EMPLEADO(v_id_empleado,'Ana Laura Solano López','Costarricense',v_id_tipo_id,'304050852','ana.solano@ucr.ac.cr','88881005');
+    PRC_INS_EMPLEADO(v_id_empleado,'Ana Laura Solano Lopez','Costarricense',v_id_tipo_id,'304050852','ana.solano@ucr.ac.cr','88881005');
   END;
 
   BEGIN
@@ -250,7 +250,7 @@ BEGIN
     v_id_empleado := v_id_empleado_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
-    PRC_INS_EMPLEADO(v_id_empleado,'Sedali Solís Agüero','Costarricense',v_id_tipo_id,'109770013','sedali.solis@ucr.ac.cr','88881006');
+    PRC_INS_EMPLEADO(v_id_empleado,'Sedali Solis Aguero','Costarricense',v_id_tipo_id,'109770013','sedali.solis@ucr.ac.cr','88881006');
   END;
 
   BEGIN
@@ -258,7 +258,7 @@ BEGIN
     v_id_invest := v_id_invest_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_INVESTIGADOR.NEXTVAL INTO v_id_invest FROM DUAL;
-    PRC_INS_INVESTIGADOR(v_id_invest,v_id_empleado,'Facultad de Ciencias Económicas','Universidad de Costa Rica',v_id_grado);
+    PRC_INS_INVESTIGADOR(v_id_invest,v_id_empleado,'Facultad de Ciencias Economicas','Universidad de Costa Rica',v_id_grado);
   END;
 
   BEGIN
@@ -304,7 +304,7 @@ BEGIN
     v_id_empleado := v_id_empleado_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
-    PRC_INS_EMPLEADO(v_id_empleado,'Ingrid Gómez Duarte','Costarricense',v_id_tipo_id,'108660046','ingrid.gomez@ucr.ac.cr','88881007');
+    PRC_INS_EMPLEADO(v_id_empleado,'Ingrid Gomez Duarte','Costarricense',v_id_tipo_id,'108660046','ingrid.gomez@ucr.ac.cr','88881007');
   END;
 
   BEGIN
@@ -412,7 +412,7 @@ BEGIN
     v_id_empleado := v_id_empleado_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
-    PRC_INS_EMPLEADO(v_id_empleado,'Benjamín Reyes Fernández','Costarricense',v_id_tipo_id,'110500964','benjamin.reyes@ucr.ac.cr','88881009');
+    PRC_INS_EMPLEADO(v_id_empleado,'Benjamin Reyes Fernandez','Costarricense',v_id_tipo_id,'110500964','benjamin.reyes@ucr.ac.cr','88881009');
   END;
 
   BEGIN
@@ -466,7 +466,7 @@ BEGIN
     v_id_empleado := v_id_empleado_exist;
   EXCEPTION WHEN NO_DATA_FOUND THEN
     SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
-    PRC_INS_EMPLEADO(v_id_empleado,'José Moncada Jiménez','Costarricense',v_id_tipo_id,'107660515','jose.moncada@ucr.ac.cr','88881010');
+    PRC_INS_EMPLEADO(v_id_empleado,'Jose Moncada Jimenez','Costarricense',v_id_tipo_id,'107660515','jose.moncada@ucr.ac.cr','88881010');
   END;
 
   BEGIN
@@ -576,7 +576,334 @@ BEGIN
   END;
 END;
 /
+/* =====================================================
+   INVESTIGADOR 10: Maria del Rocio Martinez Hernandez (1305010987)
+   ===================================================== */
+DECLARE
+  v_id_empleado      NUMBER; v_id_empleado_exist NUMBER;
+  v_id_invest        NUMBER; v_id_invest_exist   NUMBER;
+  v_id_usuario       NUMBER; v_id_usuario_exist  NUMBER;
+  v_id_tipo_id       NUMBER; 
+  v_id_grado         NUMBER;
+  v_id_cert_tipo     NUMBER; 
+  v_id_cert_estado   NUMBER;
+  v_id_rol           NUMBER;
+BEGIN
+  -- Códigos base
+  SELECT ID_CODIGO INTO v_id_tipo_id
+    FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='IDENTIFICACION')
+     AND UPPER(DESPLIEGUE)='NACIONAL';
+  SELECT ID_CODIGO INTO v_id_grado
+    FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='GRADO ACADEMICO')
+     AND UPPER(DESPLIEGUE)='LICENCIATURA';
+  SELECT ID_CODIGO INTO v_id_cert_tipo
+    FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='TIPO CERTIFICACION')
+     AND UPPER(DESPLIEGUE)='LICENCIA PROFESIONAL';
+  SELECT ID_CODIGO INTO v_id_cert_estado
+    FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='ESTADO CERTIFICACION')
+     AND UPPER(DESPLIEGUE)='VIGENTE';
 
-PROMPT Listo.
+  -- EMPLEADO
+  BEGIN
+    SELECT ID_EMPLEADO INTO v_id_empleado_exist FROM EMPLEADO WHERE IDENTIFICACION='1305010987';
+    v_id_empleado := v_id_empleado_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
+    PRC_INS_EMPLEADO(
+      v_id_empleado,
+      'Maria del Rocio Martinez Hernandez',
+      'Costarricense',
+      v_id_tipo_id,
+      '1305010987',
+      'maria.martinezhernandez@ucr.ac.cr',
+      '85298000'
+    );
+  END;
+
+  -- INVESTIGADOR
+  BEGIN
+    SELECT ID_INVESTIGADOR INTO v_id_invest_exist FROM INVESTIGADOR WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_invest := v_id_invest_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_INVESTIGADOR.NEXTVAL INTO v_id_invest FROM DUAL;
+    PRC_INS_INVESTIGADOR(
+      v_id_invest,
+      v_id_empleado,
+      'Facultad de Ciencias Sociales',
+      'Universidad de Costa Rica',
+      v_id_grado
+    );
+  END;
+
+  -- USUARIO
+  BEGIN
+    SELECT ID_USUARIO INTO v_id_usuario_exist FROM USUARIO WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_usuario := v_id_usuario_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_USUARIO.NEXTVAL INTO v_id_usuario FROM DUAL;
+    INSERT INTO USUARIO(ID_USUARIO,ID_EMPLEADO,NOMBRE_USUARIO,CONTRASENA,ACTIVO)
+    VALUES(
+      v_id_usuario,
+      v_id_empleado,
+      SUBSTR('maria.martinezhernandez',1,20),
+      '$2a$10$kWDYd0ioPAF98lxQHAxGaewL3jBNgGqTFwn95532pPwCAKETwTKae',
+      1
+    );
+  END;
+
+  -- ROL INVESTIGADOR(A)
+  SELECT ID_ROL INTO v_id_rol FROM ROL
+   WHERE UPPER(NOMBRE_ROL) IN ('INVESTIGADOR','INVESTIGADORA');
+  BEGIN
+    DECLARE v_tmp NUMBER; BEGIN
+      SELECT 1 INTO v_tmp FROM ROL_USUARIO WHERE ID_USUARIO=v_id_usuario AND ID_ROL=v_id_rol;
+    EXCEPTION WHEN NO_DATA_FOUND THEN
+      INSERT INTO ROL_USUARIO(ID_ROL_USUARIO,ID_USUARIO,ID_ROL)
+      VALUES(SEC_ROL_USUARIO.NEXTVAL, v_id_usuario, v_id_rol);
+    END;
+  END;
+
+  -- CERTIFICACIÓN
+  PRC_INS_CERTIFICACION(
+    SEC_CERTIFICACION.NEXTVAL,
+    v_id_invest,
+    'Metodología de la investigación',
+    v_id_cert_tipo,
+    TO_DATE('2026-12-31','YYYY-MM-DD'),
+    v_id_cert_estado
+  );
+END;
+/
+
+/* =====================================================
+   INVESTIGADOR 11: Natalie Padilla Ureña (118370957)
+   ===================================================== */
+DECLARE
+  v_id_empleado NUMBER; v_id_empleado_exist NUMBER;
+  v_id_invest NUMBER; v_id_invest_exist NUMBER;
+  v_id_usuario NUMBER; v_id_usuario_exist NUMBER;
+  v_id_tipo_id NUMBER; v_id_grado NUMBER;
+  v_id_cert_tipo NUMBER; v_id_cert_estado NUMBER;
+  v_id_rol NUMBER;
+BEGIN
+  SELECT ID_CODIGO INTO v_id_tipo_id FROM CODIGO
+    WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='IDENTIFICACION')
+      AND UPPER(DESPLIEGUE)='NACIONAL';
+  SELECT ID_CODIGO INTO v_id_grado FROM CODIGO
+    WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='GRADO ACADEMICO')
+      AND UPPER(DESPLIEGUE)='LICENCIATURA'; -- ajusta si procede
+  SELECT ID_CODIGO INTO v_id_cert_tipo FROM CODIGO
+    WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='TIPO CERTIFICACION')
+      AND UPPER(DESPLIEGUE)='LICENCIA PROFESIONAL';
+  SELECT ID_CODIGO INTO v_id_cert_estado FROM CODIGO
+    WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='ESTADO CERTIFICACION')
+      AND UPPER(DESPLIEGUE)='VIGENTE';
+
+  -- EMPLEADO
+  BEGIN
+    SELECT ID_EMPLEADO INTO v_id_empleado_exist FROM EMPLEADO WHERE IDENTIFICACION='118370957';
+    v_id_empleado := v_id_empleado_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
+    PRC_INS_EMPLEADO(v_id_empleado,'Natalie Padilla Ureña','Costarricense',
+      v_id_tipo_id,'118370957','natalie.padilla@ucr.ac.cr','87588264');
+  END;
+
+  -- INVESTIGADOR
+  BEGIN
+    SELECT ID_INVESTIGADOR INTO v_id_invest_exist FROM INVESTIGADOR WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_invest := v_id_invest_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_INVESTIGADOR.NEXTVAL INTO v_id_invest FROM DUAL;
+    PRC_INS_INVESTIGADOR(v_id_invest,v_id_empleado,'Facultad de Ciencias Sociales',
+      'Universidad de Costa Rica',v_id_grado);
+  END;
+
+  -- USUARIO
+  BEGIN
+    SELECT ID_USUARIO INTO v_id_usuario_exist FROM USUARIO WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_usuario := v_id_usuario_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_USUARIO.NEXTVAL INTO v_id_usuario FROM DUAL;
+    INSERT INTO USUARIO(ID_USUARIO,ID_EMPLEADO,NOMBRE_USUARIO,CONTRASENA,ACTIVO)
+    VALUES(v_id_usuario,v_id_empleado,'natalie.padilla',
+      '$2a$10$kWDYd0ioPAF98lxQHAxGaewL3jBNgGqTFwn95532pPwCAKETwTKae',1);
+  END;
+
+  -- ROL
+  SELECT ID_ROL INTO v_id_rol FROM ROL WHERE UPPER(NOMBRE_ROL) IN ('INVESTIGADOR','INVESTIGADORA');
+  BEGIN
+    DECLARE v_tmp NUMBER; BEGIN
+      SELECT 1 INTO v_tmp FROM ROL_USUARIO WHERE ID_USUARIO=v_id_usuario AND ID_ROL=v_id_rol;
+    EXCEPTION WHEN NO_DATA_FOUND THEN
+      INSERT INTO ROL_USUARIO(ID_ROL_USUARIO,ID_USUARIO,ID_ROL)
+      VALUES(SEC_ROL_USUARIO.NEXTVAL,v_id_usuario,v_id_rol);
+    END;
+  END;
+
+  -- CERTIFICACION opcional
+  PRC_INS_CERTIFICACION(SEC_CERTIFICACION.NEXTVAL,v_id_invest,
+    'Formación metodológica', v_id_cert_tipo, TO_DATE('2026-12-31','YYYY-MM-DD'), v_id_cert_estado);
+END;
+/
+/* =====================================================
+   INVESTIGADOR 12: Jimena Chacón Alvarez (1208590093)
+   ===================================================== */
+DECLARE
+  v_id_empleado      NUMBER; v_id_empleado_exist NUMBER;
+  v_id_invest        NUMBER; v_id_invest_exist   NUMBER;
+  v_id_usuario       NUMBER; v_id_usuario_exist  NUMBER;
+  v_id_tipo_id       NUMBER;
+  v_id_grado         NUMBER;
+  v_id_cert_tipo     NUMBER;
+  v_id_cert_estado   NUMBER;
+  v_id_rol           NUMBER;
+BEGIN
+  -- Códigos base
+  SELECT ID_CODIGO INTO v_id_tipo_id FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='IDENTIFICACION')
+     AND UPPER(DESPLIEGUE)='NACIONAL';
+  SELECT ID_CODIGO INTO v_id_grado FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='GRADO ACADEMICO')
+     AND UPPER(DESPLIEGUE)='LICENCIATURA'; -- ajusta si procede
+  SELECT ID_CODIGO INTO v_id_cert_tipo FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='TIPO CERTIFICACION')
+     AND UPPER(DESPLIEGUE)='LICENCIA PROFESIONAL';
+  SELECT ID_CODIGO INTO v_id_cert_estado FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='ESTADO CERTIFICACION')
+     AND UPPER(DESPLIEGUE)='VIGENTE';
+
+  -- EMPLEADO
+  BEGIN
+    SELECT ID_EMPLEADO INTO v_id_empleado_exist FROM EMPLEADO WHERE IDENTIFICACION='1208590093';
+    v_id_empleado := v_id_empleado_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
+    PRC_INS_EMPLEADO(v_id_empleado,'Jimena Chacón Alvarez','Costarricense',
+      v_id_tipo_id,'1208590093','jimena.chaconalvarez@ucr.ac.cr','70435884');
+  END;
+
+  -- INVESTIGADOR
+  BEGIN
+    SELECT ID_INVESTIGADOR INTO v_id_invest_exist FROM INVESTIGADOR WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_invest := v_id_invest_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_INVESTIGADOR.NEXTVAL INTO v_id_invest FROM DUAL;
+    PRC_INS_INVESTIGADOR(v_id_invest,v_id_empleado,'Facultad de Ciencias Sociales',
+      'Universidad de Costa Rica',v_id_grado);
+  END;
+
+  -- USUARIO
+  BEGIN
+    SELECT ID_USUARIO INTO v_id_usuario_exist FROM USUARIO WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_usuario := v_id_usuario_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_USUARIO.NEXTVAL INTO v_id_usuario FROM DUAL;
+    INSERT INTO USUARIO(ID_USUARIO,ID_EMPLEADO,NOMBRE_USUARIO,CONTRASENA,ACTIVO)
+    VALUES(v_id_usuario,v_id_empleado,SUBSTR('jimena.chaconalvarez',1,20),
+      '$2a$10$kWDYd0ioPAF98lxQHAxGaewL3jBNgGqTFwn95532pPwCAKETwTKae',1);
+  END;
+
+  -- ROL INVESTIGADOR(A)
+  SELECT ID_ROL INTO v_id_rol FROM ROL
+   WHERE UPPER(NOMBRE_ROL) IN ('INVESTIGADOR','INVESTIGADORA');
+  BEGIN
+    DECLARE v_tmp NUMBER; BEGIN
+      SELECT 1 INTO v_tmp FROM ROL_USUARIO WHERE ID_USUARIO=v_id_usuario AND ID_ROL=v_id_rol;
+    EXCEPTION WHEN NO_DATA_FOUND THEN
+      INSERT INTO ROL_USUARIO(ID_ROL_USUARIO,ID_USUARIO,ID_ROL)
+      VALUES(SEC_ROL_USUARIO.NEXTVAL,v_id_usuario,v_id_rol);
+    END;
+  END;
+
+  -- CERTIFICACIÓN
+  PRC_INS_CERTIFICACION(SEC_CERTIFICACION.NEXTVAL,v_id_invest,
+    'Ética y consentimiento informado', v_id_cert_tipo,
+    TO_DATE('2027-03-05','YYYY-MM-DD'), v_id_cert_estado);
+END;
+/
+
+/* =====================================================
+   INVESTIGADOR 13: Ericka Carolina Murillo Rodriguez (114940605)
+   ===================================================== */
+DECLARE
+  v_id_empleado      NUMBER; v_id_empleado_exist NUMBER;
+  v_id_invest        NUMBER; v_id_invest_exist   NUMBER;
+  v_id_usuario       NUMBER; v_id_usuario_exist  NUMBER;
+  v_id_tipo_id       NUMBER;
+  v_id_grado         NUMBER;
+  v_id_cert_tipo     NUMBER;
+  v_id_cert_estado   NUMBER;
+  v_id_rol           NUMBER;
+BEGIN
+  -- Códigos base
+  SELECT ID_CODIGO INTO v_id_tipo_id FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='IDENTIFICACION')
+     AND UPPER(DESPLIEGUE)='NACIONAL';
+  SELECT ID_CODIGO INTO v_id_grado FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='GRADO ACADEMICO')
+     AND UPPER(DESPLIEGUE)='MAESTRIA'; -- ajusta si procede
+  SELECT ID_CODIGO INTO v_id_cert_tipo FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='TIPO CERTIFICACION')
+     AND UPPER(DESPLIEGUE)='LICENCIA PROFESIONAL';
+  SELECT ID_CODIGO INTO v_id_cert_estado FROM CODIGO
+   WHERE ID_TIPO=(SELECT ID_TIPO FROM TIPO WHERE NOMBRE='ESTADO CERTIFICACION')
+     AND UPPER(DESPLIEGUE)='VIGENTE';
+
+  -- EMPLEADO
+  BEGIN
+    SELECT ID_EMPLEADO INTO v_id_empleado_exist FROM EMPLEADO WHERE IDENTIFICACION='114940605';
+    v_id_empleado := v_id_empleado_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_EMPLEADO.NEXTVAL INTO v_id_empleado FROM DUAL;
+    PRC_INS_EMPLEADO(v_id_empleado,'Ericka Carolina Murillo Rodriguez','Costarricense',
+      v_id_tipo_id,'114940605','ericka.murillo@ucr.ac.cr','87409468');
+  END;
+
+  -- INVESTIGADOR
+  BEGIN
+    SELECT ID_INVESTIGADOR INTO v_id_invest_exist FROM INVESTIGADOR WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_invest := v_id_invest_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_INVESTIGADOR.NEXTVAL INTO v_id_invest FROM DUAL;
+    PRC_INS_INVESTIGADOR(v_id_invest,v_id_empleado,'Facultad de Ciencias Sociales',
+      'Universidad de Costa Rica',v_id_grado);
+  END;
+
+  -- USUARIO
+  BEGIN
+    SELECT ID_USUARIO INTO v_id_usuario_exist FROM USUARIO WHERE ID_EMPLEADO=v_id_empleado;
+    v_id_usuario := v_id_usuario_exist;
+  EXCEPTION WHEN NO_DATA_FOUND THEN
+    SELECT SEC_USUARIO.NEXTVAL INTO v_id_usuario FROM DUAL;
+    INSERT INTO USUARIO(ID_USUARIO,ID_EMPLEADO,NOMBRE_USUARIO,CONTRASENA,ACTIVO)
+    VALUES(v_id_usuario,v_id_empleado,'ericka.murillo',
+      '$2a$10$kWDYd0ioPAF98lxQHAxGaewL3jBNgGqTFwn95532pPwCAKETwTKae',1);
+  END;
+
+  -- ROL INVESTIGADOR(A)
+  SELECT ID_ROL INTO v_id_rol FROM ROL
+   WHERE UPPER(NOMBRE_ROL) IN ('INVESTIGADOR','INVESTIGADORA');
+  BEGIN
+    DECLARE v_tmp NUMBER; BEGIN
+      SELECT 1 INTO v_tmp FROM ROL_USUARIO WHERE ID_USUARIO=v_id_usuario AND ID_ROL=v_id_rol;
+    EXCEPTION WHEN NO_DATA_FOUND THEN
+      INSERT INTO ROL_USUARIO(ID_ROL_USUARIO,ID_USUARIO,ID_ROL)
+      VALUES(SEC_ROL_USUARIO.NEXTVAL,v_id_usuario,v_id_rol);
+    END;
+  END;
+
+  -- CERTIFICACIÓN
+  PRC_INS_CERTIFICACION(SEC_CERTIFICACION.NEXTVAL,v_id_invest,
+    'Buenas prácticas de laboratorio', v_id_cert_tipo,
+    TO_DATE('2026-09-01','YYYY-MM-DD'), v_id_cert_estado);
+END;
+/
+
+
 COMMIT;
 EXIT

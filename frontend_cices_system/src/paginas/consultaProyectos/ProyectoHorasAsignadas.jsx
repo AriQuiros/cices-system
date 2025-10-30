@@ -60,23 +60,24 @@ export default function ProyectoHorasAsignadas() {
     return (
         <div className="pha-wrap">
             <div className="pha-header">
-                <h2>Horas asignadas — Proyecto {proyectoNombre}</h2>
                 <Link to={`/administrador`} className="btn-volver">← Volver</Link>
+
+                <h2>Horas asignadas — Proyecto {proyectoNombre}</h2>
             </div>
 
             <div className="pha-totales">
                 <div className="badge">
-                    <span>Total horas asignadas al mes</span>
+                    <span>Presupuesto asignado (Carga academica)</span>
                     <strong>{totalHorasAsignadas}</strong>
                 </div>
                 <div className="badge">
-                    <span>Total horas disponibles</span>
+                    <span>Presupuesto actual (Carga academica)</span>
                     <strong>{totalHorasDisponibles}</strong>
                 </div>
-                {/*<div className="badge">*/}
-                {/*    <span>Investigadores</span>*/}
-                {/*    <strong>{investigadores.length}</strong>*/}
-                {/*</div>*/}
+                <div className="badge">
+                    <span>Investigadores totales</span>
+                    <strong>{investigadores.length}</strong>
+                </div>
             </div>
 
             <div className="pha-card">
@@ -85,9 +86,10 @@ export default function ProyectoHorasAsignadas() {
                     <tr>
                         <th>#</th>
                         <th>Investigador</th>
-                        <th>Horas asignadas al mes</th>
                         <th>Carga Horaria</th>
+                        <th>Horas asignadas al mes</th>
                         <th>Meses</th>
+                        <th>Horas totales asignadas</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -95,9 +97,10 @@ export default function ProyectoHorasAsignadas() {
                         <tr key={inv.idInvestigador}>
                             <th>{index + 1}</th>
                             <td>{inv.nombreCompleto}</td>
-                            <td>{inv.horasMesAsignadas}</td>
                             <td>{inv.tipoHoras}</td>
+                            <td>{inv.horasMesAsignadas}</td>
                             <td>{inv.mesesTotales}</td>
+                            <td>{inv.horasMesAsignadas * inv.mesesTotales}</td>
                         </tr>
                     ))}
                     {investigadores.length === 0 && (

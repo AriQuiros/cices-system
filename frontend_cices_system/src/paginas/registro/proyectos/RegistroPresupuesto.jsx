@@ -426,12 +426,12 @@ function Show({editable, existe, searchTerm, showList, setShowList, filteredProy
                                             onChange={handleFinancieroChange}
                                         />
 
-                                        <label>Monto</label>
+                                        <label>Monto (₡)</label>
                                         <input
                                             type="number" required={tipoPresupuesto.financiero}
                                             readOnly={existe.financiero}
                                             className="input"
-                                            placeholder="Monto"
+                                            placeholder="Monto (₡)"
                                             min="0"
                                             name="monto"
                                             value={presupuestoFinanciero.monto}

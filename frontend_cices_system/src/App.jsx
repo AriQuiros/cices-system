@@ -204,7 +204,7 @@ function Header() {
                                         <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Certificaciones
                                         </BtnLink>
-                                        <BtnLink to="/gastos" onClick={() => setMenuAbierto(false)} variant="ghost">
+                                        <BtnLink to="/registrar-gastos" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Gestion de Gastos
                                         </BtnLink>
                                         <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">

@@ -14,10 +14,10 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "INVESTIGADOR")
 public class Investigador {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_INVESTIGADOR")
-    @SequenceGenerator(name = "SEC_INVESTIGADOR", sequenceName = "SEC_INVESTIGADOR", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "INVESTIGADOR_id_gen")
+    @SequenceGenerator(name = "INVESTIGADOR_id_gen", sequenceName = "SEC_INVESTIGADOR", allocationSize = 1)
     @Column(name = "ID_INVESTIGADOR", nullable = false)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -25,18 +25,20 @@ public class Investigador {
     @JoinColumn(name = "ID_EMPLEADO", nullable = false)
     private Empleado idEmpleado;
 
-    @Size(max = 50)
     @NotNull
-    @Column(name = "UNIDAD_ACADEMICA", nullable = false, length = 50)
-    private String unidadAcademica;
-
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "INSTITUCION_ORIGEN", nullable = false, length = 50)
-    private String institucionOrigen;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_INSTITUCION_ORIGEN", nullable = false)
+    private Entidad idInstitucionOrigen;
 
     @NotNull
-    @Column(name = "ID_CODIGO_GRADO_ACADEMICO", nullable = false)
-    private Short idCodigoGradoAcademico;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_UNIDAD_ACADEMICA", nullable = false)
+    private Entidad idUnidadAcademica;
+
+    @Size(max = 254)
+    @Column(name = "TEMA_INTERES", length = 254)
+    private String temaInteres;
 
 }

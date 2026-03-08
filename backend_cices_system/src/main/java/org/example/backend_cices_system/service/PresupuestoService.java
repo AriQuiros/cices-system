@@ -1,85 +1,75 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.dto.PresupuestoDTO;
 import org.example.backend_cices_system.data.PresupuestoRepository;
-import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.PresupuestoDTO;
 import org.example.backend_cices_system.logic.Presupuesto;
 import org.example.backend_cices_system.logic.Proyecto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PresupuestoService {
+    private final PresupuestoRepository presupuestoRepository;
+    private final CatalogoService catalogoService;
 
-    @Autowired
-    private PresupuestoRepository presupuestoRepository;
-
-    @Autowired
-    private CatalogoService catalogoService;
-
-    @Transactional
-    public void guardarPresupuestos(List<PresupuestoDTO> presupuestoDTOs, Proyecto proyecto) {
-        for (PresupuestoDTO presupuestoDTO : presupuestoDTOs) {
-            System.out.println("Registrando presupuestos....");
-            Presupuesto presupuesto = new Presupuesto();
-            presupuesto.setIdProyecto(proyecto);
-            presupuesto.setFechaAsignacion(presupuestoDTO.getFechaAsignacion());
-            presupuesto.setDescripcion(presupuestoDTO.getDescripcion());
-            presupuesto.setIdCodigoTipoPresupuesto(catalogoService.obtenerIdCodigoPorTipoYValor("TIPO PRESUPUESTO",presupuestoDTO.getTipoPresupuesto()));
-
-            // Verificar y asignar los valores correctos para el presupuesto financiero o de horas
-            if ("FINANCIERO".equals(presupuestoDTO.getTipoPresupuesto())) {
-                Short idFuente = catalogoService.obtenerIdCodigoPorTipoYValor("FUENTE FINANCIAMIENTO", presupuestoDTO.getFuenteFinanciamiento());
-                presupuesto.setIdCodigoFuenteFinanciamiento(idFuente);
-                presupuesto.setMonto(presupuestoDTO.getMonto());
-            } else if ("HORAS".equals(presupuestoDTO.getTipoPresupuesto())) {
-                presupuesto.setCantidadHorasMes(presupuestoDTO.getCantidadHorasMes());
-                presupuesto.setCantidadMeses(presupuestoDTO.getCantidadMeses());
-            }
-
-            presupuestoRepository.save(presupuesto);
-        }
+    public PresupuestoService(PresupuestoRepository presupuestoRepository, CatalogoService catalogoService) {
+        this.catalogoService = catalogoService;
+        this.presupuestoRepository = presupuestoRepository;
     }
 
-    public List<PresupuestoDTO> obtenerPresupuestosPorProyectos(List<ProyectoDTO> proyectosDTO) {
-        List<Short> ids = proyectosDTO.stream()
-                .map(ProyectoDTO::getIdProyecto)
+    public Presupuesto guardarPresupuesto(PresupuestoDTO presupuestoDTO, Proyecto proyecto) {
+
+        var presupuesto = new org.example.backend_cices_system.logic.Presupuesto();
+        presupuesto.setIdProyecto(proyecto);
+        presupuesto.setDescripcion(presupuestoDTO.descripcion());
+        presupuesto.setFechaAsignacion(presupuestoDTO.fechaAsignacion());
+
+        presupuesto.setIdCodigoTipoPresupuesto(catalogoService.codigoXNombreValor("TIPO_PRESUPUESTO", presupuestoDTO.tipoPresupuesto()));
+        presupuesto.setIdCodigoTipoCategoria(catalogoService.codigoXNombreValor("CATEGORIA_PRESUPUESTO", presupuestoDTO.categoria()));
+
+        if(presupuestoDTO.tipoPresupuesto().equalsIgnoreCase("FINANCIERO"))
+            presupuesto.setIdCodigoTipoFuenteFinanciamiento(catalogoService.codigoXNombreValor("FUENTE_FINANCIAMIENTO", presupuestoDTO.fuenteFinanciamiento()));
+
+        presupuesto.setMontoAsignado(presupuestoDTO.monto());
+        presupuesto.setCantidadMeses(presupuestoDTO.cantidadMeses());
+        presupuesto.setCantidadHorasMes(presupuestoDTO.cantidadHorasMes());
+
+        presupuestoRepository.save(presupuesto);
+
+        return presupuesto;
+    }
+
+    public List<PresupuestoDTO> obtenerPresupuestosPorProyecto(Proyecto proyecto) {
+        return presupuestoRepository.findPresupuestoByIdProyecto(proyecto).stream()
+                .map(p -> new PresupuestoDTO(
+                        p.getDescripcion(),
+                        catalogoService.obtenerDespliegueXCodigo(p.getIdCodigoTipoCategoria()),
+                        p.getFechaAsignacion(),
+                        catalogoService.obtenerDespliegueXCodigo(p.getIdCodigoTipoPresupuesto()),
+                        catalogoService.obtenerDespliegueXCodigo(p.getIdCodigoTipoFuenteFinanciamiento()),
+                        p.getMontoAsignado(),
+                        p.getCantidadHorasMes(),
+                        p.getCantidadMeses()
+                ))
                 .toList();
-
-        return presupuestoRepository.findByIdProyecto_IdIn(ids).stream()
-                .map(this::convertirAPresupuestoDTO)
-                .toList();
     }
 
-
-    private PresupuestoDTO convertirAPresupuestoDTO(Presupuesto presupuesto) {
-        PresupuestoDTO dto = new PresupuestoDTO();
-
-        dto.setIdPresupuesto(presupuesto.getId());
-        dto.setIdProyecto(presupuesto.getIdProyecto().getId());
-        dto.setDescripcion(presupuesto.getDescripcion());
-        dto.setFechaAsignacion(presupuesto.getFechaAsignacion());
-
-        // Convertir tipo de presupuesto desde el código
-        dto.setTipoPresupuesto(
-                catalogoService.obtenerValorCodigoPorId(presupuesto.getIdCodigoTipoPresupuesto())
-        );
-
-        // Solo llenar los campos que aplican
-        if (presupuesto.getIdCodigoFuenteFinanciamiento() != null) {
-            dto.setFuenteFinanciamiento(
-                    catalogoService.obtenerValorCodigoPorId(presupuesto.getIdCodigoFuenteFinanciamiento())
-            );
-            dto.setMonto(presupuesto.getMonto());
-        } else {
-            dto.setCantidadHorasMes(presupuesto.getCantidadHorasMes());
-            dto.setCantidadMeses(presupuesto.getCantidadMeses());
-        }
-
-        return dto;
+    public Presupuesto buscarPresupuestoHorasXProyecto(Proyecto proyecto, String descripcion) {
+        return presupuestoRepository.findByIdProyectoAndIdCodigoTipoPresupuestoAndDescripcion(proyecto,
+                        catalogoService.codigoXNombreValor("TIPO_PRESUPUESTO", "HORAS"), descripcion)
+                .orElseThrow(() -> new RuntimeException("Presupuesto de horas no encontrado para el proyecto dado"));
     }
 
+    public Presupuesto obtenerPorCodigoYCategoria(String codigo, String categoria){
+        Short idCategoria = catalogoService.codigoXNombreValor("CATEGORIA_PRESUPUESTO", categoria);
+        return presupuestoRepository.findByIdProyecto_CodigoProyectoAndIdCodigoTipoCategoria(codigo, idCategoria)
+                .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado para proyecto y categoria"));
+    }
+
+    public Presupuesto obtenerPresupuestoXId(Integer idPresupuesto) {
+        return presupuestoRepository.findById(idPresupuesto)
+                .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado para el ID: " + idPresupuesto));
+    }
 }

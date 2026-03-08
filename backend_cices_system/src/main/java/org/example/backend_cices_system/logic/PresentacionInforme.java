@@ -2,9 +2,10 @@ package org.example.backend_cices_system.logic;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 
@@ -14,27 +15,27 @@ import java.time.LocalDate;
 @Table(name = "PRESENTACION_INFORME")
 public class PresentacionInforme {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_PRESENTACION_INFORME")
-    @SequenceGenerator(name = "SEC_PRESENTACION_INFORME", sequenceName = "SEC_PRESENTACION_INFORME", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRESENTACION_INFORME_id_gen")
+    @SequenceGenerator(name = "PRESENTACION_INFORME_id_gen", sequenceName = "SEC_PRESENTACION_INFORME", allocationSize = 1)
     @Column(name = "ID_PRESENTACION_INFORME", nullable = false)
-    private Short id;
+    private Integer id;
 
-    @Size(max = 50)
     @NotNull
-    @Column(name = "DESCRIPCION", nullable = false, length = 50)
-    private String descripcion;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_PROYECTO", nullable = false)
+    private Proyecto idProyecto;
+
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_INFORME", nullable = false)
+    private Short idCodigoTipoInforme;
 
     @NotNull
     @Column(name = "FECHA_PRESENTACION", nullable = false)
     private LocalDate fechaPresentacion;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_PROYECTO")
-    private Proyecto idProyecto;
-
     @NotNull
-    @Column(name = "ID_CODIGO_ESTADO", nullable = false)
-    private Short idCodigoEstado;
+    @Column(name = "ID_CODIGO_TIPO_ESTADO", nullable = false)
+    private Short idCodigoTipoEstado;
 
 }

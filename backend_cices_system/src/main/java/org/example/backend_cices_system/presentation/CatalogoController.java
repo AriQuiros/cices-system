@@ -2,12 +2,9 @@ package org.example.backend_cices_system.presentation;
 
 import org.example.backend_cices_system.data.RolProyectoRepository;
 import org.example.backend_cices_system.data.RolRepository;
-import org.example.backend_cices_system.dto.RolSimpleDTO;
-import org.example.backend_cices_system.logic.Rol;
-
-import org.example.backend_cices_system.data.RolRepository;
 import org.example.backend_cices_system.dto.CodigoDTO;
 import org.example.backend_cices_system.logic.Rol;
+
 import org.example.backend_cices_system.service.CatalogoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +34,7 @@ public class CatalogoController {
         return ResponseEntity.ok(catalogoService.obtenerCodigosPorTipos(tipos));
     }
 
-    @GetMapping("/grados_academicos")
+    /*@GetMapping("/grados_academicos")
     public ResponseEntity<List<CodigoDTO>> obtenerGradosAcademicos() {
         return ResponseEntity.ok(catalogoService.obtenerGradosAcademicos());
     }
@@ -60,6 +57,6 @@ public class CatalogoController {
                         "nombre", r.getNombrePermiso()                 // texto visible
                 ))
                 .toList();
-    }
+    }*/
 
 }

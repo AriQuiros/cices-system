@@ -1,9 +1,6 @@
 package org.example.backend_cices_system.logic;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -15,6 +12,7 @@ import lombok.Setter;
 @Table(name = "TIPO")
 public class Tipo {
     @Id
+    @SequenceGenerator(name = "TIPO_id_gen", sequenceName = "SEC_TIPO", allocationSize = 1)
     @Column(name = "ID_TIPO", nullable = false)
     private Short id;
 

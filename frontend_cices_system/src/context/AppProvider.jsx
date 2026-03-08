@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { AppContext } from "./AppContext.jsx";
 
+import { ProyectoProvider } from "./proyectoCtx/ProyectoProvider.jsx";
+import { InvestigadorProvider } from "./investigadorCtx/InvestigadorProvider.jsx";
+import { EmpleadoProvider } from "./empleadoCtx/EmpleadoProvider.jsx";
+import { EntidadProvider } from "./entidadCtx/EntidadProvider.jsx";
+
 const parseJwt = (t) => {
     try {
         return JSON.parse(atob(t.split(".")[1]));
@@ -58,77 +63,6 @@ export default function AppProvider({ children }) {
         sessionStorage.removeItem("auth");
         localStorage.removeItem("auth");
     };
-
-    /************EMPLEADOS***************/
-    const [empleadosState, setEmpleadosState] = useState({
-        empleado: {
-            nombre: "",
-            nacionalidad: "",
-            tipoIdentificacion: "",
-            identificacion: "",
-            telefono: "",
-            correo: "",
-            contrasena: "",
-            roles: [{ id: "", nombre: "" }]
-        }
-    });
-
-    /********PROYECTOS**********/
-    const [proyectosState, setProyectosState] = useState({
-        proyecto: {
-            codigo: '',
-            nombre: '',
-            unidadOrigen: '',
-            estado: '',
-            tipo: '',
-            lineaInvestigacion: '',
-            descripcion: '',
-            objetivoGeneral: '',
-            objetivosEspecificos: [
-                {
-                    categoria: '',
-                    descripcion: '',
-                    metas: [
-                        {
-                            tipo: '',
-                            cantidad: 1,
-                            descripcion: '',
-                            indicadores: ['']
-                        }
-                    ]
-                }
-            ],
-            entidadesVinculadas: {
-                instituciones: [{ nombre: '' }],
-                unidades: [{ nombre: '' }],
-                sitios: [{ nombre: '' }]
-            },
-            fechaInicio: '',
-            fechaFinalizacion: '',
-            presentacionesInformes: [
-                { descripcion: '', fechaPresentacion: '', codigoEstado: '' }
-            ],
-            documentos: []
-        }
-    });
-
-    /***************Presupuestos*********************/
-    const [presupuestoState, setPresupuestoState] = useState({
-        financiero: {
-            descripcion: '',
-            fechaAsignacion: '',
-            monto: 0,
-            fuenteFinanciamiento: '',
-            tipoPresupuesto: ''
-        },
-        horas: {
-            descripcion: '',
-            fechaAsignacion: '',
-            cantidadHorasMes: 0,
-            cantidadMeses: 0,
-            tipoPresupuesto: ''
-        }
-    });
 
     /************* ASIGNAR INVESTIGADORES *************/
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
@@ -227,12 +161,6 @@ export default function AppProvider({ children }) {
             token,
             login,
             logout,
-            proyectosState: proyectosState,
-            setProyectosState: setProyectosState,
-            empleadosState: empleadosState,
-            setEmpleadosState: setEmpleadosState,
-            presupuestoState: presupuestoState,
-            setPresupuestoState: setPresupuestoState,
             searchInvestigadores,
             searchProyecto,
             listarAsignados,
@@ -241,7 +169,15 @@ export default function AppProvider({ children }) {
             quitarAsignacion,
             sugerirProyectos,
         }}>
-            {children}
+            <ProyectoProvider>
+                <InvestigadorProvider>
+                    <EmpleadoProvider>
+                        <EntidadProvider>
+                            {children}
+                        </EntidadProvider>
+                    </EmpleadoProvider>
+                </InvestigadorProvider>
+            </ProyectoProvider>
         </AppContext.Provider>
     );
 }

@@ -1,14 +1,12 @@
 package org.example.backend_cices_system.dto;
 
-import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
-@Data
-public class GastoDTO {
-    private Integer idProyecto;
-    private BigDecimal monto;
-    private LocalDate fechaGasto;
-    private String categoriaGasto;
-    private String descripcion;
-}
+public record GastoDTO(
+    PresupuestoDTO presupuesto,
+    BigDecimal monto,
+    LocalDate fecha,
+    String descripcion
+) { }

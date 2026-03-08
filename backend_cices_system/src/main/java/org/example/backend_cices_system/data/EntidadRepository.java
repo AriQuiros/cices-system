@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface EntidadRepository extends JpaRepository<Entidad, Short> {
     Optional<Entidad> findByNombreIgnoreCase(String nombre);
+    boolean existsByNombreIgnoreCase(String nombre);
 }

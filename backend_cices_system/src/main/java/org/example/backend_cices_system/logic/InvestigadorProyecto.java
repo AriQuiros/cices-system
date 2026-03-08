@@ -15,8 +15,10 @@ import java.time.LocalDate;
 @Table(name = "INVESTIGADOR_PROYECTO")
 public class InvestigadorProyecto {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "INVESTIGADOR_PROYECTO_id_gen")
+    @SequenceGenerator(name = "INVESTIGADOR_PROYECTO_id_gen", sequenceName = "SEC_INVESTIGADOR_PROYECTO", allocationSize = 1)
     @Column(name = "ID_INVESTIGADOR_PROYECTO", nullable = false)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

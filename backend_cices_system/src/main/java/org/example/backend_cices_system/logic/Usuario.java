@@ -14,20 +14,14 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "USUARIO")
 public class Usuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_USUARIO")
-    @SequenceGenerator(name = "SEC_USUARIO", sequenceName = "SEC_USUARIO", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USUARIO_id_gen")
+    @SequenceGenerator(name = "USUARIO_id_gen", sequenceName = "SEC_USUARIO", allocationSize = 1)
     @Column(name = "ID_USUARIO", nullable = false)
-    private Short id;
+    private Integer id;
 
+    @Size(max = 254)
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "ID_EMPLEADO", nullable = false)
-    private Empleado idEmpleado;
-
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "NOMBRE_USUARIO", nullable = false, length = 50, unique = true)
+    @Column(name = "NOMBRE_USUARIO", nullable = false, length = 50)
     private String nombreUsuario;
 
     @Size(max = 254)
@@ -37,7 +31,6 @@ public class Usuario {
 
     @NotNull
     @Column(name = "ACTIVO", nullable = false)
-    private Long activo;
-
+    private Boolean activo = false;
 
 }

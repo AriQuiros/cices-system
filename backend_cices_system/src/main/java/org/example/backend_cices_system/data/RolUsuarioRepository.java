@@ -7,20 +7,6 @@ import java.util.List;
 
 public interface RolUsuarioRepository extends JpaRepository<RolUsuario, Short> {
     @Query("select ru.idRol.nombreRol from RolUsuario ru where ru.idUsuario.id = :userId")
-    List<String> findRoleNamesByUsuarioId(@Param("userId") Short userId);
-
-    @Query("""
-    select count(distinct ru.idUsuario.id)
-    from RolUsuario ru
-    where ru.idUsuario.activo = 1 and upper(ru.idRol.nombreRol) = 'INVESTIGADOR'
-  """)
-    long countInvestigadoresActivos();
-
-    @Query("""
-    select count(distinct ru.idUsuario.id)
-    from RolUsuario ru
-    where ru.idUsuario.activo = 1 and upper(ru.idRol.nombreRol) in ('ADMINISTRADOR','ASISTENTE')
-  """)
-    long countPersonalAdministrativo();
+    List<String> findRoleNamesByUsuarioId(@Param("userId") Integer userId);
 
 }

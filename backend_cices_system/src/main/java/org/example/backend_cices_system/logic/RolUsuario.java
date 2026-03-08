@@ -13,10 +13,10 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "ROL_USUARIO")
 public class RolUsuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_ROL_USUARIO")
-    @SequenceGenerator(name = "SEC_ROL_USUARIO", sequenceName = "SEC_ROL_USUARIO", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROL_USUARIO_id_gen")
+    @SequenceGenerator(name = "ROL_USUARIO_id_gen", sequenceName = "SEC_ROL_USUARIO", allocationSize = 1)
     @Column(name = "ID_ROL_USUARIO", nullable = false)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -29,6 +29,5 @@ public class RolUsuario {
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "ID_ROL", nullable = false)
     private Rol idRol;
-
 
 }

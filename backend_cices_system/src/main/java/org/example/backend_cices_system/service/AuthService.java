@@ -1,17 +1,17 @@
 package org.example.backend_cices_system.service;
-import jakarta.validation.constraints.NotNull;
 import org.example.backend_cices_system.data.*;
-import org.example.backend_cices_system.dto.LoginResponse;
-import org.example.backend_cices_system.dto.UserInfo;
-import org.example.backend_cices_system.logic.*;
+import org.example.backend_cices_system.dto.auth.LoginResponse;
+import org.example.backend_cices_system.dto.auth.UserInfo;
+import org.example.backend_cices_system.dto.UsuarioDTO;
+import org.example.backend_cices_system.logic.Empleado;
+import org.example.backend_cices_system.logic.Rol;
+import org.example.backend_cices_system.logic.RolUsuario;
+import org.example.backend_cices_system.logic.Usuario;
 import org.example.backend_cices_system.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.example.backend_cices_system.dto.UsuarioRegistroDTO;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Service
@@ -19,42 +19,28 @@ import java.util.*;
 public class AuthService {
     private final PasswordEncoder encoder;
     private final JwtUtil jwt;
-    private final UsuarioRepository usuarioRepository;
-    private final RolUsuarioRepository rolUsuarioRepository;
-    private final EmpleadoRepository empleadoRepository;
-    private final RolRepository rolRepository;
-    private final InvestigadorRepository investigadorRepository;
-    private final CertificacionRepository certificacionRepository;
     private final LoginAttemptService attemptService;
+    private final UsuarioRepository usuarioRepository;
+    private final RolService rolService;
+    private final RolUsuarioRepository rolUsuarioRepository;
 
 
-    public AuthService(
-            UsuarioRepository usuarioRepository,
-            RolUsuarioRepository rolUsuarioRepository,
-            EmpleadoRepository empleadoRepository,
-            RolRepository rolRepository,
-            InvestigadorRepository investigadorRepository,
-            PasswordEncoder encoder,
-            JwtUtil jwt,
-            CertificacionRepository certificacionRepository,
-            LoginAttemptService attemptService
+    public AuthService(PasswordEncoder encoder, JwtUtil jwt, LoginAttemptService attemptService,
+            UsuarioRepository usuarioRepository, RolService rolService, RolUsuarioRepository rolUsuarioRepository
     ) {
-        this.usuarioRepository = usuarioRepository;
-        this.rolUsuarioRepository = rolUsuarioRepository;
-        this.empleadoRepository = empleadoRepository;
-        this.rolRepository = rolRepository;
-        this.investigadorRepository = investigadorRepository;
         this.encoder = encoder;
         this.jwt = jwt;
-        this.certificacionRepository = certificacionRepository;
         this.attemptService = attemptService;
+        this.usuarioRepository = usuarioRepository;
+        this.rolService = rolService;
+        this.rolUsuarioRepository = rolUsuarioRepository;
     }
 
     public LoginResponse login(String username, String password) {
         if (attemptService.isBlocked(username))
             throw new org.springframework.security.authentication.LockedException("Usuario bloqueado por intentos fallidos");
 
-        var u = usuarioRepository.findActiveByUsername(username)
+        var u = usuarioRepository.findByActivoTrueAndNombreUsuario(username)
                 .orElseThrow(() -> {
                     attemptService.onFailure(username);
                     return new org.springframework.security.authentication.BadCredentialsException("Credenciales inválidas");
@@ -75,12 +61,45 @@ public class AuthService {
 
         var roles = rolUsuarioRepository.findRoleNamesByUsuarioId(u.getId());
         var token = jwt.generate(u.getNombreUsuario(), roles);
-        var nombre = u.getIdEmpleado() != null ? u.getIdEmpleado().getNombreCompleto() : null;
+        var nombre = u.getNombreUsuario().split("\\.")[0];
 
         return new LoginResponse(token, new UserInfo(u.getId(), u.getNombreUsuario(), nombre, roles));
     }
 
+    public Usuario guardarUsuario(UsuarioDTO usuarioDTO) {
+        Usuario usuario = new Usuario();
+        usuario.setNombreUsuario(usuarioDTO.nombreUsuario());
+        usuario.setContrasena(encoder.encode(usuarioDTO.contrasena()));
+        usuario.setActivo(true);
 
+        usuarioRepository.save(usuario);
+
+        guardarRoles(usuario, usuarioDTO.roles());
+
+        return usuario;
+    }
+
+    public void guardarRoles(Usuario usuario, List<String> roles) {
+        for (String nombreRol : roles) {
+            Rol rol = rolService.obtenerRolXNombre(nombreRol);
+
+            RolUsuario rolUsuario = new RolUsuario();
+            rolUsuario.setIdUsuario(usuario);
+            rolUsuario.setIdRol(rol);
+
+            rolUsuarioRepository.save(rolUsuario);
+        }
+    }
+
+    boolean existeNombreUsuario(String nombreUsuario) {
+        return usuarioRepository.findByNombreUsuario(nombreUsuario).isPresent();
+    }
+
+    Usuario obtenerXNombreUsuario(String nombreUsuario) {
+        return usuarioRepository.findByNombreUsuario(nombreUsuario).orElse(null);
+    }
+
+/*
     @Transactional
     public void registrar(UsuarioRegistroDTO usuario) {
         // Validación de roles
@@ -124,7 +143,7 @@ public class AuthService {
 
         // 3. Asignar Roles
         for (String nombreRol : roles) {
-            Rol rol = (Rol) rolRepository.findByNombreRolIgnoreCase(nombreRol)
+            Rol rol = (Rol) RolService.findByNombreRolIgnoreCase(nombreRol)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + nombreRol));
             RolUsuario rolUsuario = new RolUsuario();
             rolUsuario.setIdUsuario(nuevoUsuario);
@@ -208,6 +227,6 @@ public class AuthService {
         }
         certificacionRepository.saveAll(lote); // <- requerido por tu test
     }
-
+*/
 
 }

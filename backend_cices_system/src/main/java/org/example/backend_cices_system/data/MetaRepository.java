@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MetaRepository extends JpaRepository<Meta, Short> {
-    List<Meta> findMetaByIdObjetivo(ObjetivoEspecifico objetivo);
+    List<Meta> findMetaByIdObjetivoEspecifico(ObjetivoEspecifico objetivo);
 }

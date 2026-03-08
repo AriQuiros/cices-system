@@ -5,6 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -12,29 +17,35 @@ import lombok.Setter;
 @Table(name = "EMPLEADO")
 public class Empleado {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empleado_seq")
-    @SequenceGenerator(name = "empleado_seq", sequenceName = "SEC_EMPLEADO", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EMPLEADO_id_gen")
+    @SequenceGenerator(name = "EMPLEADO_id_gen", sequenceName = "SEC_EMPLEADO", allocationSize = 1)
     @Column(name = "ID_EMPLEADO", nullable = false)
-    private Short id;
+    private Integer id;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_USUARIO", nullable = false)
+    private Usuario idUsuario;
 
     @Size(max = 254)
     @NotNull
     @Column(name = "NOMBRE_COMPLETO", nullable = false, length = 254)
     private String nombreCompleto;
 
-    @Size(max = 50)
+    @Size(max = 20)
     @NotNull
-    @Column(name = "NACIONALIDAD", nullable = false, length = 50)
-    private String nacionalidad;
+    @Column(name = "IDENTIFICACION", nullable = false, length = 20)
+    private String identificacion;
 
     @NotNull
     @Column(name = "ID_CODIGO_TIPO_ID", nullable = false)
     private Short idCodigoTipoId;
 
-    @Size(max = 20)
+    @Size(max = 4)
     @NotNull
-    @Column(name = "IDENTIFICACION", nullable = false, length = 20)
-    private String identificacion;
+    @Column(name = "PAIS", nullable = false, length = 4)
+    private String pais;
 
     @Size(max = 254)
     @NotNull
@@ -42,8 +53,12 @@ public class Empleado {
     private String correo;
 
     @Size(max = 15)
-    @NotNull
-    @Column(name = "NUMERO_TELEFONO", nullable = false, length = 10)
+    @Column(name = "NUMERO_TELEFONO", length = 15)
     private String numeroTelefono;
+
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_GRADO_ACADEMICO", nullable = false)
+    private Short idCodigoTipoGradoAcademico;
+
 
 }

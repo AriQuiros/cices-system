@@ -17,8 +17,10 @@ import java.time.LocalDate;
 @Table(name = "GASTO")
 public class Gasto {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GASTO_id_gen")
+    @SequenceGenerator(name = "GASTO_id_gen", sequenceName = "SEC_GASTO", allocationSize = 1)
     @Column(name = "ID_GASTO", nullable = false)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -27,22 +29,16 @@ public class Gasto {
     private Presupuesto idPresupuesto;
 
     @NotNull
-    @Column(name = "MONTO", nullable = false, precision = 8, scale = 2)
+    @Column(name = "MONTO", nullable = false, precision = 9, scale = 5)
     private BigDecimal monto;
 
     @NotNull
     @Column(name = "FECHA_GASTO", nullable = false)
     private LocalDate fechaGasto;
 
-    @Size(max = 50)
     @NotNull
-    @Column(name = "CATEGORIA_GASTO", nullable = false, length = 50)
-    private String categoriaGasto;
-
-    @NotNull
-    @Lob
-    @Column(name = "DESCRIPCION", nullable = false)
+    @Size(max = 254)
+    @Column(name = "DESCRIPCION", length = 254)
     private String descripcion;
-
 
 }

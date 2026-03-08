@@ -12,10 +12,10 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "INDICADOR")
 public class Indicador {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_INDICADOR")
-    @SequenceGenerator(name = "SEC_INDICADOR", sequenceName = "SEC_INDICADOR", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "INDICADOR_id_gen")
+    @SequenceGenerator(name = "INDICADOR_id_gen", sequenceName = "SEC_INDICADOR", allocationSize = 1)
     @Column(name = "ID_INDICADOR", nullable = false)
-    private Short id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)

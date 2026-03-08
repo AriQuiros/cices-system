@@ -6,37 +6,30 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.math.BigDecimal;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
 @Table(name = "META")
 public class Meta {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_META")
-    @SequenceGenerator(name = "SEC_META", sequenceName = "SEC_META", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "META_id_gen")
+    @SequenceGenerator(name = "META_id_gen", sequenceName = "SEC_META", allocationSize = 1)
     @Column(name = "ID_META", nullable = false)
-    private Short id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "ID_OBJETIVO")
-    private ObjetivoEspecifico idObjetivo;
+    @JoinColumn(name = "ID_OBJETIVO_ESPECIFICO")
+    private ObjetivoEspecifico idObjetivoEspecifico;
 
-    @Column(name = "ID_CODIGO_TIPO")
-    private Short idCodigoTipo;
+    @Column(name = "ID_CODIGO_TIPO_META")
+    private Short idCodigoTipoMeta;
 
     @Lob
     @Column(name = "DESCRIPCION")
     private String descripcion;
 
-    @Column(name = "CANTIDAD", precision = 10, scale = 2)
-    private BigDecimal cantidad;
-
-    @OneToMany(mappedBy = "idMeta")
-    private Set<Indicador> indicadors = new LinkedHashSet<>();
+    @Column(name = "CANTIDAD")
+    private Integer cantidad;
 
 }

@@ -1,284 +1,150 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./Registro.css";
+import { EmpleadoProvider } from "../../../context/empleadoCtx/EmpleadoProvider.jsx";
+import { InvestigadorProvider } from "../../../context/investigadorCtx/InvestigadorProvider.jsx";
+import { EmpleadoContext } from "../../../context/empleadoCtx/EmpleadoContext.jsx";
+import { fetchTiposCatalogo } from "../../../services/CatalogoService.js";
+import { UsuarioDTO } from "../../../modelos/empleadoDTO.jsx";
+import { registerEmpleado } from "../../../services/EmpleadoService.jsx";
+import { notify } from '../../../utils/estilo/notify.jsx';
 import RegistroInvestigador from "./RegistroInvestigador.jsx";
+import {InvestigadorContext} from "../../../context/investigadorCtx/InvestigadorContext.jsx";
 
-
-function Registro() {
-    // Estado para mostrar error de coincidencia de contraseñas
-    const [errorContrasena, setErrorContrasena] = useState("");
-    // Estado para mostrar popup de error general
-    const [popupError, setPopupError] = useState({ visible: false, mensaje: "" });
-    // Estado para error de formato de correo
-    const [errorCorreo, setErrorCorreo] = useState("");
-    // Estado para error de formato de teléfono
-    const [errorTelefono, setErrorTelefono] = useState("");
-    // Estado para error de formato de contraseña
-    const [errorFormatoContrasena, setErrorFormatoContrasena] = useState("");
-    const [tiposIdentificacion, setTiposIdentificacion] = useState([]);
-    // Estado para mostrar popup de éxito
-    const [popupExito, setPopupExito] = useState(false);
+function RegistroInner() {
+    // Use empleado state from provider
+    const { empleado, actualizarCampo, limpiarEmpleado } = useContext(EmpleadoContext);
+    const { investigador, limpiarInvestigador } = useContext(InvestigadorContext);
+    const [tipos, setTipos] = useState([]);
     const [rolesBD, setRolesBD] = useState([]);
     const [idRolInvestigador, setIdRolInvestigador] = useState(null);
+
     useEffect(() => {
-        fetch("http://localhost:8080/api/catalogos/tipos_identificacion")
-            .then(res => res.json())
-            .then(data => setTiposIdentificacion(data))
-            .catch(() => setTiposIdentificacion([]));
-        fetch("http://localhost:8080/api/catalogos/roles")
-            .then(res => res.json())
-            .then(data => {
-                setRolesBD(data);
-                // Detecta el nombre del rol investigador
-                const investigador = data.find(r => r.nombreRol && r.nombreRol.toLowerCase() === "investigador");
-                if (investigador) setIdRolInvestigador(investigador.nombreRol);
-            })
-            .catch(() => setRolesBD([]));
+        // cargar tipos usando fetchTiposCatalogo
+        (async () => {
+            try {
+                const res = await fetchTiposCatalogo("", ["TIPO_IDENTIFICACION", "GRADO_ACADEMICO"]);
+                if (res) {
+                    setTipos(res);
+                } else {
+                    setTipos([]);
+                }
+            } catch {
+                setTipos([]);
+            }
+
+            try {
+                const r = await fetch("http://localhost:8080/api/rol-sistema");
+                if (r.ok) {
+                    const data = await r.json();
+                    setRolesBD(data);
+                    const investigador = data.find(r => r.toLowerCase() === "investigador");
+                    if (investigador) setIdRolInvestigador(investigador);
+                } else {
+                    setRolesBD([]);
+                }
+            } catch {
+                setRolesBD([]);
+            }
+        })();
     }, []);
 
-    // Estados para cada campo del formulario
-    const [formData, setFormData] = useState({
-        nombre: "",
-        nacionalidad: "",
-        tipoIdentificacion: "",
-        identificacion: "",
-        telefono: "",
-        correo: "",
-        contrasena: "",
-        confirmarContrasena: "",
-        roles: []
-    });
-
-    // Estados para mostrar/ocultar contraseñas
-    const [mostrarContrasena, setMostrarContrasena] = useState(false);
-    const [mostrarConfirmarContrasena, setMostrarConfirmarContrasena] = useState(false);
-
-    // Estado inicial para resetear el formulario
-    const initialFormData = {
-        nombre: "",
-        nacionalidad: "",
-        tipoIdentificacion: "",
-        identificacion: "",
-        telefono: "",
-        correo: "",
-        contrasena: "",
-        confirmarContrasena: "",
-        roles: []
-    };
-    const [mostrarPopup, setMostrarPopup] = useState(false);
-    const [popupIdentificacion, setPopupIdentificacion] = useState(false);
-
-    // Estado para los datos del popup de investigador
-    const initialDatosInvestigador = {
-        institucionOrigen: "",
-        unidadAcademica: "",
-        idCodigoGradoAcademico: null,
-        acreditaciones: []
-    };
-    const [datosInvestigador, setDatosInvestigador] = useState(initialDatosInvestigador);
-
-    // Actualiza el estado al cambiar cualquier campo
+    // Actualiza campos del empleado usando proveedor
     const handleChange = (e) => {
         const { name, value, checked } = e.target;
-        if (name === "correo") {
-            setFormData(prev => ({ ...prev, correo: value }));
-            // Validar formato de correo
-            if (value && !value.endsWith("@ucr.ac.cr")) {
-                setErrorCorreo("El correo debe terminar en @ucr.ac.cr");
-            } else {
-                setErrorCorreo("");
-            }
-            return;
-        }
-        if (name === "telefono") {
-            setFormData(prev => ({ ...prev, telefono: value }));
-            // Validar que solo contenga números y símbolos (no letras)
-            const contieneLetras = /[a-zA-ZÀ-ÿ]/.test(value);
-            if (value && contieneLetras) {
-                setErrorTelefono("El teléfono no debe contener letras");
-            } else {
-                setErrorTelefono("");
-            }
-            return;
-        }
-        if (name === "contrasena") {
-            setFormData(prev => ({ ...prev, contrasena: value }));
-            // Validar longitud mínima de contraseña
-            if (value && value.length < 8) {
-                setErrorFormatoContrasena("La contraseña debe tener al menos 8 caracteres");
-            } else {
-                setErrorFormatoContrasena("");
-            }
-            return;
-        }
+
         if (name === "roles") {
-            setFormData(prev => {
-                let newRoles = [...prev.roles];
-                if (checked) {
-                    // Si se marca investigador
-                    if (value === idRolInvestigador) {
-                        if (newRoles.length === 1 && newRoles[0] !== idRolInvestigador) {
-                            newRoles = [newRoles[0], idRolInvestigador];
-                        } else {
-                            newRoles.push(idRolInvestigador);
-                        }
-                        setMostrarPopup(true);
-                    } else {
-                        // Si investigador está marcado, permite investigador + uno
-                        if (newRoles.includes(idRolInvestigador)) {
-                            if (newRoles.length < 2) {
-                                newRoles.push(value);
-                            } else {
-                                newRoles = [idRolInvestigador, value];
-                            }
-                        } else {
-                            newRoles = [value];
-                        }
-                    }
-                } else {
-                    // Desmarcar
-                    newRoles = newRoles.filter(r => r !== value);
-                    if (value === idRolInvestigador) {
-                        setMostrarPopup(false);
-                        setDatosInvestigador(null);
-                    }
-                }
-                // Solo permite investigador + uno, o solo uno
-                if (newRoles.length > 2) {
-                    if (newRoles.includes(idRolInvestigador)) {
-                        newRoles = [idRolInvestigador, newRoles.find(r => r !== idRolInvestigador)];
-                    } else {
-                        newRoles = [newRoles[0]];
-                    }
-                }
-                return { ...prev, roles: newRoles };
-            });
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: value
-            }));
-        }
-    };
+            const currentRoles = empleado.usuario?.roles || [];
+            let newRoles = [...currentRoles];
 
-    // Verifica si el número de identificación ya existe
-    const verificarIdentificacion = async () => {
-        if (!formData.identificacion) return;
-        try {
-            const res = await fetch(`http://localhost:8080/api/usuarios/verificar-identificacion/${formData.identificacion}`);
-            if (res.ok) {
-                const data = await res.json();
-                if (data.exists) {
-                    setPopupIdentificacion(true);
-                } else {
-                    setPopupIdentificacion(false);
+            if (checked)
+                newRoles.push(value);
+            else
+                newRoles = newRoles.filter(r => r !== value);
+
+            // eliminar duplicados
+            newRoles = [...new Set(newRoles)];
+
+            // máximo 2 roles
+            if (newRoles.length > 2) {
+                newRoles = newRoles.slice(0, 2);
+            }
+
+            // si hay 2 roles y ninguno es investigador
+            if (newRoles.length === 2 && !newRoles.includes(idRolInvestigador)) {
+                newRoles = [value];
+            }
+
+            actualizarCampo("usuario", {
+                ...empleado.usuario,
+                roles: newRoles
+            });
+            return;
+
+        }else {
+            // Si el name corresponde directamente a una propiedad de EmpleadoDTO -> actualizarla
+            const directFields = [
+                "nombreCompleto",
+                "pais",
+                "tipoId",
+                "identificacion",
+                "numeroTelefono",
+                "gradoAcademico"
+            ];
+            if (directFields.includes(name)) {
+                actualizarCampo(name, value);
+            } else {
+                if (name === "contrasena") {
+                    actualizarCampo("usuario", { ...empleado.usuario, contrasena: value });
+                }
+                if (name === "correo") {
+                    // sincronizar correo en raíz
+                    actualizarCampo("correo", value);
+                    actualizarCampo("usuario", { ...empleado.usuario, nombreUsuario: value });
                 }
             }
-        } catch {
-            setPopupIdentificacion(false);
         }
     };
 
-    // Maneja el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrorContrasena("");
-        // Validación de campos obligatorios
-        const camposObligatorios = [
-            formData.nombre,
-            formData.nacionalidad,
-            formData.tipoIdentificacion,
-            formData.identificacion,
-            formData.telefono,
-            formData.correo,
-            formData.contrasena,
-            formData.confirmarContrasena
-        ];
-        if (camposObligatorios.some(campo => !campo || campo.trim() === "")) {
-            setPopupError({ visible: true, mensaje: "Debe completar todos los campos antes de registrar." });
-            return;
+
+        let payload;
+        const esInvestigador = empleado.usuario?.roles?.includes("INVESTIGADOR");
+        if (esInvestigador) {
+            payload = {
+                ...investigador,
+                empleado: {
+                    ...empleado,
+                    usuario: {
+                        ...UsuarioDTO,
+                        ...(empleado.usuario || {})
+                    }
+                }
+            };
+        } else {
+            payload = {
+                ...empleado,
+                usuario: {
+                    ...UsuarioDTO,
+                    ...(empleado.usuario || {})
+                }
+            };
         }
-        // Validación de correo institucional
-        if (!formData.correo.endsWith("@ucr.ac.cr")) {
-            setErrorCorreo("El correo debe terminar en @ucr.ac.cr");
-            return;
-        }
-        // Validación de teléfono sin letras
-        const contieneLetras = /[a-zA-ZÀ-ÿ]/.test(formData.telefono);
-        if (formData.telefono && contieneLetras) {
-            setErrorTelefono("El teléfono no debe contener letras");
-            return;
-        }
-        // Validación de longitud mínima de contraseña
-        if (formData.contrasena && formData.contrasena.length < 8) {
-            setErrorFormatoContrasena("La contraseña debe tener al menos 8 caracteres");
-            return;
-        }
-        // Validación de coincidencia de contraseñas
-        if (formData.contrasena !== formData.confirmarContrasena) {
-            setErrorContrasena("Las contraseñas no coinciden");
-            return;
-        }
-        // Si la identificación está repetida, no enviar el formulario
-        if (popupIdentificacion) {
-            setPopupIdentificacion(true);
-            return;
-        }
-        // Mapear idCodigoTipoId dinámicamente y nacionalidad como ' '
-        const tipoIdObj = tiposIdentificacion.find(tipo => tipo.valor === formData.tipoIdentificacion);
-        const idCodigoTipoId = tipoIdObj ? tipoIdObj.id : null;
-        let dataEnviar = {
-            nombreCompleto: formData.nombre,
-            nacionalidad: formData.nacionalidad,
-            idCodigoTipoId: idCodigoTipoId,
-            identificacion: formData.identificacion,
-            correo: formData.correo,
-            telefono: formData.telefono,
-            nombreUsuario: formData.correo,
-            contrasena: formData.contrasena,
-            roles: formData.roles
-        };
-        // Si tiene rol investigador, agrega los datos del popup
-        if (formData.roles.includes(idRolInvestigador) && datosInvestigador) {
-            // Solo agrega si hay datos válidos
-            if (datosInvestigador && datosInvestigador.institucionOrigen) {
-                dataEnviar = {
-                    ...dataEnviar,
-                    institucionOrigen: datosInvestigador.institucionOrigen,
-                    unidadAcademica: datosInvestigador.unidadAcademica,
-                    idCodigoGradoAcademico: datosInvestigador.idCodigoGradoAcademico,
-                    acreditaciones: datosInvestigador.acreditaciones || []
-                };
-            }
-        }
+
+        console.log("Payload a enviar:", payload);
         try {
-            console.log("Datos enviados al backend:", dataEnviar);
-            const response = await fetch("http://localhost:8080/api/usuarios/registro", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dataEnviar)
-            });
-            if (response.ok) {
-                // Registro exitoso
-                setFormData(initialFormData);
-                setMostrarContrasena(false);
-                setMostrarConfirmarContrasena(false);
-                setErrorCorreo("");
-                setErrorTelefono("");
-                setErrorContrasena("");
-                setErrorFormatoContrasena("");
-                setMostrarPopup(false);
-                setDatosInvestigador(null);
-                setPopupExito(true);
-                setTimeout(() => setPopupExito(false), 4000);
+            const result = await registerEmpleado(payload, esInvestigador);
+
+            if (result.ok) {
+                notify.success("Registro exitoso");
+                limpiarEmpleado();
+                limpiarInvestigador();
             } else {
-                // Mostrar el mensaje de error exacto del backend en popup visual
-                const errorMsg = await response.text();
-                setPopupError({ visible: true, mensaje: errorMsg });
+                notify.error(result.message || `Registro falló: ${result.status}`);
             }
-        } catch (error) {
-            setPopupError({ visible: true, mensaje: "Error de conexión." });
+
+        } catch (err) {
+            notify.error(err?.message || "Error de conexión");
         }
     };
 
@@ -290,40 +156,40 @@ function Registro() {
                 <div className="input-group">
                     <label htmlFor="nombre" className="input-label">Nombre Completo</label>
                     <input
-                        id="nombre"
+                        id="nombreCompleto"
                         type="text"
-                        name="nombre"
+                        name="nombreCompleto"
                         placeholder="Ingrese su nombre completo"
                         className="input-field"
-                        value={formData.nombre}
+                        value={empleado.nombreCompleto}
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="input-group">
-                    <label htmlFor="nacionalidad" className="input-label">Nacionalidad</label>
+                    <label htmlFor="pais" className="input-label">Nacionalidad</label>
                     <input
-                        id="nacionalidad"
+                        id="pais"
                         type="text"
-                        name="nacionalidad"
+                        name="pais"
                         placeholder="Ingrese su nacionalidad"
                         className="input-field"
-                        value={formData.nacionalidad}
+                        value={empleado.pais}
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="input-group">
-                    <label htmlFor="tipoIdentificacion" className="input-label">Tipo de Identificación</label>
+                    <label htmlFor="tipoId" className="input-label">Tipo de Identificación</label>
                     <select
-                        id="tipoIdentificacion"
+                        id="tipoId"
                         className="input-field"
-                        name="tipoIdentificacion"
-                        value={formData.tipoIdentificacion}
+                        name="tipoId"
+                        value={empleado.tipoId}
                         onChange={handleChange}
                     >
                         <option value="">identificación</option>
-                        {tiposIdentificacion.map(tipo => (
+                        {tipos["TIPO_IDENTIFICACION"]?.map(tipo => (
                             <option key={tipo.id} value={tipo.valor}>
                                 {tipo.despliegue ? tipo.despliegue.charAt(0).toUpperCase() + tipo.despliegue.slice(1).toLowerCase() : ""}
                             </option>
@@ -332,7 +198,7 @@ function Registro() {
                 </div>
 
                 <div className="input-group">
-                    <label htmlFor="identificacion" className={`input-label ${popupIdentificacion ? 'input-label-error' : ''}`}>
+                    <label htmlFor="identificacion" className={`input-label`}>
                         Número de Identificación
                     </label>
                     <input
@@ -341,155 +207,106 @@ function Registro() {
                         name="identificacion"
                         placeholder="Sin guiones"
                         className="input-field"
-                        value={formData.identificacion}
+                        value={empleado.identificacion}
                         onChange={handleChange}
-                        onBlur={verificarIdentificacion}
                     />
                 </div>
-                {popupIdentificacion && (
-                    <div className="popup-overlay">
-                        <div className="popup-content">
-                            <button
-                                onClick={() => setPopupIdentificacion(false)}
-                                className="popup-close-btn"
-                                aria-label="Cerrar"
-                            >&#10005;</button>
-                            <div className="popup-title-error">
-                                Error al registrar
-                            </div>
-                            <div className="popup-message">
-                                El número de identificación y/o correo no se pueden repetir
-                            </div>
-                        </div>
-                    </div>
-                )}
+
                 <div className="input-group">
-                    <label htmlFor="telefono" className={`input-label ${errorTelefono ? 'input-label-error' : ''}`}>
+                    <label htmlFor="gradoAcademico" className="input-label">Grado Academico</label>
+                    <select
+                        id="gradoAcademico"
+                        className="input-field"
+                        name="gradoAcademico"
+                        value={empleado.gradoAcademico}
+                        onChange={handleChange}
+                    >
+                        <option value="">Grado</option>
+                        {tipos["GRADO_ACADEMICO"]?.map(tipo => (
+                            <option key={tipo.id} value={tipo.valor}>
+                                {tipo.despliegue ? tipo.despliegue.charAt(0).toUpperCase() + tipo.despliegue.slice(1).toLowerCase() : ""}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="input-group">
+                    <label htmlFor="numeroTelefono" className={`input-label`}>
                         Número de teléfono
                     </label>
                     <input
-                        id="telefono"
+                        id="numeroTelefono"
                         type="tel"
-                        name="telefono"
+                        name="numeroTelefono"
                         placeholder="Ejemplo: (+506)88888888"
                         className="input-field"
-                        value={formData.telefono}
+                        value={empleado.numeroTelefono}
                         onChange={handleChange}
                     />
                     <small className="input-message">Sin guiones</small>
                 </div>
-                {errorTelefono && (
-                    <div className="validation-error-message">
-                        {errorTelefono}
-                    </div>
-                )}
+
                 <div className="input-group">
-                    <label htmlFor="correo" className={`input-label ${errorCorreo ? 'input-label-error' : ''}`}>
+                    <label htmlFor="correo" className={`input-label`}>
                         Correo Electrónico
                     </label>
                     <input
                         id="correo"
                         type="email"
                         name="correo"
-                        pattern="*.@ucr.ac.cr"
                         placeholder="example@ucr.ac.cr"
                         className="input-field"
-                        value={formData.correo}
+                        value={empleado.correo}
                         onChange={handleChange}
                     />
                 </div>
-                {errorCorreo && (
-                    <div className="validation-error-message">
-                        {errorCorreo}
-                    </div>
-                )}
+
                 <div className="input-group">
-                    <label htmlFor="contrasena" className={`input-label ${errorFormatoContrasena ? 'input-label-error' : ''}`}>
+                    <label htmlFor="contrasena" className={`input-label`}>
                         Contraseña
                     </label>
                     <div className="password-container">
                         <input
                             id="contrasena"
-                            type={mostrarContrasena ? "text" : "password"}
+                            type="password"
                             name="contrasena"
                             placeholder="********"
                             className="input-field password-input"
-                            value={formData.contrasena}
+                            value={empleado.usuario?.contrasena || ""}
                             onChange={handleChange}
                         />
-                        <button
-                            type="button"
-                            onClick={() => setMostrarContrasena(!mostrarContrasena)}
-                            className="password-toggle-btn"
-                            aria-label={mostrarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
-                        >
-                            {mostrarContrasena ? "👁️" : "👁️‍🗨️"}
-                        </button>
                     </div>
                     <small className="input-message">Mínimo 8 caracteres</small>
                 </div>
-                {errorFormatoContrasena && (
-                    <div className="validation-error-message">
-                        {errorFormatoContrasena}
-                    </div>
-                )}
-                <div className="input-group">
-                    <label htmlFor="confirmarContrasena" className={`input-label ${errorContrasena ? 'input-label-error' : ''}`}>
-                        Confirmar Contraseña
-                    </label>
-                    <div className="password-container">
-                        <input
-                            id="confirmarContrasena"
-                            type={mostrarConfirmarContrasena ? "text" : "password"}
-                            name="confirmarContrasena"
-                            placeholder="********"
-                            className="input-field password-input"
-                            value={formData.confirmarContrasena}
-                            onChange={handleChange}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setMostrarConfirmarContrasena(!mostrarConfirmarContrasena)}
-                            className="password-toggle-btn"
-                            aria-label={mostrarConfirmarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
-                        >
-                            {mostrarConfirmarContrasena ? "👁️" : "👁️‍🗨️"}
-                        </button>
-                    </div>
-                </div>
-                {errorContrasena && (
-                    <div className="validation-error-message">
-                        {errorContrasena}
-                    </div>
-                )}
+
                 <div className="roles">
                     {/* Todos los roles como checkboxes, con regla investigador + uno */}
                     {rolesBD.map((rol) => (
-                        <label key={rol.id} className="round-checkbox">
+                        <label key={rol} className="round-checkbox">
                             <input
                                 type="checkbox"
                                 name="roles"
-                                value={rol.nombreRol}
-                                checked={formData.roles.includes(rol.nombreRol)}
+                                value={rol}
+                                checked={(empleado.usuario?.roles || []).includes(rol)}
                                 onChange={handleChange}
                                 disabled={
-                                    // Si ya hay investigador + uno, deshabilita los demás
-                                    formData.roles.length === 2 &&
-                                    !formData.roles.includes(rol.nombreRol) &&
-                                    ((formData.roles.includes(idRolInvestigador) && rol.nombreRol !== idRolInvestigador) ||
-                                        (!formData.roles.includes(idRolInvestigador)))
+                                    (empleado.usuario?.roles || []).length >= 2 &&
+                                    !(empleado.usuario?.roles || []).includes(rol)
                                 }
                             />
-                            {rol.nombreRol.charAt(0).toUpperCase() + rol.nombreRol.slice(1).toLowerCase()}
+                            {rol.charAt(0).toUpperCase() + rol.slice(1).toLowerCase()}
                             <span className="checkmark"></span>
                         </label>
                     ))}
                 </div>
-                {idRolInvestigador && formData.roles.includes(idRolInvestigador) && (
-                    <div className="input-group">
-                        {/* Campos de investigador se manejan en el popup */}
-                    </div>
+
+                {empleado.usuario?.roles?.includes("INVESTIGADOR") && (
+                    <RegistroInvestigador
+                        nivelAcademico={tipos["GRADO_ACADEMICO"]}
+                        onClose={() => actualizarCampo("usuario", { ...empleado.usuario, roles: empleado.usuario.roles.filter(r => r !== "INVESTIGADOR") })}
+                    />
                 )}
+
                 <button type="submit" className="submit-btn">Registrar</button>
                 <button
                     type="button"
@@ -499,50 +316,16 @@ function Registro() {
                     Iniciar Sesión
                 </button>
             </form>
-            {idRolInvestigador && formData.roles.includes(idRolInvestigador) && mostrarPopup && (
-                <RegistroInvestigador
-                    onClose={() => setMostrarPopup(false)}
-                    onConfirm={datos => {
-                        // Normaliza los datos recibidos del popup
-                        setDatosInvestigador({
-                            institucionOrigen: datos.institucion,
-                            unidadAcademica: datos.unidadAcademica,
-                            idCodigoGradoAcademico: Number(datos.gradoAcademico) || null,
-                            acreditaciones: Array.isArray(datos.acreditaciones) ? datos.acreditaciones : []
-                        });
-                        setMostrarPopup(false);
-                    }}
-                />
-            )}
-            {/* Popup de éxito visual */}
-            {popupExito && (
-                <div className="popup-success">
-                    <div className="popup-title-success">
-                        Usuario registrado exitosamente
-                    </div>
-                </div>
-            )}
-            {/* Popup de error visual */}
-            {popupError.visible && (
-                <div className="popup-overlay-error">
-                    <div className="popup-content-general">
-                        <button
-                            onClick={() => setPopupError({ visible: false, mensaje: "" })}
-                            className="popup-close-btn"
-                            aria-label="Cerrar"
-                        >&#10005;</button>
-                        <div className="popup-title-error">
-                            Error al intentar registrar el usuario
-                        </div>
-                        <div className="popup-message">
-                            {popupError.mensaje}
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
 
-export default Registro;
-
+export default function Registro() {
+    return (
+        <EmpleadoProvider>
+            <InvestigadorProvider>
+                <RegistroInner />
+            </InvestigadorProvider>
+        </EmpleadoProvider>
+    );
+}

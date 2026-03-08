@@ -1,265 +1,298 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./RegistroInvestigador.css";
+import { fetchTiposCatalogo } from "../../../services/CatalogoService.js";
+import { InvestigadorContext } from "../../../context/investigadorCtx/InvestigadorContext.jsx";
+import { TituloDTO, CertificacionDTO } from "../../../modelos/investigadorDTO.jsx";
 
-function parseLocalDate(iso) {
-    if (!iso) return null;
-    const [y, m, d] = iso.split("-").map(Number);
-    return new Date(y, m - 1, d);
-}
-function calcularEstado(expISO) {
-    const hoy = new Date(); hoy.setHours(0,0,0,0);
-    const exp = parseLocalDate(expISO);
-    if (!exp) return null;
-    if (exp <= hoy) return 11;               // vencido
-    const masUnMes = new Date(hoy); masUnMes.setMonth(masUnMes.getMonth() + 1);
-    return exp >= masUnMes ? 9 : 10;         // >1 mes (9) | <1 mes (10)
-}
+function RegistroInvestigadorInner({nivelAcademico}) {
+    const {
+        investigador,
+        actualizarCampo,
+        agregarItem,
+        actualizarItem,
+        eliminarItem,
+    } = useContext(InvestigadorContext);
 
-function RegistroInvestigador({ onClose, onConfirm }) {
-    // catálogo grados académicos
-    const [gradosAcademicos, setGradosAcademicos] = useState([]);
-    // formulario base
-    const [formData, setFormData] = useState({
-        institucion: "",
-        unidadAcademica: "",
-        gradoAcademico: ""
-    });
+    const [tiposCertificacion, setTiposCertificacion] = useState([]);
+    const [loadingCatalogos, setLoadingCatalogos] = useState(true);
 
-    // <<< NUEVO >>> lista de certificaciones dinámicas
-    const [tipos, setTipos] = useState([]);
-    const [loadingTipos, setLoadingTipos] = useState(true);
-    const [certificaciones, setCertificaciones] = useState([
-        { nombre: "", tipo: "", expiracion: "" }
-    ]);
-
-    // UI error burbuja
-    const [showError, setShowError] = useState(false);
-    const [errorBubbleVisible, setErrorBubbleVisible] = useState(false);
-    const [errorForm, setErrorForm] = useState("");
-
-    const hoyISO = useMemo(() => {
-        const d = new Date(); d.setHours(0,0,0,0);
-        return d.toISOString().slice(0,10);
-    }, []);
-
-    const camposObligatoriosCompletos =
-        formData.institucion.trim() !== "" &&
-        formData.unidadAcademica.trim() !== "" &&
-        formData.gradoAcademico !== "";
-
-    // cambios base
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((s) => ({ ...s, [name]: value }));
-    };
-
-    // <<< NUEVO >>> cambios en certificaciones
-    const handleCertChange = (idx, field, value) => {
-        setCertificaciones((arr) =>
-            arr.map((c, i) => (i === idx ? { ...c, [field]: value } : c))
-        );
-    };
-    const handleAddCert = () => {
-        setCertificaciones((arr) => [...arr, { nombre: "", tipo: "", expiracion: "" }]);
-    };
-    const handleRemoveCert = (idx) => {
-        if (certificaciones.length > 1) {
-            setCertificaciones((arr) => arr.filter((_, i) => i !== idx));
-        }
-    };
-
-    // submit
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setErrorForm("");
-
-        if (!camposObligatoriosCompletos) {
-            setShowError(true);
-            setErrorBubbleVisible(true);
-            setTimeout(() => setErrorBubbleVisible(false), 5000);
-            return;
-        }
-
-        // valida certificaciones
-        for (const c of certificaciones) {
-            const filled = c.nombre.trim() || c.tipo || c.expiracion;
-            if (filled) {
-                if (!c.nombre.trim()) return setErrorForm("Falta el nombre de una certificación.");
-                if (!c.tipo) return setErrorForm("Falta el tipo de una certificación.");
-                if (!c.expiracion) return setErrorForm("Falta la fecha de expiración en una certificación.");
-                if (calcularEstado(c.expiracion) === 11)
-                    return setErrorForm("Una certificación tiene fecha ya vencida. Elija una fecha futura.");
-            }
-        }
-
-        const certsLimpias = certificaciones
-            .filter((c) => c.nombre.trim() || c.tipo || c.expiracion)
-            .map((c) => ({
-                nombreCertificacion: c.nombre.trim(),
-                idCodigoTipoCertificacion: Number(c.tipo),
-                fechaExpiracion: c.expiracion,
-                idCodigoTipoEstado: calcularEstado(c.expiracion)
-            }));
-
-        setShowError(false);
-        setErrorBubbleVisible(false);
-
-        onConfirm({
-            institucion: formData.institucion,
-            unidadAcademica: formData.unidadAcademica,
-            gradoAcademico: Number(formData.gradoAcademico) || null,
-            acreditaciones: certsLimpias
-        });
-    };
-
-
-    // catálogos
-    useEffect(() => {
-        fetch("http://localhost:5173/api/catalogos/grados_academicos")
-            .then((r) => r.json())
-            .then(setGradosAcademicos)
-            .catch(() => {});
-    }, []);
     useEffect(() => {
         let cancel = false;
         (async () => {
             try {
-                const res = await fetch("/api/catalogos/tipos_certificacion");
-                const data = res.ok ? await res.json() : [];
-                if (!cancel) setTipos(data);
-            } catch { if (!cancel) setTipos([]); }
-            finally { if (!cancel) setLoadingTipos(false); }
+                const tipos = await fetchTiposCatalogo("", ["TIPO_CERTIFICACION"]);
+                if (!cancel) {
+                    setTiposCertificacion(tipos?.TIPO_CERTIFICACION || []);
+                }
+            } catch {
+                if (!cancel) {
+                    setTiposCertificacion([]);
+                }
+            } finally {
+                if (!cancel) setLoadingCatalogos(false);
+            }
         })();
-        return () => { cancel = true; };
+
+        return () => {
+            cancel = true;
+        };
     }, []);
 
+    const handleBaseChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === "institucionOrigen") {
+            actualizarCampo("institucionOrigen", {
+                ...investigador.institucionOrigen,
+                nombre: value,
+                tipo: "INSTITUTION"
+            });
+            return;
+        }
+
+        if (name === "unidadAcademica") {
+            actualizarCampo("unidadAcademica", {
+                ...investigador.unidadAcademica,
+                nombre: value,
+                tipo: "UNIDAD"
+            });
+
+        }
+
+    };
+
+    const handleArrayChange = (collection, idx, field, value) => {
+        if (field === "entidadEmisora") {
+            actualizarItem(collection, idx, field, {
+                nombre: value,
+                tipo: "INSTITUTION"
+            });
+            return;
+        }
+
+        actualizarItem(collection, idx, field, value);
+    };
+
+    const handleAdd = (collection, dto) => {
+        agregarItem(collection, dto);
+    };
+
+    const handleRemove = (collection, idx) => {
+        eliminarItem(collection, idx);
+    };
+
     return (
-        <div className="investigador-popup-overlay">
-            {/* Burbuja de error de campos base */}
-            {errorBubbleVisible && (
-                <div className="investigador-error-bubble">
-                    Debe completar institución de origen, unidad académica y grado académico para confirmar.
+        <div>
+            <h2>Registro Investigador</h2>
+
+                <input
+                    className="input"
+                    type="text"
+                    name="institucionOrigen"
+                    placeholder="Institucion de origen (ej: UCR)"
+                    value={investigador.institucionOrigen?.nombre || ""}
+                    onChange={handleBaseChange}
+                    required
+                />
+
+                <input
+                    className="input"
+                    type="text"
+                    name="unidadAcademica"
+                    placeholder="Unidad academica (ej: Escuela de ...)"
+                    value={investigador.unidadAcademica?.nombre || ""}
+                    onChange={handleBaseChange}
+                    required
+                />
+
+                <div className="field">
+                    <label className="input-label">Tema de interés / tesis</label>
+                    <input
+                        className="input"
+                        type="text"
+                        name="temaInteres"
+                        placeholder="Tema de investigación o área de interés"
+                        value={investigador.temaInteres || ""}
+                        onChange={(e) => actualizarCampo("temaInteres", e.target.value)}
+                    />
                 </div>
+
+                <h3 className="section-title">Certificaciones (capacitaciones, cursos, etc.)</h3>
+                <p>
+                    En este apartado se pueden registrar acreditaciones o licencias profesionales
+                    <br />
+                    que requieran para la participacion en los proyectos.
+                </p>
+                <p className="info-text">No es obligatorio ingresar una certificacion en este momento.</p>
+                {(investigador.certificaciones || []).length === 0 && (
+                    <button onClick={() => handleAdd("certificaciones", CertificacionDTO)}>Agregar certificación</button>
+                )}
+                <div className="rows-group">
+                    {(investigador.certificaciones || []).map((c, idx) => (
+                        <div className="row" key={idx}>
+                            <div className="field">
+                                <label />
+                                <input
+                                    className="input"
+                                    type="text"
+                                    placeholder="Institución"
+                                    value={c.entidadEmisora?.nombre || ""}
+                                    onChange={(e) => handleArrayChange("certificaciones", idx, "entidadEmisora", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="field">
+                                <label />
+                                <input
+                                    className="input"
+                                    type="text"
+                                    placeholder="Nombre de la certificacion"
+                                    value={c.nombreCertificacion || ""}
+                                    onChange={(e) => handleArrayChange("certificaciones", idx, "nombreCertificacion", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="field select-wrap">
+                                <label />
+                                <select
+                                    className="select"
+                                    value={c.tipoCertificacion || ""}
+                                    onChange={(e) => handleArrayChange("certificaciones", idx, "tipoCertificacion", e.target.value)}
+                                    disabled={loadingCatalogos || tiposCertificacion.length === 0}
+                                >
+                                    <option value="">{loadingCatalogos ? "Cargando..." : "Tipo de certificacion"}</option>
+                                    {tiposCertificacion.map((t) => (
+                                        <option key={t.id} value={t.valor}>
+                                            {t.despliegue}
+                                        </option>
+                                    ))}
+                                </select>
+                                <svg className="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="m6 9 6 6 6-6" strokeLinecap="round" />
+                                </svg>
+                            </div>
+
+                            <div className="field with-icon">
+                                <label htmlFor={`expiracion-${idx}`} className="label-small">
+                                    Fecha de expiracion
+                                </label>
+                                <input
+                                    id={`expiracion-${idx}`}
+                                    className="input"
+                                    type="date"
+                                    value={c.fechaExpiracion || ""}
+                                    onChange={(e) => handleArrayChange("certificaciones", idx, "fechaExpiracion", e.target.value)}
+                                />
+                            </div>
+
+                            {idx === (investigador.certificaciones || []).length - 1 ? (
+                                <button type="button" className="icon-btn" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>
+                                    +
+                                </button>
+                            ) : (investigador.certificaciones || []).length > 1 ? (
+                                <button
+                                    type="button"
+                                    className="icon-btn remove-btn"
+                                    onClick={() => handleRemove("certificaciones", idx)}
+                                    aria-label="Quitar certificacion"
+                                >
+                                    &#10006;
+                                </button>
+                            ) : null}
+                        </div>
+                    ))}
+                </div>
+            <h3 className="section-title">Títulos académicos</h3>
+            <p>
+                En este apartado se pueden registrar los títulos académicos.
+            </p>
+            <p className="info-text">No es obligatorio ingresar un título en este momento.</p>
+            {(investigador.titulos || []).length === 0 && (
+                <button type="button" onClick={() => agregarItem("titulos", TituloDTO)}>
+                    Agregar título
+                </button>
             )}
+            <div className="rows-group">
+                {(investigador.titulos || []).map((t, idx) => (
+                    <div className="row" key={idx}>
+                        <div className="field">
+                            <label />
+                            <input
+                                className="input"
+                                type="text"
+                                placeholder="Institución"
+                                value={t.entidadEmisora?.nombre || ""}
+                                onChange={(e) => handleArrayChange("titulos", idx, "entidadEmisora", e.target.value)}
+                            />
+                        </div>
 
-            <div className="investigador-popup-content">
-                <h2 className="investigador-popup-title">Registro Investigador</h2>
+                        <div className="field">
+                            <label />
+                            <input
+                                className="input"
+                                type="text"
+                                placeholder="Nombre del título"
+                                value={t.nombreTitulo || ""}
+                                onChange={(e) => handleArrayChange("titulos", idx, "nombreTitulo", e.target.value)}
+                            />
+                        </div>
 
-                <form className="form" onSubmit={handleSubmit}>
-                    {/* Base */}
-                    <input
-                        className="input" type="text" name="institucion"
-                        placeholder="Institución de origen (ej: UCR)" value={formData.institucion}
-                        onChange={handleChange}
-                    />
-                    <input
-                        className="input" type="text" name="unidadAcademica"
-                        placeholder="Unidad académica (ej: Escuela de ...)" value={formData.unidadAcademica}
-                        onChange={handleChange}
-                    />
-
-                    <div className="select-wrap">
-                        <select
-                            className="select" name="gradoAcademico"
-                            value={formData.gradoAcademico} onChange={handleChange}
+                       <div className="input-group">
+                        <label htmlFor="nivelAcademico" className="input-label">Nivel Academico</label>
+                           <select
+                               id={`nivelAcademico-${idx}`}
+                            className="input-field"
+                            name="nivelAcademico"
+                            value={t.nivelTitulo || ""}
+                               onChange={(e) => handleArrayChange("titulos", idx, "nivelTitulo", e.target.value)}
                         >
-                            <option value="">Grado académico</option>
-                            {gradosAcademicos.map((g) => (
-                                <option key={g.id} value={g.id}>
-                                    {g.despliegue
-                                        ? g.despliegue.charAt(0).toUpperCase() + g.despliegue.slice(1).toLowerCase()
-                                        : ""}
+                            <option value="">Nivel</option>
+                            {nivelAcademico?.map(tipo => (
+                                <option key={tipo.id} value={tipo.valor}>
+                                    {tipo.despliegue ? tipo.despliegue.charAt(0).toUpperCase() + tipo.despliegue.slice(1).toLowerCase() : ""}
                                 </option>
                             ))}
                         </select>
-                        <svg className="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m6 9 6 6 6-6" strokeLinecap="round"/>
-                        </svg>
                     </div>
 
-                    {/* <<< NUEVO >>> Certificaciones dentro del mismo pop-up */}
-                    <h3 className="section-title">Certificaciones (capacitaciones, cursos, etc.)</h3>
-                    <p>En este apartado se pueden registrar acreditaciones o licencias profesionales <br/>
-                        que requieran para la partición en los proyectos.</p>
-                    <p className="info-text"> No es obligatorio ingresar una certificación en este momento</p>
+                        <div className="field with-icon">
+                            <label htmlFor={`fechaEmision-${idx}`} className="label-small">
+                                Fecha de emisión
+                            </label>
+                            <input
+                                id={`fechaEmision-${idx}`}
+                                className="input"
+                                type="date"
+                                value={t.fechaEmision || ""}
+                                onChange={(e) => handleArrayChange("titulos", idx, "fechaEmision", e.target.value)}
+                            />
+                        </div>
 
-                    <div className="rows-group">
-                        {certificaciones.map((c, idx) => (
-                            <div className="row" key={idx}>
-                                <div className="field">
-                                    <label> ㅤ</label>
-                                    <input
-                                        className="input"
-                                        type="text"
-                                        placeholder="Nombre de la certificación"
-                                        value={c.nombre}
-                                        onChange={(e) => handleCertChange(idx, "nombre", e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="field select-wrap">
-                                    <label>ㅤ </label>
-                                    <select
-                                        className="select"
-                                        value={c.tipo}
-                                        onChange={(e) => handleCertChange(idx, "tipo", e.target.value)}
-                                        disabled={loadingTipos || tipos.length === 0}
-                                    >
-                                        <option value="">
-                                            {loadingTipos ? "Cargando..." : "Tipo de certificación"}
-                                        </option>
-                                        {tipos.map((t) => (
-                                            <option key={t.id} value={t.id}>{t.despliegue}</option>
-                                        ))}
-                                    </select>
-                                    <svg className="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         strokeWidth="2">
-                                        <path d="m6 9 6 6 6-6" strokeLinecap="round"/>
-                                    </svg>
-                                </div>
-
-                                <div className="field with-icon">
-                                    <label htmlFor={`expiracion-${idx}`} className="label-small">
-                                        Fecha de expiración
-                                    </label>
-
-                                    <input
-                                        id={`expiracion-${idx}`}
-                                        className="input"
-                                        type="date"
-                                        value={c.expiracion}
-                                        min={hoyISO}
-                                        onChange={(e) => handleCertChange(idx, "expiracion", e.target.value)}
-                                    />
-                                </div>
-
-                                {idx === certificaciones.length - 1 ? (
-                                    <button type="button" className="icon-btn" onClick={handleAddCert}>+</button>
-                                ) : certificaciones.length > 1 && (
-                                    <button
-                                        type="button"
-                                        className="icon-btn remove-btn"
-                                        onClick={() => handleRemoveCert(idx)}
-                                        aria-label="Quitar certificación"
-                                    >
-                                        &#10006;
-                                    </button>
-                                )}
-                            </div>
-                        ))}
+                        {idx === (investigador.titulos || []).length - 1 ? (
+                            <button
+                                type="button"
+                                className="icon-btn"
+                                onClick={() => handleAdd("titulos", TituloDTO)}
+                            >
+                                +
+                            </button>
+                        ) : (investigador.titulos || []).length > 1 ? (
+                            <button
+                                type="button"
+                                className="icon-btn remove-btn"
+                                onClick={() => handleRemove("titulos", idx)}
+                                aria-label="Quitar título"
+                            >
+                                &#10006;
+                            </button>
+                        ) : null}
                     </div>
-
-
-                    {errorForm && <p className="form-error">{errorForm}</p>}
-
-                    <div className="actions">
-                        <button type="button" className="btn btn-cancel" onClick={onClose}>Cancelar</button>
-                        <button type="submit" className="btn btn-confirm">Confirmar</button>
-                    </div>
-                </form>
+                ))}
             </div>
         </div>
     );
 }
 
-export default RegistroInvestigador;
+export default function RegistroInvestigador(props) {
+    return <RegistroInvestigadorInner {...props} />;
+}

@@ -16,16 +16,22 @@ import java.time.LocalDate;
 @Table(name = "CERTIFICACION")
 public class Certificacion {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_CERTIFICACION")
-    @SequenceGenerator(name = "SEC_CERTIFICACION", sequenceName = "SEC_CERTIFICACION", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CERTIFICACION_id_gen")
+    @SequenceGenerator(name = "CERTIFICACION_id_gen", sequenceName = "SEC_CERTIFICACION", allocationSize = 1)
     @Column(name = "ID_CERTIFICACION", nullable = false)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "ID_INVESTIGADOR", nullable = false)
     private Investigador idInvestigador;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "ID_ENTIDAD", nullable = false)
+    private Entidad idEntidad;
 
     @Size(max = 254)
     @NotNull
@@ -36,13 +42,11 @@ public class Certificacion {
     @Column(name = "ID_CODIGO_TIPO_CERTIFICACION", nullable = false)
     private Short idCodigoTipoCertificacion;
 
-    @NotNull
-    @Column(name = "FECHA_EXPIRACION", nullable = false)
+    @Column(name = "FECHA_EXPIRACION")
     private LocalDate fechaExpiracion;
 
     @NotNull
     @Column(name = "ID_CODIGO_TIPO_ESTADO", nullable = false)
     private Short idCodigoTipoEstado;
-
 
 }

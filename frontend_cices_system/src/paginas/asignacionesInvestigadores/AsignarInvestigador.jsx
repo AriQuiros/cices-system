@@ -1,4 +1,4 @@
-// src/components/AsignarInvestigador.jsx
+// src/components/VincularInvestigador.jsx
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 import "./AsignarInvestigador.css";

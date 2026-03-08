@@ -1,0 +1,4 @@
+set secuencias=crear_secuencias
+set pks=crear_llaves_primarias
+set triggers=crear_triggers_bitacora
+set eliminar=eliminar_todo

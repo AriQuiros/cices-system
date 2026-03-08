@@ -1,31 +1,24 @@
 package org.example.backend_cices_system.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@Setter
-public class ProyectoDTO {
-    private Short idProyecto;
-    private String nombre;
-    private String codigo;
-    private String descripcion;
-    private String objetivoGeneral;
-    private LocalDate fechaInicio;
-    private LocalDate fechaFinalizacion;
-    private String lineaInvestigacion;
-    private String tipoProyecto;
-    private String estado;
-    private String tipo;
-    private String detalles;
+public record ProyectoDTO (
+    String codigo,
+    String nombre,
+    String descripcion,
+    String objetivoGeneral,
+    LocalDate fechaInicio,
+    LocalDate fechaFinalizacion,
+    String lineaInvestigacion,
+    String tipoProyecto,
+    String estado,
+    String detalles,
 
-    private List<ObjetivoEspecificoDTO> objetivosEspecificos;
-    private List<PresupuestoDTO> presupuestos;
-    private List<DocumentoDTO> documentos;
-    private List<EntidadVinculadaDTO> entidadesVinculadas;
-    private List<InformeDTO> presentacionesInformes;
-    private List<InvestigadorProyectoDTO> investigadoresProyectos;
-}
+    List<ObjetivoEspecificoDTO>objetivosEspecificos,
+    List<PresupuestoDTO> presupuestos,
+    List<DocumentoDTO> documentos,
+    List<EntidadDTO> entidadesVinculadas,
+    List<InformeDTO> presentacionesInformes,
+    List<InvestigadorProyectoDTO> investigadoresVinculados
+){}

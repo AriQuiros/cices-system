@@ -1,0 +1,60 @@
+package org.example.backend_cices_system.service;
+
+import org.example.backend_cices_system.data.CertificacionRepository;
+import org.example.backend_cices_system.dto.CertificacionDTO;
+import org.example.backend_cices_system.logic.Certificacion;
+import org.example.backend_cices_system.logic.Entidad;
+import org.example.backend_cices_system.logic.Investigador;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
+@Service
+public class CertificacionService {
+
+    private final CertificacionRepository certificacionRepository;
+    private final CatalogoService catalogoService;
+    private final EntidadService entidadService;
+
+    public CertificacionService(CertificacionRepository certificacionRepository, CatalogoService catalogoService,
+                                EntidadService entidadService) {
+        this.certificacionRepository = certificacionRepository;
+        this.catalogoService = catalogoService;
+        this.entidadService = entidadService;
+    }
+
+    public Certificacion guardarCertificacion(CertificacionDTO certificacionDTO, Investigador investigador) {
+        var certificacion = new Certificacion();
+        certificacion.setIdInvestigador(investigador);
+
+        Entidad idEntidadEmisora = entidadService.guardarEntidad(certificacionDTO.entidadEmisora());
+        certificacion.setIdEntidad(idEntidadEmisora);
+
+        certificacion.setNombreCertificacion(certificacionDTO.nombreCertificacion());
+        certificacion.setFechaExpiracion(certificacionDTO.fechaExpiracion());
+
+        Short codigoTipoCertificacion = catalogoService.codigoXNombreValor("TIPO_CERTIFICACION", certificacionDTO.tipoCertificacion());
+        certificacion.setIdCodigoTipoCertificacion(codigoTipoCertificacion);
+
+        Short codigoTipoEstado = catalogoService.codigoXNombreValor("ESTADO_CERTIFICACION", obtenerEstadoCertificacion(certificacionDTO.fechaExpiracion()));
+        certificacion.setIdCodigoTipoEstado(codigoTipoEstado);
+
+        certificacionRepository.save(certificacion);
+
+        return certificacion;
+    }
+
+    String obtenerEstadoCertificacion(LocalDate fechaExpiracion) {
+        var fechaActual = LocalDate.now();
+        long dias = ChronoUnit.DAYS.between(fechaActual, fechaExpiracion);
+        if (dias < 0)
+            return "VENCIDA";
+        if (dias > 90)
+            return "VIGENTE";
+        else
+            return "PROXIMA A VENCER";
+    }
+
+}
+

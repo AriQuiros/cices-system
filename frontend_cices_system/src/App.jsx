@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
+import { Toaster } from "sonner";
 import { BrowserRouter, Routes, Route, NavLink, useNavigate } from "react-router-dom";
 import "./App.css";
+import './index.css';
 
 import logoUCR from "../public/images/logoUCR.png";
 import logoCICES from "../public/images/logoCICES.png";
@@ -10,10 +12,9 @@ import Login from "./paginas/login/Login";
 import Registro from "./paginas/registro/usuarios/Registro.jsx";
 import RegistroProyecto from "./paginas/registro/proyectos/RegistroProyecto.jsx";
 import RegistroPresupuesto from "./paginas/registro/proyectos/RegistroPresupuesto.jsx";
-import Director from "./paginas/director/Director";
+import VincularInvestigador from "./paginas/registro/proyectos/VincularInvestigador.jsx";
+import PanelResumen from "./paginas/director/PanelResumen.jsx";
 import Administrador from "./paginas/administrador/Administrador.jsx";
-import Certificacion from "./paginas/certificacion/Certificacion.jsx";
-import Investigador from "./paginas/investigador/Investigador.jsx";
 import RegistroInvestigador from "./paginas/registro/usuarios/RegistroInvestigador.jsx";
 import ConsultaProyectos from "./paginas/consultaProyectos/ConsultaProyectos.jsx";
 import RegistrarGastosFinancieros from "./paginas/RegistrarGastosFinancieros/RegistrarGastosFinancieros.jsx";
@@ -24,6 +25,9 @@ import { AppContext } from "./context/AppContext.jsx";
 import AsignarInvestigador from "./paginas/asignacionesInvestigadores/AsignarInvestigador.jsx";
 import ProyectoSeleccionado from "./paginas/consultaProyectos/ProyectoSeleccionado.jsx";
 import ProyectoHorasAsignadas from "./paginas/consultaProyectos/ProyectoHorasAsignadas.jsx";
+import ListadoProyectos from "./paginas/proyecto/ListadoProyectos.jsx";
+import HorasAsignadas from "./paginas/presupuesto/HorasAsignadas.jsx";
+import ConsultaGastos from "./paginas/presupuesto/ConsultaGastos.jsx";
 
 /** Helper botón-enlace consistente */
 const BtnLink = ({ to, children, onClick, variant = "primary" }) => (
@@ -41,6 +45,10 @@ const BtnLink = ({ to, children, onClick, variant = "primary" }) => (
 function App() {
     return (
         <AppProvider>
+            <Toaster
+                richColors
+                position="top-center"
+            />
             <div className="app-container">
                 <BrowserRouter>
                     <Header />
@@ -59,20 +67,24 @@ function Main() {
                 <Route path="/" element={<Login />} />
                 <Route path="/Registro" element={<Registro />} />
                 <Route path="/RegistroInvestigador" element={<RegistroInvestigador />} />
-                <Route path="/certificacion" element={<Certificacion />} />
                 <Route path="/investigador" element={<ProyectoInvestigador />} />
 
                 <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
                 <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto />} />
+                <Route path="/VincularInvestigador" element={<VincularInvestigador />} />
                 <Route path="/consultaProyectos" element={<ConsultaProyectos />} />
                 <Route path="/registrar-gastos" element={<RegistrarGastosFinancieros />} />
 
                 <Route path="/AsignarInvestigador" element={<AsignarInvestigador />} />
 
-                <Route path="/director" element={<Director />} />
+                <Route path="/PanelResumen" element={<PanelResumen />} />
                 <Route path="/administrador" element={<Administrador />} />
                 <Route path="/consultar/:id" element={<ProyectoSeleccionado />} />
                 <Route path="/proyectos/:id/horas" element={<ProyectoHorasAsignadas />} />
+                <Route path="/ListadoProyectos" element={<ListadoProyectos />} />
+                <Route path="/HorasAsignadas" element={<HorasAsignadas />} />
+                <Route path="/ConsultaGastos" element={<ConsultaGastos />} />
+
             </Routes>
         </main>
     );
@@ -133,7 +145,7 @@ function Header() {
                                             <ul className={`dropdown ${submenuAbierto ? "show" : ""}`}>
                                                 <li><NavLink to="/consultaProyectos" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Consultar Proyectos</NavLink></li>
                                                 <li><NavLink to="/RegistroProyecto" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Registrar Proyectos</NavLink></li>
-                                                <li><NavLink to="/AsignarInvestigador" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Asignar Investigadores</NavLink></li>
+                                                <li><NavLink to="/VincularInvestigador" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Asignar Investigadores</NavLink></li>
                                             </ul>
                                         </li>
 
@@ -168,7 +180,7 @@ function Header() {
                                         <BtnLink to="/consultaProyectos" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Actualizar Proyecto
                                         </BtnLink>
-                                        <BtnLink to="/AsignarInvestigador" onClick={() => setMenuAbierto(false)} variant="ghost">
+                                        <BtnLink to="/VincularInvestigador" onClick={() => setMenuAbierto(false)} variant="ghost">
                                             Asignar Investigadores
                                         </BtnLink>
                                         <BtnLink to="/administrador" onClick={() => setMenuAbierto(false)} variant="ghost">

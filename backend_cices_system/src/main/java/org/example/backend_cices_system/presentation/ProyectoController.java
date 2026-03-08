@@ -1,111 +1,56 @@
 package org.example.backend_cices_system.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.example.backend_cices_system.data.ProyectoRepository;
-import org.example.backend_cices_system.dto.*;
+import jakarta.validation.Valid;
+import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.ProyectoDatosDTO;
+import org.example.backend_cices_system.dto.ProyectoFechasDTO;
 import org.example.backend_cices_system.logic.Proyecto;
-import org.example.backend_cices_system.service.DocumentoService;
-import org.example.backend_cices_system.service.HorasAsignadasService;
-import org.example.backend_cices_system.service.PresupuestoService;
 import org.example.backend_cices_system.service.ProyectoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/proyectos")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-
 public class ProyectoController {
-    @Autowired
-    private ProyectoService proyectoService;
-    @Autowired
-    private DocumentoService documentoService;
-    @Autowired
-    private PresupuestoService presupuestoService;
-    @Autowired
-    private HorasAsignadasService horasService;
 
-    @PostMapping(value = "/registrar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> registrarProyecto(
-            @RequestPart("proyecto") ProyectoDTO proyectoDTO,
-            @RequestPart("presupuesto") List<PresupuestoDTO> presupuestoDTOS,
-            @RequestPart(value = "documentos", required = false) List<MultipartFile> documentos
-    ) {
-        try {
-            Proyecto proyecto = proyectoService.guardarProyecto(proyectoDTO);
-            presupuestoService.guardarPresupuestos(presupuestoDTOS, proyecto);
-            if (documentos != null && !documentos.isEmpty()) {
-                documentoService.guardarDocumentos(proyecto, documentos);
-            }
+    private final ProyectoService proyectoService;
 
-            return ResponseEntity.ok(Map.of("mensaje", "Proyecto registrado correctamente", "proyecto", proyecto));
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("error", "Error registrando proyecto", "detalle", e.getMessage()));
-        }
+    public ProyectoController(ProyectoService proyectoService) {
+        this.proyectoService = proyectoService;
     }
 
-    @GetMapping("/consultar")
-    public ResponseEntity<List<ProyectoDTO>> consultarProyecto(){
-        List<ProyectoDTO> proyectoDTO = proyectoService
-                .obtenerTodosLosProyectos();
-        return ResponseEntity.ok(proyectoDTO);
+    @GetMapping
+    public List<ProyectoDatosDTO> obtenerProyectosDatos() {
+        return proyectoService.obtenerProyectosDatos();
     }
 
-    @GetMapping("/consultar/{id}")
-    public ResponseEntity<ProyectoDTO> consultarProyecto(@PathVariable("id") Integer id){
-        return ResponseEntity.ok(proyectoService.obtenerProyectoDTOPorId(id.shortValue()));
+    @GetMapping("/lineas-investigacion")
+    public String[] obtenerLineas() {
+        return proyectoService.obtenerLineasInvestigacion().toArray(String[]::new);
     }
 
-    @GetMapping("/suggest")
-    public List<ProyectoMiniDTO> suggest(
-            @RequestParam String q,
-            @RequestParam(defaultValue = "10") int limit) {
-        return proyectoService.suggest(q, org.springframework.data.domain.PageRequest.of(0, limit));
+    @PostMapping("/registro")
+    public ResponseEntity<Integer> crearProyectoCompleto(
+            @RequestBody @Valid ProyectoDTO dto) {
+        Integer id = proyectoService.guardarProyecto(dto).getId();
+        return ResponseEntity.ok(id);
     }
 
-    @GetMapping("/search")
-    public ProyectoResumenDTO search(@RequestParam String q) {
-        return proyectoService.buscarResumen(q);
-    }
-
-    @GetMapping("/{id}/asignados")
-    public ResponseEntity<List<AsignadoDTO>> listarAsignados(
-            @PathVariable int id,
-            @RequestParam(defaultValue = "") String q) {
-        return ResponseEntity.ok(proyectoService.listarAsignados(id, q));
-    }
-
-    // ProyectoController.java
-    @PostMapping("/{id}/asignaciones")
-    public ResponseEntity<Void> crearAsignacion(@PathVariable int id,
-                                                @RequestBody AsignacionReqDTO req) {
-        proyectoService.agregarAsignacion((short) id, req);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}/asignaciones/{investigadorId}")
-    public ResponseEntity<Void> eliminarAsignacion(@PathVariable int id,
-                                                   @PathVariable short investigadorId) {
-        proyectoService.quitarAsignacion((short) id, investigadorId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}/horas-asignadas")
-    public ResponseEntity<?> horasPorProyecto(@PathVariable Short id) {
-        return ResponseEntity.ok(horasService.obtenerHorasPorProyecto(id));
+    @GetMapping("/codigo-nombre-fechas")
+    public List<ProyectoFechasDTO> obtenerProyectos_CodigoNombre() {
+        List<Proyecto> proyectos = proyectoService.obtenerProyectos();
+        return proyectos.stream()
+                .map(p -> new ProyectoFechasDTO(
+                        p.getCodigoProyecto(),
+                        p.getNombreProyecto(),
+                        p.getFechaInicio(),
+                        p.getFechaFinalizacion()
+                ))
+                .collect(Collectors.toList());
     }
 
 }

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('AsignarInvestigador – Eiliana sin horas', () => {
+describe('VincularInvestigador – Eiliana sin horas', () => {
     const APP_URL = 'http://localhost:5173/AsignarInvestigador';
     const API = 'http://localhost:8080/api';
     const proyecto = {

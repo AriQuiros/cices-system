@@ -1,10 +1,10 @@
 package org.example.backend_cices_system.presentation;
-import org.example.backend_cices_system.dto.LoginRequest;
-import org.example.backend_cices_system.dto.LoginResponse;
+import org.example.backend_cices_system.dto.auth.LoginRequest;
 import org.example.backend_cices_system.service.AuthService;
 import org.example.backend_cices_system.service.LoginAttemptService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")

@@ -8,15 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RolProyectoRepository extends JpaRepository<RolProyecto, Short> {
 
-    @Query("select r from RolProyecto r order by r.nombrePermiso")
+    @Query("select r from RolProyecto r order by r.id asc")
     List<RolProyecto> listar();
 
-    // HorasAsignadasRepository.java
-    public interface HorasAsignadasRepository extends JpaRepository<HorasAsignada, Short> {
-        void deleteByIdInvestigadorProyecto(InvestigadorProyecto ip);
-    }
+    Optional<RolProyecto> findByNombreIgnoreCaseRolProyecto(String nombre);
+    Optional<RolProyecto> findByNombreRolProyectoIgnoreCase(String nombre);
+
 }

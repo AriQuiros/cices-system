@@ -1,41 +1,26 @@
 package org.example.backend_cices_system.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.CatalogoRepository;
-import org.example.backend_cices_system.data.RolProyectoRepository;
 import org.example.backend_cices_system.dto.CodigoDTO;
-import org.example.backend_cices_system.dto.RolSimpleDTO;
 import org.example.backend_cices_system.logic.Codigo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CatalogoService {
-    @Autowired
-    private CatalogoRepository catalogoRepository;
+    private final CatalogoRepository catalogoRepository;
 
-    @Autowired
-    private final RolProyectoRepository rolProyectoRepository;
-
-
-    public String obtenerValorCodigoPorId(Short idCodigo) {
-        return catalogoRepository.findById(idCodigo)
-                .map(Codigo::getValor)
-                .orElse(null);
+    public CatalogoService(CatalogoRepository catalogoRepository) {
+        this.catalogoRepository = catalogoRepository;
     }
 
-    public Short obtenerIdCodigoPorTipoYValor(String nombreTipo, String valor) {
-        return catalogoRepository.findByIdTipoNombreAndValor(nombreTipo, valor)
-                .map(Codigo::getId)
-                .orElseThrow(() -> new RuntimeException("Código no encontrado: " + valor));
+    public Short codigoXNombreValor(String nombre, String valor) {
+        return catalogoRepository.findByIdTipoNombreIgnoreCaseAndValorIgnoreCase(nombre, valor)
+                .orElseThrow(() -> new RuntimeException("Código no encontrado para nombre: " + nombre + " y valor: " + valor))
+                .getId();
     }
 
     public Map<String, List<CodigoDTO>> obtenerCodigosPorTipos(List<String> nombresTipos) {
@@ -46,34 +31,17 @@ public class CatalogoService {
                         Collectors.mapping(
                                 codigo -> new CodigoDTO(
                                         codigo.getId(),
-                                        codigo.getDespliegue().substring(0,1).toUpperCase() + codigo.getDespliegue().substring(1).toLowerCase(),
-                                        codigo.getValor()
+                                        codigo.getValor(),
+                                        codigo.getDespliegue().toLowerCase()
                                 ),
                                 Collectors.toList()
                         )
                 ));
     }
-    public List<CodigoDTO> obtenerGradosAcademicos() {
-        List<Codigo> codigos = catalogoRepository.findByIdTipoId((short)2);
-        return codigos.stream()
-                .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
-                .collect(Collectors.toList());
-    }
-    public List<CodigoDTO> obtenerTiposIdentificacion() {
-        List<Codigo> codigos = catalogoRepository.findByIdTipoId((short)1);
-        return codigos.stream()
-                .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
-                .collect(Collectors.toList());
-    }
-    public List<CodigoDTO> obtenerTiposCertificacion() {
-        List<Codigo> codigos = catalogoRepository.findByIdTipoId((short)3);
-        return codigos.stream()
-                .map(c -> new CodigoDTO(c.getId(), c.getDespliegue(), c.getValor()))
-                .collect(Collectors.toList());
-    }
 
-    public CodigoDTO obtenerCodigoPorId(Short id) {
-        return catalogoRepository.findCodigoById(id);
+    public String obtenerDespliegueXCodigo(Short idCodigo) {
+        return catalogoRepository.findById(idCodigo)
+                .orElseThrow(() -> new RuntimeException("Código no encontrado para id: " + idCodigo))
+                .getDespliegue();
     }
 }
-

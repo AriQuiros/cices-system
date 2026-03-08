@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import oracle.sql.CHAR;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "CODIGO")
 public class Codigo {
     @Id
+    @SequenceGenerator(name = "CODIGO_id_gen", sequenceName = "SEC_CODIGO", allocationSize = 1)
     @Column(name = "ID_CODIGO", nullable = false)
     private Short id;
 
@@ -31,7 +31,7 @@ public class Codigo {
 
     @NotNull
     @Column(name = "TIPO_VALOR", nullable = false)
-    private char tipoValor;
+    private Character tipoValor;
 
     @Size(max = 30)
     @NotNull

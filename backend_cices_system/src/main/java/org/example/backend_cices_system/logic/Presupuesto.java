@@ -10,8 +10,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -19,10 +17,10 @@ import java.util.Set;
 @Table(name = "PRESUPUESTO")
 public class Presupuesto {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRESUPUESTO_id_gen")
+    @SequenceGenerator(name = "PRESUPUESTO_id_gen", sequenceName = "SEC_PRESUPUESTO", allocationSize = 1)
     @Column(name = "ID_PRESUPUESTO", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_PRESUPUESTO")
-    @SequenceGenerator(name = "SEC_PRESUPUESTO", sequenceName = "SEC_PRESUPUESTO", allocationSize = 1)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -30,32 +28,30 @@ public class Presupuesto {
     @JoinColumn(name = "ID_PROYECTO", nullable = false)
     private Proyecto idProyecto;
 
+    @Column(name = "ID_CODIGO_TIPO_PRESUPUESTO")
+    private Short idCodigoTipoPresupuesto;
+
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_CATEGORIA", nullable = false)
+    private Short idCodigoTipoCategoria;
+
+    @Column(name = "ID_CODIGO_TIPO_FUENTE_FINANCIAMIENTO")
+    private Short idCodigoTipoFuenteFinanciamiento;
+
+    @Size(max = 254)
+    @Column(name = "DESCRIPCION", length = 254)
+    private String descripcion;
+
     @Column(name = "FECHA_ASIGNACION")
     private LocalDate fechaAsignacion;
 
-    @Column(name = "ID_CODIGO_FUENTE_FINANCIAMIENTO")
-    private Short idCodigoFuenteFinanciamiento;
-
-    @Column(name = "MONTO", precision = 8, scale = 2)
-    private BigDecimal monto;
-
     @Column(name = "CANTIDAD_HORAS_MES")
-    private Double cantidadHorasMes;
+    private BigDecimal cantidadHorasMes;
 
     @Column(name = "CANTIDAD_MESES")
     private Short cantidadMeses;
 
-    @Column(name = "ID_CODIGO_TIPO_PRESUPUESTO")
-    private Short idCodigoTipoPresupuesto;
-
-    @Size(max = 50)
-    @Column(name = "DESCRIPCION", nullable = false, length = 50)
-    private String descripcion;
-
-    @OneToMany(mappedBy = "idPresupuesto")
-    private Set<Gasto> gastos = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "idPresupuesto")
-    private Set<HorasAsignada> horasAsignadas = new LinkedHashSet<>();
+    @Column(name = "MONTO_ASIGNADO", precision = 9, scale = 2)
+    private BigDecimal montoAsignado;
 
 }

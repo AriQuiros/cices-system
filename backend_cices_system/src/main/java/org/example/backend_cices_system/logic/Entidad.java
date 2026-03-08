@@ -12,17 +12,21 @@ import lombok.Setter;
 @Table(name = "ENTIDAD")
 public class Entidad {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_ENTIDAD")
-    @SequenceGenerator(name = "SEC_ENTIDAD", sequenceName = "SEC_ENTIDAD", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ENTIDAD_id_gen")
+    @SequenceGenerator(name = "ENTIDAD_id_gen", sequenceName = "SEC_ENTIDAD", allocationSize = 1)
     @Column(name = "ID_ENTIDAD", nullable = false)
-    private Short id;
+    private Integer id;
 
-    @Size(max = 50)
+    @Size(max = 254)
     @NotNull
-    @Column(name = "NOMBRE", nullable = false, length = 50)
+    @Column(name = "NOMBRE", nullable = false, length = 254)
     private String nombre;
 
-    @Column(name = "ID_CODIGO_TIPO_")
-    private Short idCodigoTipo;
+    @Size(max = 4)
+    @Column(name = "PAIS", nullable = false, length = 4)
+    private String pais;
+
+    @Column(name = "ID_CODIGO_TIPO_ENTIDAD")
+    private Short idCodigoTipoEntidad;
 
 }

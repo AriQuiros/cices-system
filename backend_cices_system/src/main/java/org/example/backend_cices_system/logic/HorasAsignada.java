@@ -13,8 +13,10 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "HORAS_ASIGNADAS")
 public class HorasAsignada {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HORAS_ASIGNADAS_id_gen")
+    @SequenceGenerator(name = "HORAS_ASIGNADAS_id_gen", sequenceName = "SEC_HORAS_ASIGNADAS", allocationSize = 1)
     @Column(name = "ID_HORAS_ASIGNADAS", nullable = false)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -29,16 +31,15 @@ public class HorasAsignada {
     private Presupuesto idPresupuesto;
 
     @NotNull
+    @Column(name = "ID_CODIGO_TIPO_MODALIDAD", nullable = false)
+    private Short idCodigoTipoModalidad;
+
+    @NotNull
     @Column(name = "CANTIDAD_HORAS_MES", nullable = false)
     private Double cantidadHorasMes;
 
     @NotNull
     @Column(name = "CANTIDAD_MESES", nullable = false)
     private Short cantidadMeses;
-
-    @NotNull
-    @Column(name = "ID_CODIGO_TIPO_HORAS", nullable = false)
-    private Short idCodigoTipoHoras;
-
 
 }

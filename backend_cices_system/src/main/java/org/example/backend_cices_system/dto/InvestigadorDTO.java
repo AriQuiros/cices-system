@@ -1,3 +1,13 @@
 package org.example.backend_cices_system.dto;
 
-public record InvestigadorDTO(Short id, String nombre, String unidad) {}
+import java.util.List;
+
+public record InvestigadorDTO(
+        EmpleadoDTO empleado,
+        EntidadDTO institucionOrigen,
+        EntidadDTO unidadAcademica,
+        String temaInteres,
+        List<TituloDTO> titulos,
+        List<CertificacionDTO> certificaciones
+) {}
+

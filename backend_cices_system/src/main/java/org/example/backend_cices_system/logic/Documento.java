@@ -14,10 +14,10 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "DOCUMENTO")
 public class Documento {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEC_DOCUMENTO")
-    @SequenceGenerator(name = "SEC_DOCUMENTO", sequenceName = "SEC_DOCUMENTO", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DOCUMENTO_id_gen")
+    @SequenceGenerator(name = "DOCUMENTO_id_gen", sequenceName = "SEC_DOCUMENTO", allocationSize = 1)
     @Column(name = "ID_DOCUMENTO", nullable = false)
-    private Short id;
+    private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -25,15 +25,14 @@ public class Documento {
     @JoinColumn(name = "ID_PROYECTO", nullable = false)
     private Proyecto idProyecto;
 
-    @Size(max = 255)
+    @Size(max = 254)
     @NotNull
-    @Column(name = "NOMBRE_DOCUMENTO", nullable = false, length = 50)
+    @Column(name = "NOMBRE_DOCUMENTO", nullable = false)
     private String nombreDocumento;
 
     @NotNull
     @Lob
     @Column(name = "DIRECTORIO", nullable = false)
     private String directorio;
-
 
 }

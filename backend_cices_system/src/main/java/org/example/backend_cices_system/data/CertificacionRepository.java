@@ -1,6 +1,5 @@
 package org.example.backend_cices_system.data;
 
-import jakarta.validation.constraints.NotNull;
 import org.example.backend_cices_system.logic.Certificacion;
 import org.example.backend_cices_system.logic.Investigador;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import "./ConsultaProyectos.css";
 import { Link } from "react-router-dom";
 
-
 function ConsultaProyectos() {
     const [proyectos, setProyectos] = useState([]);
     const [cargado, setCargado] = useState(true);

@@ -1,154 +1,36 @@
 package org.example.backend_cices_system.presentation;
 
-import java.util.Map;
-import java.util.List;
-import java.time.LocalDate;
-import lombok.RequiredArgsConstructor;
-import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
-import org.example.backend_cices_system.data.InvestigadorRepository;
-import org.example.backend_cices_system.data.ProyectoRepository;
-import org.example.backend_cices_system.data.UsuarioRepository;
-import org.example.backend_cices_system.dto.*;
-import org.example.backend_cices_system.logic.Proyecto;
-import org.example.backend_cices_system.service.ProyectoService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.Authentication;
+import jakarta.validation.Valid;
+import org.example.backend_cices_system.dto.InvestigadorDTO;
+import org.example.backend_cices_system.logic.Investigador;
 import org.example.backend_cices_system.service.InvestigadorService;
-import java.math.BigDecimal;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/investigador")
-@RequiredArgsConstructor
+@RequestMapping("/api/investigadores")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class InvestigadorController {
-    private final InvestigadorService service;
-    private final UsuarioRepository usuarioRepo;
-    private final InvestigadorRepository invRepo;
-    private final InvestigadorProyectoRepository invProyRepo;
-    private final ProyectoService proyectoService;
 
-    @PostMapping("/registrar")
-    public ResponseEntity<Map<String,Object>> crear(@RequestBody RegistroInvestigadorDTO body) {
-        Short idInv = service.registrarInvestigadorConCerts(body);
-        return ResponseEntity.ok(Map.of("idInvestigador", idInv));
+    private final InvestigadorService investigadorService;
+
+    public InvestigadorController(InvestigadorService investigadorService) {
+        this.investigadorService = investigadorService;
     }
 
-    @GetMapping("/proyectos-principal")
-    public ResponseEntity<List<ProyectoDTO>> getProyectosInvestigadorPrincipal(Authentication auth) {
-        if (auth == null || auth.getName() == null) {
-            return ResponseEntity.status(401).build();
-        }
-        
-        String nombreUsuario = auth.getName();
-        List<ProyectoDTO> proyectos = service.getProyectosInvestigadorPrincipal(nombreUsuario);
-        return ResponseEntity.ok(proyectos);
+    @PostMapping("/registro")
+    public ResponseEntity<?> crearInvestigador(@RequestBody @Valid InvestigadorDTO dto) {
+        Investigador investigador =
+                investigadorService.crearInvestigador(dto);
+        return ResponseEntity.ok(investigador.getId());
     }
 
-    @GetMapping("/presupuesto/{idProyecto}")
-    public ResponseEntity<PresupuestoDTO> getPresupuestoProyecto(@PathVariable Integer idProyecto, Authentication auth) {
-        if (auth == null || auth.getName() == null) {
-            return ResponseEntity.status(401).build();
-        }
-        
-        PresupuestoDTO presupuesto = service.getPresupuestoProyecto(idProyecto);
-        if (presupuesto == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(presupuesto);
+    @GetMapping
+    public List<Map<String,String>> obtenerInvestigadorXNombre(@RequestParam String nombre) {
+        return investigadorService.obtenerInvestigadoresActivos(nombre);
     }
-
-    @PostMapping("/validar-gasto")
-    public ResponseEntity<Map<String, Object>> validarMontoGasto(
-            @RequestBody Map<String, Object> request, Authentication auth) {
-        try {
-            if (auth == null || auth.getName() == null) {
-                return ResponseEntity.status(401).body(Map.of("error", "Usuario no autenticado"));
-            }
-            
-            Integer idProyecto = (Integer) request.get("idProyecto");
-            BigDecimal monto = new BigDecimal(request.get("monto").toString());
-            
-            boolean esValido = service.validarMontoGasto(idProyecto, monto);
-            PresupuestoDTO presupuesto = service.getPresupuestoProyecto(idProyecto);
-            
-            Map<String, Object> response = Map.of(
-                "valido", esValido,
-                "montoTotal", presupuesto != null ? presupuesto.getMonto() : 0,
-                "gastosRealizados", presupuesto != null ? presupuesto.getGastosRealizados() : 0,
-                "montoDisponible", presupuesto != null ? presupuesto.getMontoDisponible() : 0,
-                "mensaje", esValido ? "Monto válido" : "El monto excede el presupuesto disponible"
-            );
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                .body(Map.of("error", "Error al validar el monto: " + e.getMessage()));
-        }
-    }
-
-    @PostMapping("/registrar-gasto")
-    public ResponseEntity<Map<String, Object>> registrarGasto(@RequestBody GastoDTO gastoDTO, Authentication auth) {
-        try {
-            if (auth == null || auth.getName() == null) {
-                return ResponseEntity.status(401).body(Map.of(
-                    "exito", false,
-                    "mensaje", "Usuario no autenticado"
-                ));
-            }
-            
-            boolean exito = service.registrarGasto(gastoDTO);
-            
-            if (exito) {
-                return ResponseEntity.ok(Map.of(
-                    "exito", true,
-                    "mensaje", "Gasto registrado exitosamente"
-                ));
-            } else {
-                return ResponseEntity.badRequest().body(Map.of(
-                    "exito", false,
-                    "mensaje", "No se pudo registrar el gasto. Verifique que el monto no exceda el presupuesto disponible."
-                ));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of(
-                "exito", false,
-                "mensaje", "Error interno del servidor: " + e.getMessage()
-            ));
-        }
-    }
-
-    @GetMapping("/fecha-actual")
-    public ResponseEntity<Map<String, String>> getFechaActual(Authentication auth) {
-        if (auth == null || auth.getName() == null) {
-            return ResponseEntity.status(401).build();
-        }
-        
-        LocalDate fechaActual = LocalDate.now();
-        String fechaFormateada = fechaActual.toString(); // Formato YYYY-MM-DD
-        
-        return ResponseEntity.ok(Map.of("fecha", fechaFormateada));
-    }
-
-    @GetMapping("/mis-proyectos")
-    public ResponseEntity<?> misProyectos(Authentication auth) {
-        try {
-            String username = auth.getName(); // viene del JWT
-            return ResponseEntity.ok(service.misProyectos(username));
-        } catch (RuntimeException ex) {
-            // si el usuario no es investigador, devolver lista vacía mejor que 500
-            if (ex.getMessage()!=null && ex.getMessage().contains("No es investigador")) {
-                return ResponseEntity.ok(java.util.List.of());
-            }
-            return ResponseEntity.status(500).body(java.util.Map.of("error", ex.getMessage()));
-        }
-    }
-
-    @GetMapping("/investigadores")
-    public List<InvestigadorDTO> investigadores(@RequestParam(required=false) String q){
-        return service.buscarInvestigadores(q);
-    }
-
 
 }

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('AsignarInvestigador – evita duplicados en segundo guardado', () => {
+describe('VincularInvestigador – evita duplicados en segundo guardado', () => {
     const APP_URL = 'http://localhost:5173/AsignarInvestigador';
     const API = 'http://localhost:8080/api';
     const proyecto = {

@@ -2,6 +2,7 @@ import { useAuth } from "../../context/useAuth.js";
 import "./Login.css";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useNavigationType } from "react-router-dom";
+import { loginRequest } from "../../services/AuthService.jsx";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -54,31 +55,42 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (submitting) return;
+
         setSubmitting(true);
         setLocalError("");
         setSecondsLeft(0);
         clearTimer();
+
         try {
-            const payload = { username: form.username.trim(), password: form.password };
-            const res = await fetch(`${API}/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
+            const res = await loginRequest(form.username, form.password);
 
             if (!res.ok) {
                 let msg = "Error en servidor";
+
                 if (res.status === 401) {
                     const remaining = res.headers.get("X-Login-Attempts-Remaining");
                     msg = `Credenciales inválidas${remaining ? ` · Intentos restantes: ${remaining}` : ""}`;
-                } else if (res.status === 423) {
-                    let mins = 0;
-                    try { const j = await res.json(); mins = Number(j?.remainingMinutes ?? 0); } catch {}
-                    msg = mins > 0 ? `Cuenta bloqueada. Intenta en ${formatMMSS(mins * 60)}` : "Cuenta bloqueada temporalmente.";
-                    if (mins > 0) startCountdown(mins);
-                } else {
-                    try { const j = await res.json(); if (j?.error) msg = j.error;z } catch {}
                 }
+                else if (res.status === 423) {
+                    let mins = 0;
+                    try {
+                        const j = await res.json();
+                        mins = Number(j?.remainingMinutes ?? 0);
+                    } catch {}
+
+                    msg = mins > 0
+                        ? `Cuenta bloqueada. Intenta en ${formatMMSS(mins * 60)}`
+                        : "Cuenta bloqueada temporalmente.";
+
+                    if (mins > 0) startCountdown(mins);
+                }
+                else {
+                    try {
+                        const j = await res.json();
+                        if (j?.error) msg = j.error;
+                    } catch {}
+                }
+
                 setLocalError(msg);
                 return;
             }
@@ -90,10 +102,12 @@ function Login() {
             const dest =
                 r.includes("DIRECTOR") ? "/director" :
                     r.includes("ADMINISTRADOR") ? "/administrador" :
-                        r.includes("INVESTIGADOR") ? "/investigador" : "/dashboard";
+                        r.includes("INVESTIGADOR") ? "/investigador" :
+                            "/dashboard";
 
             const welcomeMsg = `Bienvenid@, ${data.user?.nombreCompleto || data.user?.username || ""}`;
             navigate(dest, { state: { toast: welcomeMsg } });
+
         } catch {
             setLocalError("No se pudo conectar con el servidor");
         } finally {

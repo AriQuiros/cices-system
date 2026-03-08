@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from 'react';
 import { fetchTiposCatalogo } from '../services/catalogoService';
+import {notify} from "../utils/estilo/notify.jsx";
 
 export function useTiposCatalogo(token, tiposSolicitados = []) {
     const [tipos, setTipos] = useState({});
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (/*!token ||*/ tiposSolicitados.length === 0) return;
@@ -15,10 +15,9 @@ export function useTiposCatalogo(token, tiposSolicitados = []) {
             const result = await fetchTiposCatalogo(token, tiposSolicitados);
             if (result) {
                 setTipos(result);
-                setError(null);
             } else {
                 setTipos({});
-                setError('No se pudieron cargar los tipos');
+                notify.error('No se pudieron cargar los tipos');
             }
             setLoading(false);
         };
@@ -26,5 +25,5 @@ export function useTiposCatalogo(token, tiposSolicitados = []) {
         loadTipos();
     }, [token, JSON.stringify(tiposSolicitados)]);
 
-    return { tipos, loading, error };
+    return { tipos, loading };
 }

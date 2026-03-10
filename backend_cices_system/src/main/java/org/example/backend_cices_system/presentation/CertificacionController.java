@@ -27,7 +27,7 @@ public class CertificacionController {
             @PathVariable String identificacion,
             @RequestBody @Valid CertificacionDTO dto) {
 
-        Investigador investigador = investigadorService.buscarXIdentificacion(identificacion);
+        Investigador investigador = investigadorService.buscarPorIdentificacion(identificacion);
         Certificacion certificacion = certificacionService.guardarCertificacion(dto, investigador);
 
         return ResponseEntity.ok(certificacion.getId());

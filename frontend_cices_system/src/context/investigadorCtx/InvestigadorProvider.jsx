@@ -1,30 +1,25 @@
-import { useState } from "react";
 import { InvestigadorContext } from "./InvestigadorContext.jsx";
-import { InvestigadorDTO, TituloDTO, CertificacionDTO } from "../../modelos/investigadorDTO.jsx";
+import { InvestigadorDTO } from "../../modelos/investigadorDTO.jsx";
+import { useDTO } from "../utils/useDTO.js";
 
 export const InvestigadorProvider = ({ children }) => {
-    const [investigador, setInvestigador] = useState({ ...InvestigadorDTO });
 
-    const actualizarCampo = (campo, valor) => {
-        setInvestigador(prev => ({
-            ...prev,
-            [campo]: valor
-        }));
-    };
+    const investigadorState = useDTO(InvestigadorDTO);
 
-    /* =========================
-      FUNCIONES GENERICAS
-   ========================= */
     const agregarItem = (campoArray, dtoBase) => {
-        setInvestigador(prev => ({
+
+        investigadorState.setData(prev => ({
             ...prev,
             [campoArray]: [...prev[campoArray], { ...dtoBase }]
         }));
     };
 
     const actualizarItem = (campoArray, index, campo, valor) => {
-        setInvestigador(prev => {
+
+        investigadorState.setData(prev => {
+
             const nuevos = [...prev[campoArray]];
+
             nuevos[index] = {
                 ...nuevos[index],
                 [campo]: valor
@@ -38,25 +33,22 @@ export const InvestigadorProvider = ({ children }) => {
     };
 
     const eliminarItem = (campoArray, index) => {
-        setInvestigador(prev => ({
+
+        investigadorState.setData(prev => ({
             ...prev,
             [campoArray]: prev[campoArray].filter((_, i) => i !== index)
         }));
     };
 
-    const limpiarInvestigador = () => {
-        setInvestigador({ ...InvestigadorDTO });
-    };
-
     return (
         <InvestigadorContext.Provider
             value={{
-                investigador,
-                actualizarCampo,
+                investigador: investigadorState.data,
+                actualizarCampo: investigadorState.actualizarCampo,
+                limpiarInvestigador: investigadorState.limpiar,
                 agregarItem,
                 actualizarItem,
-                eliminarItem,
-                limpiarInvestigador
+                eliminarItem
             }}
         >
             {children}

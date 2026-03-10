@@ -1,9 +1,11 @@
 package org.example.backend_cices_system.dto;
 
 public record HorasAsignadasDTO(
-        PresupuestoDTO presupuesto,
-        String modalidad,
-        String tipoHora,
+        Integer id,
+        InvestigadorProyectoDTO investigador,
+        Integer idPresupuesto,
+        CodigoDTO modalidad,
+        CodigoDTO tipoHora,
         Double cantidadHorasMes,
         Short cantidadMeses
 ) {}

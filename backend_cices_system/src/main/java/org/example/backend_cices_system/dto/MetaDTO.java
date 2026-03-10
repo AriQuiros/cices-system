@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record MetaDTO (
-    Integer idMeta,
-    String tipo, // CUANTITATIVA o CUALITATIVA
-    BigDecimal cantidad, // Solo se usa si es CUANTITATIVA
+    Integer id,
+    CodigoDTO tipo, // CUANTITATIVA o CUALITATIVA
+    Integer cantidad, // Solo se usa si es CUANTITATIVA
     String descripcion,
     List<String> indicadores
 ){}

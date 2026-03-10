@@ -17,9 +17,5 @@ public interface RepPresupuestoBaseRepository extends JpaRepository<RepPresupues
 
     List<RepPresupuestoBase> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
 
-    List<RepPresupuestoBase> findByTipoPresupuesto(String tipoPresupuesto);
-
-    List<RepPresupuestoBase> findByFuenteFinanciamiento(String fuenteFinanciamiento);
-
-    List<RepPresupuestoBase> findByCategoriaPresupuesto(String categoriaPresupuesto);
+    List<RepPresupuestoBase> findByIdPresupuesto(Integer idPresupuesto);
 }

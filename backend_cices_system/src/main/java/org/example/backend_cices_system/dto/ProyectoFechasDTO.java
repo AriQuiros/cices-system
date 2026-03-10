@@ -3,8 +3,8 @@ package org.example.backend_cices_system.dto;
 import java.time.LocalDate;
 
 public record ProyectoFechasDTO(
-        String codigo,
-        String nombre,
+        String codigoProyecto,
+        String nombreProyecto,
         LocalDate fechaInicio,
         LocalDate fechaFinalizacion
 ) {}

@@ -27,8 +27,7 @@ export async function registrarProyecto({ proyecto, token }) {
     return data;
 }
 
-export async function cargarProyectos(token, editable) {
-    if (!editable) return [];
+export async function cargarProyectos(token, ) {
     const res = await fetch(`${API}/api/proyectos/codigo-nombre-fechas`, {
         headers: { Authorization: `Bearer ${token}` }
     });

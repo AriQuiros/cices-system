@@ -11,13 +11,10 @@ import org.springframework.stereotype.Service;
 public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
-    private final CatalogoService catalogoService;
     private final AuthService authService;
 
-    EmpleadoService (EmpleadoRepository empleadoRepository, CatalogoService catalogoService,
-                    AuthService authService) {
+    EmpleadoService (EmpleadoRepository empleadoRepository, AuthService authService) {
         this.empleadoRepository = empleadoRepository;
-        this.catalogoService = catalogoService;
         this.authService = authService;
     }
 
@@ -38,17 +35,11 @@ public class EmpleadoService {
         empleado.setIdUsuario(usuario);
         empleado.setNombreCompleto(dto.nombreCompleto());
         empleado.setIdentificacion(dto.identificacion());
-
-        Short codigoTipoId = catalogoService.codigoXNombreValor("TIPO_IDENTIFICACION", dto.tipoId());
-
-        empleado.setIdCodigoTipoId(codigoTipoId);
+        empleado.setIdCodigoTipoId(dto.tipoId().id());
         empleado.setPais(dto.pais());
         empleado.setCorreo(dto.correo());
         empleado.setNumeroTelefono(dto.numeroTelefono());
-
-        Short codigoTipoGradoAcademico = catalogoService.codigoXNombreValor("GRADO_ACADEMICO", dto.gradoAcademico());
-
-        empleado.setIdCodigoTipoGradoAcademico(codigoTipoGradoAcademico);
+        empleado.setIdCodigoTipoGradoAcademico(dto.gradoAcademico().id());
 
         empleado = empleadoRepository.save(empleado);
 

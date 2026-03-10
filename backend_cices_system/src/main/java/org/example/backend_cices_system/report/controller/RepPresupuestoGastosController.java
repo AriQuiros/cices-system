@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reportes/gastos")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class RepPresupuestoGastosController {
 
     private final RepPresupuestoGastosService service;
@@ -22,9 +23,9 @@ public class RepPresupuestoGastosController {
         return service.obtenerTodos();
     }
 
-    @GetMapping("/codigo/{codigoProyecto}")
-    public List<RepPresupuestoGastos> getByCodigoProyecto(@PathVariable String codigoProyecto) {
-        return service.buscarPorCodigoProyecto(codigoProyecto);
+    @GetMapping("/codigo/{idPresupuesto}")
+    public List<RepPresupuestoGastos> getByCodigoProyecto(@PathVariable Integer idPresupuesto) {
+        return service.buscarPorIdPresupuesto(idPresupuesto);
     }
 
     @GetMapping("/{codigoProyecto}")

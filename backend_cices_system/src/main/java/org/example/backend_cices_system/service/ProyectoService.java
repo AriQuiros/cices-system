@@ -8,6 +8,7 @@ import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -46,8 +47,8 @@ public class ProyectoService {
     public Proyecto guardarProyecto(ProyectoDTO proyectoDTO) {
         var proyecto = new Proyecto();
 
-        proyecto.setCodigoProyecto(proyectoDTO.codigo());
-        proyecto.setNombreProyecto(proyectoDTO.nombre());
+        proyecto.setCodigoProyecto(proyectoDTO.codigoProyecto());
+        proyecto.setNombreProyecto(proyectoDTO.nombreProyecto());
         proyecto.setDescripcionProyecto(proyectoDTO.descripcion());
         proyecto.setObjetivoGeneral(proyectoDTO.objetivoGeneral());
         proyecto.setLineaInvestigacion(proyectoDTO.lineaInvestigacion());
@@ -55,8 +56,9 @@ public class ProyectoService {
         proyecto.setFechaFinalizacion(proyectoDTO.fechaFinalizacion());
         proyecto.setDetallesProyectos(proyectoDTO.detalles());
 
-        proyecto.setIdCodigoTipoProyecto(catalogoService.codigoXNombreValor("TIPO_PROYECTO", proyectoDTO.tipoProyecto()));
-        proyecto.setIdCodigoTipoEstado(catalogoService.codigoXNombreValor("ESTADO_PROYECTO", proyectoDTO.estado()));
+        proyecto.setIdCodigoTipoProyecto(proyectoDTO.tipoProyecto().id());
+        var estado = obtenerEstadoProyecto(proyectoDTO.fechaFinalizacion());
+        proyecto.setIdCodigoTipoEstado(estado);
 
         proyectoRepository.save(proyecto);
 
@@ -87,15 +89,12 @@ public class ProyectoService {
         }
 
         if (dto.presupuestos() != null && !dto.presupuestos().isEmpty()) {
-            for (var presupuestoDTO : dto.presupuestos()) {
-                presupuestoService.guardarPresupuesto(presupuestoDTO, proyecto);
-            }
+            presupuestoService.guardarPresupuesto(dto.presupuestos(), proyecto);
         }
 
         if (dto.investigadoresVinculados() != null && !dto.investigadoresVinculados().isEmpty()) {
             for (var investigadorDTO : dto.investigadoresVinculados()) {
-                String id = investigadorDTO.identificacionInvestigador();
-                Investigador investigador = investigadorService.buscarXIdentificacion(id);
+                Investigador investigador = investigadorService.buscarPorIdentificacion(investigadorDTO.identificacionInvestigador());
                 investigadorProyectoService.guardarInvestigadorProyecto(investigadorDTO, investigador, proyecto);
             }
         }
@@ -103,13 +102,9 @@ public class ProyectoService {
         // documentos
     }
 
-    public Proyecto buscarProyectoXCodigo(String codigoProyecto) {
+    public Proyecto buscarProyectoPorCodigo(String codigoProyecto) {
         return proyectoRepository.findByCodigoProyecto(codigoProyecto)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
-    }
-
-    public boolean existeProyectoXCodigo(String codigoProyecto) {
-        return proyectoRepository.existsByCodigoProyecto(codigoProyecto);
     }
 
     public List<Proyecto> obtenerProyectos() {
@@ -122,15 +117,27 @@ public class ProyectoService {
 
     public List<ProyectoDatosDTO> obtenerProyectosDatos() {
         return proyectoRepository.findAll().stream()
-                .map(p -> new ProyectoDatosDTO(
+                .map(p -> new ProyectoDatosDTO(p.getId(),
                         p.getCodigoProyecto(),
                         p.getNombreProyecto(),
                         p.getLineaInvestigacion(),
-                        catalogoService.obtenerDespliegueXCodigo(p.getIdCodigoTipoProyecto()),
-                        catalogoService.obtenerDespliegueXCodigo(p.getIdCodigoTipoEstado()),
+                        catalogoService.obtenerDto(p.getIdCodigoTipoProyecto()),
+                        catalogoService.obtenerDto(p.getIdCodigoTipoEstado()),
                         p.getFechaInicio(),
                         p.getFechaFinalizacion()
                 ))
                 .toList();
     }
+
+    public Proyecto obtenerProyecto(Integer id){
+        return proyectoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+    }
+
+    private Short obtenerEstadoProyecto(LocalDate fechaFinalizacion) {
+        LocalDate hoy = LocalDate.now();
+        String estado = fechaFinalizacion.isBefore(hoy) ? "FINALIZADO" : "ACTIVO";
+        return catalogoService.codigoXNombreValor("ESTADO_PROYECTO", estado);
+    }
+
 }

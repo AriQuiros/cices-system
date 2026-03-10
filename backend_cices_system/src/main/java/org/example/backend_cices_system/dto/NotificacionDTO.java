@@ -4,8 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record NotificacionDTO (
-    String categoria,
-    String prioridad,
+    Integer id,
+    CodigoDTO categoria,
+    CodigoDTO prioridad,
     String asunto,
     String mensaje,
     LocalDate fechaCreacion,

@@ -58,8 +58,8 @@ public class RepInvestigadorProyecto {
 
     @Size(max = 50)
     @NotNull
-    @Column(name = "ROL_EN_PROYECTO", nullable = false, length = 50)
-    private String rolEnProyecto;
+    @Column(name = "ROL_PROYECTO", nullable = false, length = 50)
+    private String rolProyecto;
 
     @Lob
     @Column(name = "ACTIVIDAD_PROYECTO")
@@ -71,5 +71,8 @@ public class RepInvestigadorProyecto {
 
     @Column(name = "FECHA_FIN_INVESTIGADOR")
     private LocalDate fechaFinInvestigador;
+    @NotNull
+    @Column(name = "ID_ROL_PROYECTO", nullable = false)
+    private Short idRolProyecto;
 
 }

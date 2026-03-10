@@ -29,7 +29,7 @@ public class InvestigadorController {
     }
 
     @GetMapping
-    public List<Map<String,String>> obtenerInvestigadorXNombre(@RequestParam String nombre) {
+    public List<Map<String, String>> obtenerInvestigadorXNombre(@RequestParam String nombre) {
         return investigadorService.obtenerInvestigadoresActivos(nombre);
     }
 

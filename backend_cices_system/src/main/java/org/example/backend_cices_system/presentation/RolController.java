@@ -1,7 +1,10 @@
 package org.example.backend_cices_system.presentation;
 
+import org.example.backend_cices_system.dto.RolDTO;
 import org.example.backend_cices_system.service.RolService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/rol-sistema")
@@ -15,8 +18,8 @@ public class RolController {
 
     @GetMapping
     public @ResponseBody
-    String[] obtenerNombreRoles() {
-        return rolService.obtenerNombreRoles().toArray(new String[0]);
+    List<RolDTO> obtenerNombreRoles() {
+        return rolService.obtenerRolesDTO();
     }
 
 }

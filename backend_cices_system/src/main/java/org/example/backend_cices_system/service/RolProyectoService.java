@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import org.example.backend_cices_system.data.RolProyectoRepository;
+import org.example.backend_cices_system.dto.RolProyectoDTO;
 import org.example.backend_cices_system.logic.RolProyecto;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +16,17 @@ public class RolProyectoService {
         this.rolProyectoRepository = rolProyectoRepository;
     }
 
-    public List<String> obtenerNombreRolesProyecto() {
+    public List<RolProyectoDTO> obtenerRolesProyectoDTO() {
         return rolProyectoRepository.findAll()
                 .stream()
-                .map(RolProyecto::getNombreRolProyecto)
+                .map(r -> new RolProyectoDTO(r.getId(),r.getNombreRolProyecto()))
                 .collect(Collectors.toList());
     }
 
-    public RolProyecto obtenerRolProyectoXNombre(String nombre) {
-        return rolProyectoRepository.findByNombreRolProyectoIgnoreCase(nombre)
-                .orElseThrow(() -> new RuntimeException("Rol de proyecto no encontrado para nombre: " + nombre));
+    public RolProyecto obtenerRolProyecto(Short id){
+        return rolProyectoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rol de proyecto no encontrado para id: " + id));
+
     }
 
 }

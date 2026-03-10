@@ -1,5 +1,7 @@
 package org.example.backend_cices_system.report.serviceVw;
 
+import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
+import org.example.backend_cices_system.dto.RolProyectoDTO;
 import org.example.backend_cices_system.report.dao.RepInvestigadorProyectoRepository;
 import org.example.backend_cices_system.report.view.RepInvestigadorProyecto;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,30 @@ public class RepInvestigadorProyectoService {
         return repo.findByIdentificacion(idInvestigador);
     }
 
-    public List<RepInvestigadorProyecto> buscarPorCodigoProyecto(String codigoProyecto) {
-        return repo.findByCodigoProyecto(codigoProyecto);
+    private InvestigadorProyectoDTO toInvestigadorProyectoDTO(RepInvestigadorProyecto r) {
+        return new InvestigadorProyectoDTO( r.getIdInvestigadorProyecto(),
+                r.getIdentificacion(),
+                r.getNombreInvestigador(),
+                r.getCodigoProyecto(),
+                new RolProyectoDTO(r.getIdRolProyecto(),r.getRolProyecto()),
+                r.getActividadProyecto(),
+                r.getFechaInicioInvestigador(),
+                r.getFechaFinInvestigador()
+        );
+    }
+
+    public List<InvestigadorProyectoDTO> buscarPorIdProyecto(Integer idProyecto) {
+        return repo.findByIdProyecto(idProyecto)
+                .stream()
+                .map(this::toInvestigadorProyectoDTO)
+                .toList();
+    }
+
+    public List<InvestigadorProyectoDTO> buscarPorCodigoProyecto(String codigoProyecto) {
+        return repo.findByCodigoProyecto(codigoProyecto)
+                .stream()
+                .map(this::toInvestigadorProyectoDTO)
+                .toList();
     }
 
     public List<RepInvestigadorProyecto> buscarPorNombreInvestigador(String nombre) {

@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record GastoPresupuestoDTO(
+        Integer id,
+        Integer idPresupuesto,
         BigDecimal monto,
-        LocalDate fecha,
+        LocalDate fechaGasto,
         String descripcion
 ) {
 }

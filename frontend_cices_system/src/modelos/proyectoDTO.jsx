@@ -1,45 +1,46 @@
+import { CodigoDTO } from "./codigoDTO.jsx";
+
 export const MetaDTO = {
-    idMeta: null,
-    tipo: "", // CUANTITATIVA o CUALITATIVA
-    cantidad: null,
+    id: null,
+    tipo: { ...CodigoDTO },
+    cantidad: 1,
     descripcion: "",
     indicadores: [""]
 };
 
 export const ObjetivoEspecificoDTO = {
-    idObjetivo: null,
+    id: null,
     categoria: "",
     descripcion: "",
     metas: [{ ...MetaDTO }]
 };
 
 export const DocumentoDTO = {
-    idDocumento: "",
+    id: null,
     nombreDocumento: "",
     directorio: ""
 };
 
 export const InformeDTO = {
-    idInforme: null,
-    tipoInforme: "", // Inicial, Final
+    id: null,
+    tipoInforme: { ...CodigoDTO },
     fechaPresentacion: "",
-    estado: "" // Pendiente o entregado
+    estado: { ...CodigoDTO }
 };
 
 export const ProyectoDTO = {
-    idProyecto: "",
-    nombre: "",
-    codigo: "",
+    codigoProyecto: "",
+    nombreProyecto: "",
     descripcion: "",
     objetivoGeneral: "",
     fechaInicio: "",
     fechaFinalizacion: "",
     lineaInvestigacion: "",
-    tipoProyecto: "",
-    estado: "",
+    tipoProyecto: { ...CodigoDTO },
+    estado: { ...CodigoDTO },
     detalles: "",
 
-    objetivosEspecificos: [{ ...ObjetivoEspecificoDTO }],
+    objetivosEspecificos: [{...ObjetivoEspecificoDTO}],
     presupuestos: [],
     documentos: [],
     entidadesVinculadas: {

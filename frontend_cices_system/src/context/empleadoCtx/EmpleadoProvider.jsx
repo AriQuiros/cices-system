@@ -1,43 +1,22 @@
-import { useState } from "react";
 import { EmpleadoContext } from "./EmpleadoContext.jsx";
 import { EmpleadoDTO, UsuarioDTO } from "../../modelos/empleadoDTO.jsx";
+import { useDTO } from "../utils/useDTO.js";
 
 export const EmpleadoProvider = ({ children }) => {
-    const [empleado, setEmpleado] = useState({ ...EmpleadoDTO });
 
-    const actualizarCampo = (campo, valor) => {
-        setEmpleado(prev => ({
-            ...prev,
-            [campo]: valor
-        }));
-    };
-
-    const limpiarEmpleado = () => {
-        setEmpleado({ ...EmpleadoDTO });
-    };
-
-    const [usuario, setUsuario] = useState({ ...UsuarioDTO });
-
-    const actualizarCampoUsuario = (campo, valor) => {
-        setUsuario(prev => ({
-            ...prev,
-            [campo]: valor
-        }));
-    };
-
-    const limpiarUsuario = () => {
-        setUsuario({ ...UsuarioDTO });
-    };
+    const empleadoState = useDTO(EmpleadoDTO);
+    const usuarioState = useDTO(UsuarioDTO);
 
     return (
         <EmpleadoContext.Provider
             value={{
-                empleado,
-                actualizarCampo,
-                limpiarEmpleado,
-                usuario,
-                actualizarCampoUsuario,
-                limpiarUsuario
+                empleado: empleadoState.data,
+                actualizarCampo: empleadoState.actualizarCampo,
+                limpiarEmpleado: empleadoState.limpiar,
+
+                usuario: usuarioState.data,
+                actualizarCampoUsuario: usuarioState.actualizarCampo,
+                limpiarUsuario: usuarioState.limpiar
             }}
         >
             {children}

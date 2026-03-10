@@ -39,9 +39,12 @@ public class CatalogoService {
                 ));
     }
 
-    public String obtenerDespliegueXCodigo(Short idCodigo) {
-        return catalogoRepository.findById(idCodigo)
-                .orElseThrow(() -> new RuntimeException("Código no encontrado para id: " + idCodigo))
-                .getDespliegue();
+    public Codigo obtenerCodigo(Short id){
+        return catalogoRepository.findById(id).orElseThrow(() -> new RuntimeException("Código no encontrado para id: " + id));
+    }
+
+    public CodigoDTO obtenerDto(Short id){
+        Codigo codigo = obtenerCodigo(id);
+        return new CodigoDTO(codigo.getId(),codigo.getValor(),codigo.getDespliegue());
     }
 }

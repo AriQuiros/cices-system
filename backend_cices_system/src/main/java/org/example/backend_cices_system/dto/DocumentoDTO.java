@@ -1,7 +1,7 @@
 package org.example.backend_cices_system.dto;
 
 public record DocumentoDTO (
-    Integer idDocumento,
+    Integer id,
     String nombreDocumento,
     String directorio
 )

@@ -34,8 +34,7 @@ public class CertificacionService {
         certificacion.setNombreCertificacion(certificacionDTO.nombreCertificacion());
         certificacion.setFechaExpiracion(certificacionDTO.fechaExpiracion());
 
-        Short codigoTipoCertificacion = catalogoService.codigoXNombreValor("TIPO_CERTIFICACION", certificacionDTO.tipoCertificacion());
-        certificacion.setIdCodigoTipoCertificacion(codigoTipoCertificacion);
+        certificacion.setIdCodigoTipoCertificacion(certificacionDTO.tipoCertificacion().id());
 
         Short codigoTipoEstado = catalogoService.codigoXNombreValor("ESTADO_CERTIFICACION", obtenerEstadoCertificacion(certificacionDTO.fechaExpiracion()));
         certificacion.setIdCodigoTipoEstado(codigoTipoEstado);

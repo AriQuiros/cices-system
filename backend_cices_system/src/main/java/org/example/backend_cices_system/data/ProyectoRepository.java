@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProyectoRepository extends JpaRepository<Proyecto, Short> {
+public interface ProyectoRepository extends JpaRepository<Proyecto, Integer> {
     Optional<Proyecto> findByCodigoProyecto(String codigoProyecto);
 
     List<Proyecto> findByIdCodigoTipoEstado(Short idCodigoEstado);

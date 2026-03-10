@@ -24,6 +24,8 @@ public class MetaService {
         var meta = new Meta();
         meta.setIdObjetivoEspecifico(objetivoEspecifico);
         meta.setDescripcion(metaDTO.descripcion());
+        meta.setCantidad(metaDTO.cantidad());
+        meta.setIdCodigoTipoMeta(metaDTO.tipo().id());
 
         metaRepository.save(meta);
 

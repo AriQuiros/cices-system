@@ -1,26 +1,32 @@
+import { CodigoDTO } from "./codigoDTO.jsx";
+
 export const PresupuestoDTO = {
-    idPresupuesto: null,
-    codigoProyecto: "",
-    fechaAsignacion: "",
-    tipoPresupuesto: "",
-    categoria: "",
+    id: null,
     descripcion: "",
-    fuenteFinanciamiento: "",
+    categoria: { ...CodigoDTO },
+    fechaAsignacion: "",
+    tipoPresupuesto: { ...CodigoDTO },
+    fuenteFinanciamiento: { ...CodigoDTO },
     monto: 0,
     cantidadHorasMes: 0,
-    cantidadMeses: 0
+    cantidadMeses: 0,
+
+    gastos:[],
+    horas:[]
 };
 
 export const HorasAsignadasDTO = {
-    presupuesto:{...PresupuestoDTO},
-    modalidad: "",
-    tipoHora: "",
+    id: null,
+    idPresupuesto: null,
+    modalidad: { ...CodigoDTO },
+    tipoHora: { ...CodigoDTO },
     cantidadHorasMes: 0,
     cantidadMeses: 0
 };
 
-export const GastosDTO = {
-    presupuesto:{...PresupuestoDTO},
+export const GastoDTO = {
+    id: null,
+    idPresupuesto: null,
     monto: 0,
     descripcion: "",
     fechaGasto: ""

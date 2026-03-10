@@ -56,12 +56,12 @@ export function useProyectos() {
             // lógica de filtros
             if (filtros.texto) {
                 const texto = filtros.texto.toLowerCase();
-                if (!p.nombre?.toLowerCase().includes(texto) && !p.codigo?.toLowerCase().includes(texto)) {
+                if (!p.nombre?.toLowerCase().includes(texto) && !p.codigoProyecto?.toLowerCase().includes(texto)) {
                     return false;
                 }
             }
-            if (filtros.estado && p.estado !== filtros.estado) return false;
-            if (filtros.tipoProyecto && p.tipoProyecto !== filtros.tipoProyecto) return false;
+            if (filtros.estado && p.estado.despliegue !== filtros.estado) return false;
+            if (filtros.tipoProyecto && p.tipoProyecto.despliegue !== filtros.tipoProyecto) return false;
             if (filtros.lineaInvestigacion && p.lineaInvestigacion !== filtros.lineaInvestigacion) return false;
             if (filtros.institucion && !p.institucion?.toLowerCase().includes(filtros.institucion.toLowerCase())) return false;
             return true;

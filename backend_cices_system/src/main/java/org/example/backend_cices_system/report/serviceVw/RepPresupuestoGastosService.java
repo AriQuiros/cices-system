@@ -39,24 +39,26 @@ public class RepPresupuestoGastosService {
         return repo.findByCodigoProyecto(codigoProyecto);
     }
 
-    public List<PresupuestoFinancieroDTO> gastosPresupuesto(String codigoProyecto) {
+    public List<PresupuestoFinancieroDTO> gastosPresupuesto(String codigo) {
 
         List<RepPresupuestoBase> presupuestos =
-                repPresupuestoBaseService.buscarFinancieroPorCodigoProyecto(codigoProyecto);
+                repPresupuestoBaseService.buscarPorCodigoProyecto(codigo);
 
         return presupuestos.stream().map(p -> {
 
             List<GastoPresupuestoDTO> gastos = repo
                     .findByIdPresupuesto(p.getIdPresupuesto())
                     .stream()
-                    .map(g -> new GastoPresupuestoDTO(
+                    .map(g -> new GastoPresupuestoDTO(g.getIdGasto(),
+                            g.getIdPresupuesto(),
                             g.getMontoGasto(),
                             g.getFechaGasto(),
                             g.getDescripcionGasto()
                     ))
                     .toList();
 
-            return new PresupuestoFinancieroDTO(
+            return new PresupuestoFinancieroDTO( p.getIdPresupuesto(),
+                    p.getCodigoProyecto(),
                     p.getDescripcionPresupuesto(),
                     p.getCategoriaPresupuesto(),
                     p.getFechaAsignacion(),

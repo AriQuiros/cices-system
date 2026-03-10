@@ -29,8 +29,7 @@ public class TituloService {
         titulo.setIdEntidad(idEntidadEmisora);
         titulo.setNombreTitulo(tituloDTO.nombreTitulo());
 
-        Short codigoNivelTitulo = catalogoService.codigoXNombreValor("GRADO_ACADEMICO", tituloDTO.nivelTitulo());
-        titulo.setIdCodigoTipoNivelTitulo(codigoNivelTitulo);
+        titulo.setIdCodigoTipoNivelTitulo(tituloDTO.nivelTitulo().id());
 
         titulo.setFechaEmision(tituloDTO.fechaEmision());
 

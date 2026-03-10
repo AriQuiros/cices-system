@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
+import java.time.LocalDate;
+
 /**
  * Mapping for DB view
  */
@@ -23,6 +25,10 @@ public class RepPresupuestoHoras {
     @NotNull
     @Column(name = "ID_HORAS_ASIGNADAS", nullable = false)
     private Integer idHorasAsignadas;
+
+    @NotNull
+    @Column(name = "ID_INVESTIGADOR_PROYECTO", nullable = false)
+    private Integer idInvestigadorProyecto;
 
     @NotNull
     @Column(name = "ID_PRESUPUESTO", nullable = false)
@@ -62,5 +68,14 @@ public class RepPresupuestoHoras {
     @Size(max = 30)
     @Column(name = "MODALIDAD", length = 30)
     private String modalidad;
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_MODALIDAD", nullable = false)
+    private Short idCodigoTipoModalidad;
+    @NotNull
+    @Column(name = "FECHA_INICIO_INVESTIGADOR", nullable = false)
+    private LocalDate fechaInicioInvestigador;
+    @Column(name = "FECHA_FIN_INVESTIGADOR")
+    private LocalDate fechaFinInvestigador;
+
 
 }

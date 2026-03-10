@@ -43,6 +43,7 @@ public class ProyectoController {
     @GetMapping("/codigo-nombre-fechas")
     public List<ProyectoFechasDTO> obtenerProyectos_CodigoNombre() {
         List<Proyecto> proyectos = proyectoService.obtenerProyectos();
+        
         return proyectos.stream()
                 .map(p -> new ProyectoFechasDTO(
                         p.getCodigoProyecto(),

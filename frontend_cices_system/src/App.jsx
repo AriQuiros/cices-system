@@ -4,9 +4,9 @@ import { BrowserRouter, Routes, Route, NavLink, useNavigate } from "react-router
 import "./App.css";
 import './index.css';
 
-import logoUCR from "../public/images/logoUCR.png";
-import logoCICES from "../public/images/logoCICES.png";
-import logoCICES2 from "../public/images/logoCICES2.png";
+import logoUCR from "./assets/images/logoUCR.png";
+import logoCICES from "./assets/images/logoCICES.png";
+import logoCICES2 from "./assets/images/logoCICES2.png";
 
 import Login from "./paginas/login/Login";
 import Registro from "./paginas/registro/usuarios/Registro.jsx";
@@ -70,7 +70,7 @@ function Main() {
                 <Route path="/investigador" element={<ProyectoInvestigador />} />
 
                 <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
-                <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto />} />
+                <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto modoRegistro={false} />} />
                 <Route path="/VincularInvestigador" element={<VincularInvestigador />} />
                 <Route path="/consultaProyectos" element={<ConsultaProyectos />} />
                 <Route path="/registrar-gastos" element={<RegistrarGastosFinancieros />} />

@@ -2,13 +2,11 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext.jsx";
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
-import { InvestigadorProyectoDTO } from "../../../modelos/investigadorDTO.jsx";
-import { HorasAsignadasDTO } from "../../../modelos/PresupuestoDTO.jsx";
+import { InvestigadorProyectoDTO } from "../../../modelos/InvestigadorProyectoDTO.jsx";
 import { notify } from "../../../utils/estilo/notify.jsx";
 import { obtenerInvestigadoresActivos } from "../../../services/InvestigadorService.jsx";
 import { cargarProyectos } from "../../../services/ProyectoService.jsx";
 import { obtenerRolesProyecto } from "../../../services/RolService.jsx";
-import { fetchTiposCatalogo } from "../../../services/CatalogoService.js";
 
 function VincularInvestigador({ onClose, editable = true }) {
     const { proyecto, addByPath, removeByPath, establecerProyecto } = useProyecto();
@@ -24,7 +22,6 @@ function VincularInvestigador({ onClose, editable = true }) {
     const [showList, setShowList] = useState(false);
     const [candidates, setCandidates] = useState([]);
     const [roles, setRoles] = useState([]);
-    const [tipos, setTipos] = useState({});
     const [loading, setLoading] = useState(false);
 
     const [current, setCurrent] = useState({
@@ -51,9 +48,6 @@ function VincularInvestigador({ onClose, editable = true }) {
             .then(r => setRoles(r || []))
             .catch(() => notify.error("Error cargando roles"));
 
-        fetchTiposCatalogo(token, ["MODALIDAD_HORARIA", "TIPO_HORAS"])
-            .then(result => setTipos(result || {}))
-            .catch(() => setTipos({}));
     }, [token, editable]);
 
     // búsqueda de candidatos
@@ -129,17 +123,6 @@ function VincularInvestigador({ onClose, editable = true }) {
             return;
         }
 
-        const horas = [];
-        const hasHoras = current.modalidad || current.tipoHora || current.cantidadHorasMes || current.cantidadMeses;
-        if (hasHoras) {
-            horas.push({
-                ...HorasAsignadasDTO,
-                modalidad: current.modalidad || "",
-                tipoHora: current.tipoHora || "",
-                cantidadHorasMes: current.cantidadHorasMes ? Number(current.cantidadHorasMes) : 0,
-                cantidadMeses: current.cantidadMeses ? Number(current.cantidadMeses) : 0
-            });
-        }
 
         const toAdd = {
             ...InvestigadorProyectoDTO,
@@ -149,7 +132,6 @@ function VincularInvestigador({ onClose, editable = true }) {
             actividadProyecto: current.actividadProyecto || "",
             fechaInicio: current.fechaInicio || "",
             fechaFin: current.fechaFin || "",
-            horasAsignadas: horas
         };
 
         addByPath(["investigadoresVinculados"], toAdd);
@@ -159,11 +141,7 @@ function VincularInvestigador({ onClose, editable = true }) {
             rolProyecto: "",
             actividadProyecto: "",
             fechaInicio: "",
-            fechaFin: "",
-            modalidad: "",
-            tipoHora: "",
-            cantidadHorasMes: "",
-            cantidadMeses: "",
+            fechaFin: ""
         });
         setSearchTerm("");
         notify.success("Investigador agregado");
@@ -194,7 +172,6 @@ function VincularInvestigador({ onClose, editable = true }) {
 
                 {loading && <div className="loading-text">Cargando...</div>}
 
-                {/* Selector proyecto */}
                 <div className="search-wrapper">
                     <label>Código del Proyecto: </label>
                     {editable ? (
@@ -269,30 +246,6 @@ function VincularInvestigador({ onClose, editable = true }) {
                     <input type="date" name="fechaFin" value={current.fechaFin || ""} onChange={handleChangeField} />
                 </div>
 
-                <div className="form-row">
-                    <label>Modalidad</label>
-                    <select name="modalidad" value={current.modalidad} onChange={handleChangeField}>
-                        <option value="">Seleccione modalidad</option>
-                        {tipos["MODALIDAD_HORARIA"]?.map(m => (
-                            <option key={m.id ?? m.valor} value={m.valor}>{m.despliegue}</option>
-                        ))}
-                    </select>
-
-                    <label>Tipo de hora</label>
-                    <select name="tipoHora" value={current.tipoHora} onChange={handleChangeField}>
-                        <option value="">Seleccione tipo de hora</option>
-                        {tipos["TIPO_HORAS"]?.map(t => (
-                            <option key={t.id ?? t.valor} value={t.valor}>{t.despliegue}</option>
-                        ))}
-                    </select>
-
-                    <label>Horas por mes</label>
-                    <input type="number" name="cantidadHorasMes" min="0" value={current.cantidadHorasMes} onChange={handleChangeField} />
-
-                    <label>Cantidad meses</label>
-                    <input type="number" name="cantidadMeses" min="0" value={current.cantidadMeses} onChange={handleChangeField} />
-                </div>
-
                 <div className="actions">
                     <button type="button" onClick={handleAdd}>➕ Agregar</button>
                     <button type="button" onClick={onClose}>Cancelar</button>
@@ -309,18 +262,7 @@ function VincularInvestigador({ onClose, editable = true }) {
                                 <div>{iv.fechaInicio || ''} - {iv.fechaFin || ''}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: 12 }}>
-                                    {Array.isArray(iv.horasAsignadas) && iv.horasAsignadas.length > 0 ? (
-                                        iv.horasAsignadas.map((h, hi) => (
-                                            <div key={hi}>
-                                                {h.modalidad && <div>Modalidad: {h.modalidad}</div>}
-                                                {h.tipoHora && <div>Tipo: {h.tipoHora}</div>}
-                                                {(h.cantidadHorasMes ?? 0) > 0 && <div>Horas/mes: {h.cantidadHorasMes}</div>}
-                                                {(h.cantidadMeses ?? 0) > 0 && <div>Meses: {h.cantidadMeses}</div>}
-                                            </div>
-                                        ))
-                                    ) : null}
-                                </div>
+
                                 <button type="button" onClick={() => handleRemove(idx)}>🗑</button>
                             </div>
                         </div>

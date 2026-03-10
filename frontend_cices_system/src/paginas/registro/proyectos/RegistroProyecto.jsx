@@ -7,11 +7,12 @@ import { notify } from '../../../utils/estilo/notify.jsx';
 
 import {AppContext} from "../../../context/AppContext.jsx";
 import { ProyectoDTO } from "../../../modelos/proyectoDTO.jsx";
+import { CodigoDTO } from "../../../modelos/CodigoDTO.jsx";
 
 import "../usuarios/Registro.css";
 import "./RegistroProyecto.css";
 import RegistroPresupuesto from "./RegistroPresupuesto.jsx";
-import VincularInvestigador from "./VincularInvestigador"; // use existing component for assigning investigators
+import VincularInvestigador from "./VincularInvestigador";
 
 const MAX_TOTAL_SIZE_MB = 550;
 const getTotalFileSizeMB = (files) => {
@@ -21,6 +22,7 @@ const getTotalFileSizeMB = (files) => {
 function RegistroProyecto() {
     const [showPresupuesto, setShowPresupuesto] = useState(false);
     const [showAsignarInvestigador, setShowAsignarInvestigador] = useState(false); // new state
+    const [showFechasInformes, setShowFechasInformes] = useState(false);
 
     const {
         proyecto,
@@ -35,7 +37,6 @@ function RegistroProyecto() {
     // ================== CARGA DE TIPOS DE CATALOGO ==================
     const { token } = useContext(AppContext);
     const { tipos, loading } = useTiposCatalogo(token, [
-        "ESTADO_PROYECTO",
         "TIPO_ENTIDAD",
         "TIPO_PROYECTO",
         "TIPO_META",
@@ -49,7 +50,7 @@ function RegistroProyecto() {
         const { name, value } = e.target;
         actualizarCampo(name, value);
 
-        // Validación de fechas
+        // Validaci�n de fechas
         if (name === "fechaInicio" || name === "fechaFinalizacion") {
             const fechaInicio = new Date(proyecto.fechaInicio);
             const fechaFinal = new Date(proyecto.fechaFinalizacion);
@@ -88,13 +89,21 @@ function RegistroProyecto() {
             ...(proyecto.entidadesVinculadas?.instituciones || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'INSTITUCION' })),
             ...(proyecto.entidadesVinculadas?.sitios || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'SITIO' })),
         ];
-        const proyectoFinal = { ...ProyectoDTO, ...proyecto, entidadesVinculadas: entidadesVinculadasFormateadas };
+        const proyectoFinal = {
+            ...ProyectoDTO,
+            ...proyecto,
+            entidadesVinculadas: entidadesVinculadasFormateadas,
+            presentacionesInformes: showFechasInformes
+                ? proyecto.presentacionesInformes
+                : []
+        };
 
         try {
             const data = await registrarProyecto({ proyecto: proyectoFinal, token });
 
             console.log('Proyecto registrado:', data);
             handleClear();
+            setShowFechasInformes(false);
             notify.success('Proyecto registrado exitosamente.');
 
         } catch (err) {
@@ -114,6 +123,8 @@ function RegistroProyecto() {
                  handleRemoveItem={removeByPath}
                   handleSubmit={handleSubmit}
                   handleFileChange={handleFileChange}
+                  showFechasInformes={showFechasInformes}
+                  setShowFechasInformes={setShowFechasInformes}
                   showPresupuesto={showPresupuesto}
                   setShowPresupuesto={setShowPresupuesto}
                   showAsignarInvestigador={showAsignarInvestigador} // pass down
@@ -123,10 +134,9 @@ function RegistroProyecto() {
      );
  }
 
-function Show({ types, entity, handleChange, handleNestedChange,
+function Show({ types, entity, handleChange, handleNestedChange, showFechasInformes, setShowFechasInformes,
                   handleAddItem, handleRemoveItem, handleSubmit, handleFileChange,
                   showPresupuesto, setShowPresupuesto, showAsignarInvestigador, setShowAsignarInvestigador }) {
-     const [showFechasInformes, setShowFechasInformes] = useState(false);
      const inputCodigoRef = useRef(null);
 
      return (
@@ -137,24 +147,26 @@ function Show({ types, entity, handleChange, handleNestedChange,
                 <div className="form-row">
                     <div className="input-group"> <label>Código:</label>
                     <input type="text" placeholder="prefijo: 840" className="input-field" required maxLength={252}
-                           name="codigo" ref={inputCodigoRef} value={entity.codigo ?? ''} onChange={handleChange}/>
+                           name="codigoProyecto" ref={inputCodigoRef} value={entity.codigoProyecto ?? ''} onChange={handleChange}/>
                     </div>
                     <div className="input-group"> <label>Nombre:</label>
                     <input type="text" placeholder="Nombre" className="input-field" required maxLength={252}
-                           name="nombre" value={entity.nombre ?? ''} onChange={handleChange}/>
+                           name="nombreProyecto" value={entity.nombreProyecto ?? ''} onChange={handleChange}/>
                     </div>
                 </div>
 
                 <div className="form-row">
-                    <select className="input-field" name="estado" value={entity.estado} onChange={handleChange}
-                            required>
-                        <option value="">Estado</option>
-                        {types["ESTADO_PROYECTO"]?.map((opcion, idx) => (
-                            <option key={opcion.id ?? opcion.valor ?? idx} value={opcion.valor}>{opcion.despliegue}</option>
-                        ))}
-                    </select>
-
-                    <select className="input-field" name="tipoProyecto" value={entity.tipoProyecto} onChange={handleChange} required>
+                    <select
+                        className="input-field"
+                        name="tipoProyecto"
+                        value={entity.tipoProyecto?.valor || ""}
+                        onChange={(e) => {
+                            const tipoSeleccionado = (types["TIPO_PROYECTO"] || []).find(
+                                (t) => t.valor === e.target.value
+                            );
+                            handleNestedChange(["tipoProyecto"], tipoSeleccionado || { ...CodigoDTO });
+                        }}
+                        required>
                         <option value="">Tipo de proyecto</option>
                         {types["TIPO_PROYECTO"]?.map((opcion, idx) => (
                             <option key={opcion.id ?? opcion.valor ?? idx} value={opcion.valor}>{opcion.despliegue}</option>
@@ -188,14 +200,14 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                     handleAddItem(["objetivosEspecificos"], {
                                         categoria: '',
                                         descripcion: '',
-                                        metas: [{tipo: '', cantidad: 0, descripcion: '', indicadores: ['']}]
+                                        metas: [{tipo: { ...CodigoDTO }, cantidad: 0, descripcion: '', indicadores: ['']}]
                                     })
-                                }>➕
+                                }>?
                                 </button>
                                 {entity.objetivosEspecificos.length > 1 && (
                                     <button type="button" onClick={() =>
                                         handleRemoveItem(["objetivosEspecificos"], idxObjetivo)
-                                    }>❌</button>
+                                    }>?</button>
                                 )}
                             </div>
                         </legend>
@@ -217,24 +229,30 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                     <div className="icon-buttons">
                                         <button type="button" onClick={() =>
                                             handleAddItem(["objetivosEspecificos", idxObjetivo, "metas"], {
-                                                tipo: '', cantidad: 0, descripcion: '', indicadores: ['']
+                                                tipo: { ...CodigoDTO }, cantidad: 0, descripcion: '', indicadores: ['']
                                             })
-                                        }>➕
+                                        }>?
                                         </button>
                                         {objetivo.metas.length > 1 && (
                                             <button type="button" onClick={() =>
                                                 handleRemoveItem(["objetivosEspecificos", idxObjetivo, "metas"], idxMeta)
-                                            }>❌</button>
+                                            }>?</button>
                                         )}
                                     </div>
                                 </legend>
 
                                 <div className="form-row">
                                     <select id="tipo-meta" className="input-field" required name="tipo"
-                                            value={meta.tipo}
-                                            onChange={(e) =>
-                                                handleNestedChange(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "tipo"], e.target.value)
-                                            }
+                                            value={meta.tipo?.valor || ""}
+                                            onChange={(e) => {
+                                                const valor = e.target.value;
+                                                const tipoObj = (types["TIPO_META"] || []).find((t) => t.valor === valor);
+
+                                                handleNestedChange(
+                                                    ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "tipo"],
+                                                    tipoObj || { ...CodigoDTO }
+                                                );
+                                            }}
                                     >
                                         <option value="">Tipo</option>
                                         {types["TIPO_META"]?.map((opcion, idx) => (
@@ -244,7 +262,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                         ))}
                                     </select>
 
-                                    {meta.tipo.toUpperCase() === "CUANTITATIVA" && (
+                                    {meta.tipo?.valor?.toUpperCase() === "CUANTITATIVA" && (
                                         <input type="number" placeholder="Cantidad" id="cantidad-meta" name="cantidad"
                                                className="input-field"
                                                required={true} min="1" value={meta.cantidad ?? ''} onChange={(e) =>
@@ -281,12 +299,12 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                         <div className="icon-buttons">
                                             <button type="button" onClick={() =>
                                                 handleAddItem(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores"], '')
-                                            }>➕
+                                            }>?
                                             </button>
                                             {meta.indicadores.length > 1 && (
                                                 <button type="button" onClick={() =>
                                                     handleRemoveItem(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores"], idxIndicador)
-                                                }>❌</button>
+                                                }>?</button>
                                             )}
                                         </div>
                                     </div>
@@ -324,7 +342,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                         handleAddItem(["entidadesVinculadas", "instituciones"], {nombre: ""})
                                     }
                                 >
-                                    ➕
+                                    ?
                                 </button>
                                 {entity.entidadesVinculadas.instituciones.length > 1 && (
                                     <button
@@ -333,7 +351,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                             handleRemoveItem(["entidadesVinculadas", "instituciones"], idxInst)
                                         }
                                     >
-                                        ❌
+                                        ?
                                     </button>
                                 )}
                             </div>
@@ -365,7 +383,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                         handleAddItem(["entidadesVinculadas", "unidades"], {nombre: ""})
                                     }
                                 >
-                                    ➕
+                                    ?
                                 </button>
                                 {entity.entidadesVinculadas.unidades.length > 1 && (
                                     <button
@@ -374,14 +392,14 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                             handleRemoveItem(["entidadesVinculadas", "unidades"], idxUnidad)
                                         }
                                     >
-                                        ❌
+                                        ?
                                     </button>
                                 )}
                             </div>
                         </div>
                     ))}
 
-                    {/* Sitios de investigación */}
+                    {/* Sitios de investigaci�n */}
                     <label>Sitios de investigación</label>
                     {entity.entidadesVinculadas.sitios.map((sitio, idxSitio) => (
                         <div key={idxSitio} id="inline-project-group" className="inline-group">
@@ -406,7 +424,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                         handleAddItem(["entidadesVinculadas", "sitios"], {nombre: ""})
                                     }
                                 >
-                                    ➕
+                                    ?
                                 </button>
                                 {entity.entidadesVinculadas.sitios.length > 1 && (
                                     <button
@@ -415,7 +433,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                             handleRemoveItem(["entidadesVinculadas", "sitios"], idxSitio)
                                         }
                                     >
-                                        ❌
+                                        ?
                                     </button>
                                 )}
                             </div>
@@ -440,9 +458,8 @@ function Show({ types, entity, handleChange, handleNestedChange,
                     <input type="checkbox" checked={showFechasInformes}
                            onChange={() => {
                                const next = !showFechasInformes;
-                               // If enabling and there are no informes, add one default entry so fields appear
                                if (next && (!entity.presentacionesInformes || entity.presentacionesInformes.length === 0)) {
-                                   handleAddItem(['presentacionesInformes'], { descripcion: '', fechaPresentacion: '', tipoInforme: '', estado: '' });
+                                   handleAddItem(['presentacionesInformes'], { descripcion: '', fechaPresentacion: '', tipoInforme: { ...CodigoDTO }, estado: {...CodigoDTO} });
                                }
                                setShowFechasInformes(next);
                            }}
@@ -461,14 +478,14 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                         required={showFechasInformes}
                                         name={"tipoInforme"}
                                         className="input-field"
-                                        value={informe.tipoInforme || ''}
+                                        value={informe.tipoInforme?.valor || ""}
                                         onChange={(e) =>
-                                            handleNestedChange(['presentacionesInformes', idx, 'tipoInforme'], e.target.value)
+                                            handleNestedChange(["presentacionesInformes", idx, "tipoInforme"], (types["TIPO_INFORME"] || []).find((t) => t.valor === e.target.value) || { ...CodigoDTO })
                                         }
                                     >
                                         <option value="">Tipo de informe</option>
-                                        {types["TIPO_INFORME"]?.map((opcion, idx) => (
-                                            <option key={opcion.id ?? opcion.valor ?? idx} value={opcion.valor}>{opcion.despliegue}</option>
+                                        {types["TIPO_INFORME"]?.map((opcion) => (
+                                            <option key={opcion.id} value={opcion.valor}>{opcion.despliegue}</option>
                                         ))}
                                     </select>
                                 <div className={"input-group"}>
@@ -490,18 +507,18 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                             handleAddItem(['presentacionesInformes'], {
                                                 descripcion: '',
                                                 fechaPresentacion: '',
-                                                estado: ''
+                                                estado: {...CodigoDTO}
                                             })
                                         }
                                     >
-                                        ➕
+                                        ?
                                     </button>
                                     {entity.presentacionesInformes.length > 1 && (
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveItem(['presentacionesInformes'], idx)}
                                         >
-                                            ❌
+                                            ?
                                         </button>
                                     )}
                                 </div>
@@ -510,7 +527,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                     </>
                 )}
                 <button type="button" className="submit-btn" name="btnEstablecerPresupuesto" id="submit-project-btn" onClick={() => {
-                    if (!entity.codigo?.trim()) {
+                    if (!entity.codigoProyecto?.trim()) {
                         if (inputCodigoRef.current) {
                             inputCodigoRef.current.focus();
                         }
@@ -522,7 +539,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                 </button>
 
                 <button type="button" className="submit-btn" name="btnVincularInvestigadores" id="submit-project-btn" onClick={() => {
-                    if (!entity.codigo?.trim()) {
+                    if (!entity.codigoProyecto?.trim()) {
                         if (inputCodigoRef.current) {
                             inputCodigoRef.current.focus();
                         }
@@ -536,7 +553,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                 {showPresupuesto && (
                     <RegistroPresupuesto
                         onClose={() => setShowPresupuesto(false)}
-                        editable={false}
+                        modoRegistro={true}
                     />
                 )}
 
@@ -553,7 +570,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                             <div>Sin presupuestos asignados</div>
                         ) : (
                             (entity.presupuestos || []).map((pres, idx) => {
-                                const tipoPresupuesto = pres.tipoPresupuesto?.toUpperCase();
+                                const tipoPresupuesto = pres.tipoPresupuesto?.valor;
 
                                 return (
                                     <div key={idx} className="presupuesto-item">
@@ -561,12 +578,12 @@ function Show({ types, entity, handleChange, handleNestedChange,
                                         <strong>{tipoPresupuesto || "Sin tipo"}</strong>
 
                                         <div>{pres.descripcion || ""}</div>
-                                        <div>Categoría: {pres.categoria || "Sin categoría"}</div>
+                                        <div>Categoría: {pres.categoria.despliegue || "Sin categoría"}</div>
                                         <div>Fecha asignación: {pres.fechaAsignacion || "Sin fecha"}</div>
 
                                         {tipoPresupuesto === "FINANCIERO" && (
                                             <>
-                                                <div>Fuente: {pres.fuenteFinanciamiento || "N/A"}</div>
+                                                <div>Fuente: {pres.fuenteFinanciamiento.despliegue || "N/A"}</div>
                                                 <div>Monto: ₡{pres.monto ?? 0}</div>
                                             </>
                                         )}
@@ -610,7 +627,7 @@ function Show({ types, entity, handleChange, handleNestedChange,
                             <div className="icon-buttons">
                                 <button type="button" onClick={() => handleRemoveItem(["documentos"], idxDoc)}
                                 >
-                                    ❌
+                                    ?
                                 </button>
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 import { EmpleadoDTO } from "./empleadoDTO.jsx";
 import { EntidadDTO } from "./entidadDTO.jsx";
+import {CodigoDTO} from "./CodigoDTO.jsx";
 
 export const InvestigadorDTO = {
     empleado: { ...EmpleadoDTO },
@@ -11,26 +12,18 @@ export const InvestigadorDTO = {
 };
 
 export const TituloDTO = {
-    entidadEmisora: { ...EntidadDTO, tipo: "INSTITUTION" },
+    id: null,
+    entidadEmisora: { ...EntidadDTO },
     nombreTitulo: "",
-    nivelTitulo: "",
+    nivelTitulo: { ...CodigoDTO },
     fechaEmision: ""
 };
 
 export const CertificacionDTO = {
-    entidadEmisora: { ...EntidadDTO, tipo: "INSTITUTION" },
+    id: null,
+    entidadEmisora: { ...EntidadDTO },
     nombreCertificacion: "",
-    tipoCertificacion: "",
+    tipoCertificacion: { ...CodigoDTO },
     fechaExpiracion: "",
-    estado: ""
-};
-
-export const InvestigadorProyectoDTO = {
-    identificacionInvestigador: "",
-    nombreInvestigador: "",
-    rolProyecto: "",
-    actividadProyecto: "",
-    fechaInicio: "",
-    fechaFin: "",
-    horasAsignadas: []
+    estado: { ...CodigoDTO }
 };

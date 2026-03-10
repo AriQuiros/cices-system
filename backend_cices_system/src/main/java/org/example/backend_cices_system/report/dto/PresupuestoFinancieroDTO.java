@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record PresupuestoFinancieroDTO(
+        Integer id,
+        String codigoProyecto,
         String descripcion,
         String categoria,
         LocalDate fechaAsignacion,

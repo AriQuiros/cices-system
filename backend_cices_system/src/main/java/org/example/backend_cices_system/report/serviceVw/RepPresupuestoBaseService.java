@@ -27,8 +27,8 @@ public class RepPresupuestoBaseService {
         return repo.findByCodigoProyecto(codigoProyecto);
     }
 
-    public List<RepPresupuestoBase> buscarPorNombreProyecto(String nombreProyecto) {
-        return repo.findByNombreProyectoContainingIgnoreCase(nombreProyecto);
+    public List<RepPresupuestoBase> buscarPorIdPresupuesto(Integer idPresupuesto) {
+        return repo.findByIdPresupuesto(idPresupuesto);
     }
 
     public List<RepPresupuestoBase> buscarHorasPorCodigoProyecto(String codigoProyecto) {

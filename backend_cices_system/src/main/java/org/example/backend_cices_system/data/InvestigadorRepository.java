@@ -11,8 +11,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface InvestigadorRepository extends JpaRepository<Investigador,Short> {
+public interface InvestigadorRepository extends JpaRepository<Investigador,Integer> {
     Optional<Investigador> findByIdEmpleado(Empleado empleado);
     Optional<Investigador> findByIdEmpleadoIdentificacion(String identificacion);
-    List<Investigador> findByIdEmpleadoIdUsuarioActivo(Boolean activo);
+    List<Investigador> findByIdEmpleado_IdUsuario_ActivoAndIdEmpleadoNombreCompletoContainsIgnoreCase(Boolean idEmpleadoIdUsuarioActivo, String idEmpleadoNombreCompleto);
 }

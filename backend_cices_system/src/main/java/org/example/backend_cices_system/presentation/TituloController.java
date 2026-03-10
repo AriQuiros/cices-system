@@ -27,7 +27,7 @@ public class TituloController {
             @PathVariable String identificacion,
             @RequestBody @Valid TituloDTO dto) {
 
-        Investigador investigador = investigadorService.buscarXIdentificacion(identificacion);
+        Investigador investigador = investigadorService.buscarPorIdentificacion(identificacion);
         Titulo titulo = tituloService.guardarTitulo(dto, investigador);
 
         return ResponseEntity.ok(titulo.getId());

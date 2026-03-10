@@ -1,15 +1,15 @@
 package org.example.backend_cices_system.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public record InvestigadorProyectoDTO(
+        Integer id,
         String identificacionInvestigador,
         String nombreInvestigador,
-        String rolProyecto,
+        String codigoProyecto,
+        RolProyectoDTO rolProyecto,
         String actividadProyecto,
         LocalDate fechaInicio,
-        LocalDate fechaFin,
-        List<HorasAsignadasDTO> horasAsignadas
+        LocalDate fechaFin
 ) {}
 

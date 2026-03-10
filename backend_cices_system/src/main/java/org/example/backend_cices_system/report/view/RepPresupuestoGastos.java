@@ -58,4 +58,7 @@ public class RepPresupuestoGastos {
     @Column(name = "DESCRIPCION_GASTO", nullable = false, length = 254)
     private String descripcionGasto;
 
+    @Column(name = "CATEGORIA_PRESUPUESTO")
+    private String categoriaPresupuesto;
+
 }

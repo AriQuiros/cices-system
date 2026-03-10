@@ -2,16 +2,13 @@ package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
 import org.example.backend_cices_system.data.InvestigadorRepository;
-import org.example.backend_cices_system.dto.CertificacionDTO;
-import org.example.backend_cices_system.dto.EmpleadoDTO;
-import org.example.backend_cices_system.dto.InvestigadorDTO;
-import org.example.backend_cices_system.dto.TituloDTO;
+import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -71,19 +68,28 @@ public class InvestigadorService {
         return investigador;
     }
 
-    public Investigador buscarXIdentificacion(String identificacion) {
+    public Investigador buscarPorIdentificacion(String identificacion) {
         return investigadorRepository.findByIdEmpleadoIdentificacion(identificacion)
                 .orElseThrow(() -> new IllegalStateException("No se encontró un investigador con la identificación '" + identificacion + "'"));
     }
 
-    public List<Map<String,String>> obtenerInvestigadoresActivos(String nombre) {
-        List<Investigador> investigadores = investigadorRepository.findByIdEmpleadoIdUsuarioActivo(true);
-        return investigadores.stream().collect(Collectors.toMap(
-                i -> i.getIdEmpleado().getIdentificacion(),
-                i -> i.getIdEmpleado().getNombreCompleto()
-        )).entrySet().stream()
-                .filter(entry -> entry.getValue().toLowerCase().contains(nombre.toLowerCase()))
-                .map(entry -> Map.of("identificacion", entry.getKey(), "nombre", entry.getValue()))
+    public List<Map<String, String>> obtenerInvestigadoresActivos(String nombre) {
+        List<Investigador> investigadores = investigadorRepository
+                .findByIdEmpleado_IdUsuario_ActivoAndIdEmpleadoNombreCompletoContainsIgnoreCase(true, nombre);
+
+        return investigadores.stream()
+                .map(inv -> {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("identificacion", inv.getIdEmpleado().getIdentificacion());
+                    map.put("nombreCompleto", inv.getIdEmpleado().getNombreCompleto());
+                    return map;
+                })
                 .toList();
+    }
+
+
+    public Investigador obtenerInvestigador(Integer id){
+        return investigadorRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("No se encontró un investigador con el id '" + id + "'"));
     }
 }

@@ -20,7 +20,6 @@ function ListadoProyectos() {
         "ESTADO_PROYECTO",
         "TIPO_PROYECTO"
     ]);
-
     return (
 
         <div className="contenedor_proyectos">
@@ -38,7 +37,7 @@ function ListadoProyectos() {
                     value={filtros.lineaInvestigacion}
                     onChange={(e) => handleChange("lineaInvestigacion", e.target.value)}
                 >
-                    <option value="">Tipo de proyecto</option>
+                    <option value="">Línea de investigación</option>
                     {lineas?.map((opcion, idx) => (
                         <option key={opcion ?? idx} value={opcion}>{opcion}</option>
                     ))}
@@ -49,8 +48,8 @@ function ListadoProyectos() {
                     onChange={(e) => handleChange("tipoProyecto", e.target.value)}
                 >
                     <option value="">Tipo de proyecto</option>
-                    {tipos["TIPO_PROYECTO"]?.map((opcion, idx) => (
-                        <option key={opcion.id ?? opcion.valor ?? idx} value={opcion.valor}>{opcion.despliegue}</option>
+                    {tipos["TIPO_PROYECTO"]?.map((opcion) => (
+                        <option key={opcion.id} value={opcion.valor}>{opcion.despliegue}</option>
                     ))}
                 </select>
 
@@ -58,9 +57,9 @@ function ListadoProyectos() {
                     value={filtros.estado}
                     onChange={(e) => handleChange("estado", e.target.value)}
                 >
-                    <option value="">Tipo de proyecto</option>
-                    {tipos["ESTADO_PROYECTO"]?.map((opcion, idx) => (
-                        <option key={opcion.id ?? opcion.valor ?? idx} value={opcion.valor}>{opcion.despliegue}</option>
+                    <option value="">Estado de proyecto</option>
+                    {tipos["ESTADO_PROYECTO"]?.map((opcion) => (
+                        <option key={opcion.id} value={opcion.valor}>{opcion.despliegue}</option>
                     ))}
                 </select>
 
@@ -74,7 +73,7 @@ function ListadoProyectos() {
                     <option value="fechaInicio_desc">Proyectos más nuevos</option>
                     <option value="fechaInicio_asc">Proyectos más antiguos</option>
                     <option value="fechaFinalizacion_desc">Fecha fin lejana</option>
-                    <option value="fechaFinalizacion_asc">Finalizados / pronto</option>
+                    <option value="fechaFinalizacion_asc">Finalizados / próximos</option>
                 </select>
 
                 <button onClick={limpiarFiltros}>
@@ -95,18 +94,18 @@ function ListadoProyectos() {
 
                     {proyectos.map(p => (
 
-                        <div key={p.codigo} className="proyecto_card">
+                        <div key={p.codigoProyecto} className="proyecto_card">
 
-                            <h3>{p.codigo}</h3>
+                            <h3>{p.codigoProyecto}</h3>
 
-                            <p><b>Nombre:</b> {p.nombre}</p>
-                            <p><b>Tipo:</b> {p.tipoProyecto}</p>
+                            <p><b>Nombre:</b> {p.nombreProyecto}</p>
+                            <p><b>Tipo:</b> {p.tipoProyecto.despliegue}</p>
                             <p><b>Línea:</b> {p.lineaInvestigacion}</p>
-                            <p><b>Estado:</b> {p.estado}</p>
+                            <p><b>Estado:</b> {p.estado.despliegue}</p>
                             <p>{p.fechaInicio} - {p.fechaFinalizacion}</p>
 
                             <Link
-                                to={`/consultar/${p.codigo}`}
+                                to={`/consultar/${p.codigoProyecto}`}
                                 className="ver-mas"
                             >
                                 Ver más

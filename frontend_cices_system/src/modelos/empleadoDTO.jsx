@@ -1,4 +1,12 @@
+import { CodigoDTO } from "./codigoDTO.jsx";
+
+export const RolDTO = {
+    id: null,
+    nombreRol: ""
+};
+
 export const UsuarioDTO = {
+    id: null,
     nombreUsuario: "",
     contrasena: "",
     roles: []
@@ -7,10 +15,10 @@ export const UsuarioDTO = {
 export const EmpleadoDTO = {
     nombreCompleto: "",
     identificacion: "",
-    tipoId: "",
+    tipoId: { ...CodigoDTO },
     pais: "",
     correo: "",
     numeroTelefono: "",
-    gradoAcademico: "",
+    gradoAcademico: { ...CodigoDTO },
     usuario: { ...UsuarioDTO }
 };

@@ -19,8 +19,10 @@ public interface RepInvestigadorProyectoRepository extends JpaRepository<RepInve
 
     List<RepInvestigadorProyecto> findByCodigoProyecto(String codigoProyecto);
 
+    List<RepInvestigadorProyecto> findByIdProyecto(Integer idProyecto);
+
     List<RepInvestigadorProyecto> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
 
-    List<RepInvestigadorProyecto> findByRolEnProyecto(String rolEnProyecto);
+    List<RepInvestigadorProyecto> findByRolProyecto(String rolEnProyecto);
 
 }

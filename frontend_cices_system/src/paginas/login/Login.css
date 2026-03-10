@@ -3,7 +3,7 @@
     display: grid;
     place-items: center;
     padding: 20px;
-    background: url("/public/images/ImgPrincipal.png") no-repeat center center fixed;
+    background: url("/src/assets/images/ImgPrincipal.png") no-repeat center center fixed;
 }
 
 .login-card {

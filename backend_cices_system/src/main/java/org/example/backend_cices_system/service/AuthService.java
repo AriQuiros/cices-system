@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 import org.example.backend_cices_system.data.*;
+import org.example.backend_cices_system.dto.RolDTO;
 import org.example.backend_cices_system.dto.auth.LoginResponse;
 import org.example.backend_cices_system.dto.auth.UserInfo;
 import org.example.backend_cices_system.dto.UsuarioDTO;
@@ -79,9 +80,9 @@ public class AuthService {
         return usuario;
     }
 
-    public void guardarRoles(Usuario usuario, List<String> roles) {
-        for (String nombreRol : roles) {
-            Rol rol = rolService.obtenerRolXNombre(nombreRol);
+    public void guardarRoles(Usuario usuario, List<RolDTO> roles) {
+        for (RolDTO rolDto : roles) {
+            Rol rol = rolService.obtenerRol(rolDto.id());
 
             RolUsuario rolUsuario = new RolUsuario();
             rolUsuario.setIdUsuario(usuario);

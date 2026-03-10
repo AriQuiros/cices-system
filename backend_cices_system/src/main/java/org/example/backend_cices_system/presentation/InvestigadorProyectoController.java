@@ -2,10 +2,13 @@ package org.example.backend_cices_system.presentation;
 
 import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
+import org.example.backend_cices_system.logic.Investigador;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/investigador-proyecto")
@@ -23,14 +26,25 @@ public class InvestigadorProyectoController {
         this.investigadorService = investigadorService;
     }
 
-    @PostMapping("/{codigoProyecto}/{idInvestigador}/asignar-investigador")
-    public ResponseEntity<Integer> asignarInvestigador(
-            @PathVariable String codigoProyecto,
-            @PathVariable String idInvestigador,
-            @RequestBody @Valid InvestigadorProyectoDTO dto) {
-        var proyecto = proyectoService.buscarProyectoXCodigo(codigoProyecto);
-        var investigador = investigadorService.buscarXIdentificacion(idInvestigador);
-        Integer id = investigadorProyectoService.guardarInvestigadorProyecto(dto, investigador, proyecto).getId();
-        return ResponseEntity.ok(id);
+    @PostMapping("/registro")
+    public ResponseEntity<?> asignarInvestigador(@RequestBody @Valid List<InvestigadorProyectoDTO> listDto) {
+        for(InvestigadorProyectoDTO dto : listDto){
+            Proyecto proyecto = proyectoService.buscarProyectoPorCodigo(dto.codigoProyecto());
+            Investigador investigador = investigadorService.buscarPorIdentificacion(dto.identificacionInvestigador());
+            investigadorProyectoService.guardarInvestigadorProyecto(dto, investigador, proyecto);
+        }
+        return ResponseEntity.ok(listDto.size());
+    }
+
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarInvestigadorProyecto (@RequestBody @Valid InvestigadorProyectoDTO dto){
+        var inv = investigadorProyectoService.actualizarInvestigadorProyecto(dto);
+        return ResponseEntity.ok(inv);
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarInvestigadorProyecto (@PathVariable Integer id){
+        var inv = investigadorProyectoService.eliminarInvestigadorProyecto(id);
+        return ResponseEntity.ok(inv);
     }
 }

@@ -10,41 +10,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface InvestigadorProyectoRepository extends JpaRepository<InvestigadorProyecto, Short> {
-    @Query("select count(distinct ip.idInvestigador.id) from InvestigadorProyecto ip")
-    long countInvestigadoresAsignados();
-
-    @Query("""
-        select distinct p.id
-        from InvestigadorProyecto ip
-        join ip.idProyecto p
-        where ip.idInvestigador = :inv
-    """)
-    List<Short> findProyectoIdsByInvestigador(@Param("inv") Investigador inv);
-
-    @Query("""
-    select distinct p.id
-    from InvestigadorProyecto ip
-    join ip.idProyecto p
-    where ip.idInvestigador = :inv
-      and (ip.fechaFinInvestigador is null or ip.fechaFinInvestigador >= CURRENT_DATE)
-""")
-    List<Short> findProyectoIdsVigentesByInvestigador(@Param("inv") Investigador inv);
-
-    @Query("""
-    select distinct p.id
-    from InvestigadorProyecto ip
-    join ip.idProyecto p
-    where ip.idInvestigador = :inv
-      and ip.fechaFinInvestigador < CURRENT_DATE
-""")
-    List<Short> findProyectoIdsFinalizadosByInvestigador(@Param("inv") Investigador inv);
-
-    List<InvestigadorProyecto> findInvestigadoresByIdProyecto(Proyecto proyecto);
-
-    boolean existsByIdProyectoAndIdInvestigador(Proyecto proyecto, Investigador investigador);
+public interface InvestigadorProyectoRepository extends JpaRepository<InvestigadorProyecto, Integer> {
     Optional<InvestigadorProyecto> findByIdProyectoAndIdInvestigador(Proyecto proyecto, Investigador investigador);
-
+    Optional<InvestigadorProyecto> findByIdProyecto_CodigoProyectoAndIdInvestigador_IdEmpleado_Identificacion(String idProyectoCodigoProyecto, String idInvestigadorIdEmpleadoIdentificacion);
     List<InvestigadorProyecto> findByIdProyecto(Proyecto proyectoId);
-
+    List<InvestigadorProyecto> findByIdProyecto_CodigoProyecto(String idProyectoCodigoProyecto);
 }

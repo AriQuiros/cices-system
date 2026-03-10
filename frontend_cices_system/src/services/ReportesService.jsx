@@ -1,4 +1,4 @@
-const API_URL = "/api/reportes";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/reportes";
 
 export const DistribucionHoras = {
 
@@ -27,3 +27,17 @@ export const DetalleGastos = {
     }
 
 };
+
+export  async function obtenerInvestigadoresProyecto (codigoProyecto) {
+    const res = await fetch(`${API_URL}/investigadorProyecto/${codigoProyecto}`, {
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer`,
+        }
+    });
+    if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Error al obtener investigadores activos");
+    }
+    return await res.json();
+}

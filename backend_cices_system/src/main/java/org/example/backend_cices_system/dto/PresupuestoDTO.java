@@ -2,14 +2,19 @@ package org.example.backend_cices_system.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public record PresupuestoDTO (
+    Integer id,
     String descripcion,
-    String categoria,
+    CodigoDTO categoria,
     LocalDate fechaAsignacion,
-    String tipoPresupuesto,
-    String fuenteFinanciamiento,
+    CodigoDTO tipoPresupuesto,
+    CodigoDTO fuenteFinanciamiento,
     BigDecimal monto,
     BigDecimal cantidadHorasMes,
-    Short cantidadMeses
+    Short cantidadMeses,
+
+    List<GastoDTO> gastos,
+    List<HorasAsignadasDTO> horas
 ){}

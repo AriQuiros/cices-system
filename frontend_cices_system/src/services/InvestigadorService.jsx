@@ -1,6 +1,6 @@
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
-export async function obtenerInvestigadoresActivos(token, nombre = "") {
+export async function obtenerInvestigadoresActivos(token, nombre) {
     const url = `${API}/investigadores?nombre=${encodeURIComponent(nombre)}`;
     const res = await fetch(url, {
         headers: {

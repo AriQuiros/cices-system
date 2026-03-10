@@ -4,15 +4,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record ProyectoDTO (
-    String codigo,
-    String nombre,
+    String codigoProyecto,
+    String nombreProyecto,
     String descripcion,
     String objetivoGeneral,
     LocalDate fechaInicio,
     LocalDate fechaFinalizacion,
     String lineaInvestigacion,
-    String tipoProyecto,
-    String estado,
+    CodigoDTO tipoProyecto,
+    CodigoDTO estado,
     String detalles,
 
     List<ObjetivoEspecificoDTO>objetivosEspecificos,

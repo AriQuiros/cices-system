@@ -27,8 +27,8 @@ public class NotificacionService {
     @Transactional
     public Notificacion guardarNotificacion(NotificacionDTO notificacionDTO) {
         var notificacion = new Notificacion();
-        notificacion.setIdCodigoTipoCategoria(catalogoService.codigoXNombreValor("TIPO_CATEGORIA", notificacionDTO.categoria()));
-        notificacion.setIdCodigoTipoPrioridad(catalogoService.codigoXNombreValor("TIPO_PRIORIDAD", notificacionDTO.prioridad()));
+        notificacion.setIdCodigoTipoCategoria(notificacionDTO.categoria().id());
+        notificacion.setIdCodigoTipoPrioridad(notificacionDTO.prioridad().id());
         notificacion.setAsunto(notificacionDTO.asunto());
         notificacion.setMensaje(notificacionDTO.mensaje());
         notificacion.setFechaCreacion(notificacionDTO.fechaCreacion());

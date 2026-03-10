@@ -6,6 +6,8 @@ import org.example.backend_cices_system.service.GastoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/gastos")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -16,10 +18,21 @@ public class GastoController {
         this.gastoService = gastoService;
     }
 
-    @PostMapping("/registro/{codigoProyecto}")
-    public ResponseEntity<?> registrarGasto (@PathVariable String codigoProyecto,
-                                             @RequestBody @Valid GastoDTO dto){
-        var gasto = gastoService.guardarGasto(dto,codigoProyecto,dto.presupuesto().categoria());
-        return ResponseEntity.ok(gasto.getId());
+    @PostMapping("/registro")
+    public ResponseEntity<?> registrarGasto (@RequestBody @Valid List<GastoDTO> listDto){
+        var gastos = gastoService.guardarGasto(listDto);
+        return ResponseEntity.ok(gastos.getLast().getId());
+    }
+
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarGasto (@RequestBody @Valid GastoDTO dto){
+        var gasto = gastoService.actualizarGasto(dto);
+        return ResponseEntity.ok(gasto);
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarGasto (@PathVariable Integer id){
+        var gasto = gastoService.eliminarGasto(id);
+        return ResponseEntity.ok(gasto);
     }
 }

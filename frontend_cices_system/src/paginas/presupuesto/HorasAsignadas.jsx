@@ -1,96 +1,295 @@
-import React, { useEffect, useState } from "react";
-import { DistribucionHoras } from "../../services/ReportesService.jsx";
-import {notify} from "../../utils/estilo/notify.jsx";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { notify } from "../../utils/estilo/notify.jsx";
+import { AppContext } from "../../context/AppContext.jsx";
 
-const HorasAsignadas = ({ codigoProyecto }) => {
+import { cargarProyectos } from "../../services/ProyectoService.jsx";
+import { DistribucionHoras } from "../../services/ReportesService.jsx";
+import { obtenerInvestigadoresProyecto } from "../../services/ReportesService.jsx";
+
+const ConsultaPresupuestos = () => {
+
+    const { token } = useContext(AppContext);
+
+    const [proyectos, setProyectos] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [showList, setShowList] = useState(false);
+
+    const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 
     const [presupuestos, setPresupuestos] = useState([]);
+    const [investigadoresProyecto, setInvestigadoresProyecto] = useState([]);
+
+    const [ordenFecha, setOrdenFecha] = useState("reciente");
+    const [ordenMonto, setOrdenMonto] = useState("");
+    const [ordenHoras, setOrdenHoras] = useState("");
 
     useEffect(() => {
-        cargarDatos();
-    }, [codigoProyecto]);
 
-    const cargarDatos = async () => {
+        cargarProyectos(token, true)
+            .then(setProyectos)
+            .catch(() => notify.error("Error cargando proyectos"));
+
+    }, [token]);
+
+    const proyectosFiltrados = useMemo(() =>
+        proyectos.filter(p =>
+            p.codigoProyecto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.nombreProyecto.toLowerCase().includes(searchTerm.toLowerCase())
+        ), [proyectos, searchTerm]);
+
+    const seleccionarProyecto = async (proyecto) => {
+
+        setProyectoSeleccionado(proyecto);
+        setSearchTerm(proyecto.codigoProyecto);
+        setShowList(false);
+
         try {
-            const data = await DistribucionHoras.obtenerPorProyecto("C1766");
-            setPresupuestos(data);
-        } catch (error) {
-            notify.error(error);
+
+            const data = await DistribucionHoras.obtenerPorProyecto(proyecto.codigoProyecto);
+            setPresupuestos(data || []);
+
+            const inv = await obtenerInvestigadoresProyecto(proyecto.codigoProyecto, token);
+            setInvestigadoresProyecto(inv || []);
+
+        } catch {
+
+            notify.error("Error cargando datos");
+
         }
+
     };
 
-    const totalAsignado = (horas) => {
-        return horas.reduce((acc, h) => acc + (h.horasMes * h.cantidadMeses), 0);
-    };
+    const totalPresupuesto = (p) =>
+        (p.cantidadHoras || 0) * (p.cantidadMeses || 0);
+
+    const totalHorasAsignadas = (p) =>
+        (p.horas || []).reduce(
+            (acc, h) => acc + ((h.cantidadHorasMes || 0) * (h.cantidadMeses || 0)),
+            0
+        );
+
+    const presupuestosOrdenados = useMemo(() => {
+
+        let lista = [...presupuestos];
+
+        if (ordenFecha) {
+
+            lista.sort((a, b) => {
+
+                const fa = new Date(a.fechaAsignacion);
+                const fb = new Date(b.fechaAsignacion);
+
+                return ordenFecha === "reciente"
+                    ? fb - fa
+                    : fa - fb;
+
+            });
+
+        }
+
+        if (ordenMonto) {
+
+            lista.sort((a, b) => {
+
+                const ma = totalPresupuesto(a);
+                const mb = totalPresupuesto(b);
+
+                return ordenMonto === "mayor"
+                    ? mb - ma
+                    : ma - mb;
+
+            });
+
+        }
+
+        if (ordenHoras) {
+
+            lista.sort((a, b) => {
+
+                const ha = totalHorasAsignadas(a);
+                const hb = totalHorasAsignadas(b);
+
+                return ordenHoras === "mayor"
+                    ? hb - ha
+                    : ha - hb;
+
+            });
+
+        }
+
+        return lista;
+
+    }, [presupuestos, ordenFecha, ordenMonto, ordenHoras]);
+
+    const obtenerFechasInvestigador = (id) =>
+        investigadoresProyecto.find(i => i.id === id);
 
     return (
+
         <div>
 
-            <h1>Presupuestos de Horas</h1>
+            <h2>Consulta de Presupuestos</h2>
 
-            {presupuestos.map((p, index) => {
+            <h3>Buscar proyecto</h3>
 
-                const totalPresupuesto = p.cantidadHoras * p.cantidadMeses;
-                const asignado = totalAsignado(p.horas);
-                const restante = totalPresupuesto - asignado;
+            <input
+                type="text"
+                placeholder="Buscar código o nombre..."
+                value={searchTerm}
+                onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setShowList(true);
+                }}
+            />
 
-                return (
-                    <div key={index}>
+            {showList && searchTerm && proyectosFiltrados.map(p => (
 
-                        <h2>Presupuesto</h2>
+                <div key={p.codigoProyecto}>
+                    <button onClick={() => seleccionarProyecto(p)}>
+                        {p.codigoProyecto} - {p.nombreProyecto}
+                    </button>
+                </div>
 
-                        <p><b>Descripción:</b> {p.descripcion}</p>
-                        <p><b>Categoría:</b> {p.categoria}</p>
-                        <p><b>Fecha asignación:</b> {p.fechaAsignacion}</p>
-                        <p><b>Tipo:</b> {p.tipoPresupuesto}</p>
+            ))}
 
-                        <p><b>Horas por mes:</b> {p.cantidadHoras}</p>
-                        <p><b>Cantidad de meses:</b> {p.cantidadMeses}</p>
-                        <p><b>Total horas x meses:</b> {totalPresupuesto}</p>
+            {proyectoSeleccionado && (
 
-                        <p><b>Horas asignadas:</b> {asignado}</p>
-                        <p><b>Horas restantes:</b> {restante}</p>
+                <div>
 
-                        <h3>Detalle de horas asignadas</h3>
+                    <h3>Información del proyecto</h3>
 
-                        <table border="1">
-                            <thead>
-                            <tr>
-                                <th>Investigador</th>
-                                <th>Modalidad</th>
-                                <th>Horas Mes</th>
-                                <th>Meses</th>
-                                <th>Total Horas</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <p><strong>Código:</strong> {proyectoSeleccionado.codigoProyecto}</p>
+                    <p><strong>Nombre:</strong> {proyectoSeleccionado.nombreProyecto}</p>
 
-                            {p.horas.map((h, i) => {
+                    <h3>Filtros</h3>
 
-                                const total = h.horasMes * h.cantidadMeses;
+                    <label>Fecha asignación:</label>
 
-                                return (
-                                    <tr key={i}>
-                                        <td>{h.nombreInvestigador}</td>
-                                        <td>{h.modalidad}</td>
-                                        <td>{h.horasMes}</td>
-                                        <td>{h.cantidadMeses}</td>
-                                        <td>{total}</td>
+                    <select
+                        value={ordenFecha}
+                        onChange={(e) => setOrdenFecha(e.target.value)}
+                    >
+                        <option value="reciente">Más reciente</option>
+                        <option value="antiguo">Más antiguo</option>
+                    </select>
+
+                    <label>Monto presupuesto:</label>
+
+                    <select
+                        value={ordenMonto}
+                        onChange={(e) => setOrdenMonto(e.target.value)}
+                    >
+                        <option value="">Sin ordenar</option>
+                        <option value="mayor">Mayor a menor</option>
+                        <option value="menor">Menor a mayor</option>
+                    </select>
+
+                    <label>Horas asignadas:</label>
+
+                    <select
+                        value={ordenHoras}
+                        onChange={(e) => setOrdenHoras(e.target.value)}
+                    >
+                        <option value="">Sin ordenar</option>
+                        <option value="mayor">Mayor a menor</option>
+                        <option value="menor">Menor a mayor</option>
+                    </select>
+
+                    <hr />
+
+                    {presupuestosOrdenados.map(p => {
+
+                        const total = totalPresupuesto(p);
+                        const usadas = totalHorasAsignadas(p);
+                        const restantes = total - usadas;
+
+                        return (
+
+                            <div key={p.id}>
+
+                                <h3>{p.categoria} - {p.descripcion}</h3>
+
+                                <p><strong>Fecha asignación:</strong> {p.fechaAsignacion}</p>
+
+                                <p><strong>Horas por mes:</strong> {p.cantidadHoras}</p>
+
+                                <p><strong>Meses:</strong> {p.cantidadMeses}</p>
+
+                                <p><strong>Total horas presupuesto:</strong> {total}</p>
+
+                                <p><strong>Horas asignadas:</strong> {usadas}</p>
+
+                                <p >
+                                    <strong>Horas restantes:</strong> {restantes}
+                                </p>
+
+                                <h4>Horas asignadas a investigadores</h4>
+
+                                <table border="1">
+
+                                    <thead>
+                                    <tr>
+                                        <th>Investigador</th>
+                                        <th>Fecha inicio</th>
+                                        <th>Fecha fin</th>
+                                        <th>Horas/Mes</th>
+                                        <th>Meses</th>
+                                        <th>Total</th>
                                     </tr>
-                                );
-                            })}
+                                    </thead>
 
-                            </tbody>
-                        </table>
+                                    <tbody>
 
-                        <hr/>
+                                    {p.horas?.map(h => {
 
-                    </div>
-                );
-            })}
+                                        const inv = obtenerFechasInvestigador(h.investigador?.id);
+
+                                        const totalInv =
+                                            (h.cantidadHorasMes || 0) *
+                                            (h.cantidadMeses || 0);
+
+                                        return (
+
+                                            <tr key={h.id}>
+
+                                                <td>{h.investigador?.nombreInvestigador}</td>
+
+                                                <td>{inv?.fechaInicio || "-"}</td>
+
+                                                <td>{inv?.fechaFin || "-"}</td>
+
+                                                <td>{h.cantidadHorasMes}</td>
+
+                                                <td>{h.cantidadMeses}</td>
+
+                                                <td>{totalInv}</td>
+
+                                            </tr>
+
+                                        );
+
+                                    })}
+
+                                    </tbody>
+
+                                </table>
+
+                                <hr />
+
+                            </div>
+
+                        );
+
+                    })}
+
+                </div>
+
+            )}
 
         </div>
+
     );
+
 };
 
-export default HorasAsignadas;
+export default ConsultaPresupuestos;

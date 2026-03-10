@@ -5,10 +5,6 @@ import org.example.backend_cices_system.dto.EntidadDTO;
 import org.example.backend_cices_system.logic.Entidad;
 import org.springframework.stereotype.Service;
 
-/**
- * @author angie
- */
-
 @Service
 public class EntidadService {
     private final EntidadRepository entidadRepository;

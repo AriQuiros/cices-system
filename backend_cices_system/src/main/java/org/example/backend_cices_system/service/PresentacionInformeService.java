@@ -22,9 +22,7 @@ public class PresentacionInformeService {
         var presentacionInforme = new PresentacionInforme();
         presentacionInforme.setIdProyecto(proyecto);
         presentacionInforme.setFechaPresentacion(informe.fechaPresentacion());
-
-        Short codigoTipoInforme = catalogoService.codigoXNombreValor("TIPO_INFORME", informe.tipoInforme());
-        presentacionInforme.setIdCodigoTipoInforme(codigoTipoInforme);
+        presentacionInforme.setIdCodigoTipoInforme(informe.tipoInforme().id());
         Short codigoEstadoInforme = obtenerCodigoEstadoInforme(informe.fechaPresentacion());
         presentacionInforme.setIdCodigoTipoEstado(codigoEstadoInforme);
 

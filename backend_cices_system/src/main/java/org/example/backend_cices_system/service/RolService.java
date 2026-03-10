@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import org.example.backend_cices_system.data.RolRepository;
+import org.example.backend_cices_system.dto.RolDTO;
 import org.example.backend_cices_system.logic.Rol;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +16,15 @@ public class RolService {
         this.rolRepository = rolRepository;
     }
 
-    public List<String> obtenerNombreRoles() {
+    public List<RolDTO> obtenerRolesDTO() {
         return rolRepository.findAll()
                 .stream()
-                .map(Rol::getNombreRol)
+                .map(r->new RolDTO(r.getId(),r.getNombreRol()))
                 .collect(Collectors.toList());
     }
 
-    public Rol obtenerRolXNombre(String nombre) {
-        return rolRepository.findByNombreRolIgnoreCase(nombre)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado para nombre: " + nombre));
+    public Rol obtenerRol(Short id){
+        return rolRepository.findById(id).orElseThrow(() -> new RuntimeException("Rol no encontrado para id: " + id));
     }
 
 }

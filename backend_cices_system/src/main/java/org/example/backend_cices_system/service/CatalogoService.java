@@ -32,7 +32,7 @@ public class CatalogoService {
                                 codigo -> new CodigoDTO(
                                         codigo.getId(),
                                         codigo.getValor(),
-                                        codigo.getDespliegue().toLowerCase()
+                                        codigo.getDespliegue()
                                 ),
                                 Collectors.toList()
                         )
@@ -46,5 +46,10 @@ public class CatalogoService {
     public CodigoDTO obtenerDto(Short id){
         Codigo codigo = obtenerCodigo(id);
         return new CodigoDTO(codigo.getId(),codigo.getValor(),codigo.getDespliegue());
+    }
+
+    public List<String> obtenerGradosAcademicos() {
+        List<Codigo> codigos = catalogoRepository.findCodigoByIdTipo_Nombre("GRADO_ACADEMICO");
+        return codigos.stream().map(Codigo::getDespliegue).toList();
     }
 }

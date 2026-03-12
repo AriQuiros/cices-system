@@ -22,10 +22,6 @@ public class Entidad {
     @Column(name = "NOMBRE", nullable = false, length = 254)
     private String nombre;
 
-    @Size(max = 4)
-    @Column(name = "PAIS", nullable = false, length = 4)
-    private String pais;
-
     @Column(name = "ID_CODIGO_TIPO_ENTIDAD")
     private Short idCodigoTipoEntidad;
 

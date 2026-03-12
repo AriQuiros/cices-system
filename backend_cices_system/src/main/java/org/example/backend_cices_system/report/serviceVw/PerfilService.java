@@ -11,39 +11,35 @@ import java.util.Map;
 @Service
 public class PerfilService {
 
-    private final RepPersonaBaseRepository personaRepo;
-    private final RepUsuarioRolRepository usuarioRolRepo;
+    private final RepPersonaUsuariaRepository personaRepo;
     private final RepInvestigadorTitulosRepository titulosRepo;
     private final RepInvestigadorCertificacionesRepository certificacionesRepo;
     private final RepInvestigadorProyectoRepository proyectosRepo;
 
     public PerfilService(
-            RepPersonaBaseRepository personaRepo,
-            RepUsuarioRolRepository usuarioRolRepo,
+            RepPersonaUsuariaRepository personaRepo,
             RepInvestigadorTitulosRepository titulosRepo,
             RepInvestigadorCertificacionesRepository certificacionesRepo,
             RepInvestigadorProyectoRepository proyectosRepo
     ) {
         this.personaRepo = personaRepo;
-        this.usuarioRolRepo = usuarioRolRepo;
         this.titulosRepo = titulosRepo;
         this.certificacionesRepo = certificacionesRepo;
         this.proyectosRepo = proyectosRepo;
     }
 
-    public RepPersonaBase obtenerPerfilEmpleado(String identificacion) {
+    public List<RepPersonaUsuaria> obtenerPerfilEmpleado(String identificacion) {
         return personaRepo.findByIdentificacion(identificacion);
     }
 
     public Map<String, Object> obtenerPerfilUsuario(String identificacion) {
 
-        RepPersonaBase persona = obtenerPerfilEmpleado(identificacion);
+        List<RepPersonaUsuaria> persona = obtenerPerfilEmpleado(identificacion);
 
-        List<RepUsuarioRol> roles =
-                usuarioRolRepo.findByNombreUsuario(persona.getCorreo());
+        List<String> roles = persona.stream().map(RepPersonaUsuaria::getNombreRol).toList();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("persona", persona);
+        response.put("persona", persona.getFirst());
         response.put("roles", roles);
 
         return response;
@@ -51,7 +47,7 @@ public class PerfilService {
 
     public Map<String, Object> obtenerPerfilInvestigador(String identificacion) {
 
-        RepPersonaBase persona = obtenerPerfilEmpleado(identificacion);
+        RepPersonaUsuaria persona = obtenerPerfilEmpleado(identificacion).getFirst();
 
         Map<String, Object> response = new HashMap<>();
         response.put("persona", persona);

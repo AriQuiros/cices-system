@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 import { getResumen } from "../../services/UtilsService.jsx";
 import "./Director.css";
-import {notify} from "../../utils/estilo/notify.jsx";
+import {notify} from "../../utils/ui/notify.jsx";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 

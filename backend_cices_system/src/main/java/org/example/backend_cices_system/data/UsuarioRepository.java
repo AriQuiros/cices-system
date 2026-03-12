@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Short> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Optional<Usuario> findByActivoTrueAndNombreUsuario(String nombreUsuario);
     Optional<Usuario> findByNombreUsuario(String nombreUsuario);

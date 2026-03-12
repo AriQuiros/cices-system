@@ -1,0 +1,59 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Sat Mar 14 09:15:20 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Last Successful login time: Sat Mar 14 2026 09:15:19 -06:00
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Connected.
+=====Inicio config.sql=====
+
+Session altered.
+
+
+Sesión modificada.
+
+
+Sesión modificada.
+
+
+Sesión modificada.
+
+USER es "CICES"
+=====Fin config.sql=====
+======================================
+===== DROPEO DE VISTAS ================
+======================================
+== PERSONAS - USUARIOS ==
+== EDUCACION ==
+== PROYECTOS ==
+== PRESUPUESTO ==
+== NOTIFICACIONES ==
+== RESUMEN ==
+======================================
+===== CREACION DE VISTAS ==============
+======================================
+== REP_PERSONA_USUARIA ==
+== REP_INVESTIGADOR_TITULOS ==
+== REP_INVESTIGADOR_CERTIFICACIONES ==
+== REP_PROYECTO_BASE ==
+== REP_INVESTIGADOR_PROYECTO ==
+== REP_PROYECTO_RESULTADOS ==
+== REP_PROYECTO_DOCUMENTOS ==
+== REP_ENTIDAD_PROYECTO ==
+== REP_PROYECTO_PRESENTACION_INFORME ==
+== REP_PRESUPUESTO_BASE ==
+== REP_PRESUPUESTO_GASTOS ==
+== REP_PRESUPUESTO_HORAS ==
+== REP_RESUMEN_EJECUTIVO ==
+======================================
+===== FIN SCRIPT VISTAS ===============
+======================================
+Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0

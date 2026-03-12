@@ -1,58 +1,30 @@
-import React, { useContext, useState } from "react";
+import { BrowserRouter } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import AppRoutes from "./utils/routes/AppRoutes";
 import { Toaster } from "sonner";
-import { BrowserRouter, Routes, Route, NavLink, useNavigate } from "react-router-dom";
-import "./App.css";
-import './index.css';
 
+import "./App.css";
+import "./index.css";
+
+/* IMÁGENES */
 import logoUCR from "./assets/images/logoUCR.png";
 import logoCICES from "./assets/images/logoCICES.png";
 import logoCICES2 from "./assets/images/logoCICES2.png";
 
-import Login from "./paginas/login/Login";
-import Registro from "./paginas/registro/usuarios/Registro.jsx";
-import RegistroProyecto from "./paginas/registro/proyectos/RegistroProyecto.jsx";
-import RegistroPresupuesto from "./paginas/registro/proyectos/RegistroPresupuesto.jsx";
-import VincularInvestigador from "./paginas/registro/proyectos/VincularInvestigador.jsx";
-import PanelResumen from "./paginas/director/PanelResumen.jsx";
-import Administrador from "./paginas/administrador/Administrador.jsx";
-import RegistroInvestigador from "./paginas/registro/usuarios/RegistroInvestigador.jsx";
-import ConsultaProyectos from "./paginas/consultaProyectos/ConsultaProyectos.jsx";
-import RegistrarGastosFinancieros from "./paginas/RegistrarGastosFinancieros/RegistrarGastosFinancieros.jsx";
-import ProyectoInvestigador from "./paginas/consultaProyectos/ProyectoInvestigador.jsx";
-
+/* CONTEXTO */
 import AppProvider from "./context/AppProvider.jsx";
-import { AppContext } from "./context/AppContext.jsx";
-import AsignarInvestigador from "./paginas/asignacionesInvestigadores/AsignarInvestigador.jsx";
-import ProyectoSeleccionado from "./paginas/consultaProyectos/ProyectoSeleccionado.jsx";
-import ProyectoHorasAsignadas from "./paginas/consultaProyectos/ProyectoHorasAsignadas.jsx";
-import ListadoProyectos from "./paginas/proyecto/ListadoProyectos.jsx";
-import HorasAsignadas from "./paginas/presupuesto/HorasAsignadas.jsx";
-import ConsultaGastos from "./paginas/presupuesto/ConsultaGastos.jsx";
-
-/** Helper botón-enlace consistente */
-const BtnLink = ({ to, children, onClick, variant = "primary" }) => (
-    <li>
-        <NavLink
-            to={to}
-            onClick={onClick}
-            className={({ isActive }) => `btn btn--${variant} ${isActive ? "is-active" : ""}`}
-        >
-            {children}
-        </NavLink>
-    </li>
-);
+import {useState} from "react";
 
 function App() {
+    const [menuAbierto, setMenuAbierto] = useState(false);
+
     return (
         <AppProvider>
-            <Toaster
-                richColors
-                position="top-center"
-            />
-            <div className="app-container">
+            <Toaster richColors position="top-center"/>
+            <div className="app-container flex flex-col min-h-screen">
                 <BrowserRouter>
-                    <Header />
-                    <Main />
+                    <Header menuAbierto={menuAbierto} setMenuAbierto={setMenuAbierto} />
+                    <Main menuAbierto={menuAbierto}  setMenuAbierto={setMenuAbierto} />
                     <Footer />
                 </BrowserRouter>
             </div>
@@ -60,49 +32,22 @@ function App() {
     );
 }
 
-function Main() {
+function Main({ menuAbierto, setMenuAbierto }) {
     return (
-        <main>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/Registro" element={<Registro />} />
-                <Route path="/RegistroInvestigador" element={<RegistroInvestigador />} />
-                <Route path="/investigador" element={<ProyectoInvestigador />} />
-
-                <Route path="/RegistroProyecto" element={<RegistroProyecto />} />
-                <Route path="/RegistroPresupuesto" element={<RegistroPresupuesto modoRegistro={false} />} />
-                <Route path="/VincularInvestigador" element={<VincularInvestigador />} />
-                <Route path="/consultaProyectos" element={<ConsultaProyectos />} />
-                <Route path="/registrar-gastos" element={<RegistrarGastosFinancieros />} />
-
-                <Route path="/AsignarInvestigador" element={<AsignarInvestigador />} />
-
-                <Route path="/PanelResumen" element={<PanelResumen />} />
-                <Route path="/administrador" element={<Administrador />} />
-                <Route path="/consultar/:id" element={<ProyectoSeleccionado />} />
-                <Route path="/proyectos/:id/horas" element={<ProyectoHorasAsignadas />} />
-                <Route path="/ListadoProyectos" element={<ListadoProyectos />} />
-                <Route path="/HorasAsignadas" element={<HorasAsignadas />} />
-                <Route path="/ConsultaGastos" element={<ConsultaGastos />} />
-
-            </Routes>
+        <main className="flex flex-1 min-h-0 pt-22.75">
+            <Sidebar
+                abierto={menuAbierto}
+                setMenuAbierto={setMenuAbierto}
+                className="h-full overflow-y-auto"
+            />
+            <div className="flex-1 min-h-0">
+                <AppRoutes />
+            </div>
         </main>
     );
 }
 
-function Header() {
-    const { user: usuario, logout: cerrarSesion } = useContext(AppContext);
-    const navigate = useNavigate();
-    const [menuAbierto, setMenuAbierto] = useState(false);
-    const [submenuAbierto, setSubmenuAbierto] = useState(false);
-
-    const rol = usuario?.roles?.[0];
-
-    function dirigirLogin() {
-        cerrarSesion();
-        navigate("/");
-    }
-
+function Header({ menuAbierto, setMenuAbierto }) {
     return (
         <header>
             <div className="header-content">
@@ -112,129 +57,13 @@ function Header() {
                     <img src={logoCICES} alt="Logo CICES" />
                 </div>
             </div>
-
             <div className="divider">
-                <button className="menu-toggle" onClick={() => setMenuAbierto((v) => !v)}>
+                <button
+                    onClick={() => setMenuAbierto(!menuAbierto)}
+                    className="p-1 text-2"
+                >
                     ☰
                 </button>
-
-                <nav>
-                    <ul className={`Menu ${menuAbierto ? "show" : ""}`}>
-                        {usuario && (
-                            <>
-                                {rol === "DIRECTOR" && (
-                                    <>
-                                        <BtnLink to="/director" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Resumen General
-                                        </BtnLink>
-
-                                        <BtnLink to="/director" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Gestionar Personal
-                                        </BtnLink>
-
-                                        {/* Dropdown Gestión de Proyectos */}
-                                        <li className={`navbar-item ${submenuAbierto ? "active" : ""}`}>
-                                            <button
-                                                type="button"
-                                                className={`btn btn--link nav-toggle ${submenuAbierto ? "is-active" : ""}`}
-                                                onClick={() => setSubmenuAbierto(v => !v)}
-                                            >
-                                                Gestión de Proyectos <span className="arrow">{submenuAbierto ? "▲" : "▼"}</span>
-                                            </button>
-
-                                            <ul className={`dropdown ${submenuAbierto ? "show" : ""}`}>
-                                                <li><NavLink to="/consultaProyectos" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Consultar Proyectos</NavLink></li>
-                                                <li><NavLink to="/RegistroProyecto" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Registrar Proyectos</NavLink></li>
-                                                <li><NavLink to="/VincularInvestigador" onClick={() => { setMenuAbierto(false); setSubmenuAbierto(false); }} className="dropdown-link">Asignar Investigadores</NavLink></li>
-                                            </ul>
-                                        </li>
-
-
-                                        <BtnLink to="/director" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Gastos de Proyectos
-                                        </BtnLink>
-                                        <BtnLink to="/director" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Generar Reportes
-                                        </BtnLink>
-                                        <BtnLink to="/director" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Notificaciones
-                                        </BtnLink>
-                                        <BtnLink to="/perfil" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Perfil
-                                        </BtnLink>
-
-                                        <li>
-                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion </button>
-                                        </li>
-                                    </>
-                                )}
-
-                                {rol === "ADMINISTRADOR" && (
-                                    <>
-                                        <BtnLink to="/RegistroProyecto" onClick={() => setMenuAbierto(false)}  variant="ghost">
-                                            Registrar Proyecto
-                                        </BtnLink>
-                                        <BtnLink to="/consultaProyectos" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Consultar Proyectos
-                                        </BtnLink>
-                                        <BtnLink to="/consultaProyectos" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Actualizar Proyecto
-                                        </BtnLink>
-                                        <BtnLink to="/VincularInvestigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Asignar Investigadores
-                                        </BtnLink>
-                                        <BtnLink to="/administrador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Generar Reportes
-                                        </BtnLink>
-                                        <BtnLink to="/administrador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Notificaciones
-                                        </BtnLink>
-                                        <BtnLink to="/perfil" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Perfil
-                                        </BtnLink>
-
-                                        <li>
-                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion </button>
-                                        </li>
-                                    </>
-                                )}
-
-                                {rol === "INVESTIGADOR" && (
-                                    <>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Historial de Participación
-                                        </BtnLink>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Mis Proyectos
-                                        </BtnLink>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Custodia de Datos
-                                        </BtnLink>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Actualizar Proyecto
-                                        </BtnLink>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Certificaciones
-                                        </BtnLink>
-                                        <BtnLink to="/registrar-gastos" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Gestion de Gastos
-                                        </BtnLink>
-                                        <BtnLink to="/investigador" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Notificaciones
-                                        </BtnLink>
-                                        <BtnLink to="/perfil" onClick={() => setMenuAbierto(false)} variant="ghost">
-                                            Perfil
-                                        </BtnLink>
-
-                                        <li>
-                                            <button className="cerrarSesionbtn" onClick={dirigirLogin}>Cerrar Sesion </button>
-                                        </li>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </ul>
-                </nav>
             </div>
         </header>
     );

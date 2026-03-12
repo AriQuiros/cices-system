@@ -1,175 +1,114 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
+import AsignarInvestigadores from "./AsignarInvestigadores.jsx";
+import GestiNHoras from "../presupuesto/horas/GestionHoras.jsx";
+import BuscadorProyecto from "../../components/BusquedaProyecto.jsx"; // <- import
+
+import { useContext } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
-import { cargarProyectos } from "../../services/ProyectoService.jsx";
 
-import AsignarInvestigador from "./AsignarInvestigador.jsx";
-import AsignarHoras from "./AsignarHoras.jsx";
-
-export default function AsignarInvestigadorHoras() {
-
+export default function WizardAsignacion() {
     const { token } = useContext(AppContext);
 
     const [paso, setPaso] = useState(1);
-
-    const [proyectos, setProyectos] = useState([]);
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 
-    useEffect(() => {
-        obtenerProyectos();
-    }, []);
-
-    const obtenerProyectos = async () => {
-        try {
-            const data = await cargarProyectos(token, true);
-            setProyectos(data || []);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const seleccionarProyecto = (p) => {
-        setProyectoSeleccionado(p);
-    };
+    const pasos = [
+        { id: 1, label: "Seleccionar proyecto" },
+        { id: 2, label: "Asignar investigadores" },
+        { id: 3, label: "Asignar horas" },
+    ];
 
     return (
-        <div>
+        <div className="max-w-5xl mx-auto p-6">
+            <h2 className="text-2xl font-bold mb-6">Asignar Investigadores y Horas</h2>
 
-            <h2>Asignar Investigadores y Horas</h2>
-
-            {/* PASOS */}
-            <div>
-
-                <button type="button" onClick={() => setPaso(1)}>
-                    <span>1</span>
-                    <span>Seleccionar proyecto</span>
-                </button>
-
-                <button
-                    type="button"
-                    disabled={!proyectoSeleccionado}
-                    onClick={() => setPaso(2)}
-                >
-                    <span>2</span>
-                    <span>Asignar investigadores</span>
-                </button>
-
-                <button
-                    type="button"
-                    disabled={!proyectoSeleccionado}
-                    onClick={() => setPaso(3)}
-                >
-                    <span>3</span>
-                    <span>Asignar horas</span>
-                </button>
-
+            {/* Burbujas de pasos */}
+            <div className="flex justify-between items-center mb-8">
+                {pasos.map((p, idx) => (
+                    <div key={p.id} className="flex-1 flex flex-col items-center relative">
+                        <button
+                            className={`
+                w-10 h-10 rounded-full flex items-center justify-center mb-2
+                ${paso === p.id ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"}
+                ${p.id > 1 && !proyectoSeleccionado ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-400"}
+              `}
+                            disabled={p.id > 1 && !proyectoSeleccionado}
+                            onClick={() => setPaso(p.id)}
+                        >
+                            {p.id}
+                        </button>
+                        <span className="text-sm text-center">{p.label}</span>
+                        {idx < pasos.length - 1 && (
+                            <div
+                                className={`absolute top-4 left-1/2 w-full h-1 -translate-x-1/2 bg-gray-300 ${
+                                    paso > p.id ? "bg-blue-600" : ""
+                                }`}
+                                style={{ zIndex: -1 }}
+                            ></div>
+                        )}
+                    </div>
+                ))}
             </div>
 
+            {/* Contenido de pasos */}
+            <div className="space-y-6">
+                {paso === 1 && (
+                    <div className="p-4 border rounded-lg shadow-sm bg-white">
+                        <h3 className="font-semibold mb-4">Paso 1: Seleccionar proyecto</h3>
 
-            {/* PASO 1 */}
-            {paso === 1 && (
+                        {/* Buscador real de proyectos */}
+                        <BuscadorProyecto token={token} onSelect={setProyectoSeleccionado} />
 
-                <section>
-
-                    <h3>Paso 1: Seleccionar proyecto</h3>
-
-                    <input
-                        type="text"
-                        placeholder="Filtrar por código o nombre"
-                    />
-
-                    <div>
-
-                        {proyectos.map((p) => (
-                            <div
-                                key={`${p.codigo}-${p.nombre}`}
-                                onClick={() => seleccionarProyecto(p)}
-                            >
-                                <b>{p.codigo}</b> - {p.nombre}
+                        {proyectoSeleccionado && (
+                            <div className="mt-4 p-2 bg-gray-100 rounded border">
+                                <strong>Proyecto seleccionado:</strong> {proyectoSeleccionado.nombre} ({proyectoSeleccionado.codigoProyecto})
                             </div>
-                        ))}
-
-                    </div>
-
-                    <button
-                        type="button"
-                        disabled={!proyectoSeleccionado}
-                        onClick={() => setPaso(2)}
-                    >
-                        Continuar
-                    </button>
-
-                </section>
-            )}
-
-
-            {/* PASO 2 */}
-            {paso === 2 && (
-
-                <section>
-
-                    <h3>Paso 2: Asignar investigadores</h3>
-
-                    <AsignarInvestigador
-                        codigoProyecto={proyectoSeleccionado?.codigo}
-                        esconder={true}
-                    />
-
-                    <div>
+                        )}
 
                         <button
-                            type="button"
-                            onClick={() => setPaso(1)}
-                        >
-                            Volver
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() => setPaso(3)}
+                            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+                            disabled={!proyectoSeleccionado}
+                            onClick={() => setPaso(2)}
                         >
                             Continuar
                         </button>
-
                     </div>
+                )}
 
-                </section>
-            )}
+                {paso === 2 && (
+                    <div className="p-4 border rounded-lg shadow-sm bg-white">
+                        <h3 className="font-semibold mb-4">Paso 2: Asignar investigadores</h3>
+                        <AsignarInvestigadores proyectoSeleccionado={proyectoSeleccionado} />
+                        <div className="flex justify-between mt-4">
+                            <button
+                                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                                onClick={() => setPaso(1)}
+                            >
+                                Volver
+                            </button>
+                            <button
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
+                                onClick={() => setPaso(3)}
+                            >
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                )}
 
-
-            {/* PASO 3 */}
-            {paso === 3 && (
-
-                <section>
-
-                    <h3>Paso 3: Asignar horas</h3>
-
-                    <AsignarHoras
-                        proyectoInicial={proyectoSeleccionado}
-                        mostrarSelectorProyecto={false}
-                    />
-
-                    <button
-                        type="button"
-                        onClick={() => setPaso(2)}
-                    >
-                        Volver
-                    </button>
-
-                </section>
-            )}
-
-
-            {/* RESULTADO */}
-            <section>
-
-                <h3>Resultado actual</h3>
-
-                <pre>
-                    {JSON.stringify(proyectoSeleccionado, null, 2)}
-                </pre>
-
-            </section>
-
+                {paso === 3 && (
+                    <div className="p-4 border rounded-lg shadow-sm bg-white">
+                        <h3 className="font-semibold mb-4">Paso 3: Asignar horas</h3>
+                        <GestiNHoras proyectoInicial={proyectoSeleccionado} mostrarSelectorProyecto={false} />
+                        <button
+                            className="mt-4 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                            onClick={() => setPaso(2)}
+                        >
+                            Volver
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

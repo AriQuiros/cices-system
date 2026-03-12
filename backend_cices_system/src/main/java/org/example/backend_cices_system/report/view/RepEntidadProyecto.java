@@ -47,9 +47,4 @@ public class RepEntidadProyecto {
     @Column(name = "NOMBRE_ENTIDAD", nullable = false, length = 254)
     private String nombreEntidad;
 
-    @Size(max = 4)
-    @NotNull
-    @Column(name = "PAIS_ENTIDAD", nullable = false, length = 4)
-    private String paisEntidad;
-
 }

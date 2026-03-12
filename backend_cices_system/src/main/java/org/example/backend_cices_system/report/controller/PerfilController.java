@@ -1,7 +1,8 @@
 package org.example.backend_cices_system.report.controller;
 
 import org.example.backend_cices_system.report.serviceVw.PerfilService;
-import org.example.backend_cices_system.report.view.RepPersonaBase;
+import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -17,10 +18,10 @@ public class PerfilController {
     }
 
     @GetMapping("/empleado/{identificacion}")
-    public RepPersonaBase perfilEmpleado(
+    public ResponseEntity<?> perfilEmpleado(
             @PathVariable String identificacion
     ) {
-        return perfilService.obtenerPerfilEmpleado(identificacion);
+        return ResponseEntity.ok(perfilService.obtenerPerfilEmpleado(identificacion));
     }
 
     @GetMapping("/usuario/{identificacion}")

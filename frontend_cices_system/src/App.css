@@ -162,7 +162,6 @@ header {
 main {
   flex: 1;
   background: #fff;
-  margin-top: 98px;
 }
 
 /* --- FOOTER --- */
@@ -425,8 +424,6 @@ footer {
 }
 
 
-
-
 /* botón trigger con el mismo look de BtnLink ghost */
 .nav-toggle {
     position: relative;
@@ -439,9 +436,6 @@ footer {
     }
 
 .dropdown { top: calc(100% + 6px); left: 0; }
-
-
-
 
 
 .btn--link {

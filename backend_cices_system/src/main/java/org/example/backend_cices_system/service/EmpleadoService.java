@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
-    private final AuthService authService;
+    private final UsuarioService usuarioService;
 
-    EmpleadoService (EmpleadoRepository empleadoRepository, AuthService authService) {
+    EmpleadoService (EmpleadoRepository empleadoRepository, UsuarioService usuarioService) {
         this.empleadoRepository = empleadoRepository;
-        this.authService = authService;
+        this.usuarioService = usuarioService;
     }
 
     @Transactional
@@ -24,11 +24,11 @@ public class EmpleadoService {
         if (existeIdentificacion(dto.identificacion()))
             throw new IllegalStateException("La identificación '" + dto.identificacion() + "' ya se encuentra registrada");
 
-        if (authService.existeNombreUsuario(dto.usuario().nombreUsuario()))
+        if (usuarioService.existeNombreUsuario(dto.usuario().nombreUsuario()))
             throw new IllegalStateException("El nombre de usuario '" + dto.usuario().nombreUsuario() + "' ya se encuentra registrado");
 
         // 1. Crear usuario
-        Usuario usuario = authService.guardarUsuario(dto.usuario());
+        Usuario usuario = usuarioService.guardarUsuario(dto.usuario());
 
         // 2. Crear empleado
         Empleado empleado = new Empleado();

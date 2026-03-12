@@ -14,12 +14,12 @@ public class NotificacionService {
     private final NotificacionRepository notificacionRepository;
     private final NotificacionUsuarioRepository notificacionUsuarioRepository;
     private final CatalogoService catalogoService;
-    private final AuthService authService;
+    private final UsuarioService usuarioService;
 
-    public NotificacionService(NotificacionRepository notificacionRepository, AuthService authService,
+    public NotificacionService(NotificacionRepository notificacionRepository, UsuarioService usuarioService,
                                NotificacionUsuarioRepository notificacionUsuarioRepository, CatalogoService catalogoService) {
         this.catalogoService = catalogoService;
-        this.authService = authService;
+        this.usuarioService = usuarioService;
         this.notificacionRepository = notificacionRepository;
         this.notificacionUsuarioRepository = notificacionUsuarioRepository;
     }
@@ -39,7 +39,7 @@ public class NotificacionService {
             var notificacionUsuario = new NotificacionUsuario();
             notificacionUsuario.setIdNotificacion(notificacion);
 
-            var usuario = authService.obtenerXNombreUsuario(usuarioDTO.nombreUsuario());
+            var usuario = usuarioService.obtenerUsuarioActivo(usuarioDTO.nombreUsuario()).get();
             notificacionUsuario.setIdUsuario(usuario);
 
             notificacionUsuarioRepository.save(notificacionUsuario);

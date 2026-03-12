@@ -1,0 +1,79 @@
+package org.example.backend_cices_system.report.serviceVw;
+
+import org.example.backend_cices_system.report.dao.RepPersonaUsuariaRepository;
+import org.example.backend_cices_system.report.dto.PersonaUsuariaDTO;
+import org.example.backend_cices_system.report.dto.UsuarioPersonaDTO;
+import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class RepPersonaUsuariaService {
+
+    private final RepPersonaUsuariaRepository personaRepo;
+
+    public RepPersonaUsuariaService(RepPersonaUsuariaRepository personaRepo) {
+        this.personaRepo = personaRepo;
+    }
+
+    public List<PersonaUsuariaDTO> obtenerTodos(){
+        return construirLista(null);
+    }
+
+    public List<PersonaUsuariaDTO> obtenerAsistentesAdministrativos(){
+        Set<String> roles = Set.of("ASISTENTE", "ADMINISTRATIVO");
+        return construirLista(roles);
+    }
+
+    private List<PersonaUsuariaDTO> construirLista(Set<String> rolesPermitidos){
+
+        List<RepPersonaUsuaria> todos = personaRepo.findAll();
+        Map<String, PersonaUsuariaDTO> mapaPersonas = new HashMap<>();
+
+        for (RepPersonaUsuaria rep : todos){
+
+            if(rolesPermitidos != null && !rolesPermitidos.contains(rep.getNombreRol().toUpperCase())){
+                continue;
+            }
+
+            String id = rep.getIdentificacion();
+
+            mapaPersonas.computeIfAbsent(id, k ->
+                    new PersonaUsuariaDTO(
+                            rep.getNombreCompleto(),
+                            rep.getIdentificacion(),
+                            rep.getPais(),
+                            rep.getCorreo(),
+                            rep.getNumeroTelefono(),
+                            rep.getGradoAcademico(),
+                            new ArrayList<>()
+                    )
+            );
+
+            mapaPersonas.get(id).roles().add(rep.getNombreRol());
+        }
+
+        return new ArrayList<>(mapaPersonas.values());
+    }
+
+    public List<UsuarioPersonaDTO> todosUsuarios(){
+        List<RepPersonaUsuaria> todos = personaRepo.findAll();
+        Map<String, UsuarioPersonaDTO> mapaPersonas = new HashMap<>();
+
+        for (RepPersonaUsuaria rep : todos){
+            String id = rep.getIdentificacion();
+            mapaPersonas.computeIfAbsent(id, k ->
+                    new UsuarioPersonaDTO(
+                            rep.getIdUsuario(),
+                            rep.getNombreCompleto(),
+                            rep.getNombreUsuario(),
+                            rep.getActivo(),
+                            new ArrayList<>()
+                    )
+            );
+            mapaPersonas.get(id).roles().add(rep.getNombreRol());
+        }
+        return new ArrayList<>(mapaPersonas.values());
+    }
+}

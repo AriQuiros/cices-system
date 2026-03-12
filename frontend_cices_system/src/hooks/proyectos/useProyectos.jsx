@@ -51,26 +51,27 @@ export function useProyectos() {
     };
 
     const proyectosFiltrados = useMemo(() => {
-
         let resultado = proyectos.filter(p => {
-            // lógica de filtros
+            // filtro por texto
             if (filtros.texto) {
                 const texto = filtros.texto.toLowerCase();
-                if (!p.nombre?.toLowerCase().includes(texto) && !p.codigoProyecto?.toLowerCase().includes(texto)) {
+                if (!p.nombreProyecto?.toLowerCase().includes(texto) && !p.codigoProyecto?.toLowerCase().includes(texto)) {
                     return false;
                 }
             }
+
             if (filtros.estado && p.estado.despliegue !== filtros.estado) return false;
-            if (filtros.tipoProyecto && p.tipoProyecto.despliegue !== filtros.tipoProyecto) return false;
-            if (filtros.lineaInvestigacion && p.lineaInvestigacion !== filtros.lineaInvestigacion) return false;
+            if (filtros.tipoProyecto.length > 0 && !filtros.tipoProyecto.includes(p.tipoProyecto.valor)) return false;
+            if (filtros.lineaInvestigacion.length > 0 && !filtros.lineaInvestigacion.includes(p.lineaInvestigacion)) return false;
             if (filtros.institucion && !p.institucion?.toLowerCase().includes(filtros.institucion.toLowerCase())) return false;
+
             return true;
         });
 
+        // ordenar
         resultado.sort((a, b) => {
             const valA = new Date(a[orden.campo]);
             const valB = new Date(b[orden.campo]);
-
             return orden.asc ? valA - valB : valB - valA;
         });
 

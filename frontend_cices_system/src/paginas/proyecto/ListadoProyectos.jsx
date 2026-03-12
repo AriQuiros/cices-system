@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useProyectos } from "../../hooks/proyectos/useProyectos";
 import "../consultaProyectos/ConsultaProyectos.css";
 import {useTiposCatalogo} from "../../hooks/useTiposCatalogo.js";
+import Select from "react-select";
 
 function ListadoProyectos() {
     const token = localStorage.getItem("token");
@@ -20,6 +21,20 @@ function ListadoProyectos() {
         "ESTADO_PROYECTO",
         "TIPO_PROYECTO"
     ]);
+
+    const opcionesTipos = tipos["TIPO_PROYECTO"]?.map(t => ({
+        value: t.valor,
+        label: t.despliegue
+    })) || [];
+    const opcionesLineas = lineas?.map(l => ({ value: l, label: l })) || [];
+    const manejarLineasSelect = selectedOptions => {
+        handleChange("lineaInvestigacion", selectedOptions ? selectedOptions.map(o => o.value) : []);
+    };
+
+    const manejarTiposSelect = selectedOptions => {
+        handleChange("tipoProyecto", selectedOptions ? selectedOptions.map(o => o.value) : []);
+    };
+
     return (
 
         <div className="contenedor_proyectos">
@@ -33,25 +48,23 @@ function ListadoProyectos() {
                     onChange={(e) => handleChange("texto", e.target.value)}
                 />
 
-                <select
-                    value={filtros.lineaInvestigacion}
-                    onChange={(e) => handleChange("lineaInvestigacion", e.target.value)}
-                >
-                    <option value="">Línea de investigación</option>
-                    {lineas?.map((opcion, idx) => (
-                        <option key={opcion ?? idx} value={opcion}>{opcion}</option>
-                    ))}
-                </select>
+                <Select
+                    options={opcionesLineas}
+                    isMulti
+                    value={opcionesLineas.filter(l => filtros.lineaInvestigacion.includes(l.value))}
+                    onChange={manejarLineasSelect}
+                    placeholder="Línea(s) de investigación"
+                    closeMenuOnSelect={false}
+                />
 
-                <select
-                    value={filtros.tipoProyecto}
-                    onChange={(e) => handleChange("tipoProyecto", e.target.value)}
-                >
-                    <option value="">Tipo de proyecto</option>
-                    {tipos["TIPO_PROYECTO"]?.map((opcion) => (
-                        <option key={opcion.id} value={opcion.valor}>{opcion.despliegue}</option>
-                    ))}
-                </select>
+                <Select
+                    options={opcionesTipos}
+                    isMulti
+                    value={opcionesTipos.filter(t => filtros.tipoProyecto.includes(t.value))}
+                    onChange={manejarTiposSelect}
+                    placeholder="Tipo(s) de proyecto"
+                    closeMenuOnSelect={false}
+                />
 
                 <select
                     value={filtros.estado}

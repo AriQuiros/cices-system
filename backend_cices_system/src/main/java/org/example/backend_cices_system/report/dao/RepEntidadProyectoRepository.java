@@ -9,7 +9,6 @@ import java.util.List;
 @Repository
 public interface RepEntidadProyectoRepository extends JpaRepository<RepEntidadProyecto, Integer> {
 
-    List<RepEntidadProyecto> findAll();
 
     List<RepEntidadProyecto> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
 
@@ -17,5 +16,4 @@ public interface RepEntidadProyectoRepository extends JpaRepository<RepEntidadPr
 
     List<RepEntidadProyecto> findByNombreEntidadContainingIgnoreCase(String nombreEntidad);
 
-    List<RepEntidadProyecto> findByPaisEntidad(String paisEntidad);
 }

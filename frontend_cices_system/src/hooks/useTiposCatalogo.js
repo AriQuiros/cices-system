@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchTiposCatalogo } from '../services/catalogoService';
-import {notify} from "../utils/estilo/notify.jsx";
+import {notify} from "../utils/ui/notify.jsx";
 
 export function useTiposCatalogo(token, tiposSolicitados = []) {
     const [tipos, setTipos] = useState({});

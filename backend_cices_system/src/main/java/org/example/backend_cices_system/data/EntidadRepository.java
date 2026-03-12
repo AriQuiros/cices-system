@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface EntidadRepository extends JpaRepository<Entidad, Short> {
+public interface EntidadRepository extends JpaRepository<Entidad, Integer> {
     Optional<Entidad> findByNombreIgnoreCase(String nombre);
     boolean existsByNombreIgnoreCase(String nombre);
 }

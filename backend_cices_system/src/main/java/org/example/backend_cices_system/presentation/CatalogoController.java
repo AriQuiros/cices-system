@@ -18,45 +18,16 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class CatalogoController {
     @Autowired
-    private RolRepository rolRepository;
-    @Autowired
     private CatalogoService catalogoService;
-    @Autowired
-    private RolProyectoRepository rolProyectoRepository;
-
-    @GetMapping("/roles")
-    public ResponseEntity<List<Rol>> obtenerRoles() {
-        return ResponseEntity.ok(rolRepository.findAll());
-    }
 
     @PostMapping("/tipos")
     public ResponseEntity<Map<String, List<CodigoDTO>>> obtenerPorTipos(@RequestBody List<String> tipos) {
         return ResponseEntity.ok(catalogoService.obtenerCodigosPorTipos(tipos));
     }
 
-    /*@GetMapping("/grados_academicos")
-    public ResponseEntity<List<CodigoDTO>> obtenerGradosAcademicos() {
+    @GetMapping("/grados_academicos")
+    public ResponseEntity<?> obtenerGradosAcademicos() {
         return ResponseEntity.ok(catalogoService.obtenerGradosAcademicos());
     }
-
-    @GetMapping("/tipos_identificacion")
-    public ResponseEntity<List<CodigoDTO>> obtenerTiposIdentificacion() {
-        return ResponseEntity.ok(catalogoService.obtenerTiposIdentificacion());
-    }
-
-    @GetMapping("/tipos_certificacion")
-    public ResponseEntity<List<CodigoDTO>> obtenerTiposCertificacion() {
-        return ResponseEntity.ok(catalogoService.obtenerTiposCertificacion());
-    }
-
-    @GetMapping("/roles-proyecto")
-    public List<Map<String,Object>> rolesProyecto() {
-        return rolProyectoRepository.listar().stream()
-                .map(r -> Map.<String,Object>of(
-                        "id", String.valueOf(r.getId()),               // frontend usa String
-                        "nombre", r.getNombrePermiso()                 // texto visible
-                ))
-                .toList();
-    }*/
 
 }

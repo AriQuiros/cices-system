@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
-import {notify} from "../../utils/ui/notify.jsx";
-
+import {notify} from "../../utils/ui/notify";
+import {confirm} from "../../utils/ui/confirm";
 
 export default function ListaUsuarios() {
 
@@ -22,8 +22,6 @@ export default function ListaUsuarios() {
     useEffect(() => {
         aplicarFiltros();
     }, [nombreFiltro, estadoFiltro, rolesSeleccionados, usuarios]);
-
-
 
     const cargarUsuarios = async () => {
         try {
@@ -78,9 +76,11 @@ export default function ListaUsuarios() {
     const cambiarEstado = async (idUsuario, estadoActual) => {
         const accion = estadoActual ? "desactivar" : "activar";
 
-        const confirmar = window.confirm(
-            `¿Está seguro que desea ${accion} este usuario?`
-        );
+        const confirmar = await confirm.action({
+            title: `¿Desea ${accion} este usuario?`,
+            message: ""
+        });
+
         if (!confirmar) return;
 
         try {

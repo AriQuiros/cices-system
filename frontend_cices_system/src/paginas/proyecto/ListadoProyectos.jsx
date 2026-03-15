@@ -112,9 +112,9 @@ function ListadoProyectos() {
                             <h3>{p.codigoProyecto}</h3>
 
                             <p><b>Nombre:</b> {p.nombreProyecto}</p>
-                            <p><b>Tipo:</b> {p.tipoProyecto.despliegue}</p>
+                            <p><b>Tipo:</b> {p.tipoProyecto}</p>
                             <p><b>Línea:</b> {p.lineaInvestigacion}</p>
-                            <p><b>Estado:</b> {p.estado.despliegue}</p>
+                            <p><b>Estado:</b> {p.estado}</p>
                             <p>{p.fechaInicio} - {p.fechaFinalizacion}</p>
 
                             <Link

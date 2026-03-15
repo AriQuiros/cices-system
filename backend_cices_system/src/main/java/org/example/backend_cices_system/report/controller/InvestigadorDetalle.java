@@ -1,20 +1,22 @@
 package org.example.backend_cices_system.report.controller;
 
+import org.example.backend_cices_system.report.serviceVw.InvestigadorDetalleService;
 import org.example.backend_cices_system.report.serviceVw.PerfilService;
-import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/perfil")
-public class PerfilController {
+@RequestMapping("/api/reports/investigadores")
+public class InvestigadorDetalle {
 
     private final PerfilService perfilService;
+    private final InvestigadorDetalleService investigadorDetalleService;
 
-    public PerfilController(PerfilService perfilService) {
+    public InvestigadorDetalle(PerfilService perfilService, InvestigadorDetalleService investigadorDetalleService) {
         this.perfilService = perfilService;
+        this.investigadorDetalleService = investigadorDetalleService;
     }
 
     @GetMapping("/empleado/{identificacion}")
@@ -31,10 +33,10 @@ public class PerfilController {
         return perfilService.obtenerPerfilUsuario(identificacion);
     }
 
-    @GetMapping("/investigador/{identificacion}")
-    public Map<String, Object> perfilInvestigador(
+    @GetMapping("/{identificacion}")
+    public ResponseEntity<?> perfilInvestigador(
             @PathVariable String identificacion
     ) {
-        return perfilService.obtenerPerfilInvestigador(identificacion);
+        return ResponseEntity.ok(investigadorDetalleService.obtenerInvestigador(identificacion));
     }
 }

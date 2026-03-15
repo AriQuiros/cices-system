@@ -8,7 +8,7 @@ import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 
 const ConsultaPresupuestos = () => {
 
-    const { token } = useContext(AppContext);
+    const { token, user } = useContext(AppContext);
 
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 
@@ -20,10 +20,12 @@ const ConsultaPresupuestos = () => {
     const [ordenHoras, setOrdenHoras] = useState("");
 
     const seleccionarProyecto = async (proyecto) => {
+
         if (!proyecto) {
             setProyectoSeleccionado(null);
             return;
         }
+
         setProyectoSeleccionado(proyecto);
 
         try {
@@ -104,9 +106,6 @@ const ConsultaPresupuestos = () => {
 
     }, [presupuestos, ordenFecha, ordenMonto, ordenHoras]);
 
-    const obtenerFechasInvestigador = (id) =>
-        investigadoresProyecto.find(i => i.id === id);
-
     return (
 
         <div>
@@ -115,6 +114,7 @@ const ConsultaPresupuestos = () => {
 
             <BuscadorProyecto
                 token={token}
+                user={user}
                 onSelect={seleccionarProyecto}
             />
 
@@ -122,7 +122,8 @@ const ConsultaPresupuestos = () => {
 
                 <div>
 
-                    <h3>Información del presupesto - Horas</h3>
+                    <h3>Información del presupuesto - Horas</h3>
+
                     <label>Fecha asignación:</label>
 
                     <select
@@ -163,6 +164,22 @@ const ConsultaPresupuestos = () => {
                         const usadas = totalHorasAsignadas(p);
                         const restantes = total - usadas;
 
+                        // ORDENAR INVESTIGADORES POR HORAS EN ESTE PRESUPUESTO
+                        const investigadoresOrdenados = [...investigadoresProyecto].sort((a, b) => {
+
+                            const ha = p.horas?.find(h => h.investigador?.id === a.id);
+                            const hb = p.horas?.find(h => h.investigador?.id === b.id);
+
+                            const totalA = (ha?.cantidadHorasMes || 0) * (ha?.cantidadMeses || 0);
+                            const totalB = (hb?.cantidadHorasMes || 0) * (hb?.cantidadMeses || 0);
+
+                            if (ordenHoras === "mayor") return totalB - totalA;
+                            if (ordenHoras === "menor") return totalA - totalB;
+
+                            return 0;
+
+                        });
+
                         return (
 
                             <div key={p.id}>
@@ -179,7 +196,7 @@ const ConsultaPresupuestos = () => {
 
                                 <p><strong>Horas asignadas:</strong> {usadas}</p>
 
-                                <p >
+                                <p>
                                     <strong>Horas restantes:</strong> {restantes}
                                 </p>
 
@@ -189,7 +206,9 @@ const ConsultaPresupuestos = () => {
 
                                     <thead>
                                     <tr>
+                                        <th>ID</th>
                                         <th>Investigador</th>
+                                        <th>Rol</th>
                                         <th>Fecha inicio</th>
                                         <th>Fecha fin</th>
                                         <th>Horas/Mes</th>
@@ -200,28 +219,25 @@ const ConsultaPresupuestos = () => {
 
                                     <tbody>
 
-                                    {p.horas?.map(h => {
+                                    {investigadoresOrdenados.map(inv => {
 
-                                        const inv = obtenerFechasInvestigador(h.investigador?.id);
+                                        const h = p.horas?.find(hora => hora.investigador?.id === inv.id);
 
                                         const totalInv =
-                                            (h.cantidadHorasMes || 0) *
-                                            (h.cantidadMeses || 0);
+                                            (h?.cantidadHorasMes || 0) *
+                                            (h?.cantidadMeses || 0);
 
                                         return (
 
-                                            <tr key={h.id}>
+                                            <tr key={inv.id}>
 
-                                                <td>{h.investigador?.nombreInvestigador}</td>
-
-                                                <td>{inv?.fechaInicio || "-"}</td>
-
-                                                <td>{inv?.fechaFin || "-"}</td>
-
-                                                <td>{h.cantidadHorasMes}</td>
-
-                                                <td>{h.cantidadMeses}</td>
-
+                                                <td>{inv.identificacionInvestigador}</td>
+                                                <td>{inv.nombreInvestigador}</td>
+                                                <td>{inv.rolProyecto?.nombreRolProyecto}</td>
+                                                <td>{inv.fechaInicio || "-"}</td>
+                                                <td>{inv.fechaFin || "-"}</td>
+                                                <td>{h?.cantidadHorasMes || 0}</td>
+                                                <td>{h?.cantidadMeses || 0}</td>
                                                 <td>{totalInv}</td>
 
                                             </tr>

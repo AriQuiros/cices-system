@@ -17,7 +17,7 @@ const formularioVacio = {
 
 const RegistroGastos = () => {
 
-    const { token } = useContext(AppContext);
+    const { token, user } = useContext(AppContext);
 
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
     const [presupuestos, setPresupuestos] = useState([]);
@@ -228,6 +228,8 @@ const RegistroGastos = () => {
 
             <BuscadorProyecto
                 token={token}
+                user={user}
+                principal={true}
                 onSelect={seleccionarProyecto}
             />
 

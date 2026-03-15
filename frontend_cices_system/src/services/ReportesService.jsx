@@ -10,6 +10,16 @@ export const DistribucionHoras = {
         }
 
         return await response.json();
+    },
+
+    async obtenerTodos() {
+        const response = await fetch(`${API_URL}/presupuesto-horas`);
+
+        if (!response.ok) {
+            throw new Error("Error al obtener presupuestos de horas");
+        }
+
+        return await response.json();
     }
 
 };

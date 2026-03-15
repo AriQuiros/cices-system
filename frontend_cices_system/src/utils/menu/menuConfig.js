@@ -94,7 +94,7 @@ export const menuConfig = [
             },
             {
                 label: "Investigadores",
-                path: "/registro-investigador",
+                path: "/consulta-investigadores",
                 roles: ["ADMINISTRATIVO","DIRECTOR","ASISTENTE"]
             },
             {

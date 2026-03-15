@@ -23,11 +23,6 @@ public class ProyectoController {
         this.proyectoService = proyectoService;
     }
 
-    @GetMapping
-    public List<ProyectoDatosDTO> obtenerProyectosDatos() {
-        return proyectoService.obtenerProyectosDatos();
-    }
-
     @GetMapping("/lineas-investigacion")
     public String[] obtenerLineas() {
         return proyectoService.obtenerLineasInvestigacion().toArray(String[]::new);
@@ -40,18 +35,5 @@ public class ProyectoController {
         return ResponseEntity.ok(id);
     }
 
-    @GetMapping("/codigo-nombre-fechas")
-    public List<ProyectoFechasDTO> obtenerProyectos_CodigoNombre() {
-        List<Proyecto> proyectos = proyectoService.obtenerProyectos();
-        
-        return proyectos.stream()
-                .map(p -> new ProyectoFechasDTO(
-                        p.getCodigoProyecto(),
-                        p.getNombreProyecto(),
-                        p.getFechaInicio(),
-                        p.getFechaFinalizacion()
-                ))
-                .collect(Collectors.toList());
-    }
 
 }

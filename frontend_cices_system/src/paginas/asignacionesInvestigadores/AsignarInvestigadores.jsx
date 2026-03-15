@@ -169,9 +169,9 @@ const AsignarInvestigadores = () => {
 
             notify.success("Investigador eliminado");
 
-        } catch {
+        }  catch (error) {
 
-            notify.error("Error eliminando investigador");
+            notify.error(error.message || "Error eliminando investigador");
 
         }
 

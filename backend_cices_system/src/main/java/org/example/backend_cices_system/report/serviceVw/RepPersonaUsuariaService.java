@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.report.serviceVw;
 
 import org.example.backend_cices_system.report.dao.RepPersonaUsuariaRepository;
+import org.example.backend_cices_system.report.dto.InvestigadorConsultaDTO;
 import org.example.backend_cices_system.report.dto.PersonaUsuariaDTO;
 import org.example.backend_cices_system.report.dto.UsuarioPersonaDTO;
 import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
@@ -75,5 +76,41 @@ public class RepPersonaUsuariaService {
             mapaPersonas.get(id).roles().add(rep.getNombreRol());
         }
         return new ArrayList<>(mapaPersonas.values());
+    }
+
+    public List<InvestigadorConsultaDTO> obtenerInvestigadores(){
+        List<RepPersonaUsuaria> todos = personaRepo.findAll();
+
+        // Map para evitar duplicados por identificación
+        Map<String, InvestigadorConsultaDTO> mapaPersonas = new HashMap<>();
+
+        for (RepPersonaUsuaria rep : todos){
+            String id = rep.getIdentificacion();
+
+            // Solo agregamos si no existe
+            mapaPersonas.computeIfAbsent(id, k ->
+                    new InvestigadorConsultaDTO(
+                            rep.getNombreCompleto(),
+                            rep.getIdentificacion(),
+                            rep.getPais(),
+                            rep.getCorreo(),
+                            rep.getNumeroTelefono(),
+                            rep.getGradoAcademico(),
+                            rep.getInstitucionOrigen(),
+                            rep.getUnidadAcademica(),
+                            rep.getTemaInteres()
+                    )
+            );
+        }
+
+        return new ArrayList<>(mapaPersonas.values());
+    }
+
+    public Integer idInvestigadorPorUsuario(Integer idUsuario){
+        return personaRepo.findDistinctByIdUsuario(idUsuario).getIdInvestigador();
+    }
+
+    public Integer idUsuarioPorNombre(String nombre){
+        return personaRepo.findDistinctFirstByNombreUsuario(nombre).getIdUsuario();
     }
 }

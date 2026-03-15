@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface RepPersonaUsuariaRepository extends JpaRepository<RepPersonaUsuaria, Integer> {
     List<RepPersonaUsuaria> findByIdentificacion(String identificacion);
+    RepPersonaUsuaria findDistinctByIdUsuario(Integer idUsuario);
+    RepPersonaUsuaria findDistinctFirstByNombreUsuario(String nombreUsuario);
 }

@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import { cargarProyectos } from "../services/ProyectoService.jsx";
 
-const BuscadorProyecto = ({ token, onSelect }) => {
+const BuscadorProyecto = ({ token, user, principal = false, onSelect }) => {
 
     const [proyectos, setProyectos] = useState([]);
     const [selected, setSelected] = useState(null);
 
     useEffect(() => {
-        cargarProyectos(token, true).then(res => setProyectos(res || []));
-    }, [token]);
+        cargarProyectos(token, user, principal).then(res => setProyectos(res || []));
+    }, [token, user]);
 
     const options = proyectos.map(p => ({
         value: p,

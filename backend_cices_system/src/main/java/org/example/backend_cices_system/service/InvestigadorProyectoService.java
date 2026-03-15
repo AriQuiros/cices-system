@@ -6,7 +6,6 @@ import org.example.backend_cices_system.dto.RolProyectoDTO;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class InvestigadorProyectoService {

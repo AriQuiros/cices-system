@@ -115,20 +115,6 @@ public class ProyectoService {
         return proyectoRepository.findDistinctLineasInvestigacion();
     }
 
-    public List<ProyectoDatosDTO> obtenerProyectosDatos() {
-        return proyectoRepository.findAll().stream()
-                .map(p -> new ProyectoDatosDTO(p.getId(),
-                        p.getCodigoProyecto(),
-                        p.getNombreProyecto(),
-                        p.getLineaInvestigacion(),
-                        catalogoService.obtenerDto(p.getIdCodigoTipoProyecto()),
-                        catalogoService.obtenerDto(p.getIdCodigoTipoEstado()),
-                        p.getFechaInicio(),
-                        p.getFechaFinalizacion()
-                ))
-                .toList();
-    }
-
     public Proyecto obtenerProyecto(Integer id){
         return proyectoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));

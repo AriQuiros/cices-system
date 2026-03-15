@@ -59,4 +59,8 @@ public class HorasAsignadasService {
         return investigador;
     }
 
+    public boolean existInvProyecto (Integer id){
+        return horasAsignadasRepository.existsByIdInvestigadorProyecto_Id(id);
+    }
+
 }

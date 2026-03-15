@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AsignarInvestigadores from "./AsignarInvestigadores.jsx";
-import GestiNHoras from "../presupuesto/horas/GestionHoras.jsx";
+import GestionHoras from "../presupuesto/horas/GestionHoras.jsx";
 import BuscadorProyecto from "../../components/BusquedaProyecto.jsx"; // <- import
 
 import { useContext } from "react";
@@ -99,7 +99,7 @@ export default function WizardAsignacion() {
                 {paso === 3 && (
                     <div className="p-4 border rounded-lg shadow-sm bg-white">
                         <h3 className="font-semibold mb-4">Paso 3: Asignar horas</h3>
-                        <GestiNHoras proyectoInicial={proyectoSeleccionado} mostrarSelectorProyecto={false} />
+                        <GestionHoras proyectoInicial={proyectoSeleccionado} mostrarSelectorProyecto={false} />
                         <button
                             className="mt-4 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
                             onClick={() => setPaso(2)}

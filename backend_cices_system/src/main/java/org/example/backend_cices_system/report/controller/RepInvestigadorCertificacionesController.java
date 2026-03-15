@@ -2,6 +2,7 @@ package org.example.backend_cices_system.report.controller;
 
 import org.example.backend_cices_system.report.serviceVw.RepInvestigadorCertificacionesService;
 import org.example.backend_cices_system.report.view.RepInvestigadorCertificaciones;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +18,8 @@ public class RepInvestigadorCertificacionesController {
     }
 
     @GetMapping("/all")
-    public List<RepInvestigadorCertificaciones> getAll() {
-        return service.obtenerTodos();
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(service.obtenerTodasCertificaciones());
     }
 
     @GetMapping("/identificacion/{identificacion}")

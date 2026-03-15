@@ -4,8 +4,6 @@ import { getResumen } from "../../services/UtilsService.jsx";
 import "./Director.css";
 import {notify} from "../../utils/ui/notify.jsx";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
-
 export default function PanelResumen() {
     const { token } = useContext(AppContext);
     const [data, setData] = useState({});

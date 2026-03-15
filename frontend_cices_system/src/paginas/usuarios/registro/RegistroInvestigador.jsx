@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./RegistroInvestigador.css";
 
-import { fetchTiposCatalogo } from "../../../services/CatalogoService.js";
-import { InvestigadorContext } from "../../../context/investigadorCtx/InvestigadorContext.jsx";
-import { TituloDTO, CertificacionDTO } from "../../../modelos/investigadorDTO.jsx";
+import {fetchTiposCatalogo} from "../../../services/CatalogoService.js";
+import {InvestigadorContext} from "../../../context/investigadorCtx/InvestigadorContext.jsx";
+import {CertificacionDTO, TituloDTO} from "../../../modelos/investigadorDTO.jsx";
 
 import InputField from "../../../utils/validaciones/InputField.jsx";
-import Select from "react-select";
-import { required, maxLength } from "../../../utils/validaciones/Validators.jsx";
+import CreatableSelect from "react-select/creatable";
+import {maxLength, required} from "../../../utils/validaciones/Validators.jsx";
 
 function RegistroInvestigadorInner({ nivelAcademico }) {
 
@@ -53,7 +53,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
 
             setInstitucionOptions(
                 data
-                    .filter(e => e.tipo.valor === "INSTITUTION")
+                    .filter(e => e.tipo.valor === "INSTITUCION")
                     .map(e => ({ value: e.id, label: e.nombre, tipo: e.tipo }))
             );
 
@@ -67,32 +67,10 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
         fetchEntidades();
     }, []);
 
-    // Función para manejar Select de entidad (institución/unidad/certificación/título)
-    const construirEntidadPayload = (entidad, listaOpciones) => {
-        if (!entidad) return null;
-
-        if (entidad.id) {
-            return {
-                id: entidad.id,
-                nombre: entidad.nombre,
-                tipo: entidad.tipo // ya viene del backend
-            };
-        }
-
-        // Nueva entidad → tomar tipo de la primera opción de la lista
-        const tipoReferencia = listaOpciones.length > 0 ? listaOpciones[0].tipo : null;
-
-        return {
-            id: null,
-            nombre: entidad.nombre,
-            tipo: tipoReferencia
-        };
-    };
-
     const handleArrayChange = (collection, idx, field, value) => {
 
         if (field === "entidadEmisora") {
-            actualizarItem(collection, idx, field, { nombre: value });
+            actualizarItem(collection, idx, field, value);
             return;
         }
 
@@ -114,24 +92,21 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
     const handleAdd = (collection, dto) => { agregarItem(collection, dto); };
     const handleRemove = (collection, idx) => { eliminarItem(collection, idx); };
 
-    // Construir payload final para enviar al backend
-    const construirPayload = () => {
-
-        const payload = {
-            ...investigador,
-            institucionOrigen: construirEntidadPayload(investigador.institucionOrigen, institucionOptions),
-            unidadAcademica: construirEntidadPayload(investigador.unidadAcademica, unidadOptions),
-            titulos: (investigador.titulos || []).map(t => ({
-                ...t,
-                entidadEmisora: construirEntidadPayload(t.entidadEmisora, institucionOptions)
-            })),
-            certificaciones: (investigador.certificaciones || []).map(c => ({
-                ...c,
-                entidadEmisora: construirEntidadPayload(c.entidadEmisora, institucionOptions)
-            }))
+    const manejarEntidad = (option, listaOpciones) => {
+        if (!option) return null;
+        if (option.tipo) {
+            return {
+                id: option.value,
+                nombre: option.label,
+                tipo: option.tipo
+            };
+        }
+        const tipoReferencia = listaOpciones[0]?.tipo || null;
+        return {
+            id: null,
+            nombre: option.label,
+            tipo: tipoReferencia
         };
-
-        return payload;
     };
 
     // ----- Resto del formulario ----- //
@@ -142,22 +117,22 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             {/* Institución de origen */}
             <div className="input-group">
                 <label className="input-label">Institución de origen</label>
-                <Select
-                    placeholder="Institución de origen (ej: UCR)"
+                <CreatableSelect required
+                    placeholder="Institución de origen (ej. UCR)"
                     options={institucionOptions}
                     value={
                         investigador.institucionOrigen?.nombre
-                            ? { value: investigador.institucionOrigen.id || investigador.institucionOrigen.nombre, label: investigador.institucionOrigen.nombre }
+                            ? {
+                                value: investigador.institucionOrigen.id || investigador.institucionOrigen.nombre,
+                                label: investigador.institucionOrigen.nombre
+                            }
                             : null
                     }
                     onChange={(option) =>
                         actualizarCampo(
                             "institucionOrigen",
-                            { id: option?.value || null, nombre: option?.label, tipo: option?.tipo || null }
+                            manejarEntidad(option, institucionOptions)
                         )
-                    }
-                    onInputChange={(inputValue) =>
-                        actualizarCampo("institucionOrigen", { id: null, nombre: inputValue })
                     }
                     isClearable
                 />
@@ -166,22 +141,22 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             {/* Unidad académica */}
             <div className="input-group">
                 <label className="input-label">Unidad académica</label>
-                <Select
-                    placeholder="Unidad académica (ej: Escuela de ...)"
+                <CreatableSelect required
+                    placeholder="Unidad académica (ej. Escuela de...)"
                     options={unidadOptions}
                     value={
                         investigador.unidadAcademica?.nombre
-                            ? { value: investigador.unidadAcademica.id || investigador.unidadAcademica.nombre, label: investigador.unidadAcademica.nombre }
+                            ? {
+                                value: investigador.unidadAcademica.id || investigador.unidadAcademica.nombre,
+                                label: investigador.unidadAcademica.nombre
+                            }
                             : null
                     }
                     onChange={(option) =>
                         actualizarCampo(
                             "unidadAcademica",
-                            { id: option?.value || null, nombre: option?.label, tipo: option?.tipo || null }
+                            manejarEntidad(option, unidadOptions)
                         )
-                    }
-                    onInputChange={(inputValue) =>
-                        actualizarCampo("unidadAcademica", { id: null, nombre: inputValue })
                     }
                     isClearable
                 />
@@ -215,19 +190,24 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             rules={[required(), maxLength(254)]}
                             required maxLength={254}
                         />
-                        <Select
+                        <CreatableSelect required
                             placeholder="Institución"
                             options={institucionOptions}
                             value={
                                 c.entidadEmisora?.nombre
-                                    ? { value: c.entidadEmisora.id || c.entidadEmisora.nombre, label: c.entidadEmisora.nombre }
+                                    ? {
+                                        value: c.entidadEmisora.id || c.entidadEmisora.nombre,
+                                        label: c.entidadEmisora.nombre
+                                    }
                                     : null
                             }
                             onChange={(option) =>
-                                handleArrayChange("certificaciones", idx, "entidadEmisora", { id: option?.value || null, nombre: option?.label, tipo: option?.tipo || null })
-                            }
-                            onInputChange={(inputValue) =>
-                                handleArrayChange("certificaciones", idx, "entidadEmisora", { id: null, nombre: inputValue })
+                                handleArrayChange(
+                                    "certificaciones",
+                                    idx,
+                                    "entidadEmisora",
+                                    manejarEntidad(option, institucionOptions)
+                                )
                             }
                             isClearable
                         />
@@ -263,6 +243,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             {(investigador.titulos || []).length === 0 && (
                 <button type="button" onClick={() => handleAdd("titulos", TituloDTO)}>Agregar título</button>
             )}
+
             <div className="rows-group">
                 {(investigador.titulos || []).map((t, idx) => (
                     <div className="row" key={idx}>
@@ -275,19 +256,24 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             required
                             maxLength={254}
                         />
-                        <Select
+                        <CreatableSelect required
                             placeholder="Institución"
                             options={institucionOptions}
                             value={
                                 t.entidadEmisora?.nombre
-                                    ? { value: t.entidadEmisora.id || t.entidadEmisora.nombre, label: t.entidadEmisora.nombre }
+                                    ? {
+                                        value: t.entidadEmisora.id || t.entidadEmisora.nombre,
+                                        label: t.entidadEmisora.nombre
+                                    }
                                     : null
                             }
                             onChange={(option) =>
-                                handleArrayChange("titulos", idx, "entidadEmisora", { id: option?.value || null, nombre: option?.label, tipo: option?.tipo || null })
-                            }
-                            onInputChange={(inputValue) =>
-                                handleArrayChange("titulos", idx, "entidadEmisora", { id: null, nombre: inputValue })
+                                handleArrayChange(
+                                    "titulos",
+                                    idx,
+                                    "entidadEmisora",
+                                    manejarEntidad(option, institucionOptions)
+                                )
                             }
                             isClearable
                         />
@@ -316,11 +302,6 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                     </div>
                 ))}
             </div>
-
-            {/* BOTÓN DE ENVÍO */}
-            <button type="button" onClick={() => console.log("Payload a enviar:", construirPayload())}>
-                Enviar Investigador
-            </button>
         </div>
     );
 }

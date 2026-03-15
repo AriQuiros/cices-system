@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import { obtenerProyectos, obtenerLineas } from "../../services/proyectoService";
+import {AppContext} from "../../context/AppContext.jsx";
 
 export function useProyectos() {
-
+    const {token, user} = useContext(AppContext)
     const [proyectos, setProyectos] = useState([]);
     const [lineas, setLineas] = useState([]);
     const [orden, setOrden] = useState({ campo: "fechaInicio", asc: false });
@@ -10,8 +11,8 @@ export function useProyectos() {
 
     const [filtros, setFiltros] = useState({
         texto: "",
-        lineaInvestigacion: "",
-        tipoProyecto: "",
+        lineaInvestigacion: [],
+        tipoProyecto: [],
         estado: "",
         institucion: ""
     });
@@ -19,7 +20,7 @@ export function useProyectos() {
     useEffect(() => {
         const cargar = async () => {
             try {
-                const data = await obtenerProyectos(true);
+                const data = await obtenerProyectos(token, user);
                 setProyectos(data);
                 const lineasData = await obtenerLineas();
                 setLineas(lineasData);
@@ -44,7 +45,7 @@ export function useProyectos() {
         setFiltros({
             texto: "",
             lineaInvestigacion: "",
-            tipoProyecto: "",
+            tipoProyecto: [],
             estado: "",
             institucion: ""
         });
@@ -60,8 +61,8 @@ export function useProyectos() {
                 }
             }
 
-            if (filtros.estado && p.estado.despliegue !== filtros.estado) return false;
-            if (filtros.tipoProyecto.length > 0 && !filtros.tipoProyecto.includes(p.tipoProyecto.valor)) return false;
+            if (filtros.estado && p.estado?.toUpperCase() !== filtros.estado.toUpperCase()) return false;
+            if (filtros.tipoProyecto.length > 0 && !filtros.tipoProyecto.map(t => t.toUpperCase()).includes(p.tipoProyecto?.toUpperCase())) return false;
             if (filtros.lineaInvestigacion.length > 0 && !filtros.lineaInvestigacion.includes(p.lineaInvestigacion)) return false;
             if (filtros.institucion && !p.institucion?.toLowerCase().includes(filtros.institucion.toLowerCase())) return false;
 

@@ -10,4 +10,6 @@ public interface HorasAsignadasRepository extends JpaRepository<HorasAsignada, I
     List<HorasAsignada> findByIdInvestigadorProyecto_IdProyecto_Id(Short proyectoId);
     void deleteByIdInvestigadorProyecto(InvestigadorProyecto ip);
     List<HorasAsignada> findByIdInvestigadorProyecto(InvestigadorProyecto ip);
+
+    boolean existsByIdInvestigadorProyecto_Id(Integer idInvestigadorProyectoId);
 }

@@ -1,10 +1,12 @@
 package org.example.backend_cices_system.report.serviceVw;
 
 import org.example.backend_cices_system.report.dao.RepInvestigadorCertificacionesRepository;
+import org.example.backend_cices_system.report.dto.FormacionDTO;
 import org.example.backend_cices_system.report.view.RepInvestigadorCertificaciones;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RepInvestigadorCertificacionesService {
@@ -29,5 +31,21 @@ public class RepInvestigadorCertificacionesService {
 
     public List<RepInvestigadorCertificaciones> buscarPorNombre(String nombre) {
         return repo.findByNombreInvestigadorContainingIgnoreCase(nombre);
+    }
+
+    public List<FormacionDTO> obtenerTodasCertificaciones() {
+        List<RepInvestigadorCertificaciones> certificados = repo.findAll();
+
+        return certificados.stream()
+                .map(c -> new FormacionDTO(
+                        c.getIdentificacion(),
+                        c.getNombreInvestigador(),
+                        c.getNombreCertificacion(),
+                        c.getInstitucion(),
+                        c.getTipoCertificacion(),
+                        c.getEstadoCertificacion(),
+                        c.getFechaExpiracion()
+                ))
+                .collect(Collectors.toList());
     }
 }

@@ -7,8 +7,8 @@ public record ProyectoDatosDTO (
         String codigoProyecto,
         String nombreProyecto,
         String lineaInvestigacion,
-        CodigoDTO tipoProyecto,
-        CodigoDTO estado,
+        String tipoProyecto,
+        String estado,
         LocalDate fechaInicio,
         LocalDate fechaFinalizacion
 ) {}

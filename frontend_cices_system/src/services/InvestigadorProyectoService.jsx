@@ -41,12 +41,17 @@ export const InvestigadorProyectoService = {
 
         return await response.json();
     },
+
     async eliminarInvestigador(id) {
         const res = await fetch(`${API}/investigador-proyecto/eliminar/${id}`, {
             method: "DELETE"
         });
 
-        if (!res.ok) throw new Error("Error al eliminar investigador de proyecto");
+        if (!res.ok) {
+            const errorBody = await res.json();
+            throw new Error(errorBody.message || "Error eliminando investigador");
+        }
+
         return await res.json();
     }
 

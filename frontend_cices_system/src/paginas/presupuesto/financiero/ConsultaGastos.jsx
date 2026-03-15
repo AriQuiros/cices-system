@@ -7,7 +7,7 @@ import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 
 const ConsultaGastos = () => {
 
-    const { token } = useContext(AppContext);
+    const { token, user } = useContext(AppContext);
 
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
     const [presupuestos, setPresupuestos] = useState([]);
@@ -121,6 +121,7 @@ const ConsultaGastos = () => {
 
             <BuscadorProyecto
                 token={token}
+                user={user}
                 onSelect={seleccionarProyecto}
             />
 

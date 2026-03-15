@@ -7,6 +7,8 @@ import Login from "../../paginas/login/Login";
 import Registro from "../../paginas/usuarios/registro/Registro";
 import RegistroInvestigador from "../../paginas/usuarios/registro/RegistroInvestigador";
 import ConsultaPersonal from "../../paginas/usuarios/ConsultaPersonal";
+import ConsultaInvestigadores from "../../paginas/usuarios/investigadores/ConsultaInvestigadores";
+import Certificaciones from "../../paginas/usuarios/investigadores/Certificaciones";
 import GestionUsuarios from "../../paginas/usuarios/GestionUsuarios";
 
 /* PROYECTOS */
@@ -46,6 +48,8 @@ function AppRoutes() {
                 <Route path="/registro" element={<Registro />} />
                 <Route path="/registro-investigador" element={<RegistroInvestigador />} />
                 <Route path="/consulta-personal" element={<ConsultaPersonal />} />
+                <Route path="/consulta-investigadores" element={<ConsultaInvestigadores />} />
+                <Route path="/certificaciones" element={<Certificaciones />} />
                 <Route path="/gestion-usuarios" element={<GestionUsuarios />} />
 
                 {/* PROYECTOS */}

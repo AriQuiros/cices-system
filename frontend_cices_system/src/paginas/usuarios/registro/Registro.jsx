@@ -150,7 +150,6 @@ function RegistroInner() {
         let payload;
 
         if (esInvestigador) {
-
             payload = {
                 ...investigador,
                 empleado: {
@@ -169,7 +168,6 @@ function RegistroInner() {
         }
 
         try {
-
             const result = await registerEmpleado(payload, esInvestigador);
 
             if (result.ok) {
@@ -182,18 +180,14 @@ function RegistroInner() {
                 setConfirmarContrasena("")
 
             } else {
-
                 notify.error(result.message || `Registro falló`);
-
             }
-
         } catch {
 
             notify.error("Error de conexión");
-
         }
-
     };
+
 
     const tipoId = (empleado.tipoId?.valor || "").toUpperCase();
 
@@ -343,7 +337,7 @@ function RegistroInner() {
                     value={empleado.correo}
                     onChange={handleChange}
                     rules={[required(), correoUCR(), maxLength(254)]}
-                    maxLength={254}
+                    maxLength={50}
                     required
                 />
 
@@ -355,7 +349,7 @@ function RegistroInner() {
                     value={usuario?.contrasena || ""}
                     onChange={handleChange}
                     rules={[required(), minLength(8), maxLength(254)]}
-                    maxLength={254}
+                    maxLength={32}
                     required
                 />
 
@@ -378,7 +372,7 @@ function RegistroInner() {
                         match(() => usuario?.contrasena, "Las contraseñas no coinciden"),
                         maxLength(254)
                     ]}
-                    maxLength={254}
+                    maxLength={32}
                     required
                 />
 

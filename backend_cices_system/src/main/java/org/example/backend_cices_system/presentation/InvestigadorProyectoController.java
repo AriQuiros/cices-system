@@ -16,14 +16,17 @@ import java.util.List;
 public class InvestigadorProyectoController {
 
     private final InvestigadorProyectoService investigadorProyectoService;
+    private final HorasAsignadasService horasAsignadasService;
     private final ProyectoService proyectoService;
     private final InvestigadorService investigadorService;
 
     public InvestigadorProyectoController(InvestigadorProyectoService investigadorProyectoService,
-                                          ProyectoService proyectoService, InvestigadorService investigadorService) {
+                                          ProyectoService proyectoService, InvestigadorService investigadorService,
+                                          HorasAsignadasService horasAsignadasService) {
         this.investigadorProyectoService = investigadorProyectoService;
         this.proyectoService = proyectoService;
         this.investigadorService = investigadorService;
+        this.horasAsignadasService = horasAsignadasService;
     }
 
     @PostMapping("/registro")
@@ -44,6 +47,8 @@ public class InvestigadorProyectoController {
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarInvestigadorProyecto (@PathVariable Integer id){
+        if(horasAsignadasService.existInvProyecto(id))
+            throw new IllegalStateException("No se puede eliminar: El investigador tiene horas asignadas");
         var inv = investigadorProyectoService.eliminarInvestigadorProyecto(id);
         return ResponseEntity.ok(inv);
     }

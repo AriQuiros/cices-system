@@ -9,8 +9,6 @@ import java.util.List;
 @Repository
 public interface RepNotificacionesUsuarioRepository extends JpaRepository<RepNotificacionesUsuario, Integer> {
 
-    List<RepNotificacionesUsuario> findAll();
-
     List<RepNotificacionesUsuario> findByIdUsuario(Integer idUsuario);
 
     List<RepNotificacionesUsuario> findByNombreUsuarioContainingIgnoreCase(String nombreUsuario);

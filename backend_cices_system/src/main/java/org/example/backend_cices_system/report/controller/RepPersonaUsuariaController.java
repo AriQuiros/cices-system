@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.controller;
 
+import org.example.backend_cices_system.report.dto.InvestigadorConsultaDTO;
 import org.example.backend_cices_system.report.dto.PersonaUsuariaDTO;
 import org.example.backend_cices_system.report.dto.UsuarioPersonaDTO;
 import org.example.backend_cices_system.report.serviceVw.RepPersonaUsuariaService;
@@ -20,6 +21,11 @@ public class RepPersonaUsuariaController {
     @GetMapping("/empleados")
     public List<PersonaUsuariaDTO> obtenerEmpleados() {
         return personaService.obtenerAsistentesAdministrativos();
+    }
+
+    @GetMapping("/investigadores")
+    public List<InvestigadorConsultaDTO> obtenerInvestigadores() {
+        return personaService.obtenerInvestigadores();
     }
 
     @GetMapping("/usuarios")

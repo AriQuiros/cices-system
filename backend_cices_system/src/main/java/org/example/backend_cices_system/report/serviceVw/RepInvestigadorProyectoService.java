@@ -25,6 +25,10 @@ public class RepInvestigadorProyectoService {
         return repo.findById(idInvestigadorProyecto).orElse(null);
     }
 
+    public List<RepInvestigadorProyecto> buscarPorIdInvestigador(Integer idInvestigador) {
+        return repo.findByIdInvestigador(idInvestigador);
+    }
+
     public List<RepInvestigadorProyecto> buscarPorIdentificacionInvestigador(String idInvestigador) {
         return repo.findByIdentificacion(idInvestigador);
     }

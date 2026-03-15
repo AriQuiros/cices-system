@@ -74,5 +74,10 @@ public class RepInvestigadorProyecto {
     @NotNull
     @Column(name = "ID_ROL_PROYECTO", nullable = false)
     private Short idRolProyecto;
+    @NotNull
+    @Column(name = "FECHA_INICIO", nullable = false)
+    private LocalDate fechaInicio;
+    @Column(name = "FECHA_FINALIZACION")
+    private LocalDate fechaFinalizacion;
 
 }

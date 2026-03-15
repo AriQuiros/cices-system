@@ -1,5 +1,5 @@
 // RegistroProyecto.jsx
-import {useContext, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
 import { useTiposCatalogo } from '../../../hooks/useTiposCatalogo.js';
 import {obtenerLineas, registrarProyecto} from "../../../services/ProyectoService.jsx";

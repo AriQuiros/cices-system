@@ -9,7 +9,7 @@ const BuscadorProyecto = ({ token, user, principal = false, onSelect }) => {
 
     useEffect(() => {
         cargarProyectos(token, user, principal).then(res => setProyectos(res || []));
-    }, [token, user]);
+    }, [principal, token, user]);
 
     const options = proyectos.map(p => ({
         value: p,

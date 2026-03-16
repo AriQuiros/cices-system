@@ -64,110 +64,12 @@ export default function AppProvider({ children }) {
         localStorage.removeItem("auth");
     };
 
-    /************* ASIGNAR INVESTIGADORES *************/
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
-
-    const searchInvestigadores = async (q = "") => {
-        const res = await fetch(`${apiUrl}/investigador/investigadores?q=${encodeURIComponent(q)}`, {
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${token}`,
-            }
-
-        });
-        return await res.json(); // [{id,nombre,unidad}]
-    };
-
-    const searchProyecto = async (q = "") => {
-        if (!q) return null;
-        const res = await fetch(`${apiUrl}/proyectos/search?q=${encodeURIComponent(q)}`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!data) return null;
-        return {
-            id: data.id,
-            codigo: data.codigo,
-            nombre: data.nombre,
-            estado: data.estado,
-            linea: data.linea,
-            periodo: { ini: data.ini, fin: data.fin },
-            horasPlanificadas: Number(data.horas_planificadas || 0),
-            asignados: {
-                count: Number(data.asignados_cnt || 0),
-                horas: Number(data.horas_comprometidas || 0)
-            },
-        };
-    };
-
-    const listarAsignados = async (proyectoId, q = "") => {
-        const res = await fetch(`${apiUrl}/proyectos/${proyectoId}/asignados?q=${encodeURIComponent(q)}`, {
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${token}`,
-            }
-
-        });
-        return await res.json(); // [{id,nombre,rol,periodo:{ini,fin},horas,estado}]
-    };
-
-    // AppProvider.jsx
-    const listarRolesProyecto = async () => {
-        const res = await fetch(`${apiUrl}/catalogos/roles-proyecto`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error("Error al listar roles");
-        return await res.json(); // [{id, nombre}]
-    };
-
-    const agregarAsignacion = async (p) => {
-        const r = await fetch(`${apiUrl}/proyectos/${p.proyectoId}/asignaciones`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(p),
-        });
-        if (!r.ok) {
-            const txt = await r.text();
-            throw new Error(r.status === 409 ? "Duplicado" : txt || "Error");
-        }
-    };
-
-    const quitarAsignacion = async ({ proyectoId, investigadorId }) => {
-        await fetch(`${apiUrl}/proyectos/${proyectoId}/asignaciones/${investigadorId}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-        });
-    };
-
-    const sugerirProyectos = async (q = "") => {
-        if (!q) return [];
-        const res = await fetch(`${apiUrl}/proyectos/suggest?q=${encodeURIComponent(q)}`, {
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${token}`,
-            }
-
-        });
-        if (!res.ok) return []; // [{id,codigo,nombre}]
-        return await res.json();
-    };
-
     return (
         <AppContext.Provider value={{
             user,
             token,
             login,
             logout,
-            searchInvestigadores,
-            searchProyecto,
-            listarAsignados,
-            listarRolesProyecto,
-            agregarAsignacion,
-            quitarAsignacion,
-            sugerirProyectos,
         }}>
             <ProyectoProvider>
                 <InvestigadorProvider>

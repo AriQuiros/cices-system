@@ -28,11 +28,12 @@ export async function registrarProyecto(proyecto, token) {
 }
 
 export async function cargarProyectos(token, user, principal) {
-    let url = esSoloInvestigador(user)
+    const esInvestidor = esSoloInvestigador(user)
+    let url = esInvestidor
         ? `${API}/api/reports/proyectos/investigador`
         : `${API}/api/reports/proyectos/codigo-nombre-fechas`;
 
-    if(principal) url = url + "/principal"
+    if(esInvestidor && principal) url = url + "/principal"
 
     const res = await fetch(url, {
         headers: {

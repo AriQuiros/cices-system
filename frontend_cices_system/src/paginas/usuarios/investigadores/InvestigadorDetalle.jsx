@@ -71,33 +71,38 @@ export default function InvestigadorDetalle({ investigador, onClose }) {
                     </h3>
 
                     {/* encabezado */}
-                    <div className="grid grid-cols-[1fr_150px] gap-2 text-sm font-semibold border-b pb-1 mb-2">
+                    <div className="grid grid-cols-[1fr_150px_120px] gap-2 text-sm font-semibold border-b pb-1 mb-2">
                         <span>Información</span>
+                        <span>Tipo</span>
                         <span>Estado</span>
                     </div>
 
                     {detalle.certificaciones.map((c, i) => {
 
-                        const tipo = c.tipo?.toUpperCase();
+                        const estado = c.estado?.toUpperCase();
 
                         let color = "bg-gray-400";
 
-                        if (tipo === "VIGENTE") color = "bg-green-500";
-                        if (tipo === "POR VENCER") color = "bg-yellow-500";
-                        if (tipo === "VENCIDA") color = "bg-red-500";
+                        if (estado === "VIGENTE") color = "bg-green-500";
+                        if (estado === "POR VENCER") color = "bg-yellow-500";
+                        if (estado === "VENCIDA") color = "bg-red-500";
 
                         return (
-                            <div key={i} className="grid grid-cols-[1fr_150px] gap-2 py-1 items-center border-b">
+                            <div key={i} className="grid grid-cols-[1fr_150px_120px] gap-2 py-1 items-center border-b">
 
                                 {/* INFORMACION */}
                                 <div>
                                     {c.nombre} - {c.institucion} ({c.fecha})
                                 </div>
 
+                                {/* TIPO */}
+                                <div className="flex items-center gap-3">
+                                    <span>{c.tipo}</span>
+                                </div>
                                 {/* ESTADO */}
                                 <div className="flex items-center gap-2">
                                     <span className={`w-3 h-3 rounded-full ${color}`}></span>
-                                    <span>{c.tipo}</span>
+                                    <span>{c.estado}</span>
                                 </div>
 
                             </div>

@@ -13,7 +13,8 @@ import logoCICES2 from "./assets/images/logoCICES2.png";
 
 /* CONTEXTO */
 import AppProvider from "./context/AppProvider.jsx";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {AppContext} from "./context/AppContext.jsx";
 
 function App() {
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -35,11 +36,11 @@ function App() {
 function Main({ menuAbierto, setMenuAbierto }) {
     return (
         <main className="flex flex-1 min-h-0 pt-22.75">
-            <Sidebar
-                abierto={menuAbierto}
-                setMenuAbierto={setMenuAbierto}
-                className="h-full overflow-y-auto"
-            />
+                <Sidebar
+                    abierto={menuAbierto}
+                    setMenuAbierto={setMenuAbierto}
+                    className="h-full overflow-y-auto"
+                />
             <div className="flex-1 min-h-0">
                 <AppRoutes />
             </div>
@@ -48,6 +49,8 @@ function Main({ menuAbierto, setMenuAbierto }) {
 }
 
 function Header({ menuAbierto, setMenuAbierto }) {
+    const { user } = useContext(AppContext);
+
     return (
         <header>
             <div className="header-content">
@@ -58,12 +61,16 @@ function Header({ menuAbierto, setMenuAbierto }) {
                 </div>
             </div>
             <div className="divider">
-                <button
-                    onClick={() => setMenuAbierto(!menuAbierto)}
-                    className="p-1 text-2"
-                >
-                    ☰
-                </button>
+                {user && (
+                    <div className="divider">
+                        <button
+                            onClick={() => setMenuAbierto(!menuAbierto)}
+                            className="p-1 text-2"
+                        >
+                            ☰
+                        </button>
+                    </div>
+                )}
             </div>
         </header>
     );

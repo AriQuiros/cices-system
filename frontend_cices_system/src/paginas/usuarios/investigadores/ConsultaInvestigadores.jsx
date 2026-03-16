@@ -61,7 +61,7 @@ export default function ListaInvestigadores() {
             <h2>Lista de Investigadores</h2>
 
             <div>
-                <label>Nombre</label>
+                <label>Nombre </label>
                 <input
                     type="text"
                     value={nombreFiltro}

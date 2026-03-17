@@ -1,27 +1,39 @@
-# cargar_excel.py
+# cargar_excel.py 
 
 import sys
 import os
+import subprocess
+
+# ======= FUNCIÓN PARA INSTALAR MÓDULOS =======
+def instalar_modulo(modulo):
+    try:
+        print(f"⚙️ Instalando {modulo}...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", modulo])
+        print(f"✅ {modulo} instalado correctamente\n")
+    except Exception as e:
+        print(f"❌ No se pudo instalar {modulo}: {e}")
+        sys.exit(1)
 
 # ======= VERIFICACIÓN DE MÓDULOS =======
 try:
     import pandas as pd
 except ModuleNotFoundError:
-    print("❌ pandas no está instalado. Ejecuta: pip install pandas")
-    sys.exit(1)
+    instalar_modulo("pandas")
+    import pandas as pd
 
 try:
     import oracledb
 except ModuleNotFoundError:
-    print("❌ oracledb no está instalado. Ejecuta: pip install oracledb")
-    sys.exit(1)
+    instalar_modulo("oracledb")
+    import oracledb
 
 # openpyxl es necesario para leer .xlsx
 try:
     import openpyxl
 except ModuleNotFoundError:
-    print("❌ openpyxl no está instalado. Ejecuta: pip install openpyxl")
-    sys.exit(1)
+    instalar_modulo("openpyxl")
+    import openpyxl
+
 
 # ======= CONFIGURACIÓN =======
 DATA_FOLDER = "xlsx"
@@ -30,19 +42,14 @@ DB_USER = "CICES"
 DB_PASSWORD = "cices123"
 DB_DSN = "localhost:1521/XE"
 
+
 # ======= FUNCIONES =======
 def normalizar_fila(fila):
-    """
-    Convierte valores de pandas/numpy a tipos nativos de Python.
-    - NaN → None
-    - numpy.int64 / float64 → int / float
-    - numpy.bool_ → bool
-    """
     fila_normalizada = []
     for x in fila:
         if pd.isna(x):
             fila_normalizada.append(None)
-        elif hasattr(x, 'item'):  # Convierte tipos numpy a nativos
+        elif hasattr(x, 'item'):
             fila_normalizada.append(x.item())
         else:
             fila_normalizada.append(x)
@@ -78,7 +85,6 @@ def main():
             for tabla, df in hojas.items():
                 print(f"  → Cargando tabla: {tabla}")
 
-                # Convertir todo a object y reemplazar NaN con None
                 df = df.astype(object)
 
                 columnas = list(df.columns)
@@ -93,7 +99,7 @@ def main():
                         print("\n❌ ERROR DETECTADO DURANTE LA CARGA")
                         print(f"Archivo   : {archivo}")
                         print(f"Tabla     : {tabla}")
-                        print(f"Fila Excel: {index + 2}")  # +2 por encabezado
+                        print(f"Fila Excel: {index + 2}")
                         print("Datos de la fila:")
                         for col, val in zip(columnas, fila):
                             print(f"  {col}: {val}")

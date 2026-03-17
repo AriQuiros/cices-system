@@ -1,0 +1,274 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Mar Mar 17 13:36:31 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Hora de Última Conexión Correcta: Mar Mar 17 2026 13:36:30 -06:00
+
+Conectado a:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Conectado.
+===== DROPEO DE CONSTRAINTS ====
+==================================
+===== DROPEO LLAVES FORANEAS =====
+==================================
+== FK - TIPOS Y CODIGOS ==
+
+Tabla modificada.
+
+== FK - FINANCIAMIENTO ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== FK - PROYECTOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== FK - ACCESO EN PROYECTOS ==
+== FK - ACCESO (ROLES Y PERMISOS) ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== FK - EDUCACION ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== FK - USUARIOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+==================================
+==== DROPEO CHECK CONSTRAINTS ====
+==================================
+
+Tabla modificada.
+
+==================================
+=== DROPEO LLAVES UNICAS (UK) ====
+==================================
+== UK - USUARIOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== UK - ACCESO ==
+
+Tabla modificada.
+
+ALTER TABLE PERMISO DROP CONSTRAINT UK_PERMISO_NOMBRE_PERMISO
+*
+ERROR en línea 1:
+ORA-00942: la tabla o vista no existe
+
+
+== UK - PROYECTOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+===== CREACION DE CONSTRAINTS ====
+==================================
+========= CREACION DE UK =========
+==================================
+== UK - USUARIOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== UK - ACCESO ==
+
+Tabla modificada.
+
+ALTER TABLE PERMISO
+*
+ERROR en línea 1:
+ORA-00942: la tabla o vista no existe
+
+
+== UK - PROYECTOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+==================================
+======= CREACION DE CHECK ========
+==================================
+== CHECK - USUARIOS ==
+
+Tabla modificada.
+
+==================================
+========= CREACION DE FK =========
+==================================
+== FK - USUARIOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+    FOREIGN KEY (ID_UNIDAD_ACADEMICA)
+    *
+ERROR en línea 3:
+ORA-02275: ya existe una restricción referencial de este tipo en la tabla
+
+
+    FOREIGN KEY (ID_INSTITUCION_ORIGEN)
+    *
+ERROR en línea 3:
+ORA-02275: ya existe una restricción referencial de este tipo en la tabla
+
+
+== FK - EDUCACION ==
+
+Tabla modificada.
+
+    FOREIGN KEY (ID_ENTIDAD)
+    *
+ERROR en línea 3:
+ORA-02275: ya existe una restricción referencial de este tipo en la tabla
+
+
+
+Tabla modificada.
+
+    FOREIGN KEY (ID_ENTIDAD)
+    *
+ERROR en línea 3:
+ORA-02275: ya existe una restricción referencial de este tipo en la tabla
+
+
+== FK - ACCESO ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== FK - ACCESO EN PROYECTOS ==
+== FK - PROYECTOS ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== FK - FINANCIAMIENTO ==
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+
+Tabla modificada.
+
+== FK - NOTIFICACIONES ==
+    FOREIGN KEY (ID_NOTIFICACION) REFERENCES NOTIFICACION(ID_NOTIFICACION)
+    *
+ERROR en línea 3:
+ORA-02275: ya existe una restricción referencial de este tipo en la tabla
+
+
+    FOREIGN KEY (ID_USUARIO) REFERENCES USUARIO(ID_USUARIO)
+    *
+ERROR en línea 3:
+ORA-02275: ya existe una restricción referencial de este tipo en la tabla
+
+
+== FK - TIPOS Y CODIGOS ==
+
+Tabla modificada.
+
+Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0

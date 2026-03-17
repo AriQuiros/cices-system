@@ -1,0 +1,111 @@
+================================================
+REPORTE DE CONTENIDO DE TABLAS - ESQUEMA CICES
+================================================
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+CERTIFICACION                                    32
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+CODIGO                                           66
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+DOCUMENTO                                         0
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+EMPLEADO                                         49
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+ENTIDAD                                          41
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+ENTIDAD_PROYECTO                                  8
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+GASTO                                             8
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+HORAS_ASIGNADAS                                  11
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+INDICADOR                                         6
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+INVESTIGADOR                                     48
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+INVESTIGADOR_PROYECTO                             7
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+META                                              6
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+NOTIFICACION                                      0
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+NOTIFICACION_USUARIO                              0
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+OBJETIVO_ESPECIFICO                               6
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+PRESENTACION_INFORME                              0
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+PRESUPUESTO                                      12
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+PRESUPUESTO_BIT                                  12
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+PROYECTO                                          2
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+ROL                                               4
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+ROL_PROYECTO                                      5
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+ROL_USUARIO                                      52
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+TIPO                                             17
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+TITULO                                           47
+
+TABLA                               TOTAL_REGISTROS
+----------------------------------- ---------------
+USUARIO                                          49
+
+================================================
+MUESTRA RAPIDA (primeras 10 filas)
+================================================
+--- USUARIO -- select * from CICES.USUARIO where rownum <= 10
+--- EMPLEADO -- select * from CICES.EMPLEADO where rownum <= 10
+--- INVESTIGADOR -- select * from CICES.INVESTIGADOR where rownum <= 10
+--- PROYECTO -- select * from CICES.PROYECTO where rownum <= 10

@@ -1,0 +1,168 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Mar Mar 17 13:36:31 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Hora de Última Conexión Correcta: Mar Mar 17 2026 13:36:31 -06:00
+
+Conectado a:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Conectado.
+SP2-0310: no se ha podido abrir el archivo "config.sql"
+======================================
+===== DROPEO DE VISTAS ================
+======================================
+== PERSONAS - USUARIOS ==
+
+Vista borrada.
+
+== EDUCACION ==
+
+Vista borrada.
+
+
+Vista borrada.
+
+== PROYECTOS ==
+
+Vista borrada.
+
+
+Vista borrada.
+
+
+Vista borrada.
+
+
+Vista borrada.
+
+
+Vista borrada.
+
+
+Vista borrada.
+
+== PRESUPUESTO ==
+
+Vista borrada.
+
+
+Vista borrada.
+
+
+Vista borrada.
+
+== NOTIFICACIONES ==
+
+Vista borrada.
+
+== RESUMEN ==
+
+Vista borrada.
+
+======================================
+===== CREACION DE VISTAS ==============
+======================================
+== REP_PERSONA_USUARIA ==
+
+Vista creada.
+
+== REP_INVESTIGADOR_TITULOS ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_INVESTIGADOR_CERTIFICACIONES ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_PROYECTO_BASE ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_INVESTIGADOR_PROYECTO ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_PROYECTO_RESULTADOS ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_PROYECTO_DOCUMENTOS ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_ENTIDAD_PROYECTO ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_PROYECTO_PRESENTACION_INFORME ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_PRESUPUESTO_BASE ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_PRESUPUESTO_GASTOS ==
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_PRESUPUESTO_HORAS ==
+
+Vista creada.
+
+
+Vista creada.
+
+
+Vista creada.
+
+
+Vista creada.
+
+== REP_RESUMEN_EJECUTIVO ==
+
+Vista creada.
+
+
+Vista creada.
+
+======================================
+===== FIN SCRIPT VISTAS ===============
+======================================
+Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0

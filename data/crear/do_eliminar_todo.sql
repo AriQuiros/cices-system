@@ -18,6 +18,7 @@ SELECT 'PROMPT ===========================================' || chr(10) ||
         'PROMPT ===========================================' || chr(10)
 FROM dual;
 
+SELECT 'PURGE RECYCLEBIN;'|| chr(10) FROM dual;
 
 /* ===========================================================
    1. DROPEAR TODAS LAS VISTAS
@@ -123,6 +124,12 @@ ORDER BY object_name;
 -- WHERE owner = 'CICES'
 -- ORDER BY type_name;
 
+SELECT 'ALTER TABLE ' || table_name ||
+       ' DROP CONSTRAINT ' || constraint_name || ';' || chr(10)
+FROM dba_constraints
+WHERE owner = 'CICES'
+  AND constraint_type IN ('P','U','R') -- PK, UK, FK
+ORDER BY table_name;
 
 /* ===========================================================
    11. DROPEAR TABLAS

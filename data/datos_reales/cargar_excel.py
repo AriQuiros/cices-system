@@ -5,12 +5,34 @@ import oracledb
 import os
 
 # ========= CONFIGURACIÓN =========
-DATA_FOLDER = "xlsx"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FOLDER = os.path.join(BASE_DIR, "xlsx")
 
 DB_USER = "CICES"
 DB_PASSWORD = "cices123"
 DB_DSN = "localhost:1521/XE"
 # =================================
+
+
+def normalizar_valor(valor):
+    """Convierte valores de pandas/numpy a tipos nativos compatibles con oracledb."""
+    if pd.isna(valor):
+        return None
+
+    if hasattr(valor, "item"):
+        try:
+            valor = valor.item()
+        except Exception:
+            pass
+
+    if isinstance(valor, float) and valor.is_integer():
+        return int(valor)
+
+    if isinstance(valor, str):
+        texto = valor.strip()
+        return texto if texto else None
+
+    return valor
 
 def main():
     print("Iniciando carga de archivos Excel...")
@@ -48,7 +70,8 @@ def main():
 
                 for index, fila in df.iterrows():
                     try:
-                        cursor.execute(sql, tuple(fila))
+                        valores_fila = tuple(normalizar_valor(v) for v in fila.tolist())
+                        cursor.execute(sql, valores_fila)
                     except Exception as e:
                         print("\n❌ ERROR DETECTADO DURANTE LA CARGA")
                         print(f"Archivo   : {archivo}")

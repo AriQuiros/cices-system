@@ -17,7 +17,7 @@ public class PresupuestoBit {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRESUPUESTO_BIT_id_gen")
     @SequenceGenerator(name = "PRESUPUESTO_BIT_id_gen", sequenceName = "SEC_PRESUPUESTO_BIT", allocationSize = 1)
-    @Column(name = "ID_BIT", nullable = false)
+    @Column(name = "ID_PRESUPUESTO_BIT", nullable = false)
     private Long id;
 
     @NotNull

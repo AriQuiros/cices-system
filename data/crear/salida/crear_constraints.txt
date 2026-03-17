@@ -1,10 +1,10 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Sun Mar 15 11:06:38 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Tue Mar 17 15:51:08 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Last Successful login time: Sun Mar 15 2026 11:06:36 -06:00
+Last Successful login time: Tue Mar 17 2026 15:51:08 -06:00
 
 Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
@@ -149,6 +149,12 @@ ERROR at line 1:
 ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
+ALTER TABLE PERMISO_PROYECTO DROP CONSTRAINT FK_PERMISO_PROYECTO_INVESTIGADOR_PROYECTO
+                                             *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
 ==================================
 ==== DROPEO CHECK CONSTRAINTS ====
 ==================================
@@ -282,6 +288,9 @@ Table altered.
 
 == FK - ACCESO EN PROYECTOS ==
 == FK - PROYECTOS ==
+
+Table altered.
+
 
 Table altered.
 

@@ -1,10 +1,10 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Tue Mar 17 16:10:46 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 10:02:23 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Last Successful login time: Tue Mar 17 2026 16:10:45 -06:00
+Last Successful login time: Wed Mar 18 2026 10:02:23 -06:00
 
 Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
@@ -105,6 +105,12 @@ ERROR at line 1:
 ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
+ALTER TABLE PERMISO DROP CONSTRAINT PK_PERMISO
+                                    *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
 ALTER TABLE PERMISO_PROYECTO DROP CONSTRAINT PK_PERMISO_PROYECTO
                                              *
 ERROR at line 1:
@@ -137,6 +143,12 @@ ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 ALTER TABLE ROL DROP CONSTRAINT PK_ROL
                                 *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE ROL_PERMISO DROP CONSTRAINT PK_ROL_PERMISO
+                                        *
 ERROR at line 1:
 ORA-02443: Cannot drop constraint  - nonexistent constraint
 
@@ -219,6 +231,12 @@ Table altered.
 
 Table altered.
 
+ALTER TABLE PERMISO ADD CONSTRAINT PK_PERMISO PRIMARY KEY (ID_PERMISO)
+                                              *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
 
 Table altered.
 
@@ -236,6 +254,12 @@ Table altered.
 
 
 Table altered.
+
+ALTER TABLE ROL_PERMISO ADD CONSTRAINT PK_ROL_PERMISO PRIMARY KEY (ID_ROL_PERMISO)
+                                                      *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
 
 
 Table altered.

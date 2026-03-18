@@ -1,10 +1,10 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Tue Mar 17 16:10:47 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 10:02:23 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Last Successful login time: Tue Mar 17 2026 16:10:46 -06:00
+Last Successful login time: Wed Mar 18 2026 10:02:23 -06:00
 
 Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
@@ -194,9 +194,9 @@ ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PERMISO DROP CONSTRAINT UK_PERMISO_NOMBRE_PERMISO
-*
+                                    *
 ERROR at line 1:
-ORA-00942: table or view does not exist
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 == UK - PROYECTOS ==
@@ -230,10 +230,10 @@ Table altered.
 
 Table altered.
 
-ALTER TABLE PERMISO
-*
-ERROR at line 1:
-ORA-00942: table or view does not exist
+    UNIQUE (NOMBRE_PERMISO)
+    *
+ERROR at line 3:
+ORA-02261: such unique or primary key already exists in the table
 
 
 == UK - PROYECTOS ==

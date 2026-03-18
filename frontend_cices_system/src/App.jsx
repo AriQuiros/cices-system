@@ -10,6 +10,7 @@ import "./index.css";
 import logoUCR from "./assets/images/logoUCR.png";
 import logoCICES from "./assets/images/logoCICES.png";
 import logoCICES2 from "./assets/images/logoCICES2.png";
+import { Link } from "react-router-dom";
 
 /* CONTEXTO */
 import AppProvider from "./context/AppProvider.jsx";
@@ -54,7 +55,9 @@ function Header({ menuAbierto, setMenuAbierto }) {
     return (
         <header>
             <div className="header-content">
-                <div className="page-name">Sistema de Información del CICES</div>
+                <Link to="/dashboard" className="page-name">
+                    Sistema de Información del CICES
+                </Link>
                 <div className="logos">
                     <img src={logoUCR} alt="Logo UCR" />
                     <img src={logoCICES} alt="Logo CICES" />

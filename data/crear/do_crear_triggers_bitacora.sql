@@ -18,168 +18,37 @@ SELECT 'host cls' || chr(10) ||
 FROM dual;
 
 SELECT 'PROMPT ===========================================' || chr(10) ||
-       'PROMPT === TRIGGERS DE BITÁCORA (OLD / NEW) =======' || chr(10) ||
+       'PROMPT === TRIGGERS UPDATE BITÁCORA =======' || chr(10) ||
        'PROMPT ===========================================' || chr(10)
 FROM dual;
 
 ------------------------------------------------------------
--- 1) DROP TRIGGERS
+-- 1) TRIGGER AFTER UPDATE (solo si MONTO_ASIGNADO cambió)
 ------------------------------------------------------------
 SELECT
-    'DROP TRIGGER ' || REPLACE(b.table_name,'_BIT','_TRG_AIR') || ';' || chr(10) ||
-    'DROP TRIGGER ' || REPLACE(b.table_name,'_BIT','_TRG_AUR') || ';' || chr(10) ||
-    'DROP TRIGGER ' || REPLACE(b.table_name,'_BIT','_TRG_ADR') || ';' || chr(10)
-FROM (
-    SELECT table_name
-    FROM dba_tables
-    WHERE owner = 'CICES'
-      AND table_name LIKE '%\_BIT' ESCAPE '\'
-) b;
-
-------------------------------------------------------------
--- 2) TRIGGER AFTER INSERT (solo NEW)
-------------------------------------------------------------
-SELECT 'PROMPT ===========================================' || chr(10) ||
-       'PROMPT === TRIGGERS INSERT =======' || chr(10) ||
-       'PROMPT ===========================================' || chr(10)
-FROM dual;
-
-SELECT
-'CREATE OR REPLACE TRIGGER ' ||
-REPLACE(b.table_name,'_BIT','_TRG_AIR') || chr(10) ||
-'AFTER INSERT ON ' || REPLACE(b.table_name,'_BIT','') || chr(10) ||
+'CREATE OR REPLACE TRIGGER ' || REPLACE(b.table_name,'_BIT','_TRG_AUR') || chr(10) ||
+'AFTER UPDATE ON ' || REPLACE(b.table_name,'_BIT','') || chr(10) ||  -- tabla real
 'FOR EACH ROW' || chr(10) ||
 'BEGIN' || chr(10) ||
-'  INSERT INTO ' || b.table_name || ' (' || chr(10) ||
-'    ID_BIT, FEC_BIT, ACC_BIT, USU_BIT,' || chr(10) ||
-'    ' || LISTAGG(c.column_name, ', ') WITHIN GROUP (ORDER BY c.column_id) || chr(10) ||
-'  ) VALUES (' || chr(10) ||
-'    SEC_' || b.table_name || '.NEXTVAL,' || chr(10) ||
-'    SYSDATE,' || chr(10) ||
-'    ''I'',' || chr(10) ||
-'    USER,' || chr(10) ||
-'    ' ||
-LISTAGG(
-  CASE
-    WHEN c.column_name LIKE '%\_OLD' ESCAPE '\' THEN
-         'NULL'
-    WHEN c.column_name LIKE '%\_NEW' ESCAPE '\' THEN
-         ':NEW.' || REPLACE(c.column_name,'_NEW','')
-    ELSE
-         ':NEW.' || c.column_name
-  END,
-', ') WITHIN GROUP (ORDER BY c.column_id)
- || chr(10) ||
-'  );' || chr(10) ||
+'  IF NVL(:OLD.MONTO_ASIGNADO,0) != NVL(:NEW.MONTO_ASIGNADO,0) THEN' || chr(10) ||
+'    INSERT INTO ' || b.table_name || ' (' || chr(10) ||
+'      FEC_BIT, ACC_BIT, USU_BIT,' || chr(10) ||
+'      ID_PRESUPUESTO, ID_PROYECTO,' || chr(10) ||
+'      MONTO_ASIGNADO_OLD, CANTIDAD_HORAS_MES_OLD, CANTIDAD_MESES_OLD,' || chr(10) ||
+'      MONTO_ASIGNADO_NEW, CANTIDAD_HORAS_MES_NEW, CANTIDAD_MESES_NEW' || chr(10) ||
+'    ) VALUES (' || chr(10) ||
+'      SYSDATE, ''U'', USER,' || chr(10) ||
+'      :OLD.ID_PRESUPUESTO, :OLD.ID_PROYECTO,' || chr(10) ||
+'      :OLD.MONTO_ASIGNADO, :OLD.CANTIDAD_HORAS_MES, :OLD.CANTIDAD_MESES,' || chr(10) ||
+'      :NEW.MONTO_ASIGNADO, :NEW.CANTIDAD_HORAS_MES, :NEW.CANTIDAD_MESES' || chr(10) ||
+'    );' || chr(10) ||
+'  END IF;' || chr(10) ||
 'END;' || chr(10) ||
 '/ ' || chr(10) ||
 'SHOW ERRORS' || chr(10)
-FROM dba_tab_columns c
-JOIN (
-    SELECT table_name
-    FROM dba_tables
-    WHERE owner = 'CICES'
-      AND table_name LIKE '%\_BIT' ESCAPE '\'
-) b ON b.table_name = c.table_name
-WHERE c.owner = 'CICES'
-AND c.column_name NOT IN ('ID_BIT','FEC_BIT','ACC_BIT','USU_BIT')
-GROUP BY b.table_name;
-
-------------------------------------------------------------
--- 3) TRIGGER AFTER UPDATE (OLD + NEW)
-------------------------------------------------------------
-SELECT 'PROMPT ===========================================' || chr(10) ||
-       'PROMPT === TRIGGERS UPDATE =======' || chr(10) ||
-       'PROMPT ===========================================' || chr(10)
-FROM dual;
-
-SELECT
-'CREATE OR REPLACE TRIGGER ' ||
-REPLACE(b.table_name,'_BIT','_TRG_AUR') || chr(10) ||
-'AFTER UPDATE ON ' || REPLACE(b.table_name,'_BIT','') || chr(10) ||
-'FOR EACH ROW' || chr(10) ||
-'BEGIN' || chr(10) ||
-'  INSERT INTO ' || b.table_name || ' (' || chr(10) ||
-'    ID_BIT, FEC_BIT, ACC_BIT, USU_BIT,' || chr(10) ||
-'    ' || LISTAGG(c.column_name, ', ') WITHIN GROUP (ORDER BY c.column_id) || chr(10) ||
-'  ) VALUES (' || chr(10) ||
-'    SEC_' || b.table_name || '.NEXTVAL,' || chr(10) ||
-'    SYSDATE,' || chr(10) ||
-'    ''U'',' || chr(10) ||
-'    USER,' || chr(10) ||
-'    ' ||
-LISTAGG(
-  CASE
-    WHEN c.column_name LIKE '%\_OLD' ESCAPE '\' THEN
-         'NULL'
-    WHEN c.column_name LIKE '%\_NEW' ESCAPE '\' THEN
-         ':NEW.' || REPLACE(c.column_name,'_NEW','')
-    ELSE
-         ':NEW.' || c.column_name
-  END,
-', ') WITHIN GROUP (ORDER BY c.column_id) || chr(10) ||
-'  );' || chr(10) ||
-'END;' || chr(10) ||
-'/ ' || chr(10) ||
-'SHOW ERRORS' || chr(10)
-FROM dba_tab_columns c
-JOIN (
-    SELECT table_name
-    FROM dba_tables
-    WHERE owner = 'CICES'
-      AND table_name LIKE '%\_BIT' ESCAPE '\'
-) b ON b.table_name = c.table_name
-WHERE c.owner = 'CICES'
-AND c.column_name NOT IN ('ID_BIT','FEC_BIT','ACC_BIT','USU_BIT')
-GROUP BY b.table_name;
-
-------------------------------------------------------------
--- 4) TRIGGER AFTER DELETE (solo OLD)
-------------------------------------------------------------
-SELECT 'PROMPT ===========================================' || chr(10) ||
-       'PROMPT === TRIGGERS DELETE =======' || chr(10) ||
-       'PROMPT ===========================================' || chr(10)
-FROM dual;
-
-SELECT
-'CREATE OR REPLACE TRIGGER ' ||
-REPLACE(b.table_name,'_BIT','_TRG_ADR') || chr(10) ||
-'AFTER DELETE ON ' || REPLACE(b.table_name,'_BIT','') || chr(10) ||
-'FOR EACH ROW' || chr(10) ||
-'BEGIN' || chr(10) ||
-'  INSERT INTO ' || b.table_name || ' (' || chr(10) ||
-'    ID_BIT, FEC_BIT, ACC_BIT, USU_BIT,' || chr(10) ||
-'    ' || LISTAGG(c.column_name, ', ') WITHIN GROUP (ORDER BY c.column_id) || chr(10) ||
-'  ) VALUES (' || chr(10) ||
-'    SEC_' || b.table_name || '.NEXTVAL,' || chr(10) ||
-'    SYSDATE,' || chr(10) ||
-'    ''D'',' || chr(10) ||
-'    USER,' || chr(10) ||
-'    ' ||
-LISTAGG(
-  CASE
-    WHEN c.column_name LIKE '%\_OLD' ESCAPE '\' THEN
-         ':OLD.' || REPLACE(c.column_name,'_OLD','')
-    WHEN c.column_name LIKE '%\_NEW' ESCAPE '\' THEN
-         'NULL'
-    ELSE
-         ':OLD.' || c.column_name
-  END,
-', ') WITHIN GROUP (ORDER BY c.column_id) || chr(10) ||
-'  );' || chr(10) ||
-'END;' || chr(10) ||
-'/ ' || chr(10) ||
-'SHOW ERRORS'
-FROM dba_tab_columns c
-JOIN (
-    SELECT table_name
-    FROM dba_tables
-    WHERE owner = 'CICES'
-      AND table_name LIKE '%\_BIT' ESCAPE '\'
-) b ON b.table_name = c.table_name
-WHERE c.owner = 'CICES'
-AND c.column_name NOT IN ('ID_BIT','FEC_BIT','ACC_BIT','USU_BIT')
-GROUP BY b.table_name;
+FROM dba_tables b
+WHERE b.owner = 'CICES'
+  AND b.table_name LIKE '%\_BIT' ESCAPE '\';
 
 ------------------------------------------------------------
 -- FIN

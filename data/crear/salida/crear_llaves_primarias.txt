@@ -1,0 +1,256 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Tue Mar 17 16:10:46 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Last Successful login time: Tue Mar 17 2026 16:10:45 -06:00
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Connected.
+============================
+====== DROPEO DE PKs =======
+============================
+ALTER TABLE CERTIFICACION DROP CONSTRAINT PK_CERTIFICACION
+                                          *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE CODIGO DROP CONSTRAINT PK_CODIGO
+                                   *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE DOCUMENTO DROP CONSTRAINT PK_DOCUMENTO
+                                      *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE EMPLEADO DROP CONSTRAINT PK_EMPLEADO
+                                     *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE ENTIDAD DROP CONSTRAINT PK_ENTIDAD
+                                    *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE ENTIDAD_PROYECTO DROP CONSTRAINT PK_ENTIDAD_PROYECTO
+                                             *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE GASTO DROP CONSTRAINT PK_GASTO
+                                  *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE HORAS_ASIGNADAS DROP CONSTRAINT PK_HORAS_ASIGNADAS
+                                            *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE INDICADOR DROP CONSTRAINT PK_INDICADOR
+                                      *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE INVESTIGADOR DROP CONSTRAINT PK_INVESTIGADOR
+                                         *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE INVESTIGADOR_PROYECTO DROP CONSTRAINT PK_INVESTIGADOR_PROYECTO
+                                                  *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE META DROP CONSTRAINT PK_META
+                                 *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE NOTIFICACION DROP CONSTRAINT PK_NOTIFICACION
+                                         *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE NOTIFICACION_USUARIO DROP CONSTRAINT PK_NOTIFICACION_USUARIO
+                                                 *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE OBJETIVO_ESPECIFICO DROP CONSTRAINT PK_OBJETIVO_ESPECIFICO
+                                                *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE PERMISO_PROYECTO DROP CONSTRAINT PK_PERMISO_PROYECTO
+                                             *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE PRESENTACION_INFORME DROP CONSTRAINT PK_PRESENTACION_INFORME
+                                                 *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE PRESUPUESTO DROP CONSTRAINT PK_PRESUPUESTO
+                                        *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE PRESUPUESTO_BIT DROP CONSTRAINT PK_PRESUPUESTO_BIT
+                                            *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE PROYECTO DROP CONSTRAINT PK_PROYECTO
+                                     *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE ROL DROP CONSTRAINT PK_ROL
+                                *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE ROL_PROYECTO DROP CONSTRAINT PK_ROL_PROYECTO
+                                         *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE ROL_USUARIO DROP CONSTRAINT PK_ROL_USUARIO
+                                        *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE TIPO DROP CONSTRAINT PK_TIPO
+                                 *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE TITULO DROP CONSTRAINT PK_TITULO
+                                   *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE USUARIO DROP CONSTRAINT PK_USUARIO
+                                    *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+============================
+===== CREACIÓN DE PKs ======
+============================
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0

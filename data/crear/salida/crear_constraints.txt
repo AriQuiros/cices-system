@@ -1,17 +1,17 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Mar Mar 17 13:26:28 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Tue Mar 17 16:10:47 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Hora de Última Conexión Correcta: Mar Mar 17 2026 13:26:27 -06:00
+Last Successful login time: Tue Mar 17 2026 16:10:46 -06:00
 
-Conectado a:
+Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0
 
 
-Conectado.
+Connected.
 ===== DROPEO DE CONSTRAINTS ====
 ==================================
 ===== DROPEO LLAVES FORANEAS =====
@@ -19,134 +19,140 @@ Conectado.
 == FK - TIPOS Y CODIGOS ==
 ALTER TABLE CODIGO DROP CONSTRAINT FK_CODIGO_TIPO
                                    *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 == FK - FINANCIAMIENTO ==
 ALTER TABLE HORAS_ASIGNADAS DROP CONSTRAINT FK_HORAS_ASIGNADAS_INVESTIGADOR_PROYECTO
                                             *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE HORAS_ASIGNADAS DROP CONSTRAINT FK_HORAS_ASIGNADAS_PRESUPUESTO
                                             *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE GASTO DROP CONSTRAINT FK_GASTO_PRESUPUESTO
                                   *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PRESUPUESTO DROP CONSTRAINT FK_PRESUPUESTO_PROYECTO
                                         *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 == FK - PROYECTOS ==
 ALTER TABLE PRESENTACION_INFORME DROP CONSTRAINT FK_PRESENTACION_INFORME_PROYECTO
                                                  *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE DOCUMENTO DROP CONSTRAINT FK_DOCUMENTO_PROYECTO
                                       *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE OBJETIVO_ESPECIFICO DROP CONSTRAINT FK_OBJETIVO_ESPECIFICO_PROYECTO
                                                 *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE META DROP CONSTRAINT FK_META_OBJETIVO_ESPECIFICO
                                  *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INDICADOR DROP CONSTRAINT FK_INDICADOR_META
                                       *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ENTIDAD_PROYECTO DROP CONSTRAINT FK_ENTIDAD_PROYECTO_ENTIDAD
                                              *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ENTIDAD_PROYECTO DROP CONSTRAINT FK_ENTIDAD_PROYECTO_PROYECTO
                                              *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 == FK - ACCESO EN PROYECTOS ==
 == FK - ACCESO (ROLES Y PERMISOS) ==
 ALTER TABLE ROL_USUARIO DROP CONSTRAINT FK_ROL_USUARIO_USUARIO
                                         *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ROL_USUARIO DROP CONSTRAINT FK_ROL_USUARIO_ROL
                                         *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 == FK - EDUCACION ==
 ALTER TABLE CERTIFICACION DROP CONSTRAINT FK_CERTIFICACION_INVESTIGADOR
                                           *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE TITULO DROP CONSTRAINT FK_TITULO_INVESTIGADOR
                                    *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 == FK - USUARIOS ==
 ALTER TABLE EMPLEADO DROP CONSTRAINT FK_EMPLEADO_USUARIO
                                      *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INVESTIGADOR DROP CONSTRAINT FK_INVESTIGADOR_EMPLEADO
                                          *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INVESTIGADOR_PROYECTO DROP CONSTRAINT FK_INVESTIGADOR_PROYECTO_INVESTIGADOR
                                                   *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INVESTIGADOR_PROYECTO DROP CONSTRAINT FK_INVESTIGADOR_PROYECTO_ROL_PROYECTO
                                                   *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INVESTIGADOR_PROYECTO DROP CONSTRAINT FK_INVESTIGADOR_PROYECTO_PROYECTO
                                                   *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE PERMISO_PROYECTO DROP CONSTRAINT FK_PERMISO_PROYECTO_INVESTIGADOR_PROYECTO
+                                             *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ==================================
@@ -154,8 +160,8 @@ ORA-02443: No se puede borrar la restricción - restricción no existente
 ==================================
 ALTER TABLE USUARIO DROP CONSTRAINT CK_USUARIO_ESTADO
                                     *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ==================================
@@ -164,46 +170,46 @@ ORA-02443: No se puede borrar la restricción - restricción no existente
 == UK - USUARIOS ==
 ALTER TABLE EMPLEADO DROP CONSTRAINT UK_EMPLEADO_IDENTIFICACION
                                      *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE EMPLEADO DROP CONSTRAINT UK_EMPLEADO_CORREO
                                      *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE USUARIO DROP CONSTRAINT UK_USUARIO_NOMBRE_USUARIO
                                     *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 == UK - ACCESO ==
 ALTER TABLE ROL DROP CONSTRAINT UK_ROL_NOMBRE_ROL
                                 *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PERMISO DROP CONSTRAINT UK_PERMISO_NOMBRE_PERMISO
 *
-ERROR en línea 1:
-ORA-00942: la tabla o vista no existe
+ERROR at line 1:
+ORA-00942: table or view does not exist
 
 
 == UK - PROYECTOS ==
 ALTER TABLE PROYECTO DROP CONSTRAINT UK_PROYECTO_CODIGO_PROYECTO
                                      *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INVESTIGADOR_PROYECTO DROP CONSTRAINT UK_INVESTIGADOR_PROYECTO
                                                   *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ===== CREACION DE CONSTRAINTS ====
@@ -212,129 +218,132 @@ ORA-02443: No se puede borrar la restricción - restricción no existente
 ==================================
 == UK - USUARIOS ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 == UK - ACCESO ==
 
-Tabla modificada.
+Table altered.
 
 ALTER TABLE PERMISO
 *
-ERROR en línea 1:
-ORA-00942: la tabla o vista no existe
+ERROR at line 1:
+ORA-00942: table or view does not exist
 
 
 == UK - PROYECTOS ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 ==================================
 ======= CREACION DE CHECK ========
 ==================================
 == CHECK - USUARIOS ==
 
-Tabla modificada.
+Table altered.
 
 ==================================
 ========= CREACION DE FK =========
 ==================================
 == FK - USUARIOS ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 == FK - EDUCACION ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 == FK - ACCESO ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 == FK - ACCESO EN PROYECTOS ==
 == FK - PROYECTOS ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
+
+
+Table altered.
 
 == FK - FINANCIAMIENTO ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 == FK - NOTIFICACIONES ==
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 == FK - TIPOS Y CODIGOS ==
 
-Tabla modificada.
+Table altered.
 
-Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0

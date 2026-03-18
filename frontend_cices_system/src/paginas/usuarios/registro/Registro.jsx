@@ -193,31 +193,22 @@ function RegistroInner() {
 
     const idConfig = {
         type: "text",
-        maxLength: 20,
+        maxLength: 9,
         pattern: undefined
     };
 
     if (tipoId === "NACIONAL") {
-
-        idConfig.type = "number";
         idConfig.maxLength = 10;
         idConfig.pattern = "\\d{1,10}";
-
     }
 
     if (tipoId === "DIMEX") {
-
-        idConfig.type = "number";
         idConfig.maxLength = 15;
         idConfig.pattern = "\\d{1,15}";
-
     }
 
     if (tipoId === "PASAPORTE") {
-
-        idConfig.type = "text";
         idConfig.maxLength = 20;
-
     }
 
     const [showPassword, setShowPassword] = useState(false);
@@ -279,9 +270,21 @@ function RegistroInner() {
                     name="identificacion"
                     placeholder="Sin guiones"
                     value={empleado.identificacion}
-                    onChange={handleChange}
-                    rules={[required(), maxLength(20)]}
-                    type={idConfig.type}
+                    onChange={(e) => {
+
+                        let value = e.target.value;
+
+                        // solo números si es NACIONAL o DIMEX
+                        if (tipoId === "NACIONAL" || tipoId === "DIMEX") {
+                            value = value.replace(/\D/g, "");
+                        }
+
+                        if (value.length <= idConfig.maxLength) {
+                            actualizarCampo("identificacion", value);
+                        }
+
+                    }}
+                    inputMode= {(tipoId === "NACIONAL" || tipoId === "DIMEX")?"numeric":"text"}
                     maxLength={idConfig.maxLength}
                     pattern={idConfig.pattern}
                     required

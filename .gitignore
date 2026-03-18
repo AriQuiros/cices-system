@@ -35,3 +35,5 @@ logs/
 .env.local
 .env.*.local
 
+#data
+data/crear/salida/

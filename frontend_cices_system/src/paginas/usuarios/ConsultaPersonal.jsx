@@ -67,30 +67,24 @@ export default function ListaPersonas() {
                     <input
                         className="lp-search-input"
                         type="text"
-                        placeholder="Buscar por ..."
+                        placeholder="Buscar por nombre..."
                         value={nombreFiltro}
                         onChange={(e) => setNombreFiltro(e.target.value)}
                     />
 
                     <div className="lp-filter-box">
-                        <label className="lp-filter-label">Filtros:</label>
+                        <label className="lp-filter-label">Roles:</label>
 
                         <select
                             className="lp-filter-select"
                             value={rolFiltro}
                             onChange={(e) => setRolFiltro(e.target.value)}
                         >
-                            <option value="">Nombre</option>
+                            <option value="">Todos</option>
                             <option value="ASISTENTE">Asistente</option>
                             <option value="ADMINISTRATIVO">Administrativo</option>
                         </select>
                     </div>
-
-                    <button className="lp-search-button" onClick={aplicarFiltros}>
-                        BUSCAR
-                    </button>
-                </div>
-
                 <div className="lp-extra-filters">
                     <div className="lp-field">
                         <label className="lp-field-label">Grado académico</label>
@@ -107,6 +101,7 @@ export default function ListaPersonas() {
                         />
                     </div>
                 </div>
+                </div>
 
                 <div className="lp-table-card">
                     <table className="lp-table">
@@ -118,7 +113,7 @@ export default function ListaPersonas() {
                             <th>Correo</th>
                             <th>Teléfono</th>
                             <th>Grado Académico</th>
-                            <th>Roles</th>
+                            <th>Rol</th>
                         </tr>
                         </thead>
 

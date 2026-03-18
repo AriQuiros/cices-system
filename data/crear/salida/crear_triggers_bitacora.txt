@@ -1,23 +1,23 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 10:02:24 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on MiÈ Mar 18 15:06:23 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 18 2026 10:02:24 -06:00
+Hora de ⁄ltima ConexiÛn Correcta: MiÈ Mar 18 2026 15:06:23 -06:00
 
-Connected to:
+Conectado a:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0
 
 
-Connected.
+Conectado.
 ===========================================
 === TRIGGERS UPDATE BIT√ÅCORA =======
 ===========================================
 
-Trigger created.
+Disparador creado.
 
-No errors.
-Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+No hay errores.
+Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0

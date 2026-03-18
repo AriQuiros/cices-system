@@ -123,7 +123,7 @@ export const menuConfig = [
     {
         section: "Otros",
         items: [
-            { label: "Consulta Proyecto", path: "/consultar/:id", roles: ["*"] },
+            { label: "Consulta Proyecto", path: "/consulta-proyectos", roles: ["*"] },
             { label: "Horas Proyecto", path: "/proyectos/:id/horas", roles: ["*"] },
             { label: "Consulta Proyectos", path: "/consulta-proyectos", roles: ["*"] },
             { label: "Vista Investigador", path: "/investigador", roles: ["*"] }

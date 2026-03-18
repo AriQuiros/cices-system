@@ -9,6 +9,7 @@ import { fetchTiposCatalogo } from "../../../services/CatalogoService.js";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import {required, min, max} from "../../../utils/validaciones/Validators.jsx";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import "./GestionHoras.css";
 
 const formularioVacio = {
     id: null,
@@ -285,7 +286,8 @@ const GestionHoras = () => {
 
     return (
 
-        <div>
+        <div className="gestion-horas-page">
+            <div className="gestion-horas-card">
 
             <BuscadorProyecto
                 token={token}
@@ -294,7 +296,7 @@ const GestionHoras = () => {
 
             {presupuestos.length > 0 && (
 
-                <select onChange={(e) => seleccionarPresupuesto(parseInt(e.target.value))}>
+                <select className="gestion-horas-select" onChange={(e) => seleccionarPresupuesto(parseInt(e.target.value))}>
                     <option value="">Seleccione presupuesto</option>
 
                     {presupuestos.map(p => (
@@ -311,7 +313,9 @@ const GestionHoras = () => {
 
             {presupuestoSeleccionado && (
 
-                <div>
+                <>
+                <hr className="gestion-horas-divider" />
+                <div className="gestion-horas-content">
                     <p>
                         Horas asignadas al presupuesto: {presupuestoSeleccionado.cantidadHoras} h/mes
                     </p>
@@ -487,9 +491,11 @@ const GestionHoras = () => {
                     </table>
 
                 </div>
+                </>
 
             )}
 
+            </div>
         </div>
 
     );

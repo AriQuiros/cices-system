@@ -2,15 +2,14 @@ package org.example.backend_cices_system.presentation;
 
 import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.ProyectoDatosDTO;
-import org.example.backend_cices_system.dto.ProyectoFechasDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/proyectos")
@@ -33,6 +32,27 @@ public class ProyectoController {
             @RequestBody @Valid ProyectoDTO dto) {
         Integer id = proyectoService.guardarProyecto(dto).getId();
         return ResponseEntity.ok(id);
+    }
+
+    @GetMapping("/consultar")
+    public List<Map<String, Object>> consultarProyectos() {
+        return proyectoService.obtenerProyectos().stream()
+                .map(proyecto -> {
+                    Map<String, Object> data = new LinkedHashMap<>();
+                    data.put("idProyecto", proyecto.getId());
+                    data.put("codigo", proyecto.getCodigoProyecto());
+                    data.put("nombre", proyecto.getNombreProyecto());
+                    data.put("lineaInvestigacion", proyecto.getLineaInvestigacion());
+                    data.put("fechaInicio", proyecto.getFechaInicio());
+                    data.put("fechaFinalizacion", proyecto.getFechaFinalizacion());
+                    return data;
+                })
+                .toList();
+    }
+
+    @GetMapping("/consultar/{id}")
+    public ResponseEntity<Proyecto> consultarProyectoPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(proyectoService.obtenerProyecto(id));
     }
 
 

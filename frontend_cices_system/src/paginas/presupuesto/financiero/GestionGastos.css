@@ -1,0 +1,176 @@
+.gestion-gastos-page {
+    padding: 20px;
+}
+
+.gestion-gastos-card {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.gestion-gastos-title {
+    margin: 0 0 18px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.gestion-gastos-select {
+    width: 100%;
+    margin-top: 12px;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.gestion-gastos-select:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.gestion-gastos-content {
+    margin-top: 8px;
+}
+
+.gestion-gastos-subtitle {
+    margin: 14px 0 10px;
+    color: #134f6c;
+    font-size: 1.05rem;
+}
+
+.gestion-gastos-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 16px;
+    background: #f5fbff;
+    border: 1px solid #d8edf8;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.gestion-gastos-resumen p,
+.gestion-gastos-total-form p {
+    margin: 0;
+}
+
+.presupuesto-restante {
+    color: #1f7a1f;
+    margin: 10px 0;
+}
+
+.presupuesto-restante.negativo {
+    color: #b42318;
+}
+
+.gestion-gastos-total-form {
+    margin-bottom: 8px;
+}
+
+.gestion-gastos-form {
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    padding: 12px;
+    background: #fcfeff;
+}
+
+.gasto-form-item {
+    border-bottom: 1px dashed #d5e5ee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.gasto-form-item:last-of-type {
+    border-bottom: none;
+}
+
+.gestion-gastos-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.btn-accion {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #ddeff8;
+    color: #114866;
+}
+
+.btn-accion.primario {
+    background: #0fc3f3;
+    color: #052b3d;
+}
+
+.btn-accion.secundario {
+    background: #e6edf2;
+    color: #2f3f4a;
+}
+
+.btn-accion.peligro {
+    background: #fee4e2;
+    color: #912018;
+}
+
+.btn-accion:hover {
+    filter: brightness(0.97);
+}
+
+.gestion-gastos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+.gestion-gastos-table th,
+.gestion-gastos-table td {
+    border: 1px solid #d8e4ec;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.gestion-gastos-table th {
+    background: #edf7fc;
+    color: #123f57;
+}
+
+.gestion-gastos-table td:last-child {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .gestion-gastos-page {
+        padding: 12px;
+    }
+
+    .gestion-gastos-card {
+        padding: 14px;
+    }
+
+    .gestion-gastos-actions {
+        flex-direction: column;
+    }
+
+    .btn-accion {
+        width: 100%;
+    }
+
+    .gestion-gastos-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

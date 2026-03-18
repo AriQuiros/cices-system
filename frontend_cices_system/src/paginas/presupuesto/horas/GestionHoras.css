@@ -1,0 +1,50 @@
+.gestion-horas-page {
+    padding: 20px;
+}
+
+.gestion-horas-card {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.gestion-horas-select {
+    width: 100%;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+    background: #fff;
+}
+
+.gestion-horas-select:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.gestion-horas-divider {
+    border: none;
+    border-top: 1px solid #d9d9d9;
+    margin: 12px 0 0;
+}
+
+.gestion-horas-content {
+    padding-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .gestion-horas-page {
+        padding: 12px;
+    }
+
+    .gestion-horas-card {
+        padding: 14px;
+    }
+}

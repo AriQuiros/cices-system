@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import React from 'react';
 import "./ProyectoSeleccionado.css";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 function ProyectoSeleccionado() {
     const { id } = useParams();
     const [proyecto, setProyecto] = useState();
@@ -10,13 +12,31 @@ function ProyectoSeleccionado() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!id || Number.isNaN(Number(id))) {
+            setError("Identificador de proyecto inválido");
+            return;
+        }
+
         const obtenerProyecto = async () => {
             try {
-                const res = await fetch(`/api/proyectos/consultar/${id}`);
+                const res = await fetch(`${API}/api/proyectos/consultar/${id}`);
                 if (!res.ok) throw new Error("Error al cargar el proyecto");
 
                 const data = await res.json();
-                setProyecto(data);
+                // Mapear los nombres del DTO a los esperados por el componente
+                const proyectoMapeado = {
+                    ...data,
+                    nombre: data.nombreProyecto,
+                    codigo: data.codigoProyecto,
+                    descripcion: data.descripcionProyecto || data.descripcion,
+                    detalles: data.detallesProyectos || data.detalles,
+                    investigadoresProyectos: data.investigadoresProyectos || [],
+                    entidadesVinculadas: data.entidadesVinculadas || [],
+                    objetivosEspecificos: data.objetivosEspecificos || [],
+                    presupuestos: data.presupuestos || [],
+                    presentacionesInformes: data.presentacionesInformes || []
+                };
+                setProyecto(proyectoMapeado);
             } catch (err) {
                 console.error(err);
                 setError("No se pudo cargar el proyecto");
@@ -24,6 +44,10 @@ function ProyectoSeleccionado() {
         };
         obtenerProyecto();
     }, [id]);
+
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     if (!proyecto) {
         return <p>Cargando proyecto...</p>;
@@ -55,7 +79,7 @@ function ProyectoSeleccionado() {
                 {/*<p>{proyecto.detalles}</p>*/}
                 <div className="titulo">UNIDADES PARTICIPANTES</div>
                 <ul>
-                    {proyecto.entidadesVinculadas.map(ent => (
+                    {(proyecto.entidadesVinculadas || []).map(ent => (
                         <li key={ent.id ?? ent.nombre}>{ent.nombre} - {ent.tipo}</li>
                     ))}
                 </ul>

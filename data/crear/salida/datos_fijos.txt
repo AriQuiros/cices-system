@@ -1,17 +1,17 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 10:02:24 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Mié Mar 18 15:06:24 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 18 2026 10:02:24 -06:00
+Hora de Última Conexión Correcta: Mié Mar 18 2026 15:06:23 -06:00
 
-Connected to:
+Conectado a:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0
 
 
-Connected.
+Conectado.
 ==================================
 === DATOS FIJOS ==
 ==================================
@@ -19,157 +19,157 @@ Connected.
 === ROLES DEL SISTEMA ==
 ==================================
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 ==================================
 === ROLES DE PROYECTO ==
 ==================================
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 ==================================
 === ENTIDADES ==
 ==================================
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
 
-1 row created.
+1 fila creada.
 
-Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0

@@ -1,19 +1,19 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 10:02:21 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Mié Mar 18 15:06:20 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Last Successful login time: Tue Mar 17 2026 15:29:22 -06:00
+Hora de Última Conexión Correcta: Mié Mar 18 2026 13:20:21 -06:00
 
-Connected to:
+Conectado a:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0
 
 
 =====Inicio config.sql=====
 
-Session altered.
+Sesión modificada.
 
 
 Sesión modificada.
@@ -32,7 +32,7 @@ ERROR en línea 1:
 ORA-01920: conflicto entre el nombre de usuario 'CICES' y otro nombre de usuario o rol
 
 
-Connected.
+Conectado.
 =====Inicio config.sql=====
 USER es "CICES"
 =====Fin config.sql=====
@@ -44,12 +44,6 @@ USER es "CICES"
 == DROPEO TABLAS PARA FINANCIAMIENTO ==
 == DROPEO TABLAS PARA PROYECTOS ==
 == DROPEO TABLAS PARA ACESSO EN PROYECTOS ==
-DROP TABLE PERMISO_PROYECTO CASCADE CONSTRAINTS
-           *
-ERROR en línea 1:
-ORA-00942: la tabla o vista no existe
-
-
 == DROPEO TABLAS PARA ACESSO (ROLES Y PERMISOS) ==
 == DROPEO TABLAS EDUCACION FORMAL E INFORMAL ==
 == DROPEO TABLAS PARA USUARIOS ==

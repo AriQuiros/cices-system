@@ -72,7 +72,7 @@ PRESUPUESTO                                      12
 
 TABLA                               TOTAL_REGISTROS
 ----------------------------------- ---------------
-PRESUPUESTO_BIT                                  12
+PRESUPUESTO_BIT                                   0
 
 TABLA                               TOTAL_REGISTROS
 ----------------------------------- ---------------
@@ -84,7 +84,7 @@ ROL                                               4
 
 TABLA                               TOTAL_REGISTROS
 ----------------------------------- ---------------
-ROL_PROYECTO                                      5
+ROL_PROYECTO                                      4
 
 TABLA                               TOTAL_REGISTROS
 ----------------------------------- ---------------

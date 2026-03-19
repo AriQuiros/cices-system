@@ -45,4 +45,37 @@ public class DocumentoService {
         }
     }
 
+    public void guardarDocumentosMultipart(List<MultipartFile> archivos, Proyecto proyecto) {
+        try {
+            String carpetaBase = "uploads/proyectos/" + proyecto.getCodigoProyecto();
+            Path rutaCarpeta = Paths.get(carpetaBase);
+
+            if (!Files.exists(rutaCarpeta)) {
+                Files.createDirectories(rutaCarpeta);
+            }
+
+            for (MultipartFile archivo : archivos) {
+                if (archivo == null || archivo.isEmpty()) continue;
+
+                String nombreArchivo = archivo.getOriginalFilename();
+                Path rutaArchivo = rutaCarpeta.resolve(nombreArchivo);
+
+                Files.copy(
+                        archivo.getInputStream(),
+                        rutaArchivo,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+
+                Documento documento = new Documento();
+                documento.setIdProyecto(proyecto);
+                documento.setNombreDocumento(nombreArchivo);
+                documento.setDirectorio(rutaArchivo.toString());
+
+                documentoRepo.save(documento);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error guardando documentos", e);
+        }
+    }
+
 }

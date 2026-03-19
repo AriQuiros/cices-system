@@ -6,34 +6,54 @@ export const esSoloInvestigador = (user) => {
 };
 
 export async function registrarProyecto(proyecto, token) {
+    const formData = new FormData();
+
+    const proyectoSinArchivos = {
+        ...proyecto,
+        documentos: []
+    };
+
+    formData.append(
+        "proyecto",
+        new Blob([JSON.stringify(proyectoSinArchivos)], {
+            type: "application/json"
+        })
+    );
+
+    (proyecto.documentos || []).forEach((file) => {
+        formData.append("documentos", file);
+    });
+
     const res = await fetch(`${API}/api/proyectos/registro`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(proyecto)
+        body: formData
     });
 
     const text = await res.text();
     let data;
+
     try {
         data = text ? JSON.parse(text) : null;
     } catch {
         data = text;
     }
 
-    if (!res.ok) throw data;
-    return data;
+    if (!res.ok) {
+        console.error("Error backend crudo:", data);
+        throw data;
+    }
 }
 
 export async function cargarProyectos(token, user, principal) {
-    const esInvestidor = esSoloInvestigador(user)
+    const esInvestidor = esSoloInvestigador(user);
     let url = esInvestidor
         ? `${API}/api/reports/proyectos/investigador`
         : `${API}/api/reports/proyectos/codigo-nombre-fechas`;
 
-    if(esInvestidor && principal) url = url + "/principal"
+    if (esInvestidor && principal) url = url + "/principal";
 
     const res = await fetch(url, {
         headers: {

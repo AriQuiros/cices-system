@@ -5,8 +5,10 @@ import org.example.backend_cices_system.dto.ProyectoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,11 +30,12 @@ public class ProyectoController {
         return proyectoService.obtenerLineasInvestigacion().toArray(String[]::new);
     }
 
-    @PostMapping("/registro")
+    @PostMapping(value = "/registro", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Integer> crearProyectoCompleto(
-            @RequestBody @Valid ProyectoDTO dto) {
-
-        Integer id = proyectoService.guardarProyecto(dto).getId();
+            @RequestPart("proyecto") ProyectoDTO dto,
+            @RequestPart(value = "documentos", required = false) List<MultipartFile> documentos
+    ) {
+        Integer id = proyectoService.guardarProyecto(dto, documentos).getId();
         return ResponseEntity.ok(id);
     }
 

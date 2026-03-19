@@ -6,8 +6,14 @@ import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -66,51 +72,36 @@ public class ProyectoService {
     }
 
     @Transactional
-    public Proyecto guardarProyecto(ProyectoDTO proyectoDTO) {
-        try {
-            System.out.println("=== DTO recibido ===");
-            System.out.println(proyectoDTO);
+    public Proyecto guardarProyecto(ProyectoDTO proyectoDTO, List<MultipartFile> documentos) {
+        var proyecto = new Proyecto();
 
-            var proyecto = new Proyecto();
+        proyecto.setCodigoProyecto(proyectoDTO.codigoProyecto());
+        proyecto.setNombreProyecto(proyectoDTO.nombreProyecto());
+        proyecto.setDescripcionProyecto(proyectoDTO.descripcion());
+        proyecto.setObjetivoGeneral(proyectoDTO.objetivoGeneral());
+        proyecto.setLineaInvestigacion(proyectoDTO.lineaInvestigacion());
+        proyecto.setFechaInicio(proyectoDTO.fechaInicio());
+        proyecto.setFechaFinalizacion(proyectoDTO.fechaFinalizacion());
+        proyecto.setDetallesProyectos(proyectoDTO.detalles());
 
-            proyecto.setCodigoProyecto(proyectoDTO.codigoProyecto());
-            proyecto.setNombreProyecto(proyectoDTO.nombreProyecto());
-            proyecto.setDescripcionProyecto(proyectoDTO.descripcion());
-            proyecto.setObjetivoGeneral(proyectoDTO.objetivoGeneral());
-            proyecto.setLineaInvestigacion(proyectoDTO.lineaInvestigacion());
-            proyecto.setFechaInicio(proyectoDTO.fechaInicio());
-            proyecto.setFechaFinalizacion(proyectoDTO.fechaFinalizacion());
-            proyecto.setDetallesProyectos(proyectoDTO.detalles());
+        proyecto.setIdCodigoTipoProyecto(proyectoDTO.tipoProyecto().id());
+        var estado = obtenerEstadoProyecto(proyectoDTO.fechaFinalizacion());
+        proyecto.setIdCodigoTipoEstado(estado);
 
-            System.out.println("tipoProyecto = " + proyectoDTO.tipoProyecto());
-            System.out.println("tipoProyecto.id = " +
-                    (proyectoDTO.tipoProyecto() != null ? proyectoDTO.tipoProyecto().id() : null));
+        proyectoRepository.save(proyecto);
 
-            proyecto.setIdCodigoTipoProyecto(proyectoDTO.tipoProyecto().id());
-
-            var estado = obtenerEstadoProyecto(proyectoDTO.fechaFinalizacion());
-            proyecto.setIdCodigoTipoEstado(estado);
-
-            proyectoRepository.save(proyecto);
-
-            System.out.println("=== Guardando objetivos ===");
-            for (var objetivoDTO : proyectoDTO.objetivosEspecificos()) {
-                System.out.println(objetivoDTO);
-                objetivosEspecificosService.guardarObjetivoEspecifico(objetivoDTO, proyecto);
-            }
-
-            System.out.println("=== Guardando opcionales ===");
-            guardarOpcionales(proyectoDTO, proyecto);
-
-            return proyecto;
-        } catch (Exception e) {
-            System.err.println("=== ERROR REAL EN guardarProyecto ===");
-            e.printStackTrace();
-            throw e;
+        for (var objetivoDTO : proyectoDTO.objetivosEspecificos()) {
+            objetivosEspecificosService.guardarObjetivoEspecifico(objetivoDTO, proyecto);
         }
+
+        guardarOpcionales(proyectoDTO, proyecto, documentos);
+
+        return proyecto;
     }
 
-    private void guardarOpcionales(ProyectoDTO dto, Proyecto proyecto) {
+
+
+    private void guardarOpcionales(ProyectoDTO dto, Proyecto proyecto, List<MultipartFile> documentos) {
         if (dto.entidadesVinculadas() != null && !dto.entidadesVinculadas().isEmpty()) {
             for (var entidadDTO : dto.entidadesVinculadas()) {
                 var entidadProyecto = new EntidadProyecto();
@@ -133,12 +124,16 @@ public class ProyectoService {
 
         if (dto.investigadoresVinculados() != null && !dto.investigadoresVinculados().isEmpty()) {
             for (var investigadorDTO : dto.investigadoresVinculados()) {
-                Investigador investigador = investigadorService.buscarPorIdentificacion(investigadorDTO.identificacionInvestigador());
+                Investigador investigador = investigadorService.buscarPorIdentificacion(
+                        investigadorDTO.identificacionInvestigador()
+                );
                 investigadorProyectoService.guardarInvestigadorProyecto(investigadorDTO, investigador, proyecto);
             }
         }
 
-        // documentos
+        if (documentos != null && !documentos.isEmpty()) {
+            documentoService.guardarDocumentosMultipart(documentos,proyecto);
+        }
     }
 
     public Proyecto buscarProyectoPorCodigo(String codigoProyecto) {

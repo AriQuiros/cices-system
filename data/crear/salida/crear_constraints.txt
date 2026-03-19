@@ -1,10 +1,10 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Mar Mar 17 13:26:28 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Mié Mar 18 15:06:22 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Hora de Última Conexión Correcta: Mar Mar 17 2026 13:26:27 -06:00
+Hora de Última Conexión Correcta: Mié Mar 18 2026 15:06:22 -06:00
 
 Conectado a:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
@@ -149,6 +149,12 @@ ERROR en línea 1:
 ORA-02443: No se puede borrar la restricción - restricción no existente
 
 
+ALTER TABLE PERMISO_PROYECTO DROP CONSTRAINT FK_PERMISO_PROYECTO_INVESTIGADOR_PROYECTO
+                                             *
+ERROR en línea 1:
+ORA-02443: No se puede borrar la restricción - restricción no existente
+
+
 ==================================
 ==== DROPEO CHECK CONSTRAINTS ====
 ==================================
@@ -282,6 +288,9 @@ Tabla modificada.
 
 == FK - ACCESO EN PROYECTOS ==
 == FK - PROYECTOS ==
+
+Tabla modificada.
+
 
 Tabla modificada.
 

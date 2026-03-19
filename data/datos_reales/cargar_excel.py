@@ -1,52 +1,78 @@
-# python cargar_excel.py
+# cargar_excel.py 
 
-import pandas as pd
-import oracledb
+import sys
 import os
+import subprocess
 
-# ========= CONFIGURACIÓN =========
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FOLDER = os.path.join(BASE_DIR, "xlsx")
+# ======= FUNCIÓN PARA INSTALAR MÓDULOS =======
+def instalar_modulo(modulo):
+    try:
+        print(f"⚙️ Instalando {modulo}...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", modulo])
+        print(f"✅ {modulo} instalado correctamente\n")
+    except Exception as e:
+        print(f"❌ No se pudo instalar {modulo}: {e}")
+        sys.exit(1)
+
+# ======= VERIFICACIÓN DE MÓDULOS =======
+try:
+    import pandas as pd
+except ModuleNotFoundError:
+    instalar_modulo("pandas")
+    import pandas as pd
+
+try:
+    import oracledb
+except ModuleNotFoundError:
+    instalar_modulo("oracledb")
+    import oracledb
+
+# openpyxl es necesario para leer .xlsx
+try:
+    import openpyxl
+except ModuleNotFoundError:
+    instalar_modulo("openpyxl")
+    import openpyxl
+
+
+# ======= CONFIGURACIÓN =======
+DATA_FOLDER = "xlsx"
 
 DB_USER = "CICES"
 DB_PASSWORD = "cices123"
 DB_DSN = "localhost:1521/XE"
-# =================================
 
 
-def normalizar_valor(valor):
-    """Convierte valores de pandas/numpy a tipos nativos compatibles con oracledb."""
-    if pd.isna(valor):
-        return None
+# ======= FUNCIONES =======
+def normalizar_fila(fila):
+    fila_normalizada = []
+    for x in fila:
+        if pd.isna(x):
+            fila_normalizada.append(None)
+        elif hasattr(x, 'item'):
+            fila_normalizada.append(x.item())
+        else:
+            fila_normalizada.append(x)
+    return tuple(fila_normalizada)
 
-    if hasattr(valor, "item"):
-        try:
-            valor = valor.item()
-        except Exception:
-            pass
 
-    if isinstance(valor, float) and valor.is_integer():
-        return int(valor)
-
-    if isinstance(valor, str):
-        texto = valor.strip()
-        return texto if texto else None
-
-    return valor
-
+# ======= MAIN =======
 def main():
-    print("Iniciando carga de archivos Excel...")
-
-    # Conexión a Oracle
-    conn = oracledb.connect(
-        user=DB_USER,
-        password=DB_PASSWORD,
-        dsn=DB_DSN
-    )
-    cursor = conn.cursor()
+    print("🚀 Iniciando carga de archivos Excel...")
 
     try:
-        # Recorrer todos los archivos Excel de la carpeta
+        conn = oracledb.connect(
+            user=DB_USER,
+            password=DB_PASSWORD,
+            dsn=DB_DSN
+        )
+        cursor = conn.cursor()
+    except Exception as e:
+        print("❌ No se pudo conectar a Oracle:")
+        print(e)
+        sys.exit(1)
+
+    try:
         for archivo in os.listdir(DATA_FOLDER):
             if not archivo.endswith(".xlsx"):
                 continue
@@ -59,28 +85,25 @@ def main():
             for tabla, df in hojas.items():
                 print(f"  → Cargando tabla: {tabla}")
 
-                # Convertir NaN a NULL
-                df = df.where(df.notnull(), None)
+                df = df.astype(object)
 
                 columnas = list(df.columns)
                 columnas_sql = ", ".join(columnas)
                 valores = ", ".join([f":{i+1}" for i in range(len(columnas))])
-
                 sql = f"INSERT INTO {tabla} ({columnas_sql}) VALUES ({valores})"
 
                 for index, fila in df.iterrows():
                     try:
-                        valores_fila = tuple(normalizar_valor(v) for v in fila.tolist())
-                        cursor.execute(sql, valores_fila)
+                        cursor.execute(sql, normalizar_fila(fila))
                     except Exception as e:
                         print("\n❌ ERROR DETECTADO DURANTE LA CARGA")
                         print(f"Archivo   : {archivo}")
                         print(f"Tabla     : {tabla}")
-                        print(f"Fila Excel: {index + 2}")  # +2 por encabezado
+                        print(f"Fila Excel: {index + 2}")
                         print("Datos de la fila:")
                         for col, val in zip(columnas, fila):
                             print(f"  {col}: {val}")
-                        raise e  # vuelve a lanzar el error
+                        raise e
 
         conn.commit()
         print("\n✅ Todos los archivos fueron cargados correctamente")
@@ -91,8 +114,17 @@ def main():
         print(e)
 
     finally:
-        cursor.close()
-        conn.close()
+        try:
+            if cursor:
+                cursor.close()
+        except Exception as e:
+            print("Error al cerrar el cursor:", e)
+        try:
+            if conn:
+                conn.close()
+        except Exception as e:
+            print("Error al cerrar la conexión:", e)
+
 
 if __name__ == "__main__":
     main()

@@ -19,6 +19,61 @@ import es from "i18n-iso-countries/langs/es.json";
 
 countries.registerLocale(es);
 
+const ROLES_RESTRINGIDOS = new Set(["DIRECCION", "ADMINISTRATIVO", "ASISTENTE"]);
+
+const normalizarNombreRol = (nombreRol = "") =>
+    nombreRol
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase();
+
+const combinacionRolesValida = (roles = []) => {
+    const nombres = roles.map((r) => normalizarNombreRol(r?.nombreRol));
+    const incluyeInvestigador = nombres.includes("INVESTIGADOR");
+
+    if (roles.length > 2) {
+        return {
+            valida: false,
+            mensaje: "Solo se permiten máximo 2 roles"
+        };
+    }
+
+    if (roles.length === 2 && !incluyeInvestigador) {
+        return {
+            valida: false,
+            mensaje: "La combinación permitida es INVESTIGADOR y un rol adicional"
+        };
+    }
+
+    const incluyeRolRestringido = nombres.some((nombre) => ROLES_RESTRINGIDOS.has(nombre));
+    const mezclaInvalida =
+        incluyeRolRestringido &&
+        nombres.some((nombre) => nombre !== "INVESTIGADOR" && !ROLES_RESTRINGIDOS.has(nombre));
+
+    if (mezclaInvalida) {
+        return {
+            valida: false,
+            mensaje: "DIRECCION, ADMINISTRATIVO y ASISTENTE solo se pueden combinar con INVESTIGADOR"
+        };
+    }
+
+    return { valida: true, mensaje: "" };
+};
+
+const sanitizarIdentificacion = (valor = "", tipoId = "") => {
+    const tipo = (tipoId || "").toUpperCase();
+
+    if (tipo === "NACIONAL") {
+        return valor.replace(/\D/g, "").slice(0, 9);
+    }
+
+    if (tipo === "DIMEX" || tipo === "PASAPORTE") {
+        return valor.replace(/[^a-zA-Z0-9]/g, "").slice(0, 30);
+    }
+
+    return valor.slice(0, 30);
+};
+
 function RegistroInner() {
     const { empleado, actualizarCampo, usuario, actualizarCampoUsuario, limpiarEmpleado, limpiarUsuario } = useContext(EmpleadoContext);
     const { investigador, limpiarInvestigador } = useContext(InvestigadorContext);
@@ -87,11 +142,27 @@ function RegistroInner() {
 
             if (checked && rolSeleccionado) {
 
+                if (currentRoles.length >= 2) {
+
+                    notify.error("Solo se permiten máximo 2 roles");
+                    return;
+
+                }
+
                 newRoles.push(rolSeleccionado);
 
             } else {
 
                 newRoles = newRoles.filter(r => r.nombreRol !== value);
+
+            }
+
+            const validacion = combinacionRolesValida(newRoles);
+
+            if (!validacion.valida) {
+
+                notify.error(validacion.mensaje);
+                return;
 
             }
 
@@ -140,12 +211,21 @@ function RegistroInner() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!usuario.roles || usuario.roles.length === 0) {
-            notify.error("Debe seleccionar al menos un rol");
+        const rolesSeleccionados = usuario.roles || [];
+
+        if (rolesSeleccionados.length < 1 || rolesSeleccionados.length > 2) {
+            notify.error("Debe seleccionar mínimo 1 rol y máximo 2 roles");
             return;
         }
 
-        const esInvestigador = usuario.roles?.some(r => r.nombreRol === "INVESTIGADOR");
+        const validacionRoles = combinacionRolesValida(rolesSeleccionados);
+
+        if (!validacionRoles.valida) {
+            notify.error(validacionRoles.mensaje);
+            return;
+        }
+
+        const esInvestigador = rolesSeleccionados.some((r) => normalizarNombreRol(r?.nombreRol) === "INVESTIGADOR");
 
         let payload;
 
@@ -228,8 +308,9 @@ function RegistroInner() {
                     placeholder="Nombre completo"
                     value={empleado.nombreCompleto}
                     onChange={handleChange}
-                    rules={[required(), maxLength(254)]}
-                    maxLength={254}
+                    rules={[required(), maxLength(30)]}
+                    maxLength={30}
+                    className="input-field"
                     required
                 />
 
@@ -287,6 +368,7 @@ function RegistroInner() {
                     inputMode= {(tipoId === "NACIONAL" || tipoId === "DIMEX")?"numeric":"text"}
                     maxLength={idConfig.maxLength}
                     pattern={idConfig.pattern}
+                    className="input-field"
                     required
                 />
 
@@ -315,6 +397,9 @@ function RegistroInner() {
 
                     <PhoneInput
                         required
+                        id="numeroTelefono"
+                        name="numeroTelefono"
+                        className="phone-input-control"
                         placeholder="Ingrese número"
                         value={empleado.numeroTelefono}
                         onChange={(value) => {
@@ -341,50 +426,61 @@ function RegistroInner() {
                     onChange={handleChange}
                     rules={[required(), correoUCR(), maxLength(254)]}
                     maxLength={50}
+                    className="input-field"
                     required
                 />
 
-                <InputField
-                    label="Contraseña"
-                    type={showPassword ? "text" : "password"}
-                    name="contrasena"
-                    placeholder="Mínimo 8 caracteres"
-                    value={usuario?.contrasena || ""}
-                    onChange={handleChange}
-                    rules={[required(), minLength(8), maxLength(254)]}
-                    maxLength={32}
-                    required
-                />
+                <div className="password-container">
+                    <InputField
+                        label="Contraseña"
+                        type={showPassword ? "text" : "password"}
+                        name="contrasena"
+                        placeholder="Mínimo 8 caracteres"
+                        value={usuario?.contrasena || ""}
+                        onChange={handleChange}
+                        rules={[required(), minLength(8), maxLength(254)]}
+                        maxLength={32}
+                        className="input-field password-input"
+                        required
+                    />
 
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                >
-                    {showPassword ? "🙈" : "👁️"}
-                </button>
+                    <button
+                        type="button"
+                        className="password-toggle-btn"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    >
+                        {showPassword ? "🙈" : "👁️"}
+                    </button>
+                </div>
 
-                <InputField
-                    label="Confirmar Contraseña"
-                    placeholder="Mínimo 8 caracteres"
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmarContrasena"
-                    value={confirmarContrasena}
-                    onChange={(e) => setConfirmarContrasena(e.target.value)}
-                    rules={[
-                        required(),
-                        match(() => usuario?.contrasena, "Las contraseñas no coinciden"),
-                        maxLength(254)
-                    ]}
-                    maxLength={32}
-                    required
-                />
+                <div className="password-container">
+                    <InputField
+                        label="Confirmar Contraseña"
+                        placeholder="Mínimo 8 caracteres"
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmarContrasena"
+                        value={confirmarContrasena}
+                        onChange={(e) => setConfirmarContrasena(e.target.value)}
+                        rules={[
+                            required(),
+                            match(() => usuario?.contrasena, "Las contraseñas no coinciden"),
+                            maxLength(254)
+                        ]}
+                        maxLength={32}
+                        className="input-field password-input"
+                        required
+                    />
 
-                <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                    {showConfirmPassword ? "🙈" : "👁️"}
-                </button>
+                    <button
+                        type="button"
+                        className="password-toggle-btn"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        aria-label={showConfirmPassword ? "Ocultar confirmación de contraseña" : "Mostrar confirmación de contraseña"}
+                    >
+                        {showConfirmPassword ? "🙈" : "👁️"}
+                    </button>
+                </div>
 
                 <div className="roles">
 
@@ -397,6 +493,13 @@ function RegistroInner() {
                                 name="roles"
                                 value={rol.nombreRol}
                                 checked={(usuario?.roles || []).some(r => r.nombreRol === rol.nombreRol)}
+                                disabled={
+                                    !(usuario?.roles || []).some((r) => r.nombreRol === rol.nombreRol) &&
+                                    (
+                                        (usuario?.roles || []).length >= 2 ||
+                                        !combinacionRolesValida([...(usuario?.roles || []), rol]).valida
+                                    )
+                                }
                                 onChange={handleChange}
                             />
 

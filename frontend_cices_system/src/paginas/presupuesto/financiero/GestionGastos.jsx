@@ -6,7 +6,8 @@ import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 import { DetalleGastos } from "../../../services/ReportesService.jsx";
 import { GastosService } from "../../../services/GastosService.jsx";
 import InputField from "../../../utils/validaciones/InputField.jsx";
-import {required, maxLength, min, max, fechaMayorIgualQue} from "../../../utils/validaciones/Validators.jsx";
+import {required, maxLength, min, max, fechaMayorIgualQue, fechaMenorIgualQue} from "../../../utils/validaciones/Validators.jsx";
+import "./GestionGastos.css";
 
 const formularioVacio = {
     id: null,
@@ -26,6 +27,9 @@ const RegistroGastos = () => {
     const [gastosRegistrados, setGastosRegistrados] = useState([]);
     const [gastosForm, setGastosForm] = useState([{ ...formularioVacio }]);
     const [gastoEditando, setGastoEditando] = useState(null);
+
+    const hoy = new Date();
+    const fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
 
     const seleccionarProyecto = async (proyecto) => {
         if (!proyecto) {
@@ -224,7 +228,10 @@ const RegistroGastos = () => {
 
     return (
 
-        <div>
+        <div className="gestion-gastos-page">
+
+            <div className="gestion-gastos-card">
+                <h2 className="gestion-gastos-title">Gestion de gastos</h2>
 
             <BuscadorProyecto
                 token={token}
@@ -235,7 +242,10 @@ const RegistroGastos = () => {
 
             {presupuestos.length > 0 && (
 
-                <select onChange={(e) => seleccionarPresupuesto(parseInt(e.target.value))}>
+                <select
+                    className="gestion-gastos-select"
+                    onChange={(e) => seleccionarPresupuesto(parseInt(e.target.value))}
+                >
                     <option value="">Seleccione presupuesto</option>
 
                     {presupuestos.map(p => (
@@ -252,28 +262,34 @@ const RegistroGastos = () => {
 
             {presupuestoSeleccionado && (
 
-                <div>
+                <div className="gestion-gastos-content">
 
-                    <h4>{presupuestoSeleccionado.categoria} - {presupuestoSeleccionado.descripcion}</h4>
-                    <p>Fecha de asignación: {presupuestoSeleccionado.fechaAsignacion}</p>
-                    <p>Monto asignado: {presupuestoSeleccionado.monto}</p>
-                    <p>Total gastos registrados: {totalGastos}</p>
-                    <p style={{ color: presupuestoRestante < 0 ? "red" : "green" }}>
+                    <h4 className="gestion-gastos-subtitle">{presupuestoSeleccionado.categoria} - {presupuestoSeleccionado.descripcion}</h4>
+
+                    <div className="gestion-gastos-resumen">
+                        <p>Fecha de asignacion: {presupuestoSeleccionado.fechaAsignacion}</p>
+                        <p>Monto asignado: {presupuestoSeleccionado.monto}</p>
+                        <p>Total gastos registrados: {totalGastos}</p>
+                    </div>
+
+                    <p className={presupuestoRestante < 0 ? "presupuesto-restante negativo" : "presupuesto-restante"}>
                         <strong>Presupuesto restante:</strong>
                         {presupuestoRestante}
                     </p>
-                    <h4>Agregar gastos</h4>
-                    <div>
+
+                    <h4 className="gestion-gastos-subtitle">Agregar gastos</h4>
+                    <div className="gestion-gastos-total-form">
 
                         <p>
                             <strong>Nuevos gastos:</strong> {!gastoEditando?totalFormulario:totalFormulario-parseFloat(gastoEditando.monto)}
                         </p>
 
                     </div>
-                    <form onSubmit={(e) => { e.preventDefault(); guardarGastos(); }}>
+
+                    <form className="gestion-gastos-form" onSubmit={(e) => { e.preventDefault(); guardarGastos(); }}>
                     {gastosForm.map((gasto, index) => (
 
-                        <div key={index}>
+                        <div key={index} className="gasto-form-item">
 
                             <InputField
                                 label="Monto"
@@ -299,9 +315,14 @@ const RegistroGastos = () => {
                                 onChange={(e) =>
                                     actualizarCampo(index, "fechaGasto", e.target.value)
                                 }
-                                rules={[required(), fechaMayorIgualQue(presupuestoSeleccionado.fechaAsignacion)]}
+                                rules={[
+                                    required(),
+                                    fechaMayorIgualQue(presupuestoSeleccionado.fechaAsignacion),
+                                    fechaMenorIgualQue(fechaHoy, `No puede ser mayor a ${fechaHoy}`)
+                                ]}
                                 required
                                 min={presupuestoSeleccionado.fechaAsignacion}
+                                max={fechaHoy}
                             />
 
                             <InputField
@@ -319,12 +340,12 @@ const RegistroGastos = () => {
                             />
 
                             {gastoEditando ? (
-                                <button type="button" onClick={cancelarEdicion}>
+                                <button type="button" className="btn-accion secundario" onClick={cancelarEdicion}>
                                     Cancelar
                                 </button>
 
                             ) : (
-                                <button type="button" onClick={() => eliminarFila(index)}>
+                                <button type="button" className="btn-accion peligro" onClick={() => eliminarFila(index)}>
                                     Eliminar
                                 </button>
                             )}
@@ -333,14 +354,16 @@ const RegistroGastos = () => {
 
                     ))}
 
-                        <button type="button" onClick={agregarFila} hidden={gastoEditando}>+ Agregar gasto</button>
+                        <div className="gestion-gastos-actions">
+                            <button type="button" className="btn-accion" onClick={agregarFila} hidden={gastoEditando}>+ Agregar gasto</button>
 
-                        <button type="submit">{gastoEditando ? "Actualizar gasto" : "Guardar gasto"}</button>
+                            <button type="submit" className="btn-accion primario">{gastoEditando ? "Actualizar gasto" : "Guardar gasto"}</button>
+                        </div>
                     </form>
 
-                    <h4>Gastos registrados</h4>
+                    <h4 className="gestion-gastos-subtitle">Gastos registrados</h4>
 
-                    <table border="1">
+                    <table className="gestion-gastos-table">
 
                         <thead>
                         <tr>
@@ -364,6 +387,7 @@ const RegistroGastos = () => {
 
                                     <button
                                         type="button"
+                                        className="btn-accion secundario"
                                         onClick={() => editarGastoRegistrado(g)}
                                     >
                                         Editar
@@ -371,6 +395,7 @@ const RegistroGastos = () => {
 
                                     <button
                                         type="button"
+                                        className="btn-accion peligro"
                                         onClick={() => eliminarGastoRegistrado(g)}
                                     >
                                         Eliminar
@@ -389,6 +414,8 @@ const RegistroGastos = () => {
                 </div>
 
             )}
+
+            </div>
 
         </div>
     );

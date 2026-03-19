@@ -4,6 +4,7 @@ import { AppContext } from "../../../context/AppContext.jsx";
 import { DetalleGastos } from "../../../services/ReportesService.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import "./ConsultaGastos.css";
 
 const ConsultaGastos = () => {
 
@@ -115,9 +116,11 @@ const ConsultaGastos = () => {
     };
     return (
 
-        <div>
+        <div className="consulta-gastos-page">
 
-            <h2>Consulta de gastos</h2>
+            <div className="consulta-gastos-card">
+
+            <h2 className="consulta-gastos-title">Consulta de gastos</h2>
 
             <BuscadorProyecto
                 token={token}
@@ -127,20 +130,24 @@ const ConsultaGastos = () => {
 
             {proyectoSeleccionado && (
 
-                <div>
+                <div className="consulta-gastos-content">
 
-                    <h3>Resumen del proyecto</h3>
+                    <h3 className="consulta-gastos-subtitle">Resumen del proyecto</h3>
 
-                    <p>Total presupuestos: {presupuestos.length}</p>
-                    <p>Total gastos registrados: {resumenGeneral.cantidadGastos}</p>
-                    <p>Monto total asignado: {resumenGeneral.montoAsignado}</p>
-                    <p>Total gastado: {resumenGeneral.totalGastos}</p>
-                    <p>Presupuesto restante: {resumenGeneral.restante}</p>
+                    <div className="consulta-gastos-resumen">
+                        <p>Total presupuestos: {presupuestos.length}</p>
+                        <p>Total gastos registrados: {resumenGeneral.cantidadGastos}</p>
+                        <p>Monto total asignado: {resumenGeneral.montoAsignado}</p>
+                        <p>Total gastado: {resumenGeneral.totalGastos}</p>
+                        <p className={resumenGeneral.restante < 0 ? "consulta-restante negativo" : "consulta-restante"}>
+                            Presupuesto restante: {resumenGeneral.restante}
+                        </p>
+                    </div>
 
-                    <h3>Filtros</h3>
+                    <h3 className="consulta-gastos-subtitle">Filtros</h3>
 
-                    <div>
-                        <label>Categorías</label>
+                    <div className="consulta-filtro-item">
+                        <label className="consulta-label">Categorias</label>
                         <Select
                             options={opcionesCategorias}
                             isMulti
@@ -151,13 +158,16 @@ const ConsultaGastos = () => {
                         />
                     </div>
 
-                    <h3>Ordenar presupuestos</h3>
+                    <h3 className="consulta-gastos-subtitle">Ordenar presupuestos</h3>
 
-                    <div>
+                    <div className="consulta-grid-filtros">
 
-                        <label>Fecha</label>
+                    <div className="consulta-filtro-item">
+
+                        <label className="consulta-label">Fecha</label>
 
                         <select
+                            className="consulta-select"
                             value={ordenFechaPresupuesto}
                             onChange={(e)=> setOrdenFechaPresupuesto(e.target.value)}
                         >
@@ -169,11 +179,12 @@ const ConsultaGastos = () => {
 
                     </div>
 
-                    <div>
+                    <div className="consulta-filtro-item">
 
-                        <label>Monto</label>
+                        <label className="consulta-label">Monto</label>
 
                         <select
+                            className="consulta-select"
                             value={ordenMontoPresupuesto}
                             onChange={(e)=> setOrdenMontoPresupuesto(e.target.value)}
                         >
@@ -185,13 +196,18 @@ const ConsultaGastos = () => {
 
                     </div>
 
-                    <h3>Ordenar gastos</h3>
+                    </div>
 
-                    <div>
+                    <h3 className="consulta-gastos-subtitle">Ordenar gastos</h3>
 
-                        <label>Fecha</label>
+                    <div className="consulta-grid-filtros">
+
+                    <div className="consulta-filtro-item">
+
+                        <label className="consulta-label">Fecha</label>
 
                         <select
+                            className="consulta-select"
                             value={ordenFechaGasto}
                             onChange={(e)=> setOrdenFechaGasto(e.target.value)}
                         >
@@ -201,11 +217,12 @@ const ConsultaGastos = () => {
 
                     </div>
 
-                    <div>
+                    <div className="consulta-filtro-item">
 
-                        <label>Monto</label>
+                        <label className="consulta-label">Monto</label>
 
                         <select
+                            className="consulta-select"
                             value={ordenMontoGasto}
                             onChange={(e)=> setOrdenMontoGasto(e.target.value)}
                         >
@@ -217,7 +234,10 @@ const ConsultaGastos = () => {
                         </select>
 
                     </div>
-                    <hr />
+
+                    </div>
+
+                    <hr className="consulta-divider" />
                     {presupuestosFiltrados.map(presupuesto => {
 
                         let gastos = [...(presupuesto.gastos || [])];
@@ -248,17 +268,19 @@ const ConsultaGastos = () => {
 
                             <div key={presupuesto.id}>
 
-                                <h4>
+                                <h4 className="consulta-presupuesto-title">
                                     {presupuesto.categoria} - {presupuesto.descripcion}
                                 </h4>
 
-                                <p>Fecha de asignacion: {presupuesto.fechaAsignacion}</p>
-                                <p>Monto asignado: {presupuesto.monto}</p>
-                                <p>Total gastos: {totalGastos}</p>
-                                <p>Restante: {restante}</p>
-                                <p>Cantidad de gastos: {gastos.length}</p>
+                                <div className="consulta-presupuesto-resumen">
+                                    <p>Fecha de asignacion: {presupuesto.fechaAsignacion}</p>
+                                    <p>Monto asignado: {presupuesto.monto}</p>
+                                    <p>Total gastos: {totalGastos}</p>
+                                    <p className={restante < 0 ? "consulta-restante negativo" : "consulta-restante"}>Restante: {restante}</p>
+                                    <p>Cantidad de gastos: {gastos.length}</p>
+                                </div>
 
-                                <table border="1">
+                                <table className="consulta-gastos-table">
 
                                     <thead>
 
@@ -297,6 +319,8 @@ const ConsultaGastos = () => {
                 </div>
 
             )}
+
+            </div>
 
         </div>
 

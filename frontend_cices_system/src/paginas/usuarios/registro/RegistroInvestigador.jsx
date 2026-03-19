@@ -111,13 +111,14 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
 
     // ----- Resto del formulario ----- //
     return (
-        <div>
-            <h2>Registro Investigador</h2>
+        <div className="form">
+            <h2 className="investigador-popup-title">Registro Investigador</h2>
 
             {/* Institución de origen */}
             <div className="input-group">
                 <label className="input-label">Institución de origen</label>
                 <CreatableSelect required
+                    className="field"
                     placeholder="Institución de origen (ej. UCR)"
                     options={institucionOptions}
                     value={
@@ -142,6 +143,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             <div className="input-group">
                 <label className="input-label">Unidad académica</label>
                 <CreatableSelect required
+                    className="field"
                     placeholder="Unidad académica (ej. Escuela de...)"
                     options={unidadOptions}
                     value={
@@ -171,13 +173,16 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                 onChange={(e) => actualizarCampo("temaInteres", e.target.value)}
                 rules={[maxLength(254)]}
                 maxLength={254}
+                className="input"
             />
 
             {/* Certificaciones */}
             <h3 className="section-title">Certificaciones</h3>
-            <p>No es obligatorio ingresar una certificación en este momento.</p>
+            <p className="info-text">No es obligatorio ingresar una certificación en este momento.</p>
             {(investigador.certificaciones || []).length === 0 && (
-                <button type="button" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>Agregar certificación</button>
+                <button type="button" className="add-item-btn" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>
+                    Agregar certificación
+                </button>
             )}
             <div className="rows-group">
                 {(investigador.certificaciones || []).map((c, idx) => (
@@ -188,9 +193,11 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             value={c.nombreCertificacion || ""}
                             onChange={(e) => handleArrayChange("certificaciones", idx, "nombreCertificacion", e.target.value)}
                             rules={[required(), maxLength(254)]}
+                            className="input"
                             required maxLength={254}
                         />
                         <CreatableSelect required
+                            className="field"
                             placeholder="Institución"
                             options={institucionOptions}
                             value={
@@ -230,6 +237,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             type="date"
                             value={c.fechaExpiracion || ""}
                             onChange={(e) => handleArrayChange("certificaciones", idx, "fechaExpiracion", e.target.value)}
+                            className="input"
                         />
                         <button type="button" className="icon-btn remove-btn" onClick={() => handleRemove("certificaciones", idx)} disabled={(investigador.certificaciones || []).length === 0}>✖</button>
                         <button type="button" className="icon-btn" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>+</button>
@@ -239,9 +247,11 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
 
             {/* Títulos académicos */}
             <h3 className="section-title">Títulos académicos</h3>
-            <p>No es obligatorio ingresar titulos en este momento.</p>
+            <p className="info-text">No es obligatorio ingresar titulos en este momento.</p>
             {(investigador.titulos || []).length === 0 && (
-                <button type="button" onClick={() => handleAdd("titulos", TituloDTO)}>Agregar título</button>
+                <button type="button" className="add-item-btn" onClick={() => handleAdd("titulos", TituloDTO)}>
+                    Agregar título
+                </button>
             )}
 
             <div className="rows-group">
@@ -253,10 +263,12 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             value={t.nombreTitulo || ""}
                             onChange={(e) => handleArrayChange("titulos", idx, "nombreTitulo", e.target.value)}
                             rules={[required(), maxLength(254)]}
+                            className="input"
                             required
                             maxLength={254}
                         />
                         <CreatableSelect required
+                            className="field"
                             placeholder="Institución"
                             options={institucionOptions}
                             value={
@@ -280,6 +292,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                         <div className="input-group">
                             <label className="input-label">Nivel Académico</label>
                             <select
+                                className="select"
                                 value={t.nivelTitulo?.valor || ""}
                                 onChange={(e) => handleArrayChange("titulos", idx, "nivelTitulo", e.target.value)}
                             >
@@ -295,6 +308,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             value={t.fechaEmision || ""}
                             onChange={(e) => handleArrayChange("titulos", idx, "fechaEmision", e.target.value)}
                             rules={[required()]}
+                            className="input"
                             required
                         />
                         <button type="button" className="icon-btn remove-btn" onClick={() => handleRemove("titulos", idx)} disabled={(investigador.titulos || []).length === 0}>✖</button>

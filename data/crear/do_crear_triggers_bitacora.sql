@@ -32,11 +32,13 @@ SELECT
 'BEGIN' || chr(10) ||
 '  IF NVL(:OLD.MONTO_ASIGNADO,0) != NVL(:NEW.MONTO_ASIGNADO,0) THEN' || chr(10) ||
 '    INSERT INTO ' || b.table_name || ' (' || chr(10) ||
+'      ID_PRESUPUESTO_BIT,' || chr(10) ||
 '      FEC_BIT, ACC_BIT, USU_BIT,' || chr(10) ||
 '      ID_PRESUPUESTO, ID_PROYECTO,' || chr(10) ||
 '      MONTO_ASIGNADO_OLD, CANTIDAD_HORAS_MES_OLD, CANTIDAD_MESES_OLD,' || chr(10) ||
 '      MONTO_ASIGNADO_NEW, CANTIDAD_HORAS_MES_NEW, CANTIDAD_MESES_NEW' || chr(10) ||
 '    ) VALUES (' || chr(10) ||
+'      SEC_PRESUPUESTO_BIT.NEXTVAL,' || chr(10) ||
 '      SYSDATE, ''U'', USER,' || chr(10) ||
 '      :OLD.ID_PRESUPUESTO, :OLD.ID_PROYECTO,' || chr(10) ||
 '      :OLD.MONTO_ASIGNADO, :OLD.CANTIDAD_HORAS_MES, :OLD.CANTIDAD_MESES,' || chr(10) ||

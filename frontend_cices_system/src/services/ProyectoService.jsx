@@ -6,13 +6,24 @@ export const esSoloInvestigador = (user) => {
 };
 
 export async function registrarProyecto(proyecto, token) {
+    const formData = new FormData();
+
+    (proyecto.documentos || []).forEach(file => {
+        formData.append("documentos", file);
+    });
+
+    delete proyecto.documentos;
+
+    // Creamos un Blob de tipo JSON para que Spring lo interprete correctamente
+    const proyectoBlob = new Blob([JSON.stringify(proyecto)], { type: "application/json" });
+    formData.append("proyecto", proyectoBlob);
+
     const res = await fetch(`${API}/api/proyectos/registro`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}` // NO poner Content-Type
         },
-        body: JSON.stringify(proyecto)
+        body: formData
     });
 
     const text = await res.text();

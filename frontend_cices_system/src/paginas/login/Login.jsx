@@ -100,10 +100,7 @@ function Login() {
 
             const r = data.user.roles || [];
             const dest =
-                r.includes("DIRECTOR") ? "/director" :
-                    r.includes("ADMINISTRADOR") ? "/administrador" :
-                        r.includes("INVESTIGADOR") ? "/investigador" :
-                            "/dashboard";
+                r.includes("DIRECCION") ? "/dashboard" : "/listado-proyectos";
 
             const welcomeMsg = `Bienvenid@, ${data.user?.nombreCompleto || data.user?.username || ""}`;
             navigate(dest, { state: { toast: welcomeMsg } });

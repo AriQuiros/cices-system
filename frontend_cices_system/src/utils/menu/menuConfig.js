@@ -26,18 +26,13 @@ export const menuConfig = [
         section: "Proyectos",
         items: [
             {
-                label: "Registrar",
+                label: "Registrar / Actualizar",
                 path: "/registro-proyecto",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
                 label: "Consultar",
                 path: "/listado-proyectos",
-                roles: ["*"]
-            },
-            {
-                label: "Actualizar",
-                path: "/actualizar-proyecto",
                 roles: ["*"]
             },
             {

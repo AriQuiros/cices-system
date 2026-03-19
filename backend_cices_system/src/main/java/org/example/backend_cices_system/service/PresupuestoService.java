@@ -23,8 +23,8 @@ public class PresupuestoService {
 
     public Integer guardarPresupuesto(List<PresupuestoDTO> listDTO, Proyecto proyecto) {
         for(PresupuestoDTO presupuestoDTO:listDTO) {
+            System.out.println(presupuestoDTO.id());
             var presupuesto = new Presupuesto();
-            presupuesto.setId(presupuestoDTO.id());
             presupuesto.setIdProyecto(proyecto);
             presupuesto.setDescripcion(presupuestoDTO.descripcion());
             presupuesto.setFechaAsignacion(presupuestoDTO.fechaAsignacion());
@@ -43,6 +43,26 @@ public class PresupuestoService {
             presupuestoRepository.save(presupuesto);
         }
         return listDTO.size();
+    }
+
+    public PresupuestoDTO actualizarPresupuesto(PresupuestoDTO presupuestoDTO){
+        Presupuesto presupuesto = obtenerPresupuesto(presupuestoDTO.id());
+
+        presupuesto.setDescripcion(presupuestoDTO.descripcion());
+        presupuesto.setFechaAsignacion(presupuestoDTO.fechaAsignacion());
+
+        presupuesto.setIdCodigoTipoPresupuesto(presupuestoDTO.tipoPresupuesto().id());
+        presupuesto.setIdCodigoTipoCategoria(presupuestoDTO.categoria().id());
+
+        if (presupuestoDTO.tipoPresupuesto().valor().equalsIgnoreCase("FINANCIERO")) {
+            presupuesto.setIdCodigoTipoFuenteFinanciamiento(presupuestoDTO.fuenteFinanciamiento().id());
+            presupuesto.setMontoAsignado(presupuestoDTO.monto());
+        } else {
+            presupuesto.setCantidadMeses(presupuestoDTO.cantidadMeses());
+            presupuesto.setCantidadHorasMes(presupuestoDTO.cantidadHorasMes());
+        }
+
+        return obtenerDTO(presupuestoRepository.save(presupuesto));
     }
 
     public List<PresupuestoDTO> obtenerPresupuestosPorProyecto(Proyecto proyecto) {

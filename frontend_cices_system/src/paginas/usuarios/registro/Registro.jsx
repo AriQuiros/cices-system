@@ -60,20 +60,6 @@ const combinacionRolesValida = (roles = []) => {
     return { valida: true, mensaje: "" };
 };
 
-const sanitizarIdentificacion = (valor = "", tipoId = "") => {
-    const tipo = (tipoId || "").toUpperCase();
-
-    if (tipo === "NACIONAL") {
-        return valor.replace(/\D/g, "").slice(0, 9);
-    }
-
-    if (tipo === "DIMEX" || tipo === "PASAPORTE") {
-        return valor.replace(/[^a-zA-Z0-9]/g, "").slice(0, 30);
-    }
-
-    return valor.slice(0, 30);
-};
-
 function RegistroInner() {
     const { empleado, actualizarCampo, usuario, actualizarCampoUsuario, limpiarEmpleado, limpiarUsuario } = useContext(EmpleadoContext);
     const { investigador, limpiarInvestigador } = useContext(InvestigadorContext);
@@ -301,49 +287,34 @@ function RegistroInner() {
             <form className="form-content" onSubmit={handleSubmit}>
 
                 <h2>Registro</h2>
-
-                <InputField
-                    label="Nombre Completo"
-                    name="nombreCompleto"
-                    placeholder="Nombre completo"
-                    value={empleado.nombreCompleto}
-                    onChange={handleChange}
-                    rules={[required(), maxLength(30)]}
-                    maxLength={30}
-                    className="input-field"
-                    required
-                />
-
-                <div className="input-group">
-
-                    <label className="input-label">País</label>
-
+                <div className="row">
+                    <InputField
+                        label="Nombre Completo"
+                        name="nombreCompleto"
+                        placeholder="Nombre completo"
+                        value={empleado.nombreCompleto}
+                        onChange={handleChange}
+                        rules={[required(), maxLength(30)]}
+                        maxLength={30}
+                        className="input-field"
+                        required
+                    />
+                    <div className={"input-group"}>
+                    <label className="input-label">Tipo de Identificación</label>
                     <Select
                         required
-                        options={countryOptions}
-                        placeholder="Buscar país..."
-                        onChange={(option) => actualizarCampo("pais", option.value)}
+                        placeholder="Seleccione tipo de identificación"
+                        options={tipos["TIPO_IDENTIFICACION"]?.map(t => ({
+                            value: t.valor,
+                            label: t.despliegue
+                        }))}
+                        value={
+                            empleado.tipoId
+                                ? { value: empleado.tipoId.valor, label: empleado.tipoId.despliegue }
+                                : null
+                        }
+                        onChange={(option) => handleCodigoChange("tipoId", option.value, tipos["TIPO_IDENTIFICACION"])}
                     />
-
-                </div>
-
-                    <div className="input-group">
-                        <label className="input-label">Tipo de Identificación</label>
-
-                        <Select
-                            required
-                            placeholder="Seleccione tipo de identificación"
-                            options={tipos["TIPO_IDENTIFICACION"]?.map(t => ({
-                                value: t.valor,
-                                label: t.despliegue
-                            }))}
-                            value={
-                                empleado.tipoId
-                                    ? { value: empleado.tipoId.valor, label: empleado.tipoId.despliegue }
-                                    : null
-                            }
-                            onChange={(option) => handleCodigoChange("tipoId", option.value, tipos["TIPO_IDENTIFICACION"])}
-                        />
                     </div>
 
                 <InputField
@@ -371,24 +342,19 @@ function RegistroInner() {
                     className="input-field"
                     required
                 />
+                </div>
+                <div className="row">
+                    <div className={"input-group"}>
 
-                <div className="input-group">
-                    <label className="input-label">Grado Académico</label>
+                    <label className="input-label">País</label>
 
                     <Select
                         required
-                        placeholder="Seleccione grado académico"
-                        options={tipos["GRADO_ACADEMICO"]?.map(t => ({
-                            value: t.valor,
-                            label: t.despliegue
-                        }))}
-                        value={
-                            empleado.gradoAcademico
-                                ? { value: empleado.gradoAcademico.valor, label: empleado.gradoAcademico.despliegue }
-                                : null
-                        }
-                        onChange={(option) => handleCodigoChange("gradoAcademico", option.value, tipos["GRADO_ACADEMICO"])}
+                        options={countryOptions}
+                        placeholder="Buscar país..."
+                        onChange={(option) => actualizarCampo("pais", option.value)}
                     />
+
                 </div>
 
                 <div className="input-group">
@@ -415,6 +381,26 @@ function RegistroInner() {
                         defaultCountry="CR"
                     />
 
+                </div>
+
+                <div className="input-group">
+                    <label className="input-label">Grado Académico</label>
+
+                    <Select
+                        required
+                        placeholder="Seleccione grado académico"
+                        options={tipos["GRADO_ACADEMICO"]?.map(t => ({
+                            value: t.valor,
+                            label: t.despliegue
+                        }))}
+                        value={
+                            empleado.gradoAcademico
+                                ? { value: empleado.gradoAcademico.valor, label: empleado.gradoAcademico.despliegue }
+                                : null
+                        }
+                        onChange={(option) => handleCodigoChange("gradoAcademico", option.value, tipos["GRADO_ACADEMICO"])}
+                    />
+                </div>
                 </div>
 
                 <InputField

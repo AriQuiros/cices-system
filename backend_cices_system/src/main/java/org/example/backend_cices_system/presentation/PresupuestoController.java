@@ -32,6 +32,13 @@ public class PresupuestoController {
         return ResponseEntity.ok(cant);
     }
 
+    @PostMapping("/actualizar")
+    public ResponseEntity<?> actualizarPresupuesto(
+            @RequestBody @Valid PresupuestoDTO dto) {
+        var presupuesto = presupuestoService.actualizarPresupuesto(dto);
+        return ResponseEntity.ok(presupuesto);
+    }
+
     @GetMapping("/{codigoProyecto}")
     public ResponseEntity<?> obtenerPresupuesto(@PathVariable String codigoProyecto) {
         Proyecto proyecto = proyectoService.buscarProyectoPorCodigo(codigoProyecto);

@@ -18,7 +18,5 @@ public interface PresupuestoRepository  extends JpaRepository<Presupuesto, Integ
 
     Optional<Presupuesto> findByIdProyectoAndIdCodigoTipoPresupuestoAndDescripcion(Proyecto proyecto, Short idCodigoTipoPresupuesto, String descripcion);
 
-    Optional<Presupuesto> findByIdProyecto_CodigoProyectoAndIdCodigoTipoCategoria(String codigo, Short idCategoria);
-
     List<Presupuesto> findPresupuestosByIdProyecto_Id(Integer idProyectoId);
 }

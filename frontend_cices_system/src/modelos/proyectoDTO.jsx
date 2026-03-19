@@ -29,6 +29,7 @@ export const InformeDTO = {
 };
 
 export const ProyectoDTO = {
+    id:null,
     codigoProyecto: "",
     nombreProyecto: "",
     descripcion: "",

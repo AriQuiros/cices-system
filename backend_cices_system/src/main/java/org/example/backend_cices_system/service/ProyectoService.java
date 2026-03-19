@@ -7,6 +7,7 @@ import org.example.backend_cices_system.dto.ProyectoDTO;
 import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -44,10 +45,15 @@ public class ProyectoService {
     }
 
     @Transactional
-    public Proyecto guardarProyecto(ProyectoDTO proyectoDTO) {
+    public Proyecto guardarProyecto(ProyectoDTO proyectoDTO, List<MultipartFile> documentos) {
         var proyecto = new Proyecto();
+        var codigo = proyectoDTO.codigoProyecto();
 
-        proyecto.setCodigoProyecto(proyectoDTO.codigoProyecto());
+        if(existeProyecto(codigo))
+            throw new IllegalStateException("El codigo de proyecto '" + codigo + "' ya se encuentra registrado");
+
+
+        proyecto.setCodigoProyecto(codigo);
         proyecto.setNombreProyecto(proyectoDTO.nombreProyecto());
         proyecto.setDescripcionProyecto(proyectoDTO.descripcion());
         proyecto.setObjetivoGeneral(proyectoDTO.objetivoGeneral());
@@ -66,12 +72,12 @@ public class ProyectoService {
             objetivosEspecificosService.guardarObjetivoEspecifico(objetivoDTO, proyecto);
         }
 
-        guardarOpcionales(proyectoDTO, proyecto);
+        guardarOpcionales(proyectoDTO, proyecto, documentos);
 
         return proyecto;
     }
 
-    private void guardarOpcionales(ProyectoDTO dto, Proyecto proyecto) {
+    private void guardarOpcionales(ProyectoDTO dto, Proyecto proyecto,  List<MultipartFile> documentos) {
         if (dto.entidadesVinculadas() != null && !dto.entidadesVinculadas().isEmpty()) {
             for (var entidadDTO : dto.entidadesVinculadas()) {
                 var entidadProyecto = new EntidadProyecto();
@@ -99,7 +105,9 @@ public class ProyectoService {
             }
         }
 
-        // documentos
+        if (documentos != null && !documentos.isEmpty()) {
+            documentoService.guardarDocumentos(proyecto, documentos);
+        }
     }
 
     public Proyecto buscarProyectoPorCodigo(String codigoProyecto) {
@@ -124,6 +132,10 @@ public class ProyectoService {
         LocalDate hoy = LocalDate.now();
         String estado = fechaFinalizacion.isBefore(hoy) ? "FINALIZADO" : "ACTIVO";
         return catalogoService.codigoXNombreValor("ESTADO_PROYECTO", estado);
+    }
+
+    private boolean existeProyecto(String codigoProyecto){
+        return proyectoRepository.existsByCodigoProyecto(codigoProyecto);
     }
 
 }

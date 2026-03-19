@@ -1,18 +1,20 @@
 // RegistroProyecto.jsx
-import {useContext, useEffect, useRef, useState} from "react";
+import {useContext, useRef, useState} from "react";
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
 import { useTiposCatalogo } from '../../../hooks/useTiposCatalogo.js';
-import {obtenerLineas, registrarProyecto} from "../../../services/ProyectoService.jsx";
+import {registrarProyecto} from "../../../services/ProyectoService.jsx";
 import { notify } from '../../../utils/ui/notify.jsx';
-
+import CreatableSelect from "react-select/creatable";
 import {AppContext} from "../../../context/AppContext.jsx";
 import { ProyectoDTO } from "../../../modelos/proyectoDTO.jsx";
 import { CodigoDTO } from "../../../modelos/CodigoDTO.jsx";
 
 import "../../usuarios/registro/Registro.css";
 import "./RegistroProyecto.css";
-import RegistroPresupuesto from "./RegistroPresupuesto.jsx";
+import GestionPresupuesto from "../../presupuesto/registro/GestionPresupuesto.jsx";
 import VincularInvestigador from "./VincularInvestigador.jsx";
+import {useLineas} from "../../../hooks/proyectos/useLineas.jsx";
+import EntidadSelect from "../../../components/EntidadSelect.jsx";
 
 const MAX_TOTAL_SIZE_MB = 550;
 const getTotalFileSizeMB = (files) => {
@@ -23,7 +25,7 @@ function RegistroProyecto() {
     const [showPresupuesto, setShowPresupuesto] = useState(false);
     const [showAsignarInvestigador, setShowAsignarInvestigador] = useState(false); // new state
     const [showFechasInformes, setShowFechasInformes] = useState(false);
-    const [lineas, setLineas] = useState([]);
+    const { opciones: opcionesLineas } = useLineas();
 
     const {
         proyecto,
@@ -43,19 +45,6 @@ function RegistroProyecto() {
         "TIPO_META",
         "TIPO_INFORME"
     ]);
-
-    useEffect(() => {
-        const cargarLineas = async () => {
-            try {
-                const lineasData = await obtenerLineas();
-                setLineas(lineasData);
-            } catch (error) {
-                console.error("Error obteniendo líneas:", error);
-            }
-        };
-
-        cargarLineas();
-    }, []);
 
     if (loading) return <p>Cargando opciones...</p>;
 
@@ -97,11 +86,10 @@ function RegistroProyecto() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const entidadesVinculadasFormateadas = [
-            ...(proyecto.entidadesVinculadas?.unidades || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'UNIDAD' })),
-            ...(proyecto.entidadesVinculadas?.instituciones || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'INSTITUCION' })),
-            ...(proyecto.entidadesVinculadas?.sitios || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'SITIO' })),
+            ...(proyecto.entidadesVinculadas?.unidades || []).filter(e => e.nombre).map(e => ({ id:e.id, nombre: e.nombre.trim(), tipo: e.tipo })),
+            ...(proyecto.entidadesVinculadas?.instituciones || []).filter(e => e.nombre).map(e => ({ id:e.id, nombre: e.nombre.trim(), tipo: e.tipo })),
+            ...(proyecto.entidadesVinculadas?.sitios || []).filter(e => e.nombre).map(e => ({ id:e.id, nombre: e.nombre.trim(), tipo: e.tipo })),
         ];
         const proyectoFinal = {
             ...ProyectoDTO,
@@ -113,9 +101,8 @@ function RegistroProyecto() {
         };
 
         try {
-            const data = await registrarProyecto({ proyecto: proyectoFinal, token });
+            const data = await registrarProyecto(proyectoFinal, token);
 
-            console.log('Proyecto registrado:', data);
             handleClear();
             setShowFechasInformes(false);
             notify.success('Proyecto registrado exitosamente.');
@@ -130,6 +117,7 @@ function RegistroProyecto() {
         <>
             <Show
                  types={tipos}
+                 opcionesLineas={opcionesLineas}
                  entity={proyecto}
                  handleChange={handleChange}
                  handleNestedChange={setByPath}
@@ -148,10 +136,12 @@ function RegistroProyecto() {
      );
  }
 
-function Show({ types, entity, handleChange, handleNestedChange, showFechasInformes, setShowFechasInformes,
+function Show({ types, opcionesLineas, entity, handleChange, handleNestedChange, showFechasInformes, setShowFechasInformes,
                   handleAddItem, handleRemoveItem, handleSubmit, handleFileChange,
                   showPresupuesto, setShowPresupuesto, showAsignarInvestigador, setShowAsignarInvestigador }) {
      const inputCodigoRef = useRef(null);
+    const [inputValue, setInputValue] = useState("");
+    const MAX_LENGTH = 50;
 
      return (
          <div className="form-container">
@@ -188,8 +178,39 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                     </select>
 
                     <div className="input-group"> <label>Línea de investigación:</label>
-                    <input type="text" placeholder="Área en el que se desarrolla el proyecto. Ej: Entorno laboral" className="input-field" required  maxLength={252}
-                           name="lineaInvestigacion" value={entity.lineaInvestigacion ?? ''} onChange={handleChange}/>
+                        <CreatableSelect
+                            options={opcionesLineas}
+                            value={
+                                entity.lineaInvestigacion
+                                    ? { value: entity.lineaInvestigacion, label: entity.lineaInvestigacion }
+                                    : null
+                            }
+                            inputValue={inputValue}
+                            onInputChange={(val, meta) => {
+                                if (meta.action === "input-change") {
+                                    setInputValue(val.slice(0, MAX_LENGTH));
+                                }
+                            }}
+                            onChange={(selectedOption) => {
+                                const value = selectedOption ? selectedOption.value.slice(0, MAX_LENGTH) : "";
+                                if (selectedOption?.value.length > MAX_LENGTH) {
+                                    notify.warning(`Máximo ${MAX_LENGTH} caracteres`);
+                                    return;
+                                }
+                                handleChange({
+                                    target: {
+                                        name: "lineaInvestigacion",
+                                        value
+                                    }
+                                });
+
+                                setInputValue("");
+                            }}
+                            placeholder="Área en el que se desarrolla el proyecto. Ej: Entorno laboral"
+                            isClearable
+                            isSearchable
+                        />
+                        <small>{inputValue.length}/{MAX_LENGTH}</small>
                      </div>
                  </div>
 
@@ -335,19 +356,16 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                     <label>Instituciones Participantes</label>
                     {entity.entidadesVinculadas.instituciones.map((institucion, idxInst) => (
                         <div key={idxInst} id="inline-project-group" className="inline-group">
-                            <input
-                                type="text"
-                                placeholder={`Nombre de la institución ${idxInst + 1}`}
-                                className="input-field"
-                                maxLength={252}
-                                name="nombre"
-                                value={institucion.nombre ?? ''}
-                                onChange={(e) =>
+                            <EntidadSelect
+                                tipo="INSTITUCION"
+                                value={institucion}
+                                onChange={(val) =>
                                     handleNestedChange(
-                                        ["entidadesVinculadas", "instituciones", idxInst, "nombre"],
-                                        e.target.value
+                                        ["entidadesVinculadas", "instituciones", idxInst],
+                                        val
                                     )
                                 }
+                                placeholder={`Nombre de la institución ${idxInst + 1}`}
                             />
                             <div className="icon-buttons">
                                 <button
@@ -376,19 +394,16 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                     <label>Unidades participantes</label>
                     {entity.entidadesVinculadas.unidades.map((unidad, idxUnidad) => (
                         <div key={idxUnidad} id="inline-project-group" className="inline-group">
-                            <input
-                                type="text"
-                                placeholder={`Nombre de la unidad ${idxUnidad + 1}`}
-                                className="input-field"
-                                value={unidad.nombre ?? ''}
-                                maxLength={252}
-                                name="nombre"
-                                onChange={(e) =>
+                            <EntidadSelect
+                                tipo="UNIDAD"
+                                value={unidad}
+                                onChange={(val) =>
                                     handleNestedChange(
-                                        ["entidadesVinculadas", "unidades", idxUnidad, "nombre"],
-                                        e.target.value
+                                        ["entidadesVinculadas", "unidades", idxUnidad],
+                                        val
                                     )
                                 }
+                                placeholder={`Nombre de la unidad ${idxUnidad + 1}`}
                             />
                             <div className="icon-buttons">
                                 <button
@@ -417,19 +432,16 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                     <label>Sitios de investigación</label>
                     {entity.entidadesVinculadas.sitios.map((sitio, idxSitio) => (
                         <div key={idxSitio} id="inline-project-group" className="inline-group">
-                            <input
-                                type="text"
-                                placeholder={`Nombre del sitio ${idxSitio + 1}`}
-                                className="input-field"
-                                value={sitio.nombre ?? ''}
-                                name="nombre"
-                                maxLength={252}
-                                onChange={(e) =>
+                            <EntidadSelect
+                                tipo="SITIO"
+                                value={sitio}
+                                onChange={(val) =>
                                     handleNestedChange(
-                                        ["entidadesVinculadas", "sitios", idxSitio, "nombre"],
-                                        e.target.value
+                                        ["entidadesVinculadas", "sitios", idxSitio],
+                                        val
                                     )
                                 }
+                                placeholder={`Nombre del sitio ${idxSitio + 1}`}
                             />
                             <div className="icon-buttons">
                                 <button
@@ -539,7 +551,7 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                             </div>
                         ))}
                     </>
-                )}
+                )}{/*
                 <button type="button" className="submit-btn" name="btnEstablecerPresupuesto" id="submit-project-btn" onClick={() => {
                     if (!entity.codigoProyecto?.trim()) {
                         if (inputCodigoRef.current) {
@@ -564,12 +576,19 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                 >Vincular Investigadores
                 </button>
 
-                {showPresupuesto && (
-                    <RegistroPresupuesto
-                        onClose={() => setShowPresupuesto(false)}
-                        modoRegistro={true}
-                    />
-                )}
+                 {showPresupuesto && (
+                     <div className="popup">
+                     <GestionPresupuesto
+                         modoRegistro={true}
+                         proyecto={entity}
+                         onClose={() => setShowPresupuesto(false)}
+                         onSave={(presupuestos) => {
+                             handleNestedChange(["presupuestos"], presupuestos);
+                             setShowPresupuesto(false);
+                         }}
+                     />
+                     </div>
+                 )}
 
                 {showAsignarInvestigador && (
                     <VincularInvestigador
@@ -592,12 +611,12 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                                         <strong>{tipoPresupuesto || "Sin tipo"}</strong>
 
                                         <div>{pres.descripcion || ""}</div>
-                                        <div>Categoría: {pres.categoria.despliegue || "Sin categoría"}</div>
+                                        <div>Categoría: {pres.categoria?.despliegue || "Sin categoría"}</div>
                                         <div>Fecha asignación: {pres.fechaAsignacion || "Sin fecha"}</div>
 
                                         {tipoPresupuesto === "FINANCIERO" && (
                                             <>
-                                                <div>Fuente: {pres.fuenteFinanciamiento.despliegue || "N/A"}</div>
+                                                <div>Fuente: {pres.fuenteFinanciamiento?.despliegue || "N/A"}</div>
                                                 <div>Monto: ₡{pres.monto ?? 0}</div>
                                             </>
                                         )}
@@ -617,7 +636,7 @@ function Show({ types, entity, handleChange, handleNestedChange, showFechasInfor
                         )}
                     </div>
                 </div>
-
+*/}
                 <fieldset id="input-project-group" className="input-group">
                     <legend>
                         Documentos Relacionados

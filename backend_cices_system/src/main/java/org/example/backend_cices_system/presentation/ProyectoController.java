@@ -52,10 +52,13 @@ public class ProyectoController {
                 .toList();
     }
 
-    @GetMapping("/consultar/{id}")
-    public ResponseEntity<Proyecto> consultarProyectoPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(proyectoService.obtenerProyecto(id));
+//    @GetMapping("/consultar/{id}")
+//    public ResponseEntity<Proyecto> consultarProyectoPorId(@PathVariable Integer id) {
+//        return ResponseEntity.ok(proyectoService.obtenerProyecto(id));
+//    }
+    @GetMapping("/consultar/{codigo}")
+    public ResponseEntity<ProyectoDTO> consultarProyectoPorCodigo(@PathVariable String codigo) {
+        return ResponseEntity.ok(proyectoService.obtenerProyectoPorCodigo(codigo));
     }
-
 
 }

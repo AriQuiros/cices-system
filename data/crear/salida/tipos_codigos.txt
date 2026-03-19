@@ -1,74 +1,74 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Mié Mar 18 15:06:23 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 20:39:48 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Hora de Última Conexión Correcta: Mié Mar 18 2026 15:06:23 -06:00
+Last Successful login time: Wed Mar 18 2026 20:39:48 -06:00
 
-Conectado a:
+Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0
 
 
-Conectado.
+Connected.
 ==================================
 === CREACION DE TIPOS Y CODIGOS ==
 ==================================
 === CREACION DE TIPOS ===
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 === CREACION DE TIPOS ===
 ===================================
@@ -77,192 +77,192 @@ Confirmación terminada.
 ===================================
 == TIPO DE IDENTIFICACION ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == GRADO ACADEMICO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == TIPO DE CERTIFICACION ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == ESTADO DE CERTIFICACION ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == TIPO DE PROYECTO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == ESTADO DE PROYECTO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == TIPO DE INFORME ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == ESTADO DE INFORME ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == TIPO DE META ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == TIPO DE ENTIDAD ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == TIPO DE PRESUPUESTO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == FUENTE DE FINANCIAMIENTO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == MODALIDAD HORARIA ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == TIPO DE HORAS ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == ROLES ==
@@ -270,95 +270,95 @@ Confirmación terminada.
 ===================================
 == ROL USUARIO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == ROL EN EL PROYECTO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
 ===================================
 == CATEGORIA DE PRESUPUESTO ==
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-1 fila creada.
+1 row created.
 
 
-Confirmación terminada.
+Commit complete.
 
-Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0

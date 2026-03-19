@@ -5,7 +5,7 @@ export const menuConfig = [
         items: [
             {
                 label: "Inicio",
-                roles: ["DIRECTOR","ADMINISTRATIVO","ASISTENTE","INVESTIGADOR"],
+                roles: ["DIRECCION","ADMINISTRATIVO","ASISTENTE","INVESTIGADOR"],
                 pathByRole: {
                     DIRECTOR: "/dashboard",
                     default: "/listado-proyectos"
@@ -28,7 +28,7 @@ export const menuConfig = [
             {
                 label: "Registrar",
                 path: "/registro-proyecto",
-                roles: ["ADMINISTRATIVO","DIRECTOR","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
                 label: "Consultar",
@@ -43,7 +43,7 @@ export const menuConfig = [
             {
                 label: "Asignar Investigador",
                 path: "/asignar-investigadores",
-                roles: ["ADMINISTRATIVO","DIRECTOR","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             }
         ]
     },
@@ -54,7 +54,7 @@ export const menuConfig = [
             {
                 label: "Registrar / Actualizar",
                 path: "/registro-presupuesto",
-                roles: ["ADMINISTRATIVO","DIRECTOR","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
                 label: "Gestión de Gastos",
@@ -69,7 +69,7 @@ export const menuConfig = [
             {
                 label: "Gestión Asignación de Horas",
                 path: "/gestion-horas",
-                roles: ["ADMINISTRATIVO","DIRECTOR","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
                 label: "Consultar Asignación Horas",
@@ -79,7 +79,7 @@ export const menuConfig = [
             {
                 label: "Asignación Investigador y Horas",
                 path: "/asignar-investigadores-horas",
-                roles: ["ADMINISTRATIVO","DIRECTOR","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             }
         ]
     },
@@ -90,12 +90,12 @@ export const menuConfig = [
             {
                 label: "Administradores y asistentes",
                 path: "/consulta-personal",
-                roles: ["DIRECTOR"]
+                roles: ["DIRECCION"]
             },
             {
                 label: "Investigadores",
                 path: "/consulta-investigadores",
-                roles: ["ADMINISTRATIVO","DIRECTOR","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
                 label: "Certificaciones",
@@ -105,7 +105,7 @@ export const menuConfig = [
             {
                 label: "Gestión usuarios",
                 path: "/gestion-usuarios",
-                roles: ["DIRECTOR"]
+                roles: ["DIRECCION"]
             }
         ]
     },

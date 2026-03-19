@@ -1,256 +1,280 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Mié Mar 18 15:06:22 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 20:39:47 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Hora de Última Conexión Correcta: Mié Mar 18 2026 15:06:22 -06:00
+Last Successful login time: Wed Mar 18 2026 20:39:47 -06:00
 
-Conectado a:
+Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0
 
 
-Conectado.
+Connected.
 ============================
 ====== DROPEO DE PKs =======
 ============================
 ALTER TABLE CERTIFICACION DROP CONSTRAINT PK_CERTIFICACION
                                           *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE CODIGO DROP CONSTRAINT PK_CODIGO
                                    *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE DOCUMENTO DROP CONSTRAINT PK_DOCUMENTO
                                       *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE EMPLEADO DROP CONSTRAINT PK_EMPLEADO
                                      *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ENTIDAD DROP CONSTRAINT PK_ENTIDAD
                                     *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ENTIDAD_PROYECTO DROP CONSTRAINT PK_ENTIDAD_PROYECTO
                                              *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE GASTO DROP CONSTRAINT PK_GASTO
                                   *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE HORAS_ASIGNADAS DROP CONSTRAINT PK_HORAS_ASIGNADAS
                                             *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INDICADOR DROP CONSTRAINT PK_INDICADOR
                                       *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INVESTIGADOR DROP CONSTRAINT PK_INVESTIGADOR
                                          *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE INVESTIGADOR_PROYECTO DROP CONSTRAINT PK_INVESTIGADOR_PROYECTO
                                                   *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE META DROP CONSTRAINT PK_META
                                  *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE NOTIFICACION DROP CONSTRAINT PK_NOTIFICACION
                                          *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE NOTIFICACION_USUARIO DROP CONSTRAINT PK_NOTIFICACION_USUARIO
                                                  *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE OBJETIVO_ESPECIFICO DROP CONSTRAINT PK_OBJETIVO_ESPECIFICO
                                                 *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE PERMISO DROP CONSTRAINT PK_PERMISO
+                                    *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PERMISO_PROYECTO DROP CONSTRAINT PK_PERMISO_PROYECTO
                                              *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PRESENTACION_INFORME DROP CONSTRAINT PK_PRESENTACION_INFORME
                                                  *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PRESUPUESTO DROP CONSTRAINT PK_PRESUPUESTO
                                         *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PRESUPUESTO_BIT DROP CONSTRAINT PK_PRESUPUESTO_BIT
                                             *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE PROYECTO DROP CONSTRAINT PK_PROYECTO
                                      *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ROL DROP CONSTRAINT PK_ROL
                                 *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE ROL_PERMISO DROP CONSTRAINT PK_ROL_PERMISO
+                                        *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ROL_PROYECTO DROP CONSTRAINT PK_ROL_PROYECTO
                                          *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE ROL_USUARIO DROP CONSTRAINT PK_ROL_USUARIO
                                         *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE TIPO DROP CONSTRAINT PK_TIPO
                                  *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE TITULO DROP CONSTRAINT PK_TITULO
                                    *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ALTER TABLE USUARIO DROP CONSTRAINT PK_USUARIO
                                     *
-ERROR en línea 1:
-ORA-02443: No se puede borrar la restricción - restricción no existente
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
 
 
 ============================
 ===== CREACIÃ“N DE PKs ======
 ============================
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
+
+ALTER TABLE PERMISO ADD CONSTRAINT PK_PERMISO PRIMARY KEY (ID_PERMISO)
+                                              *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
 
 
-Tabla modificada.
+
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
+
+ALTER TABLE ROL_PERMISO ADD CONSTRAINT PK_ROL_PERMISO PRIMARY KEY (ID_ROL_PERMISO)
+                                                      *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
 
 
-Tabla modificada.
+
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
 
-Tabla modificada.
+Table altered.
 
-Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0

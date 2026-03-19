@@ -1,259 +1,277 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Mié Mar 18 15:06:22 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 20:39:47 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Hora de Última Conexión Correcta: Mié Mar 18 2026 15:06:21 -06:00
+Last Successful login time: Wed Mar 18 2026 20:39:46 -06:00
 
-Conectado a:
+Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0
 
 
-Conectado.
+Connected.
 ============================
 === DROPEO DE SECUENCIAS ===
 ============================
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
 
 
-Secuencia borrada.
+Sequence dropped.
+
+
+Sequence dropped.
+
+
+Sequence dropped.
 
 ============================
 == CREACION DE SECUENCIAS ==
 ============================
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
 
 
-Secuencia creada.
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
 
 ============================
 ===== ALTER SECUENCIAS =====
 ============================
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
 
-Secuencia modificada.
+Sequence altered.
 
-Desconectado de Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+
+Sequence altered.
+
+
+Sequence altered.
+
+Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0

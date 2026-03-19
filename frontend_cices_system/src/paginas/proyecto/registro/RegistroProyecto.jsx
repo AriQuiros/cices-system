@@ -1,11 +1,11 @@
 // RegistroProyecto.jsx
-import {useContext, useEffect, useRef, useState} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
-import { useTiposCatalogo } from '../../../hooks/useTiposCatalogo.js';
-import {obtenerLineas, registrarProyecto} from "../../../services/ProyectoService.jsx";
-import { notify } from '../../../utils/ui/notify.jsx';
+import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo.js";
+import { obtenerLineas, registrarProyecto } from "../../../services/ProyectoService.jsx";
+import { notify } from "../../../utils/ui/notify.jsx";
 
-import {AppContext} from "../../../context/AppContext.jsx";
+import { AppContext } from "../../../context/AppContext.jsx";
 import { ProyectoDTO } from "../../../modelos/proyectoDTO.jsx";
 import { CodigoDTO } from "../../../modelos/CodigoDTO.jsx";
 
@@ -15,13 +15,14 @@ import RegistroPresupuesto from "./RegistroPresupuesto.jsx";
 import VincularInvestigador from "./VincularInvestigador.jsx";
 
 const MAX_TOTAL_SIZE_MB = 550;
+
 const getTotalFileSizeMB = (files) => {
     return files.reduce((total, file) => total + file.size, 0) / (1024 * 1024);
 };
 
 function RegistroProyecto() {
     const [showPresupuesto, setShowPresupuesto] = useState(false);
-    const [showAsignarInvestigador, setShowAsignarInvestigador] = useState(false); // new state
+    const [showAsignarInvestigador, setShowAsignarInvestigador] = useState(false);
     const [showFechasInformes, setShowFechasInformes] = useState(false);
     const [lineas, setLineas] = useState([]);
 
@@ -35,8 +36,8 @@ function RegistroProyecto() {
         limpiarPresupuestoActual
     } = useProyecto();
 
-    // ================== CARGA DE TIPOS DE CATALOGO ==================
     const { token } = useContext(AppContext);
+
     const { tipos, loading } = useTiposCatalogo(token, [
         "TIPO_ENTIDAD",
         "TIPO_PROYECTO",
@@ -59,25 +60,33 @@ function RegistroProyecto() {
 
     if (loading) return <p>Cargando opciones...</p>;
 
-    // ================== HANDLERS ==================
     const handleChange = (e) => {
         const { name, value } = e.target;
         actualizarCampo(name, value);
 
-        // Validaci�n de fechas
         if (name === "fechaInicio" || name === "fechaFinalizacion") {
-            const fechaInicio = new Date(proyecto.fechaInicio);
-            const fechaFinal = new Date(proyecto.fechaFinalizacion);
+            const fechaInicio = new Date(
+                name === "fechaInicio" ? value : proyecto.fechaInicio
+            );
+            const fechaFinal = new Date(
+                name === "fechaFinalizacion" ? value : proyecto.fechaFinalizacion
+            );
 
-            if (fechaInicio && fechaFinal && fechaInicio > fechaFinal) {
-                notify.warning('La fecha de inicio no puede ser mayor a la de finalización.');
+            if (
+                proyecto.fechaInicio &&
+                proyecto.fechaFinalizacion &&
+                fechaInicio > fechaFinal
+            ) {
+                notify.warning("La fecha de inicio no puede ser mayor a la de finalización.");
             }
-         }
+        }
     };
 
     const handleClear = () => {
         limpiarProyecto();
         setShowPresupuesto(false);
+        setShowAsignarInvestigador(false);
+        setShowFechasInformes(false);
         limpiarPresupuestoActual();
     };
 
@@ -87,11 +96,13 @@ function RegistroProyecto() {
         const totalSizeMB = getTotalFileSizeMB(archivosCombinados);
 
         if (totalSizeMB > MAX_TOTAL_SIZE_MB) {
-            notify.warning(`El tamaño total (${totalSizeMB.toFixed(2)} MB) excede el límite de ${MAX_TOTAL_SIZE_MB} MB.`);
+            notify.warning(
+                `El tamaño total (${totalSizeMB.toFixed(2)} MB) excede el límite de ${MAX_TOTAL_SIZE_MB} MB.`
+            );
             return;
         }
 
-        actualizarCampo('documentos', archivosCombinados);
+        actualizarCampo("documentos", archivosCombinados);
         event.target.value = null;
     };
 
@@ -99,29 +110,46 @@ function RegistroProyecto() {
         e.preventDefault();
 
         const entidadesVinculadasFormateadas = [
-            ...(proyecto.entidadesVinculadas?.unidades || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'UNIDAD' })),
-            ...(proyecto.entidadesVinculadas?.instituciones || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'INSTITUCION' })),
-            ...(proyecto.entidadesVinculadas?.sitios || []).filter(e => e.nombre).map(e => ({ nombre: e.nombre.trim(), tipo: 'SITIO' })),
+            ...(proyecto.entidadesVinculadas?.unidades || [])
+                .filter((e) => e.nombre?.trim())
+                .map((e) => ({ nombre: e.nombre.trim(), tipo: "UNIDAD" })),
+
+            ...(proyecto.entidadesVinculadas?.instituciones || [])
+                .filter((e) => e.nombre?.trim())
+                .map((e) => ({ nombre: e.nombre.trim(), tipo: "INSTITUCION" })),
+
+            ...(proyecto.entidadesVinculadas?.sitios || [])
+                .filter((e) => e.nombre?.trim())
+                .map((e) => ({ nombre: e.nombre.trim(), tipo: "SITIO" })),
         ];
+
         const proyectoFinal = {
             ...ProyectoDTO,
             ...proyecto,
-            entidadesVinculadas: entidadesVinculadasFormateadas,
-            presentacionesInformes: showFechasInformes
-                ? proyecto.presentacionesInformes
-                : []
+            documentos: [],
+            entidadesVinculadas: [],
+            presentacionesInformes: [],
+            presupuestos: [],
+            investigadoresVinculados: []
         };
 
+        console.log("Proyecto final enviado:", proyectoFinal);
+
         try {
-            const data = await registrarProyecto({ proyecto: proyectoFinal, token });
+            const data = await registrarProyecto(proyectoFinal, token);
 
-            console.log('Proyecto registrado:', data);
+            console.log("Proyecto registrado:", data);
             handleClear();
-            setShowFechasInformes(false);
-            notify.success('Proyecto registrado exitosamente.');
-
+            notify.success("Proyecto registrado exitosamente.");
         } catch (err) {
-            const message = err?.error || err?.message || (err && err.data && err.data.error) || 'Error al registrar proyecto';
+            console.error("Error al registrar proyecto:", err);
+
+            const message =
+                err?.response?.data?.message ||
+                err?.response?.data?.error ||
+                err?.message ||
+                "Error al registrar proyecto";
+
             notify.error(message);
         }
     };
@@ -129,24 +157,24 @@ function RegistroProyecto() {
     return (
         <>
             <Show
-                 types={tipos}
-                 entity={proyecto}
-                 handleChange={handleChange}
-                 handleNestedChange={setByPath}
-                 handleAddItem={addByPath}
-                 handleRemoveItem={removeByPath}
-                  handleSubmit={handleSubmit}
-                  handleFileChange={handleFileChange}
-                  showFechasInformes={showFechasInformes}
-                  setShowFechasInformes={setShowFechasInformes}
-                  showPresupuesto={showPresupuesto}
-                  setShowPresupuesto={setShowPresupuesto}
-                  showAsignarInvestigador={showAsignarInvestigador} // pass down
-                  setShowAsignarInvestigador={setShowAsignarInvestigador} // pass down
-              />
-         </>
-     );
- }
+                types={tipos}
+                entity={proyecto}
+                handleChange={handleChange}
+                handleNestedChange={setByPath}
+                handleAddItem={addByPath}
+                handleRemoveItem={removeByPath}
+                handleSubmit={handleSubmit}
+                handleFileChange={handleFileChange}
+                showFechasInformes={showFechasInformes}
+                setShowFechasInformes={setShowFechasInformes}
+                showPresupuesto={showPresupuesto}
+                setShowPresupuesto={setShowPresupuesto}
+                showAsignarInvestigador={showAsignarInvestigador}
+                setShowAsignarInvestigador={setShowAsignarInvestigador}
+            />
+        </>
+    );
+}
 
 function Show({ types, entity, handleChange, handleNestedChange, showFechasInformes, setShowFechasInformes,
                   handleAddItem, handleRemoveItem, handleSubmit, handleFileChange,

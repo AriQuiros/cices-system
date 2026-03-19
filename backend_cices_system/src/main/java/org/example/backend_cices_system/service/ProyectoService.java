@@ -45,30 +45,47 @@ public class ProyectoService {
 
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO proyectoDTO) {
-        var proyecto = new Proyecto();
+        try {
+            System.out.println("=== DTO recibido ===");
+            System.out.println(proyectoDTO);
 
-        proyecto.setCodigoProyecto(proyectoDTO.codigoProyecto());
-        proyecto.setNombreProyecto(proyectoDTO.nombreProyecto());
-        proyecto.setDescripcionProyecto(proyectoDTO.descripcion());
-        proyecto.setObjetivoGeneral(proyectoDTO.objetivoGeneral());
-        proyecto.setLineaInvestigacion(proyectoDTO.lineaInvestigacion());
-        proyecto.setFechaInicio(proyectoDTO.fechaInicio());
-        proyecto.setFechaFinalizacion(proyectoDTO.fechaFinalizacion());
-        proyecto.setDetallesProyectos(proyectoDTO.detalles());
+            var proyecto = new Proyecto();
 
-        proyecto.setIdCodigoTipoProyecto(proyectoDTO.tipoProyecto().id());
-        var estado = obtenerEstadoProyecto(proyectoDTO.fechaFinalizacion());
-        proyecto.setIdCodigoTipoEstado(estado);
+            proyecto.setCodigoProyecto(proyectoDTO.codigoProyecto());
+            proyecto.setNombreProyecto(proyectoDTO.nombreProyecto());
+            proyecto.setDescripcionProyecto(proyectoDTO.descripcion());
+            proyecto.setObjetivoGeneral(proyectoDTO.objetivoGeneral());
+            proyecto.setLineaInvestigacion(proyectoDTO.lineaInvestigacion());
+            proyecto.setFechaInicio(proyectoDTO.fechaInicio());
+            proyecto.setFechaFinalizacion(proyectoDTO.fechaFinalizacion());
+            proyecto.setDetallesProyectos(proyectoDTO.detalles());
 
-        proyectoRepository.save(proyecto);
+            System.out.println("tipoProyecto = " + proyectoDTO.tipoProyecto());
+            System.out.println("tipoProyecto.id = " +
+                    (proyectoDTO.tipoProyecto() != null ? proyectoDTO.tipoProyecto().id() : null));
 
-        for(var objetivoDTO : proyectoDTO.objetivosEspecificos()) {
-            objetivosEspecificosService.guardarObjetivoEspecifico(objetivoDTO, proyecto);
+            proyecto.setIdCodigoTipoProyecto(proyectoDTO.tipoProyecto().id());
+
+            var estado = obtenerEstadoProyecto(proyectoDTO.fechaFinalizacion());
+            proyecto.setIdCodigoTipoEstado(estado);
+
+            proyectoRepository.save(proyecto);
+
+            System.out.println("=== Guardando objetivos ===");
+            for (var objetivoDTO : proyectoDTO.objetivosEspecificos()) {
+                System.out.println(objetivoDTO);
+                objetivosEspecificosService.guardarObjetivoEspecifico(objetivoDTO, proyecto);
+            }
+
+            System.out.println("=== Guardando opcionales ===");
+            guardarOpcionales(proyectoDTO, proyecto);
+
+            return proyecto;
+        } catch (Exception e) {
+            System.err.println("=== ERROR REAL EN guardarProyecto ===");
+            e.printStackTrace();
+            throw e;
         }
-
-        guardarOpcionales(proyectoDTO, proyecto);
-
-        return proyecto;
     }
 
     private void guardarOpcionales(ProyectoDTO dto, Proyecto proyecto) {

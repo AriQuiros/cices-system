@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.ProyectoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.ProyectoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class ProyectoController {
     @PostMapping("/registro")
     public ResponseEntity<Integer> crearProyectoCompleto(
             @RequestBody @Valid ProyectoDTO dto) {
+
         Integer id = proyectoService.guardarProyecto(dto).getId();
         return ResponseEntity.ok(id);
     }

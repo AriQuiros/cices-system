@@ -51,3 +51,15 @@ export  async function obtenerInvestigadoresProyecto (codigoProyecto) {
     }
     return await res.json();
 }
+
+export const obtenerProyectoPorId = async (codigo, token) => {
+    const res = await fetch(`http://localhost:8080/api/proyectos/${codigo}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    if (!res.ok) throw new Error("Error cargando proyecto");
+
+    return await res.json();
+};

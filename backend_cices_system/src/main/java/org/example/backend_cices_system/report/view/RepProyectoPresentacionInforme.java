@@ -51,5 +51,11 @@ public class RepProyectoPresentacionInforme {
     @NotNull
     @Column(name = "FECHA_PRESENTACION", nullable = false)
     private LocalDate fechaPresentacion;
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_INFORME", nullable = false)
+    private Short idCodigoTipoInforme;
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_ESTADO", nullable = false)
+    private Short idCodigoTipoEstado;
 
 }

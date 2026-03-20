@@ -16,6 +16,7 @@ import "react-phone-number-input/style.css";
 import Select from "react-select";
 import countries from "i18n-iso-countries";
 import es from "i18n-iso-countries/langs/es.json";
+import {AppContext} from "../../../context/AppContext.jsx";
 
 countries.registerLocale(es);
 
@@ -60,8 +61,10 @@ const combinacionRolesValida = (roles = []) => {
     return { valida: true, mensaje: "" };
 };
 
-function RegistroInner() {
-    const { empleado, actualizarCampo, usuario, actualizarCampoUsuario, limpiarEmpleado, limpiarUsuario } = useContext(EmpleadoContext);
+function RegistroInner({ modoPerfil = false }) {
+    const { token } = useContext(AppContext);
+
+    const { empleado, actualizarCampo, setEmpleado, usuario, actualizarCampoUsuario, limpiarEmpleado, limpiarUsuario, setUsuario } = useContext(EmpleadoContext);
     const { investigador, limpiarInvestigador } = useContext(InvestigadorContext);
 
     const [confirmarContrasena, setConfirmarContrasena] = useState("");
@@ -115,6 +118,37 @@ function RegistroInner() {
 
     }, []);
 
+    useEffect(() => {
+
+        if (!modoPerfil) return;
+
+        (async () => {
+            try {
+                const res = await fetch("http://localhost:8080/api/reports/perfil/empleado", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (!res.ok) throw new Error();
+
+                const data = await res.json();
+
+                const { usuario, ...empleadoData } = data;
+
+                setEmpleado(empleadoData);
+                setUsuario({
+                    ...usuario,
+                    nombreUsuario: data.correo
+                });
+
+            } catch {
+                notify.error("Error cargando perfil");
+            }
+        })();
+
+    }, [modoPerfil]);
+
     const handleChange = (e) => {
 
         const { name, value, checked } = e.target;
@@ -157,33 +191,18 @@ function RegistroInner() {
 
         }
 
-        const directFields = [
-            "nombreCompleto",
-            "pais",
-            "identificacion",
-            "numeroTelefono"
-        ];
-
-        if (directFields.includes(name)) {
-
-            actualizarCampo(name, value);
-
-        } else {
-
-            if (name === "contrasena") {
-
-                actualizarCampoUsuario("contrasena", value);
-
-            }
-
-            if (name === "correo") {
-
-                actualizarCampo("correo", value);
-                actualizarCampoUsuario("nombreUsuario", value);
-
-            }
-
+        if (name === "contrasena") {
+            actualizarCampoUsuario("contrasena", value);
         }
+
+        if (name === "correo") {
+            actualizarCampo("correo", value);
+            actualizarCampoUsuario("nombreUsuario", value);
+        }
+        else{
+            actualizarCampo(name,value);
+        }
+
 
     };
 
@@ -232,6 +251,31 @@ function RegistroInner() {
             };
 
         }
+console.log(payload)
+        if (modoPerfil) {
+
+            try {
+                const res = await fetch("http://localhost:8080/api/empleados/actualizar", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    notify.success("Perfil actualizado");
+                } else {
+                    notify.error("Error al actualizar perfil");
+                }
+
+            } catch {
+                notify.error("Error de conexión");
+            }
+
+            return;
+        }
 
         try {
             const result = await registerEmpleado(payload, esInvestigador);
@@ -253,6 +297,7 @@ function RegistroInner() {
             notify.error("Error de conexión");
         }
     };
+
 
 
     const tipoId = (empleado.tipoId?.valor || "").toUpperCase();
@@ -286,7 +331,7 @@ function RegistroInner() {
 
             <form className="form-content" onSubmit={handleSubmit}>
 
-                <h2>Registro</h2>
+                <h2>{modoPerfil ? "Mi Perfil" : "Registro"}</h2>
                 <div className="row">
                     <InputField
                         label="Nombre Completo"
@@ -350,8 +395,14 @@ function RegistroInner() {
 
                     <Select
                         required
+                        name={"pais"}
                         options={countryOptions}
                         placeholder="Buscar país..."
+                        value={
+                            empleado.pais
+                                ? countryOptions.find(c => c.value === empleado.pais)
+                                : null
+                        }
                         onChange={(option) => actualizarCampo("pais", option.value)}
                     />
 
@@ -415,7 +466,8 @@ function RegistroInner() {
                     className="input-field"
                     required
                 />
-
+                {!modoPerfil && (
+                    <>
                 <div className="password-container">
                     <InputField
                         label="Contraseña"
@@ -467,6 +519,8 @@ function RegistroInner() {
                         {showConfirmPassword ? "🙈" : "👁️"}
                     </button>
                 </div>
+                    </>
+                )}
 
                 <div className="roles">
 
@@ -485,7 +539,7 @@ function RegistroInner() {
                                         (usuario?.roles || []).length >= 2 ||
                                         !combinacionRolesValida([...(usuario?.roles || []), rol]).valida
                                     )
-                                }
+                                 || modoPerfil}
                                 onChange={handleChange}
                             />
 
@@ -508,10 +562,10 @@ function RegistroInner() {
                 )}
 
                 <button type="submit" className="submit-btn">
-                    Registrar
+                    {modoPerfil ? "Actualizar Perfil" : "Registrar"}
                 </button>
 
-                <button
+                <button hidden={modoPerfil}
                     type="button"
                     className="btn-link-login"
                     onClick={() => window.location.href = "/"}
@@ -527,20 +581,13 @@ function RegistroInner() {
 
 }
 
-export default function Registro() {
+export default function Registro({ modoPerfil = false }) {
 
     return (
-
         <EmpleadoProvider>
-
             <InvestigadorProvider>
-
-                <RegistroInner />
-
+                <RegistroInner modoPerfil={modoPerfil} />
             </InvestigadorProvider>
-
         </EmpleadoProvider>
-
     );
-
 }

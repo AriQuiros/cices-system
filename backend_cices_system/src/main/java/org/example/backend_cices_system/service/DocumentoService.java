@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import org.example.backend_cices_system.data.DocumentoRepository;
+import org.example.backend_cices_system.dto.DocumentoDTO;
 import org.example.backend_cices_system.logic.Documento;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +46,12 @@ public class DocumentoService {
         }
     }
 
+    public DocumentoDTO obtenerDTO (Documento documento){
+        return new DocumentoDTO(documento.getId(),documento.getNombreDocumento(),documento.getDirectorio());
+    }
+
+    public List<DocumentoDTO> documentoDTOList(Proyecto proyecto){
+        return documentoRepo.findDocumentoByIdProyecto(proyecto).stream()
+                .map(this::obtenerDTO).toList();
+    }
 }

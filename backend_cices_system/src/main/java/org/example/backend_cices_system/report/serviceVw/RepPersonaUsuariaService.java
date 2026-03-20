@@ -106,6 +106,10 @@ public class RepPersonaUsuariaService {
         return new ArrayList<>(mapaPersonas.values());
     }
 
+    public List<RepPersonaUsuaria> obtenerPorUsuario(String nombreUsuario) {
+        return personaRepo.findByNombreUsuario(nombreUsuario);
+    }
+
     public Integer idInvestigadorPorUsuario(Integer idUsuario){
         return personaRepo.findDistinctByIdUsuario(idUsuario).getIdInvestigador();
     }

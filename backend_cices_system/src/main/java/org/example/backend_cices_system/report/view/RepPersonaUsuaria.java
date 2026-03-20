@@ -91,6 +91,11 @@ public class RepPersonaUsuaria {
     @Size(max = 50)
     @Column(name = "NOMBRE_ROL", length = 50)
     private String nombreRol;
+    @Column(name = "ID_CODIGO_TIPO_ID", columnDefinition = "unknown")
+    private Short idCodigoTipoId;
+    @Column(name = "ID_CODIGO_TIPO_GRADO_ACADEMICO", columnDefinition = "unknown")
+    private Short idCodigoTipoGradoAcademico;
 
 
 }
+

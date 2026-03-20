@@ -2,6 +2,7 @@ package org.example.backend_cices_system.presentation;
 
 import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +64,9 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoService.obtenerProyecto(id));
     }
 
+    @GetMapping("/{id}/horas-asignadas")
+    public ResponseEntity<ResumenHorasProyectoDTO> horas(@PathVariable Integer id) {
+        return ResponseEntity.ok(proyectoService.obtenerResumenHoras(id));
+    }
 
 }

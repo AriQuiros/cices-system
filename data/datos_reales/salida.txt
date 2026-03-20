@@ -1,10 +1,10 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Mar 18 21:28:35 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Thu Mar 19 20:38:10 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 18 2026 21:28:35 -06:00
+Last Successful login time: Thu Mar 19 2026 20:38:10 -06:00
 
 Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
@@ -19,12 +19,15 @@ Verificando secuencia SEC_CERTIFICACION
 
 NVL(MAX(ID_CERTIFICACION),0)
 ----------------------------
-			  32
+			   0
 
 Ajustando secuencia SEC_CERTIFICACION
-→ SEC_CERTIFICACION sincronizada correctamente en: 33
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_CODIGO
 
@@ -58,12 +61,15 @@ Verificando secuencia SEC_EMPLEADO
 
 NVL(MAX(ID_EMPLEADO),0)
 -----------------------
-		     49
+		      0
 
 Ajustando secuencia SEC_EMPLEADO
-→ SEC_EMPLEADO sincronizada correctamente en: 50
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_ENTIDAD
 
@@ -83,78 +89,99 @@ Verificando secuencia SEC_ENTIDAD_PROYECTO
 
 NVL(MAX(ID_ENTIDAD_PROYECTO),0)
 -------------------------------
-			      8
+			      0
 
 Ajustando secuencia SEC_ENTIDAD_PROYECTO
-→ SEC_ENTIDAD_PROYECTO sincronizada correctamente en: 9
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_GASTO
 
 NVL(MAX(ID_GASTO),0)
 --------------------
-		  10
+		   0
 
 Ajustando secuencia SEC_GASTO
-→ SEC_GASTO sincronizada correctamente en: 11
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_HORAS_ASIGNADAS
 
 NVL(MAX(ID_HORAS_ASIGNADAS),0)
 ------------------------------
-			    11
+			     0
 
 Ajustando secuencia SEC_HORAS_ASIGNADAS
-→ SEC_HORAS_ASIGNADAS sincronizada correctamente en: 12
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_INDICADOR
 
 NVL(MAX(ID_INDICADOR),0)
 ------------------------
-		       6
+		       0
 
 Ajustando secuencia SEC_INDICADOR
-→ SEC_INDICADOR sincronizada correctamente en: 7
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_INVESTIGADOR
 
 NVL(MAX(ID_INVESTIGADOR),0)
 ---------------------------
-			 48
+			  0
 
 Ajustando secuencia SEC_INVESTIGADOR
-→ SEC_INVESTIGADOR sincronizada correctamente en: 49
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_INVESTIGADOR_PROYECTO
 
 NVL(MAX(ID_INVESTIGADOR_PROYECTO),0)
 ------------------------------------
-				   7
+				   0
 
 Ajustando secuencia SEC_INVESTIGADOR_PROYECTO
-→ SEC_INVESTIGADOR_PROYECTO sincronizada correctamente en: 8
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_META
 
 NVL(MAX(ID_META),0)
 -------------------
-		  6
+		  0
 
 Ajustando secuencia SEC_META
-→ SEC_META sincronizada correctamente en: 7
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_NOTIFICACION
 
@@ -188,12 +215,29 @@ Verificando secuencia SEC_OBJETIVO_ESPECIFICO
 
 NVL(MAX(ID_OBJETIVO_ESPECIFICO),0)
 ----------------------------------
-				 6
+				 0
 
 Ajustando secuencia SEC_OBJETIVO_ESPECIFICO
-→ SEC_OBJETIVO_ESPECIFICO sincronizada correctamente en: 7
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
+
+Verificando secuencia SEC_PERMISO
+
+NVL(MAX(ID_PERMISO),0)
+----------------------
+		     0
+
+Ajustando secuencia SEC_PERMISO
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
+
 
 Verificando secuencia SEC_PERMISO_PROYECTO
 
@@ -227,12 +271,15 @@ Verificando secuencia SEC_PRESUPUESTO
 
 NVL(MAX(ID_PRESUPUESTO),0)
 --------------------------
-			12
+			 0
 
 Ajustando secuencia SEC_PRESUPUESTO
-→ SEC_PRESUPUESTO sincronizada correctamente en: 13
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_PRESUPUESTO_BIT
 
@@ -252,12 +299,15 @@ Verificando secuencia SEC_PROYECTO
 
 NVL(MAX(ID_PROYECTO),0)
 -----------------------
-		      2
+		      0
 
 Ajustando secuencia SEC_PROYECTO
-→ SEC_PROYECTO sincronizada correctamente en: 3
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_ROL
 
@@ -266,6 +316,20 @@ NVL(MAX(ID_ROL),0)
 		 4
 
 Ajustando secuencia SEC_ROL
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
+
+
+Verificando secuencia SEC_ROL_PERMISO
+
+NVL(MAX(ID_ROL_PERMISO),0)
+--------------------------
+			 0
+
+Ajustando secuencia SEC_ROL_PERMISO
 DECLARE
 *
 ERROR at line 1:
@@ -291,12 +355,15 @@ Verificando secuencia SEC_ROL_USUARIO
 
 NVL(MAX(ID_ROL_USUARIO),0)
 --------------------------
-			52
+			 0
 
 Ajustando secuencia SEC_ROL_USUARIO
-→ SEC_ROL_USUARIO sincronizada correctamente en: 53
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_TIPO
 
@@ -316,23 +383,29 @@ Verificando secuencia SEC_TITULO
 
 NVL(MAX(ID_TITULO),0)
 ---------------------
-		   47
+		    0
 
 Ajustando secuencia SEC_TITULO
-→ SEC_TITULO sincronizada correctamente en: 48
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Verificando secuencia SEC_USUARIO
 
 NVL(MAX(ID_USUARIO),0)
 ----------------------
-		    49
+		     0
 
 Ajustando secuencia SEC_USUARIO
-→ SEC_USUARIO sincronizada correctamente en: 50
+DECLARE
+*
+ERROR at line 1:
+ORA-04002: INCREMENT must be a non-zero integer
+ORA-06512: at line 7
 
-PL/SQL procedure successfully completed.
 
 Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
 Version 21.3.0.0.0

@@ -1,8 +1,11 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import org.example.backend_cices_system.data.HorasAsignadasRepository;
 import org.example.backend_cices_system.data.ProyectoRepository;
+import org.example.backend_cices_system.dto.InvestigadorHorasDTO;
 import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +18,7 @@ import java.util.List;
 public class ProyectoService {
     private final EntidadService entidadService;
     private final ProyectoRepository proyectoRepository;
+    private final HorasAsignadasRepository horasRepository;
     private final EntidadProyectoService entidadProyectoService;
     private final ObjetivosEspecificosService objetivosEspecificosService;
     private final PresentacionInformeService presentacionInformeService;
@@ -25,11 +29,13 @@ public class ProyectoService {
     private final InvestigadorProyectoService investigadorProyectoService;
     private final DocumentoService documentoService;
 
-    public ProyectoService(ProyectoRepository proyectoRepository, EntidadProyectoService entidadProyectoService,
+
+    public ProyectoService(ProyectoRepository proyectoRepository, HorasAsignadasRepository horasRepository, EntidadProyectoService entidadProyectoService,
                            ObjetivosEspecificosService objetivosEspecificosService, EntidadService entidadService,
                            PresentacionInformeService presentacionInformeService, CatalogoService catalogoService,
                            PresupuestoService presupuestoService, InvestigadorProyectoService investigadorProyectoService,
                            InvestigadorService investigadorService, DocumentoService documentoService) {
+        this.horasRepository = horasRepository;
         this.catalogoService = catalogoService;
         this.proyectoRepository = proyectoRepository;
         this.entidadService = entidadService;
@@ -164,5 +170,35 @@ public class ProyectoService {
     public ProyectoDTO obtenerProyectoCompleto(String codigo){
         var proyecto = obtenerProyectoPorCodigo(codigo);
         return obtenerDTO(proyecto);
+    }
+
+    public ResumenHorasProyectoDTO obtenerResumenHoras(Integer idProyecto) {
+
+        Proyecto proyecto = proyectoRepository.findById(idProyecto)
+                .orElseThrow();
+
+        List<Object[]> filas = horasRepository.obtenerHorasAsignadasProyecto(idProyecto);
+
+        List<InvestigadorHorasDTO> lista = filas.stream()
+                .map(f -> new InvestigadorHorasDTO(
+                        ((Number) f[0]).intValue(),
+                        (String) f[1],
+                        (String) f[2],
+                        ((Number) f[3]).doubleValue(),
+                        ((Number) f[4]).shortValue()
+                ))
+                .toList();
+
+        Double totalAsignadas = horasRepository.totalHorasAsignadas(idProyecto);
+        Double totalPresupuesto = horasRepository.totalHorasPresupuestadas(idProyecto);
+
+        Double disponibles = totalPresupuesto - totalAsignadas;
+
+        return new ResumenHorasProyectoDTO(
+                proyecto.getNombreProyecto(),
+                totalAsignadas,
+                disponibles,
+                lista
+        );
     }
 }

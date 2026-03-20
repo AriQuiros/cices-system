@@ -49,4 +49,10 @@ public class EntidadService {
                 .map(e -> new EntidadDTO(e.getId(),e.getNombre(),
                         catalogoService.obtenerDto(e.getIdCodigoTipoEntidad()))).toList();
     }
+
+    public EntidadDTO obtenerDTO (Entidad entidad){
+        return new EntidadDTO(entidad.getId(),
+                entidad.getNombre(),
+                catalogoService.obtenerDto(entidad.getIdCodigoTipoEntidad()));
+    }
 }

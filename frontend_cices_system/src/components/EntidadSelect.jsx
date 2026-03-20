@@ -7,6 +7,7 @@ export default function EntidadSelect({
                                           value,
                                           onChange,
                                           placeholder,
+                                          disabled,
                                           maxLength = 252
                                       }) {
     const [inputValue, setInputValue] = useState("");
@@ -54,6 +55,7 @@ export default function EntidadSelect({
                 }
             }}
             isClearable
+            isDisabled={disabled}
         />
     );
 }

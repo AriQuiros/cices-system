@@ -1,14 +1,15 @@
 package org.example.backend_cices_system.report.serviceVw;
 
+import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.report.dao.*;
 import org.example.backend_cices_system.report.view.RepProyectoBase;
+import org.example.backend_cices_system.report.view.RepProyectoResultados;
+import org.example.backend_cices_system.service.CatalogoService;
+import org.example.backend_cices_system.service.EntidadService;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.*;
 
-/**
- * @author angie
- */
 @Service
 public class ExportService {
 
@@ -24,22 +25,15 @@ public class ExportService {
     private final RepPresupuestoGastosRepository gastosRepo;
     private final RepPresupuestoHorasRepository horasRepo;
 
-    public ExportService(
-            RepProyectoBaseRepository proyectoBaseRepo,
-            RepInvestigadorProyectoRepository investigadorRepo,
-            RepProyectoResultadosRepository resultadosRepo,
-            RepEntidadProyectoRepository entidadProyectoRepo,
-            RepProyectoDocumentoRepository documentosRepo,
-            RepProyectoPresentacionInformeRepository informesRepo,
-            RepPresupuestoBaseRepository presupuestoBaseRepo,
-            PresupuestoBitRepository presupuestoBitRepository,
-            RepPresupuestoGastosRepository gastosRepo,
-            RepPresupuestoHorasRepository horasRepo
-    ) {
+    public ExportService(RepProyectoBaseRepository proyectoBaseRepo, RepEntidadProyectoRepository entidadProyectoRepo,
+                         RepInvestigadorProyectoRepository investigadorRepo, RepProyectoResultadosRepository resultadosRepo,
+                         RepProyectoDocumentoRepository documentosRepo, RepProyectoPresentacionInformeRepository informesRepo,
+                         RepPresupuestoBaseRepository presupuestoBaseRepo, PresupuestoBitRepository presupuestoBitRepository,
+                         RepPresupuestoGastosRepository gastosRepo, RepPresupuestoHorasRepository horasRepo) {
         this.proyectoBaseRepo = proyectoBaseRepo;
+        this.entidadProyectoRepo = entidadProyectoRepo;
         this.investigadorRepo = investigadorRepo;
         this.resultadosRepo = resultadosRepo;
-        this.entidadProyectoRepo = entidadProyectoRepo;
         this.documentosRepo = documentosRepo;
         this.informesRepo = informesRepo;
         this.presupuestoBaseRepo = presupuestoBaseRepo;

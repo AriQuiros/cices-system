@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record ProyectoDTO (
+        Integer id,
     String codigoProyecto,
     String nombreProyecto,
     String descripcion,

@@ -1,22 +1,21 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
-import org.example.backend_cices_system.data.EntidadProyectoRepository;
 import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProyectoService {
     private final EntidadService entidadService;
     private final ProyectoRepository proyectoRepository;
-    private final EntidadProyectoRepository entidadProyectoRepository;
+    private final EntidadProyectoService entidadProyectoService;
     private final ObjetivosEspecificosService objetivosEspecificosService;
     private final PresentacionInformeService presentacionInformeService;
     private final CatalogoService catalogoService;
@@ -26,7 +25,7 @@ public class ProyectoService {
     private final InvestigadorProyectoService investigadorProyectoService;
     private final DocumentoService documentoService;
 
-    public ProyectoService(ProyectoRepository proyectoRepository, EntidadProyectoRepository entidadProyectoRepository,
+    public ProyectoService(ProyectoRepository proyectoRepository, EntidadProyectoService entidadProyectoService,
                            ObjetivosEspecificosService objetivosEspecificosService, EntidadService entidadService,
                            PresentacionInformeService presentacionInformeService, CatalogoService catalogoService,
                            PresupuestoService presupuestoService, InvestigadorProyectoService investigadorProyectoService,
@@ -34,7 +33,7 @@ public class ProyectoService {
         this.catalogoService = catalogoService;
         this.proyectoRepository = proyectoRepository;
         this.entidadService = entidadService;
-        this.entidadProyectoRepository = entidadProyectoRepository;
+        this.entidadProyectoService = entidadProyectoService;
         this.objetivosEspecificosService = objetivosEspecificosService;
         this.presentacionInformeService = presentacionInformeService;
 
@@ -46,12 +45,12 @@ public class ProyectoService {
 
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO proyectoDTO, List<MultipartFile> documentos) {
-        var proyecto = new Proyecto();
         var codigo = proyectoDTO.codigoProyecto();
-
-        if(existeProyecto(codigo))
+        var idProyecto = proyectoDTO.id();
+        if(existeProyecto(codigo) && idProyecto == null)
             throw new IllegalStateException("El codigo de proyecto '" + codigo + "' ya se encuentra registrado");
 
+        var proyecto = idProyecto!=null ? obtenerProyecto(idProyecto):new Proyecto();
 
         proyecto.setCodigoProyecto(codigo);
         proyecto.setNombreProyecto(proyectoDTO.nombreProyecto());
@@ -77,14 +76,11 @@ public class ProyectoService {
         return proyecto;
     }
 
-    private void guardarOpcionales(ProyectoDTO dto, Proyecto proyecto,  List<MultipartFile> documentos) {
+    private void guardarOpcionales(ProyectoDTO dto, Proyecto proyecto, List<MultipartFile> documentos) {
         if (dto.entidadesVinculadas() != null && !dto.entidadesVinculadas().isEmpty()) {
             for (var entidadDTO : dto.entidadesVinculadas()) {
-                var entidadProyecto = new EntidadProyecto();
-                entidadProyecto.setIdProyecto(proyecto);
                 Entidad entidad = entidadService.guardarEntidad(entidadDTO);
-                entidadProyecto.setIdEntidad(entidad);
-                entidadProyectoRepository.save(entidadProyecto);
+                entidadProyectoService.guardarEntidadProyecto(proyecto, entidad);
             }
         }
 
@@ -100,7 +96,7 @@ public class ProyectoService {
 
         if (dto.investigadoresVinculados() != null && !dto.investigadoresVinculados().isEmpty()) {
             for (var investigadorDTO : dto.investigadoresVinculados()) {
-                Investigador investigador = investigadorService.buscarPorIdentificacion(investigadorDTO.identificacionInvestigador());
+                var investigador = investigadorService.buscarPorIdentificacion(investigadorDTO.identificacionInvestigador());
                 investigadorProyectoService.guardarInvestigadorProyecto(investigadorDTO, investigador, proyecto);
             }
         }
@@ -112,7 +108,7 @@ public class ProyectoService {
 
     public Proyecto buscarProyectoPorCodigo(String codigoProyecto) {
         return proyectoRepository.findByCodigoProyecto(codigoProyecto)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado para codigo " + codigoProyecto));
     }
 
     public List<Proyecto> obtenerProyectos() {
@@ -128,6 +124,11 @@ public class ProyectoService {
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
     }
 
+    public Proyecto obtenerProyectoPorCodigo(String codigo){
+        return proyectoRepository.findByCodigoProyecto(codigo)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado para codigo: " + codigo));
+    }
+
     private Short obtenerEstadoProyecto(LocalDate fechaFinalizacion) {
         LocalDate hoy = LocalDate.now();
         String estado = fechaFinalizacion.isBefore(hoy) ? "FINALIZADO" : "ACTIVO";
@@ -138,4 +139,30 @@ public class ProyectoService {
         return proyectoRepository.existsByCodigoProyecto(codigoProyecto);
     }
 
+    private ProyectoDTO obtenerDTO (Proyecto proyecto){
+        return new ProyectoDTO(
+                proyecto.getId(),
+                proyecto.getCodigoProyecto(),
+                proyecto.getNombreProyecto(),
+                proyecto.getDescripcionProyecto(),
+                proyecto.getObjetivoGeneral(),
+                proyecto.getFechaInicio(),
+                proyecto.getFechaFinalizacion(),
+                proyecto.getLineaInvestigacion(),
+                catalogoService.obtenerDto(proyecto.getIdCodigoTipoProyecto()),
+                catalogoService.obtenerDto(proyecto.getIdCodigoTipoEstado()),
+                proyecto.getDetallesProyectos(),
+                objetivosEspecificosService.objetivoEspecificoDTOList(proyecto),
+                new ArrayList<>(),
+                documentoService.documentoDTOList(proyecto),
+                entidadProyectoService.obtenerEntidadesProyecto(proyecto),
+                presentacionInformeService.informeDTOList(proyecto),
+                new ArrayList<>()
+        );
+    }
+
+    public ProyectoDTO obtenerProyectoCompleto(String codigo){
+        var proyecto = obtenerProyectoPorCodigo(codigo);
+        return obtenerDTO(proyecto);
+    }
 }

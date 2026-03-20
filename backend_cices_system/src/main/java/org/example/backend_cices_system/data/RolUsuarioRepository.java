@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.data;
 import org.example.backend_cices_system.logic.RolUsuario;
+import org.example.backend_cices_system.logic.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,4 +10,5 @@ public interface RolUsuarioRepository extends JpaRepository<RolUsuario, Short> {
     @Query("select ru.idRol.nombreRol from RolUsuario ru where ru.idUsuario.id = :userId")
     List<String> findRoleNamesByUsuarioId(@Param("userId") Integer userId);
 
+    List<RolUsuario> findByIdUsuario(Usuario idUsuario);
 }

@@ -23,4 +23,12 @@ public class EmpleadoController {
         Empleado empleado = empleadoService.crearEmpleado(dto);
         return ResponseEntity.ok(empleado.getId());
     }
+
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarEmpleado(@RequestBody @Valid EmpleadoDTO dto) {
+
+        Empleado empleado = empleadoService.actualizarEmpleado(dto);
+
+        return ResponseEntity.ok(empleadoService.obtenerEmpleadoDTO(empleado));
+    }
 }

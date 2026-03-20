@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import org.example.backend_cices_system.data.DocumentoRepository;
+import org.example.backend_cices_system.dto.DocumentoDTO;
 import org.example.backend_cices_system.logic.Documento;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,37 +46,12 @@ public class DocumentoService {
         }
     }
 
-    public void guardarDocumentosMultipart(List<MultipartFile> archivos, Proyecto proyecto) {
-        try {
-            String carpetaBase = "uploads/proyectos/" + proyecto.getCodigoProyecto();
-            Path rutaCarpeta = Paths.get(carpetaBase);
-
-            if (!Files.exists(rutaCarpeta)) {
-                Files.createDirectories(rutaCarpeta);
-            }
-
-            for (MultipartFile archivo : archivos) {
-                if (archivo == null || archivo.isEmpty()) continue;
-
-                String nombreArchivo = archivo.getOriginalFilename();
-                Path rutaArchivo = rutaCarpeta.resolve(nombreArchivo);
-
-                Files.copy(
-                        archivo.getInputStream(),
-                        rutaArchivo,
-                        StandardCopyOption.REPLACE_EXISTING
-                );
-
-                Documento documento = new Documento();
-                documento.setIdProyecto(proyecto);
-                documento.setNombreDocumento(nombreArchivo);
-                documento.setDirectorio(rutaArchivo.toString());
-
-                documentoRepo.save(documento);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error guardando documentos", e);
-        }
+    public DocumentoDTO obtenerDTO (Documento documento){
+        return new DocumentoDTO(documento.getId(),documento.getNombreDocumento(),documento.getDirectorio());
     }
 
+    public List<DocumentoDTO> documentoDTOList(Proyecto proyecto){
+        return documentoRepo.findDocumentoByIdProyecto(proyecto).stream()
+                .map(this::obtenerDTO).toList();
+    }
 }

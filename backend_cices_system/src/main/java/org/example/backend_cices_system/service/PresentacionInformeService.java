@@ -7,6 +7,7 @@ import org.example.backend_cices_system.logic.Proyecto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class PresentacionInformeService {
@@ -18,12 +19,13 @@ public class PresentacionInformeService {
         this.presentacionInformeRepository = presentacionInformeRepository;
     }
 
-    public void guardarPresentacionInforme(InformeDTO informe, Proyecto proyecto) {
-        var presentacionInforme = new PresentacionInforme();
+    public void guardarPresentacionInforme(InformeDTO informeDTO, Proyecto proyecto) {
+        var id = informeDTO.id();
+        var presentacionInforme = id != null ? obtenerPorId(id) : new PresentacionInforme();
         presentacionInforme.setIdProyecto(proyecto);
-        presentacionInforme.setFechaPresentacion(informe.fechaPresentacion());
-        presentacionInforme.setIdCodigoTipoInforme(informe.tipoInforme().id());
-        Short codigoEstadoInforme = obtenerCodigoEstadoInforme(informe.fechaPresentacion());
+        presentacionInforme.setFechaPresentacion(informeDTO.fechaPresentacion());
+        presentacionInforme.setIdCodigoTipoInforme(informeDTO.tipoInforme().id());
+        Short codigoEstadoInforme = obtenerCodigoEstadoInforme(informeDTO.fechaPresentacion());
         presentacionInforme.setIdCodigoTipoEstado(codigoEstadoInforme);
 
         presentacionInformeRepository.save(presentacionInforme);
@@ -36,5 +38,24 @@ public class PresentacionInformeService {
             return catalogoService.codigoXNombreValor("ESTADO_INFORME", "PENDIENTE");
         else
             return catalogoService.codigoXNombreValor("ESTADO_INFORME", "ENTREGADO");
+    }
+
+    public PresentacionInforme obtenerPorId(Integer id){
+        return presentacionInformeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("presentacion informe no encontrado para id: " + id));
+    }
+
+    public InformeDTO obtenerDTO ( PresentacionInforme presentacionInforme){
+        return new InformeDTO(
+                presentacionInforme.getId(),
+                catalogoService.obtenerDto(presentacionInforme.getIdCodigoTipoInforme()),
+                presentacionInforme.getFechaPresentacion(),
+                catalogoService.obtenerDto(presentacionInforme.getIdCodigoTipoEstado())
+        );
+    }
+
+    public List<InformeDTO> informeDTOList(Proyecto proyecto){
+        return presentacionInformeRepository.findPresentacionInformeByIdProyecto(proyecto).stream()
+                .map(this::obtenerDTO).toList();
     }
 }

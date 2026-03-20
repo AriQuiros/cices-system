@@ -60,5 +60,11 @@ public class RepInvestigadorCertificaciones {
 
     @Column(name = "FECHA_EXPIRACION")
     private LocalDate fechaExpiracion;
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_CERTIFICACION", nullable = false)
+    private Short idCodigoTipoCertificacion;
+    @NotNull
+    @Column(name = "ID_ENTIDAD", nullable = false)
+    private Integer idEntidad;
 
 }

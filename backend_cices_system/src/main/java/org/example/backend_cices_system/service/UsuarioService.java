@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import jakarta.transaction.Transactional;
 import org.example.backend_cices_system.data.RolUsuarioRepository;
 import org.example.backend_cices_system.data.UsuarioRepository;
 import org.example.backend_cices_system.dto.RolDTO;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.beans.Encoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +57,15 @@ public class UsuarioService {
         return rolUsuarioRepository.findRoleNamesByUsuarioId(id);
     }
 
+    List<RolDTO> obtenerRolesDTOUsuario(Usuario usuario){
+        var rolesUsuario= rolUsuarioRepository.findByIdUsuario(usuario);
+        var roles = new ArrayList<RolDTO>();
+        for(RolUsuario rolUsuario: rolesUsuario){
+            roles.add(new RolDTO(rolUsuario.getIdRol().getId(), rolUsuario.getIdRol().getNombreRol()));
+        }
+        return roles;
+    }
+
     public void guardarRoles(Usuario usuario, List<RolDTO> roles) {
         for (RolDTO rolDto : roles) {
             Rol rol = rolService.obtenerRol(rolDto.id());
@@ -80,5 +91,22 @@ public class UsuarioService {
     public Usuario obtenerUsuario(Integer id){
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("No se encontró un usuario con el id '" + id + "'"));
+    }
+
+    public UsuarioDTO obtenerDTO(Usuario usuario){
+        return new UsuarioDTO(usuario.getId(),
+                usuario.getNombreUsuario(),
+                "",
+                obtenerRolesDTOUsuario(usuario)
+                );
+    }
+
+    @Transactional
+    public Usuario actualizarUsuario(UsuarioDTO dto) {
+        Usuario usuario = obtenerUsuario(dto.id());
+
+        usuario.setNombreUsuario(dto.nombreUsuario());
+
+        return usuarioRepository.save(usuario);
     }
 }

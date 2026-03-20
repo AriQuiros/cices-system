@@ -1,7 +1,6 @@
 package org.example.backend_cices_system.report.serviceVw;
 
 
-import org.example.backend_cices_system.report.controller.InvestigadorDetalle;
 import org.example.backend_cices_system.report.dto.FormacionDTO;
 import org.example.backend_cices_system.report.dto.InvestigadorDetalleDTO;
 import org.example.backend_cices_system.report.dto.ProyectoCodigoDTO;

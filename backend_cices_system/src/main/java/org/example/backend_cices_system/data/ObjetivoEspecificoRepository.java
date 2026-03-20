@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ObjetivoEspecificoRepository extends JpaRepository<ObjetivoEspecifico, Short> {
+public interface ObjetivoEspecificoRepository extends JpaRepository<ObjetivoEspecifico, Integer> {
     List<ObjetivoEspecifico> findObjetivoEspecificoByIdProyecto(Proyecto idProyecto);
 }

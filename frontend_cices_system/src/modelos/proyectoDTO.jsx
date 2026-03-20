@@ -1,11 +1,16 @@
 import { CodigoDTO } from "./codigoDTO.jsx";
 
+export const IndicadorDTO = {
+    id: null,
+    descripcion: ""
+};
+
 export const MetaDTO = {
     id: null,
     tipo: { ...CodigoDTO },
     cantidad: 1,
     descripcion: "",
-    indicadores: [""]
+    indicadores: [{...IndicadorDTO}]
 };
 
 export const ObjetivoEspecificoDTO = {
@@ -18,7 +23,7 @@ export const ObjetivoEspecificoDTO = {
 export const DocumentoDTO = {
     id: null,
     nombreDocumento: "",
-    directorio: ""
+    url: ""
 };
 
 export const InformeDTO = {

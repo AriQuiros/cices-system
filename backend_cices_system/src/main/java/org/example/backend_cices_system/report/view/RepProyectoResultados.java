@@ -60,5 +60,7 @@ public class RepProyectoResultados {
     @Lob
     @Column(name = "INDICADOR")
     private String indicador;
+    @Column(name = "ID_CODIGO_TIPO_META")
+    private Short idCodigoTipoMeta;
 
 }

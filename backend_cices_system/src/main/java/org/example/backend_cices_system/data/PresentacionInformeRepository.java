@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PresentacionInformeRepository extends JpaRepository<PresentacionInforme, Short> {
+public interface PresentacionInformeRepository extends JpaRepository<PresentacionInforme, Integer> {
     List<PresentacionInforme> findPresentacionInformeByIdProyecto(Proyecto proyecto);
 }

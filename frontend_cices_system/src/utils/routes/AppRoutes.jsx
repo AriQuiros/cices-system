@@ -46,6 +46,7 @@ function AppRoutes() {
 
                 {/* USUARIOS */}
                 <Route path="/registro" element={<Registro />} />
+                <Route path="/perfil" element={<Registro modoPerfil={true} />} />
                 <Route path="/registro-investigador" element={<RegistroInvestigador />} />
                 <Route path="/consulta-personal" element={<ConsultaPersonal />} />
                 <Route path="/consulta-investigadores" element={<ConsultaInvestigadores />} />
@@ -54,6 +55,7 @@ function AppRoutes() {
 
                 {/* PROYECTOS */}
                 <Route path="/registro-proyecto" element={<RegistroProyecto />} />
+                <Route path="/actualizar-proyecto" element={<RegistroProyecto editable={true} />} />
                 <Route path="/registro-presupuesto" element={<RegistroPresupuesto modoRegistro={false} />} />
                 <Route path="/listado-proyectos" element={<ListadoProyectos />} />
 

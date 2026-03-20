@@ -7,6 +7,8 @@ import org.example.backend_cices_system.logic.Investigador;
 import org.example.backend_cices_system.logic.Titulo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TituloService {
 
@@ -36,4 +38,6 @@ public class TituloService {
         tituloRepository.save(titulo);
         return titulo;
     }
+
+
 }

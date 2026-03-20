@@ -13,10 +13,12 @@ export const EmpleadoProvider = ({ children }) => {
                 empleado: empleadoState.data,
                 actualizarCampo: empleadoState.actualizarCampo,
                 limpiarEmpleado: empleadoState.limpiar,
+                setEmpleado: empleadoState.establecer,
 
                 usuario: usuarioState.data,
                 actualizarCampoUsuario: usuarioState.actualizarCampo,
-                limpiarUsuario: usuarioState.limpiar
+                limpiarUsuario: usuarioState.limpiar,
+                setUsuario: usuarioState.establecer
             }}
         >
             {children}

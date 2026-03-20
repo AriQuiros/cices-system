@@ -13,6 +13,7 @@ export const UsuarioDTO = {
 };
 
 export const EmpleadoDTO = {
+    id: null,
     nombreCompleto: "",
     identificacion: "",
     tipoId: { ...CodigoDTO },

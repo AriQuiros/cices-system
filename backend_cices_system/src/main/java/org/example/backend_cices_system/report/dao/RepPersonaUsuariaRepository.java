@@ -9,4 +9,6 @@ public interface RepPersonaUsuariaRepository extends JpaRepository<RepPersonaUsu
     List<RepPersonaUsuaria> findByIdentificacion(String identificacion);
     RepPersonaUsuaria findDistinctByIdUsuario(Integer idUsuario);
     RepPersonaUsuaria findDistinctFirstByNombreUsuario(String nombreUsuario);
+
+    List<RepPersonaUsuaria> findByNombreUsuario(String nombreUsuario);
 }

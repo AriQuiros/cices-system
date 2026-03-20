@@ -17,7 +17,7 @@ export const menuConfig = [
     {
         section: "Personal",
         items: [
-            { label: "Perfil", path: "/dashboard", roles: ["*"] },
+            { label: "Perfil", path: "/perfil", roles: ["*"] },
             { label: "Notificaciones", path: "/dashboard", roles: ["*"] }
         ]
     },
@@ -26,8 +26,13 @@ export const menuConfig = [
         section: "Proyectos",
         items: [
             {
-                label: "Registrar / Actualizar",
+                label: "Registrar",
                 path: "/registro-proyecto",
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
+            },
+            {
+                label: "Actualizar",
+                path: "/actualizar-proyecto",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {

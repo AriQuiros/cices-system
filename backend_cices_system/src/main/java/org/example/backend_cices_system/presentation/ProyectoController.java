@@ -36,6 +36,12 @@ public class ProyectoController {
         return ResponseEntity.ok(id);
     }
 
+    @GetMapping("/{codigo}")
+    public ResponseEntity<?> informacionProyecto(@PathVariable String codigo) {
+        var proyecto = proyectoService.obtenerProyectoCompleto(codigo);
+        return ResponseEntity.ok(proyecto);
+    }
+
     @GetMapping("/consultar")
     public List<Map<String, Object>> consultarProyectos() {
         return proyectoService.obtenerProyectos().stream()

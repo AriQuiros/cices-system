@@ -1,6 +1,5 @@
 package org.example.backend_cices_system.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public record MetaDTO (
@@ -8,5 +7,5 @@ public record MetaDTO (
     CodigoDTO tipo, // CUANTITATIVA o CUALITATIVA
     Integer cantidad, // Solo se usa si es CUANTITATIVA
     String descripcion,
-    List<String> indicadores
+    List<IndicadorDTO> indicadores
 ){}

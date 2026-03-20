@@ -29,6 +29,9 @@ public class EntidadService {
             // NUEVA
             entidad = new Entidad();
             entidad.setNombre(dto.nombre());
+            if (dto.tipo().id() == null)
+                entidad.setIdCodigoTipoEntidad(catalogoService.codigoXNombreValor("TIPO_ENTIDAD", dto.tipo().valor()));
+            else
             entidad.setIdCodigoTipoEntidad(dto.tipo().id());
             entidad = entidadRepository.save(entidad);
         }

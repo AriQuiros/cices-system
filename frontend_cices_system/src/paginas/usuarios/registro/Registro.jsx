@@ -60,20 +60,6 @@ const combinacionRolesValida = (roles = []) => {
     return { valida: true, mensaje: "" };
 };
 
-const sanitizarIdentificacion = (valor = "", tipoId = "") => {
-    const tipo = (tipoId || "").toUpperCase();
-
-    if (tipo === "NACIONAL") {
-        return valor.replace(/\D/g, "").slice(0, 9);
-    }
-
-    if (tipo === "DIMEX" || tipo === "PASAPORTE") {
-        return valor.replace(/[^a-zA-Z0-9]/g, "").slice(0, 30);
-    }
-
-    return valor.slice(0, 30);
-};
-
 function RegistroInner() {
     const { empleado, actualizarCampo, usuario, actualizarCampoUsuario, limpiarEmpleado, limpiarUsuario } = useContext(EmpleadoContext);
     const { investigador, limpiarInvestigador } = useContext(InvestigadorContext);
@@ -180,21 +166,6 @@ function RegistroInner() {
 
         if (directFields.includes(name)) {
 
-            if (name === "nombreCompleto") {
-
-                actualizarCampo(name, value.slice(0, 30));
-                return;
-
-            }
-
-            if (name === "identificacion") {
-
-                const tipoIdActual = empleado.tipoId?.valor || "";
-                actualizarCampo(name, sanitizarIdentificacion(value, tipoIdActual));
-                return;
-
-            }
-
             actualizarCampo(name, value);
 
         } else {
@@ -288,32 +259,22 @@ function RegistroInner() {
 
     const idConfig = {
         type: "text",
-        maxLength: 20,
+        maxLength: 9,
         pattern: undefined
     };
 
     if (tipoId === "NACIONAL") {
-
-        idConfig.type = "text";
-        idConfig.maxLength = 9;
-        idConfig.pattern = "\\d{1,9}";
-
+        idConfig.maxLength = 10;
+        idConfig.pattern = "\\d{1,10}";
     }
 
     if (tipoId === "DIMEX") {
-
-        idConfig.type = "text";
-        idConfig.maxLength = 30;
-        idConfig.pattern = "[a-zA-Z0-9]{1,30}";
-
+        idConfig.maxLength = 15;
+        idConfig.pattern = "\\d{1,15}";
     }
 
     if (tipoId === "PASAPORTE") {
-
-        idConfig.type = "text";
-        idConfig.maxLength = 30;
-        idConfig.pattern = "[a-zA-Z0-9]{1,30}";
-
+        idConfig.maxLength = 20;
     }
 
     const [showPassword, setShowPassword] = useState(false);
@@ -326,20 +287,64 @@ function RegistroInner() {
             <form className="form-content" onSubmit={handleSubmit}>
 
                 <h2>Registro</h2>
+                <div className="row">
+                    <InputField
+                        label="Nombre Completo"
+                        name="nombreCompleto"
+                        placeholder="Nombre completo"
+                        value={empleado.nombreCompleto}
+                        onChange={handleChange}
+                        rules={[required(), maxLength(30)]}
+                        maxLength={30}
+                        className="input-field"
+                        required
+                    />
+                    <div className={"input-group"}>
+                    <label className="input-label">Tipo de Identificación</label>
+                    <Select
+                        required
+                        placeholder="Seleccione tipo de identificación"
+                        options={tipos["TIPO_IDENTIFICACION"]?.map(t => ({
+                            value: t.valor,
+                            label: t.despliegue
+                        }))}
+                        value={
+                            empleado.tipoId
+                                ? { value: empleado.tipoId.valor, label: empleado.tipoId.despliegue }
+                                : null
+                        }
+                        onChange={(option) => handleCodigoChange("tipoId", option.value, tipos["TIPO_IDENTIFICACION"])}
+                    />
+                    </div>
 
                 <InputField
-                    label="Nombre Completo"
-                    name="nombreCompleto"
-                    placeholder="Nombre completo"
-                    value={empleado.nombreCompleto}
-                    onChange={handleChange}
-                    rules={[required(), maxLength(30)]}
-                    maxLength={30}
+                    label="Número de Identificación"
+                    name="identificacion"
+                    placeholder="Sin guiones"
+                    value={empleado.identificacion}
+                    onChange={(e) => {
+
+                        let value = e.target.value;
+
+                        // solo números si es NACIONAL o DIMEX
+                        if (tipoId === "NACIONAL" || tipoId === "DIMEX") {
+                            value = value.replace(/\D/g, "");
+                        }
+
+                        if (value.length <= idConfig.maxLength) {
+                            actualizarCampo("identificacion", value);
+                        }
+
+                    }}
+                    inputMode= {(tipoId === "NACIONAL" || tipoId === "DIMEX")?"numeric":"text"}
+                    maxLength={idConfig.maxLength}
+                    pattern={idConfig.pattern}
                     className="input-field"
                     required
                 />
-
-                <div className="input-group">
+                </div>
+                <div className="row">
+                    <div className={"input-group"}>
 
                     <label className="input-label">País</label>
 
@@ -352,38 +357,31 @@ function RegistroInner() {
 
                 </div>
 
-                    <div className="input-group">
-                        <label className="input-label">Tipo de Identificación</label>
+                <div className="input-group">
 
-                        <Select
-                            required
-                            placeholder="Seleccione tipo de identificación"
-                            options={tipos["TIPO_IDENTIFICACION"]?.map(t => ({
-                                value: t.valor,
-                                label: t.despliegue
-                            }))}
-                            value={
-                                empleado.tipoId
-                                    ? { value: empleado.tipoId.valor, label: empleado.tipoId.despliegue }
-                                    : null
+                    <label className="input-label">Número de teléfono</label>
+
+                    <PhoneInput
+                        required
+                        id="numeroTelefono"
+                        name="numeroTelefono"
+                        className="phone-input-control"
+                        placeholder="Ingrese número"
+                        value={empleado.numeroTelefono}
+                        onChange={(value) => {
+                            if (!value) return actualizarCampo("numeroTelefono", value);
+
+                            const numeros = value.replace(/\D/g, "");
+                            const local = numeros.startsWith("506") ? numeros.slice(3) : numeros;
+
+                            if (local.length <= 8) {
+                                actualizarCampo("numeroTelefono", value);
                             }
-                            onChange={(option) => handleCodigoChange("tipoId", option.value, tipos["TIPO_IDENTIFICACION"])}
-                        />
-                    </div>
+                        }}
+                        defaultCountry="CR"
+                    />
 
-                <InputField
-                    label="Número de Identificación"
-                    name="identificacion"
-                    placeholder="Sin guiones"
-                    value={empleado.identificacion}
-                    onChange={handleChange}
-                    rules={[required()]}
-                    type={idConfig.type}
-                    maxLength={30}
-                    pattern={idConfig.pattern}
-                    className="input-field"
-                    required
-                />
+                </div>
 
                 <div className="input-group">
                     <label className="input-label">Grado Académico</label>
@@ -403,26 +401,6 @@ function RegistroInner() {
                         onChange={(option) => handleCodigoChange("gradoAcademico", option.value, tipos["GRADO_ACADEMICO"])}
                     />
                 </div>
-
-                <div className="input-group">
-
-                    <label className="input-label">Número de teléfono</label>
-
-                    <PhoneInput
-                        required
-                        id="numeroTelefono"
-                        name="numeroTelefono"
-                        className="phone-input-control"
-                        placeholder="Ingrese número"
-                        value={empleado.numeroTelefono}
-                        onChange={(value) => {
-                            if (!value) return actualizarCampo("numeroTelefono", value);
-
-                            actualizarCampo("numeroTelefono", value.slice(0, 15));
-                        }}
-                        defaultCountry="CR"
-                    />
-
                 </div>
 
                 <InputField

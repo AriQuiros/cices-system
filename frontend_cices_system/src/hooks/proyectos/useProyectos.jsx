@@ -1,11 +1,10 @@
 import {useContext, useEffect, useMemo, useState} from "react";
-import { obtenerProyectos, obtenerLineas } from "../../services/proyectoService";
+import { obtenerProyectos } from "../../services/proyectoService";
 import {AppContext} from "../../context/AppContext.jsx";
 
 export function useProyectos() {
     const {token, user} = useContext(AppContext)
     const [proyectos, setProyectos] = useState([]);
-    const [lineas, setLineas] = useState([]);
     const [orden, setOrden] = useState({ campo: "fechaInicio", asc: false });
     const [cargando, setCargando] = useState(true);
 
@@ -22,8 +21,6 @@ export function useProyectos() {
             try {
                 const data = await obtenerProyectos(token, user);
                 setProyectos(data);
-                const lineasData = await obtenerLineas();
-                setLineas(lineasData);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -82,7 +79,6 @@ export function useProyectos() {
 
     return {
         proyectos: proyectosFiltrados,
-        lineas,
         orden,
         setOrden,
         cargando,

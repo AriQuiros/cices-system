@@ -13,7 +13,7 @@ import GestionUsuarios from "../../paginas/usuarios/GestionUsuarios";
 
 /* PROYECTOS */
 import RegistroProyecto from "../../paginas/proyecto/registro/RegistroProyecto";
-import RegistroPresupuesto from "../../paginas/proyecto/registro/RegistroPresupuesto";
+import RegistroPresupuesto from "../../paginas/presupuesto/registro/GestionPresupuesto.jsx";
 import VincularInvestigador from "../../paginas/proyecto/registro/VincularInvestigador";
 import ListadoProyectos from "../../paginas/proyecto/ListadoProyectos";
 

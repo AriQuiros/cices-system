@@ -3,13 +3,13 @@ import { useProyectos } from "../../hooks/proyectos/useProyectos";
 import "../consultaProyectos/ConsultaProyectos.css";
 import {useTiposCatalogo} from "../../hooks/useTiposCatalogo.js";
 import Select from "react-select";
+import {useLineas} from "../../hooks/proyectos/useLineas.jsx";
 
 
 function ListadoProyectos() {
     const token = localStorage.getItem("token");
     const {
         proyectos,
-        lineas,
         orden,
         setOrden,
         cargando,
@@ -27,7 +27,7 @@ function ListadoProyectos() {
         value: t.valor,
         label: t.despliegue
     })) || [];
-    const opcionesLineas = lineas?.map(l => ({ value: l, label: l })) || [];
+    const { opciones: opcionesLineas } = useLineas();
     const manejarLineasSelect = selectedOptions => {
         handleChange("lineaInvestigacion", selectedOptions ? selectedOptions.map(o => o.value) : []);
     };

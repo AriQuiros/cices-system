@@ -4,8 +4,6 @@ import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.ProyectoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.ProyectoService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,11 +28,10 @@ public class ProyectoController {
         return proyectoService.obtenerLineasInvestigacion().toArray(String[]::new);
     }
 
-    @PostMapping(value = "/registro", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/registro", consumes = {"multipart/form-data"})
     public ResponseEntity<Integer> crearProyectoCompleto(
             @RequestPart("proyecto") ProyectoDTO dto,
-            @RequestPart(value = "documentos", required = false) List<MultipartFile> documentos
-    ) {
+            @RequestPart(value = "documentos", required = false) List<MultipartFile> documentos) {
         Integer id = proyectoService.guardarProyecto(dto, documentos).getId();
         return ResponseEntity.ok(id);
     }
@@ -55,13 +52,10 @@ public class ProyectoController {
                 .toList();
     }
 
-//    @GetMapping("/consultar/{id}")
-//    public ResponseEntity<Proyecto> consultarProyectoPorId(@PathVariable Integer id) {
-//        return ResponseEntity.ok(proyectoService.obtenerProyecto(id));
-//    }
-    @GetMapping("/consultar/{codigo}")
-    public ResponseEntity<ProyectoDTO> consultarProyectoPorCodigo(@PathVariable String codigo) {
-        return ResponseEntity.ok(proyectoService.obtenerProyectoPorCodigo(codigo));
+    @GetMapping("/consultar/{id}")
+    public ResponseEntity<Proyecto> consultarProyectoPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(proyectoService.obtenerProyecto(id));
     }
+
 
 }

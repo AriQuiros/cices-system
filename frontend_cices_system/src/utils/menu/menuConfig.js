@@ -7,7 +7,7 @@ export const menuConfig = [
                 label: "Inicio",
                 roles: ["DIRECCION","ADMINISTRATIVO","ASISTENTE","INVESTIGADOR"],
                 pathByRole: {
-                    DIRECTOR: "/dashboard",
+                    DIRECCION: "/dashboard",
                     default: "/listado-proyectos"
                 }
             }
@@ -26,18 +26,13 @@ export const menuConfig = [
         section: "Proyectos",
         items: [
             {
-                label: "Registrar",
+                label: "Registrar / Actualizar",
                 path: "/registro-proyecto",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
                 label: "Consultar",
                 path: "/listado-proyectos",
-                roles: ["*"]
-            },
-            {
-                label: "Actualizar",
-                path: "/actualizar-proyecto",
                 roles: ["*"]
             },
             {

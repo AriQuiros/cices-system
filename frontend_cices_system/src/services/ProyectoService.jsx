@@ -8,52 +8,43 @@ export const esSoloInvestigador = (user) => {
 export async function registrarProyecto(proyecto, token) {
     const formData = new FormData();
 
-    const proyectoSinArchivos = {
-        ...proyecto,
-        documentos: []
-    };
-
-    formData.append(
-        "proyecto",
-        new Blob([JSON.stringify(proyectoSinArchivos)], {
-            type: "application/json"
-        })
-    );
-
-    (proyecto.documentos || []).forEach((file) => {
+    (proyecto.documentos || []).forEach(file => {
         formData.append("documentos", file);
     });
+
+    delete proyecto.documentos;
+
+    // Creamos un Blob de tipo JSON para que Spring lo interprete correctamente
+    const proyectoBlob = new Blob([JSON.stringify(proyecto)], { type: "application/json" });
+    formData.append("proyecto", proyectoBlob);
 
     const res = await fetch(`${API}/api/proyectos/registro`, {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}` // NO poner Content-Type
         },
         body: formData
     });
 
     const text = await res.text();
     let data;
-
     try {
         data = text ? JSON.parse(text) : null;
     } catch {
         data = text;
     }
 
-    if (!res.ok) {
-        console.error("Error backend crudo:", data);
-        throw data;
-    }
+    if (!res.ok) throw data;
+    return data;
 }
 
 export async function cargarProyectos(token, user, principal) {
-    const esInvestidor = esSoloInvestigador(user);
+    const esInvestidor = esSoloInvestigador(user)
     let url = esInvestidor
         ? `${API}/api/reports/proyectos/investigador`
         : `${API}/api/reports/proyectos/codigo-nombre-fechas`;
 
-    if (esInvestidor && principal) url = url + "/principal";
+    if(esInvestidor && principal) url = url + "/principal"
 
     const res = await fetch(url, {
         headers: {

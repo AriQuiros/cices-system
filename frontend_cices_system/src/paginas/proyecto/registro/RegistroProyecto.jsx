@@ -1,29 +1,31 @@
-import { useContext, useEffect, useRef, useState } from "react";
+// RegistroProyecto.jsx
+import {useContext, useRef, useState} from "react";
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
-import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo.js";
-import { obtenerLineas, registrarProyecto } from "../../../services/ProyectoService.jsx";
-import { notify } from "../../../utils/ui/notify.jsx";
-
-import { AppContext } from "../../../context/AppContext.jsx";
+import { useTiposCatalogo } from '../../../hooks/useTiposCatalogo.js';
+import {registrarProyecto} from "../../../services/ProyectoService.jsx";
+import { notify } from '../../../utils/ui/notify.jsx';
+import CreatableSelect from "react-select/creatable";
+import {AppContext} from "../../../context/AppContext.jsx";
 import { ProyectoDTO } from "../../../modelos/proyectoDTO.jsx";
 import { CodigoDTO } from "../../../modelos/CodigoDTO.jsx";
 
 import "../../usuarios/registro/Registro.css";
 import "./RegistroProyecto.css";
-import RegistroPresupuesto from "./RegistroPresupuesto.jsx";
+import GestionPresupuesto from "../../presupuesto/registro/GestionPresupuesto.jsx";
 import VincularInvestigador from "./VincularInvestigador.jsx";
+import {useLineas} from "../../../hooks/proyectos/useLineas.jsx";
+import EntidadSelect from "../../../components/EntidadSelect.jsx";
 
 const MAX_TOTAL_SIZE_MB = 550;
-
-const getTotalFileSizeMB = (files = []) => {
+const getTotalFileSizeMB = (files) => {
     return files.reduce((total, file) => total + file.size, 0) / (1024 * 1024);
 };
 
 function RegistroProyecto() {
     const [showPresupuesto, setShowPresupuesto] = useState(false);
-    const [showAsignarInvestigador, setShowAsignarInvestigador] = useState(false);
+    const [showAsignarInvestigador, setShowAsignarInvestigador] = useState(false); // new state
     const [showFechasInformes, setShowFechasInformes] = useState(false);
-    const [lineas, setLineas] = useState([]);
+    const { opciones: opcionesLineas } = useLineas();
 
     const {
         proyecto,
@@ -35,8 +37,8 @@ function RegistroProyecto() {
         limpiarPresupuestoActual
     } = useProyecto();
 
+    // ================== CARGA DE TIPOS DE CATALOGO ==================
     const { token } = useContext(AppContext);
-
     const { tipos, loading } = useTiposCatalogo(token, [
         "TIPO_ENTIDAD",
         "TIPO_PROYECTO",
@@ -44,117 +46,51 @@ function RegistroProyecto() {
         "TIPO_INFORME"
     ]);
 
-    useEffect(() => {
-        const cargarLineas = async () => {
-            try {
-                const lineasData = await obtenerLineas();
-                setLineas(lineasData);
-            } catch (error) {
-                console.error("Error obteniendo líneas:", error);
-            }
-        };
-
-        cargarLineas();
-    }, []);
-
     if (loading) return <p>Cargando opciones...</p>;
 
+    // ================== HANDLERS ==================
     const handleChange = (e) => {
         const { name, value } = e.target;
         actualizarCampo(name, value);
 
+        // Validaci�n de fechas
         if (name === "fechaInicio" || name === "fechaFinalizacion") {
-            const fechaInicio = new Date(
-                name === "fechaInicio" ? value : proyecto.fechaInicio
-            );
-            const fechaFinal = new Date(
-                name === "fechaFinalizacion" ? value : proyecto.fechaFinalizacion
-            );
+            const fechaInicio = new Date(proyecto.fechaInicio);
+            const fechaFinal = new Date(proyecto.fechaFinalizacion);
 
-            if (
-                proyecto.fechaInicio &&
-                proyecto.fechaFinalizacion &&
-                fechaInicio > fechaFinal
-            ) {
-                notify.warning("La fecha de inicio no puede ser mayor a la de finalización.");
+            if (fechaInicio && fechaFinal && fechaInicio > fechaFinal) {
+                notify.warning('La fecha de inicio no puede ser mayor a la de finalización.');
             }
-        }
+         }
     };
 
     const handleClear = () => {
         limpiarProyecto();
         setShowPresupuesto(false);
-        setShowAsignarInvestigador(false);
-        setShowFechasInformes(false);
         limpiarPresupuestoActual();
     };
 
     const handleFileChange = (event) => {
-        const nuevosArchivos = Array.from(event.target.files || []);
-        const archivosActuales = proyecto.documentos || [];
-        const archivosCombinados = [...archivosActuales, ...nuevosArchivos];
+        const nuevosArchivos = Array.from(event.target.files);
+        const archivosCombinados = [...(proyecto.documentos || []), ...nuevosArchivos];
         const totalSizeMB = getTotalFileSizeMB(archivosCombinados);
 
         if (totalSizeMB > MAX_TOTAL_SIZE_MB) {
-            notify.warning(
-                `El tamaño total (${totalSizeMB.toFixed(2)} MB) excede el límite de ${MAX_TOTAL_SIZE_MB} MB.`
-            );
+            notify.warning(`El tamaño total (${totalSizeMB.toFixed(2)} MB) excede el límite de ${MAX_TOTAL_SIZE_MB} MB.`);
             return;
         }
 
-        actualizarCampo("documentos", archivosCombinados);
+        actualizarCampo('documentos', archivosCombinados);
         event.target.value = null;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const buscarTipoEntidad = (valorBuscado) => {
-            return (tipos["TIPO_ENTIDAD"] || []).find(
-                (t) => (t.valor || "").toUpperCase() === valorBuscado
-            );
-        };
-
-        const tipoUnidad = buscarTipoEntidad("UNIDAD");
-        const tipoInstitucion = buscarTipoEntidad("INSTITUCION");
-        const tipoSitio = buscarTipoEntidad("SITIO");
-
-        console.log("TIPO_ENTIDAD disponibles:", tipos["TIPO_ENTIDAD"]);
-        console.log("tipoUnidad:", tipoUnidad);
-        console.log("tipoInstitucion:", tipoInstitucion);
-        console.log("tipoSitio:", tipoSitio);
-
-        if (!tipoUnidad || !tipoInstitucion || !tipoSitio) {
-            notify.error("No se pudieron resolver los tipos de entidad.");
-            return;
-        }
-
         const entidadesVinculadasFormateadas = [
-            ...(proyecto.entidadesVinculadas?.unidades || [])
-                .filter((e) => e.nombre?.trim())
-                .map((e) => ({
-                    id: null,
-                    nombre: e.nombre.trim(),
-                    tipo: tipoUnidad
-                })),
-
-            ...(proyecto.entidadesVinculadas?.instituciones || [])
-                .filter((e) => e.nombre?.trim())
-                .map((e) => ({
-                    id: null,
-                    nombre: e.nombre.trim(),
-                    tipo: tipoInstitucion
-                })),
-
-            ...(proyecto.entidadesVinculadas?.sitios || [])
-                .filter((e) => e.nombre?.trim())
-                .map((e) => ({
-                    id: null,
-                    nombre: e.nombre.trim(),
-                    tipo: tipoSitio
-                })),
+            ...(proyecto.entidadesVinculadas?.unidades || []).filter(e => e.nombre).map(e => ({ id:e.id, nombre: e.nombre.trim(), tipo: e.tipo })),
+            ...(proyecto.entidadesVinculadas?.instituciones || []).filter(e => e.nombre).map(e => ({ id:e.id, nombre: e.nombre.trim(), tipo: e.tipo })),
+            ...(proyecto.entidadesVinculadas?.sitios || []).filter(e => e.nombre).map(e => ({ id:e.id, nombre: e.nombre.trim(), tipo: e.tipo })),
         ];
-
         const proyectoFinal = {
             ...ProyectoDTO,
             ...proyecto,
@@ -164,97 +100,62 @@ function RegistroProyecto() {
                 : []
         };
 
-        console.log("Proyecto final enviado:", proyectoFinal);
-
         try {
             const data = await registrarProyecto(proyectoFinal, token);
-            console.log("Proyecto registrado:", data);
+
             handleClear();
-            notify.success("Proyecto registrado exitosamente.");
+            setShowFechasInformes(false);
+            notify.success('Proyecto registrado exitosamente.');
+
         } catch (err) {
-            console.error("Error al registrar proyecto:", err);
-
-            const message =
-                err?.details ||
-                err?.message ||
-                err?.error ||
-                (typeof err === "string" ? err : JSON.stringify(err)) ||
-                "Error al registrar proyecto";
-
+            const message = err?.error || err?.message || (err && err.data && err.data.error) || 'Error al registrar proyecto';
             notify.error(message);
         }
     };
-    return (
-        <Show
-            types={tipos}
-            entity={proyecto}
-            handleChange={handleChange}
-            handleNestedChange={setByPath}
-            handleAddItem={addByPath}
-            handleRemoveItem={removeByPath}
-            handleSubmit={handleSubmit}
-            handleFileChange={handleFileChange}
-            showFechasInformes={showFechasInformes}
-            setShowFechasInformes={setShowFechasInformes}
-            showPresupuesto={showPresupuesto}
-            setShowPresupuesto={setShowPresupuesto}
-            showAsignarInvestigador={showAsignarInvestigador}
-            setShowAsignarInvestigador={setShowAsignarInvestigador}
-        />
-    );
-}
-
-function Show({
-                  types,
-                  entity,
-                  handleChange,
-                  handleNestedChange,
-                  showFechasInformes,
-                  setShowFechasInformes,
-                  handleAddItem,
-                  handleRemoveItem,
-                  handleSubmit,
-                  handleFileChange,
-                  showPresupuesto,
-                  setShowPresupuesto,
-                  showAsignarInvestigador,
-                  setShowAsignarInvestigador
-              }) {
-    const inputCodigoRef = useRef(null);
 
     return (
-        <div className="form-container">
-            <form id="form-project-content" className="form-content" onSubmit={handleSubmit}>
+        <>
+            <Show
+                 types={tipos}
+                 opcionesLineas={opcionesLineas}
+                 entity={proyecto}
+                 handleChange={handleChange}
+                 handleNestedChange={setByPath}
+                 handleAddItem={addByPath}
+                 handleRemoveItem={removeByPath}
+                  handleSubmit={handleSubmit}
+                  handleFileChange={handleFileChange}
+                  showFechasInformes={showFechasInformes}
+                  setShowFechasInformes={setShowFechasInformes}
+                  showPresupuesto={showPresupuesto}
+                  setShowPresupuesto={setShowPresupuesto}
+                  showAsignarInvestigador={showAsignarInvestigador} // pass down
+                  setShowAsignarInvestigador={setShowAsignarInvestigador} // pass down
+              />
+         </>
+     );
+ }
+
+function Show({ types, opcionesLineas, entity, handleChange, handleNestedChange, showFechasInformes, setShowFechasInformes,
+                  handleAddItem, handleRemoveItem, handleSubmit, handleFileChange,
+                  showPresupuesto, setShowPresupuesto, showAsignarInvestigador, setShowAsignarInvestigador }) {
+     const inputCodigoRef = useRef(null);
+    const [inputValue, setInputValue] = useState("");
+    const MAX_LENGTH = 50;
+
+     return (
+         <div className="form-container">
+             <form id="form-project-content" className="form-content" onSubmit={handleSubmit}>
                 <h2>Registrar Proyecto</h2>
 
                 <div className="form-row">
-                    <div className="input-group">
-                        <label>Código:</label>
-                        <input
-                            type="text"
-                            placeholder="prefijo: 840"
-                            className="input-field"
-                            required
-                            maxLength={252}
-                            name="codigoProyecto"
-                            ref={inputCodigoRef}
-                            value={entity.codigoProyecto ?? ""}
-                            onChange={handleChange}
-                        />
+                    <div className="input-group"> <label>Código:</label>
+                    <input type="text" placeholder="prefijo: 840" className="input-field" required maxLength={252}
+                           name="codigoProyecto" ref={inputCodigoRef} value={entity.codigoProyecto ?? ''} onChange={handleChange}/>
                     </div>
-
-                    <div className="input-group">
-                        <label>Nombre:</label>
-                        <input
-                            type="text"
-                            placeholder="Nombre"
-                            className="input-field"
-                            required
-                            maxLength={252}
-                            name="nombreProyecto"
-                            value={entity.nombreProyecto ?? ""}
-                            onChange={handleChange}
-                        />
+                    <div className="input-group"> <label>Nombre:</label>
+                    <input type="text" placeholder="Nombre" className="input-field" required maxLength={252}
+                           name="nombreProyecto" value={entity.nombreProyecto ?? ''} onChange={handleChange}/>
                     </div>
                 </div>
 
@@ -269,58 +170,60 @@ function Show({
                             );
                             handleNestedChange(["tipoProyecto"], tipoSeleccionado || { ...CodigoDTO });
                         }}
-                        required
-                    >
+                        required>
                         <option value="">Tipo de proyecto</option>
                         {types["TIPO_PROYECTO"]?.map((opcion, idx) => (
-                            <option key={opcion.id ?? opcion.valor ?? idx} value={opcion.valor}>
-                                {opcion.despliegue}
-                            </option>
+                            <option key={opcion.id ?? opcion.valor ?? idx} value={opcion.valor}>{opcion.despliegue}</option>
                         ))}
                     </select>
 
-                    <div className="input-group">
-                        <label>Línea de investigación:</label>
-                        <input
-                            type="text"
+                    <div className="input-group"> <label>Línea de investigación:</label>
+                        <CreatableSelect
+                            options={opcionesLineas}
+                            value={
+                                entity.lineaInvestigacion
+                                    ? { value: entity.lineaInvestigacion, label: entity.lineaInvestigacion }
+                                    : null
+                            }
+                            inputValue={inputValue}
+                            onInputChange={(val, meta) => {
+                                if (meta.action === "input-change") {
+                                    setInputValue(val.slice(0, MAX_LENGTH));
+                                }
+                            }}
+                            onChange={(selectedOption) => {
+                                const value = selectedOption ? selectedOption.value.slice(0, MAX_LENGTH) : "";
+                                if (selectedOption?.value.length > MAX_LENGTH) {
+                                    notify.warning(`Máximo ${MAX_LENGTH} caracteres`);
+                                    return;
+                                }
+                                handleChange({
+                                    target: {
+                                        name: "lineaInvestigacion",
+                                        value
+                                    }
+                                });
+
+                                setInputValue("");
+                            }}
                             placeholder="Área en el que se desarrolla el proyecto. Ej: Entorno laboral"
-                            className="input-field"
-                            required
-                            maxLength={252}
-                            name="lineaInvestigacion"
-                            value={entity.lineaInvestigacion ?? ""}
-                            onChange={handleChange}
+                            isClearable
+                            isSearchable
                         />
-                    </div>
-                </div>
+                        <small>{inputValue.length}/{MAX_LENGTH}</small>
+                     </div>
+                 </div>
 
                 <div className="form-row">
-                    <div className="input-group">
-                        <label>Descripción:</label>
-                        <textarea
-                            placeholder="Descripción"
-                            className="input-field"
-                            rows="8"
-                            required
-                            name="descripcion"
-                            value={entity.descripcion ?? ""}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Objetivo General:</label>
-                        <textarea
-                            placeholder="Objetivo General"
-                            className="input-field"
-                            rows="8"
-                            required
-                            name="objetivoGeneral"
-                            value={entity.objetivoGeneral ?? ""}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
+                    <div className="input-group"> <label>Descripción:</label>
+                    <textarea placeholder="Descripción" className="input-field" rows="8" required
+                              name="descripcion" value={entity.descripcion ?? ''} onChange={handleChange}></textarea>
+                     </div>
+                     <div className="input-group"> <label>Objetivo General:</label>
+                    <textarea placeholder="Objetivo General" className="input-field" rows="8" required
+                              name="objetivoGeneral" value={entity.objetivoGeneral ?? ''} onChange={handleChange}></textarea>
+                     </div>
+                 </div>
 
                 <label>Objetivos Específicos</label>
                 {entity.objetivosEspecificos.map((objetivo, idxObjetivo) => (
@@ -328,53 +231,29 @@ function Show({
                         <legend>
                             Objetivo Específico {idxObjetivo + 1}
                             <div className="icon-buttons">
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleAddItem(["objetivosEspecificos"], {
-                                            categoria: "",
-                                            descripcion: "",
-                                            metas: [{
-                                                tipo: { ...CodigoDTO },
-                                                cantidad: 0,
-                                                descripcion: "",
-                                                indicadores: [""]
-                                            }]
-                                        })
-                                    }
-                                >
-                                    ?
+                                <button type="button" onClick={() =>
+                                    handleAddItem(["objetivosEspecificos"], {
+                                        categoria: '',
+                                        descripcion: '',
+                                        metas: [{tipo: { ...CodigoDTO }, cantidad: 0, descripcion: '', indicadores: ['']}]
+                                    })
+                                }>?
                                 </button>
-
                                 {entity.objetivosEspecificos.length > 1 && (
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            handleRemoveItem(["objetivosEspecificos"], idxObjetivo)
-                                        }
-                                    >
-                                        ?
-                                    </button>
+                                    <button type="button" onClick={() =>
+                                        handleRemoveItem(["objetivosEspecificos"], idxObjetivo)
+                                    }>?</button>
                                 )}
                             </div>
                         </legend>
 
-                        <div className="input-group">
-                            <label>Descripción del objetivo:</label>
-                            <textarea
-                                placeholder="Descripción del objetivo"
-                                name="descripcion"
-                                className="input-field"
-                                rows="4"
-                                required
-                                value={objetivo.descripcion}
-                                onChange={(e) =>
-                                    handleNestedChange(
-                                        ["objetivosEspecificos", idxObjetivo, "descripcion"],
-                                        e.target.value
-                                    )
-                                }
-                            />
+                        <div className="input-group"> <label>Descripción del objetivo:</label>
+                        <textarea placeholder="Descripción del objetivo" name="descripcion"  className="input-field" rows="4" required
+                                  value={objetivo.descripcion}
+                                  onChange={e =>
+                                      handleNestedChange(["objetivosEspecificos", idxObjetivo, "descripcion"], e.target.value)
+                                  }
+                        ></textarea>
                         </div>
 
                         <label>Metas</label>
@@ -383,52 +262,32 @@ function Show({
                                 <legend>
                                     Meta {idxMeta + 1}
                                     <div className="icon-buttons">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleAddItem(["objetivosEspecificos", idxObjetivo, "metas"], {
-                                                    tipo: { ...CodigoDTO },
-                                                    cantidad: 0,
-                                                    descripcion: "",
-                                                    indicadores: [""]
-                                                })
-                                            }
-                                        >
-                                            ?
+                                        <button type="button" onClick={() =>
+                                            handleAddItem(["objetivosEspecificos", idxObjetivo, "metas"], {
+                                                tipo: { ...CodigoDTO }, cantidad: 0, descripcion: '', indicadores: ['']
+                                            })
+                                        }>?
                                         </button>
-
                                         {objetivo.metas.length > 1 && (
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleRemoveItem(
-                                                        ["objetivosEspecificos", idxObjetivo, "metas"],
-                                                        idxMeta
-                                                    )
-                                                }
-                                            >
-                                                ?
-                                            </button>
+                                            <button type="button" onClick={() =>
+                                                handleRemoveItem(["objetivosEspecificos", idxObjetivo, "metas"], idxMeta)
+                                            }>?</button>
                                         )}
                                     </div>
                                 </legend>
 
                                 <div className="form-row">
-                                    <select
-                                        id="tipo-meta"
-                                        className="input-field"
-                                        required
-                                        name="tipo"
-                                        value={meta.tipo?.valor || ""}
-                                        onChange={(e) => {
-                                            const valor = e.target.value;
-                                            const tipoObj = (types["TIPO_META"] || []).find((t) => t.valor === valor);
+                                    <select id="tipo-meta" className="input-field" required name="tipo"
+                                            value={meta.tipo?.valor || ""}
+                                            onChange={(e) => {
+                                                const valor = e.target.value;
+                                                const tipoObj = (types["TIPO_META"] || []).find((t) => t.valor === valor);
 
-                                            handleNestedChange(
-                                                ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "tipo"],
-                                                tipoObj || { ...CodigoDTO }
-                                            );
-                                        }}
+                                                handleNestedChange(
+                                                    ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "tipo"],
+                                                    tipoObj || { ...CodigoDTO }
+                                                );
+                                            }}
                                     >
                                         <option value="">Tipo</option>
                                         {types["TIPO_META"]?.map((opcion, idx) => (
@@ -439,85 +298,48 @@ function Show({
                                     </select>
 
                                     {meta.tipo?.valor?.toUpperCase() === "CUANTITATIVA" && (
-                                        <input
-                                            type="number"
-                                            placeholder="Cantidad"
-                                            id="cantidad-meta"
-                                            name="cantidad"
-                                            className="input-field"
-                                            required
-                                            min="1"
-                                            value={meta.cantidad ?? ""}
-                                            onChange={(e) =>
-                                                handleNestedChange(
-                                                    ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "cantidad"],
-                                                    e.target.value
-                                                )
-                                            }
+                                        <input type="number" placeholder="Cantidad" id="cantidad-meta" name="cantidad"
+                                               className="input-field"
+                                               required={true} min="1" value={meta.cantidad ?? ''} onChange={(e) =>
+                                            handleNestedChange(
+                                                ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "cantidad"],
+                                                e.target.value
+                                            )
+                                        }
                                         />
                                     )}
                                 </div>
 
-                                <div className="input-group">
-                                    <label>Descripción meta:</label>
-                                    <textarea
-                                        placeholder="Descripción de la meta"
-                                        className="input-field"
-                                        required
-                                        name="descripcion"
-                                        value={meta.descripcion ?? ""}
-                                        onChange={(e) =>
+                                <div className="input-group"> <label>Descripción meta:</label>
+                                <textarea placeholder="Descripción de la meta" className="input-field" required name="descripcion"
+                                          value={meta.descripcion ?? ''}
+                                          onChange={(e) =>
+                                              handleNestedChange(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "descripcion"], e.target.value)
+                                          }
+                                ></textarea>
+                                </div>
+
+                                <label><br/>Indicadores</label>
+                                {meta.indicadores.map((indicador, idxIndicador) => (
+                                    <div key={idxIndicador} id="inline-project-group" className="inline-group">
+                                        <input type="text" placeholder={`Indicador ${idxIndicador + 1}`} name="indicador"
+                                               className="input-field" value={indicador ?? ''} onChange={(e) =>
                                             handleNestedChange(
-                                                ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "descripcion"],
+                                                ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores", idxIndicador],
                                                 e.target.value
                                             )
                                         }
-                                    />
-                                </div>
-
-                                <label><br />Indicadores</label>
-                                {meta.indicadores.map((indicador, idxIndicador) => (
-                                    <div key={idxIndicador} id="inline-project-group" className="inline-group">
-                                        <input
-                                            type="text"
-                                            placeholder={`Indicador ${idxIndicador + 1}`}
-                                            name="indicador"
-                                            className="input-field"
-                                            value={indicador ?? ""}
-                                            onChange={(e) =>
-                                                handleNestedChange(
-                                                    ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores", idxIndicador],
-                                                    e.target.value
-                                                )
-                                            }
-                                            required
+                                               required
                                         />
-
                                         <div className="icon-buttons">
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleAddItem(
-                                                        ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores"],
-                                                        ""
-                                                    )
-                                                }
-                                            >
-                                                ?
+                                            <button type="button" onClick={() =>
+                                                handleAddItem(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores"], '')
+                                            }>?
                                             </button>
-
                                             {meta.indicadores.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleRemoveItem(
-                                                            ["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores"],
-                                                            idxIndicador
-                                                        )
-                                                    }
-                                                >
-                                                    ?
-                                                </button>
+                                                <button type="button" onClick={() =>
+                                                    handleRemoveItem(["objetivosEspecificos", idxObjetivo, "metas", idxMeta, "indicadores"], idxIndicador)
+                                                }>?</button>
                                             )}
                                         </div>
                                     </div>
@@ -530,28 +352,26 @@ function Show({
                 <fieldset id="input-project-group" className="input-group">
                     <legend>Entidades vinculadas</legend>
 
+                    {/* Instituciones participantes */}
                     <label>Instituciones Participantes</label>
                     {entity.entidadesVinculadas.instituciones.map((institucion, idxInst) => (
                         <div key={idxInst} id="inline-project-group" className="inline-group">
-                            <input
-                                type="text"
-                                placeholder={`Nombre de la institución ${idxInst + 1}`}
-                                className="input-field"
-                                maxLength={252}
-                                name="nombre"
-                                value={institucion.nombre ?? ""}
-                                onChange={(e) =>
+                            <EntidadSelect
+                                tipo="INSTITUCION"
+                                value={institucion}
+                                onChange={(val) =>
                                     handleNestedChange(
-                                        ["entidadesVinculadas", "instituciones", idxInst, "nombre"],
-                                        e.target.value
+                                        ["entidadesVinculadas", "instituciones", idxInst],
+                                        val
                                     )
                                 }
+                                placeholder={`Nombre de la institución ${idxInst + 1}`}
                             />
                             <div className="icon-buttons">
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        handleAddItem(["entidadesVinculadas", "instituciones"], { nombre: "" })
+                                        handleAddItem(["entidadesVinculadas", "instituciones"], {nombre: ""})
                                     }
                                 >
                                     ?
@@ -570,28 +390,26 @@ function Show({
                         </div>
                     ))}
 
+                    {/* Unidades participantes */}
                     <label>Unidades participantes</label>
                     {entity.entidadesVinculadas.unidades.map((unidad, idxUnidad) => (
                         <div key={idxUnidad} id="inline-project-group" className="inline-group">
-                            <input
-                                type="text"
-                                placeholder={`Nombre de la unidad ${idxUnidad + 1}`}
-                                className="input-field"
-                                value={unidad.nombre ?? ""}
-                                maxLength={252}
-                                name="nombre"
-                                onChange={(e) =>
+                            <EntidadSelect
+                                tipo="UNIDAD"
+                                value={unidad}
+                                onChange={(val) =>
                                     handleNestedChange(
-                                        ["entidadesVinculadas", "unidades", idxUnidad, "nombre"],
-                                        e.target.value
+                                        ["entidadesVinculadas", "unidades", idxUnidad],
+                                        val
                                     )
                                 }
+                                placeholder={`Nombre de la unidad ${idxUnidad + 1}`}
                             />
                             <div className="icon-buttons">
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        handleAddItem(["entidadesVinculadas", "unidades"], { nombre: "" })
+                                        handleAddItem(["entidadesVinculadas", "unidades"], {nombre: ""})
                                     }
                                 >
                                     ?
@@ -610,28 +428,26 @@ function Show({
                         </div>
                     ))}
 
+                    {/* Sitios de investigaci�n */}
                     <label>Sitios de investigación</label>
                     {entity.entidadesVinculadas.sitios.map((sitio, idxSitio) => (
                         <div key={idxSitio} id="inline-project-group" className="inline-group">
-                            <input
-                                type="text"
-                                placeholder={`Nombre del sitio ${idxSitio + 1}`}
-                                className="input-field"
-                                value={sitio.nombre ?? ""}
-                                name="nombre"
-                                maxLength={252}
-                                onChange={(e) =>
+                            <EntidadSelect
+                                tipo="SITIO"
+                                value={sitio}
+                                onChange={(val) =>
                                     handleNestedChange(
-                                        ["entidadesVinculadas", "sitios", idxSitio, "nombre"],
-                                        e.target.value
+                                        ["entidadesVinculadas", "sitios", idxSitio],
+                                        val
                                     )
                                 }
+                                placeholder={`Nombre del sitio ${idxSitio + 1}`}
                             />
                             <div className="icon-buttons">
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        handleAddItem(["entidadesVinculadas", "sitios"], { nombre: "" })
+                                        handleAddItem(["entidadesVinculadas", "sitios"], {nombre: ""})
                                     }
                                 >
                                     ?
@@ -654,47 +470,25 @@ function Show({
                 <div className="form-row">
                     <div className="input-group">
                         <label htmlFor="fecha-inicio">Fecha de inicio</label>
-                        <input
-                            type="date"
-                            id="fecha-inicio"
-                            name="fechaInicio"
-                            required
-                            onChange={handleChange}
-                            max={entity.fechaFinalizacion ?? ""}
-                            className="input-field"
-                            value={entity.fechaInicio ?? ""}
-                        />
+                        <input type="date" id="fecha-inicio" name="fechaInicio" required  onChange={handleChange} max={entity.fechaFinalizacion ?? ''}
+                               className={`input-field`} value={entity.fechaInicio ?? ''}/>
                     </div>
                     <div className="input-group">
                         <label htmlFor="fecha-fin">Fecha de finalización</label>
-                        <input
-                            type="date"
-                            id="fecha-fin"
-                            name="fechaFinalizacion"
-                            required
-                            onChange={handleChange}
-                            min={entity.fechaInicio ?? ""}
-                            className="input-field"
-                            value={entity.fechaFinalizacion ?? ""}
-                        />
+                        <input type="date" id="fecha-fin" name="fechaFinalizacion" required  onChange={handleChange} min={entity.fechaInicio ?? ''}
+                               className={`input-field`} value={entity.fechaFinalizacion ?? ''}/>
                     </div>
                 </div>
 
                 <label className="checkbox-group">
-                    <input
-                        type="checkbox"
-                        checked={showFechasInformes}
-                        onChange={() => {
-                            const next = !showFechasInformes;
-                            if (next && (!entity.presentacionesInformes || entity.presentacionesInformes.length === 0)) {
-                                handleAddItem(['presentacionesInformes'], {
-                                    fechaPresentacion: '',
-                                    tipoInforme: { ...CodigoDTO },
-                                    estado: { ...CodigoDTO }
-                                });
-                            }
-                            setShowFechasInformes(next);
-                        }}
+                    <input type="checkbox" checked={showFechasInformes}
+                           onChange={() => {
+                               const next = !showFechasInformes;
+                               if (next && (!entity.presentacionesInformes || entity.presentacionesInformes.length === 0)) {
+                                   handleAddItem(['presentacionesInformes'], { descripcion: '', fechaPresentacion: '', tipoInforme: { ...CodigoDTO }, estado: {...CodigoDTO} });
+                               }
+                               setShowFechasInformes(next);
+                           }}
                     />
                     Establecer Fechas de presentación de informes
                 </label>
@@ -705,63 +499,50 @@ function Show({
 
                         {entity.presentacionesInformes.map((informe, idx) => (
                             <div key={idx} id="inline-project-group" className="inline-group">
-                                <select
-                                    id={`tipoInforme-${idx}`}
-                                    required={showFechasInformes}
-                                    name="tipoInforme"
-                                    className="input-field"
-                                    value={informe.tipoInforme?.valor || ""}
-                                    onChange={(e) =>
-                                        handleNestedChange(
-                                            ["presentacionesInformes", idx, "tipoInforme"],
-                                            (types["TIPO_INFORME"] || []).find((t) => t.valor === e.target.value) || { ...CodigoDTO }
-                                        )
-                                    }
-                                >
-                                    <option value="">Tipo de informe</option>
-                                    {types["TIPO_INFORME"]?.map((opcion) => (
-                                        <option key={opcion.id} value={opcion.valor}>
-                                            {opcion.despliegue}
-                                        </option>
-                                    ))}
-                                </select>
-
-                                <div className="input-group">
-                                    <input
-                                        type="date"
+                                    <select
+                                        id={`tipoInforme-${idx}`}
                                         required={showFechasInformes}
-                                        min={entity.fechaInicio ?? ""}
-                                        name="fechaPresentacion"
-                                        placeholder={`Fecha de presentación ${idx + 1}`}
+                                        name={"tipoInforme"}
                                         className="input-field"
-                                        value={informe.fechaPresentacion ?? ""}
+                                        value={informe.tipoInforme?.valor || ""}
                                         onChange={(e) =>
-                                            handleNestedChange(
-                                                ["presentacionesInformes", idx, "fechaPresentacion"],
-                                                e.target.value
-                                            )
+                                            handleNestedChange(["presentacionesInformes", idx, "tipoInforme"], (types["TIPO_INFORME"] || []).find((t) => t.valor === e.target.value) || { ...CodigoDTO })
                                         }
-                                    />
+                                    >
+                                        <option value="">Tipo de informe</option>
+                                        {types["TIPO_INFORME"]?.map((opcion) => (
+                                            <option key={opcion.id} value={opcion.valor}>{opcion.despliegue}</option>
+                                        ))}
+                                    </select>
+                                <div className={"input-group"}>
+                                <input
+                                    type="date" required={showFechasInformes} min={entity.fechaInicio ?? ''}
+                                    name={"fechaPresentacion"}
+                                    placeholder={`Fecha de presentación ${idx + 1}`}
+                                    className={`input-field`}
+                                    value={informe.fechaPresentacion ?? ''}
+                                    onChange={(e) =>
+                                        handleNestedChange(['presentacionesInformes', idx, 'fechaPresentacion'], e.target.value)
+                                    }
+                                />
                                 </div>
-
                                 <div className="icon-buttons">
                                     <button
                                         type="button"
                                         onClick={() =>
-                                            handleAddItem(["presentacionesInformes"], {
-                                                fechaPresentacion: "",
-                                                tipoInforme: { ...CodigoDTO },
-                                                estado: { ...CodigoDTO }
+                                            handleAddItem(['presentacionesInformes'], {
+                                                descripcion: '',
+                                                fechaPresentacion: '',
+                                                estado: {...CodigoDTO}
                                             })
                                         }
                                     >
                                         ?
                                     </button>
-
                                     {entity.presentacionesInformes.length > 1 && (
                                         <button
                                             type="button"
-                                            onClick={() => handleRemoveItem(["presentacionesInformes"], idx)}
+                                            onClick={() => handleRemoveItem(['presentacionesInformes'], idx)}
                                         >
                                             ?
                                         </button>
@@ -770,46 +551,44 @@ function Show({
                             </div>
                         ))}
                     </>
-                )}
-
-                <button
-                    type="button"
-                    className="submit-btn"
-                    name="btnEstablecerPresupuesto"
-                    id="submit-project-btn"
-                    onClick={() => {
-                        if (!entity.codigoProyecto?.trim()) {
-                            if (inputCodigoRef.current) inputCodigoRef.current.focus();
-                            return;
+                )}{/*
+                <button type="button" className="submit-btn" name="btnEstablecerPresupuesto" id="submit-project-btn" onClick={() => {
+                    if (!entity.codigoProyecto?.trim()) {
+                        if (inputCodigoRef.current) {
+                            inputCodigoRef.current.focus();
                         }
-                        setShowPresupuesto(true);
-                    }}
-                >
-                    Establecer presupuesto
+                        return;
+                    }
+                    setShowPresupuesto(true);
+                }}
+                >Establecer presupuesto
                 </button>
 
-                <button
-                    type="button"
-                    className="submit-btn"
-                    name="btnVincularInvestigadores"
-                    id="submit-project-btn"
-                    onClick={() => {
-                        if (!entity.codigoProyecto?.trim()) {
-                            if (inputCodigoRef.current) inputCodigoRef.current.focus();
-                            return;
+                <button type="button" className="submit-btn" name="btnVincularInvestigadores" id="submit-project-btn" onClick={() => {
+                    if (!entity.codigoProyecto?.trim()) {
+                        if (inputCodigoRef.current) {
+                            inputCodigoRef.current.focus();
                         }
-                        setShowAsignarInvestigador(true);
-                    }}
-                >
-                    Vincular Investigadores
+                        return;
+                    }
+                    setShowAsignarInvestigador(true);
+                }}
+                >Vincular Investigadores
                 </button>
 
-                {showPresupuesto && (
-                    <RegistroPresupuesto
-                        onClose={() => setShowPresupuesto(false)}
-                        modoRegistro={true}
-                    />
-                )}
+                 {showPresupuesto && (
+                     <div className="popup">
+                     <GestionPresupuesto
+                         modoRegistro={true}
+                         proyecto={entity}
+                         onClose={() => setShowPresupuesto(false)}
+                         onSave={(presupuestos) => {
+                             handleNestedChange(["presupuestos"], presupuestos);
+                             setShowPresupuesto(false);
+                         }}
+                     />
+                     </div>
+                 )}
 
                 {showAsignarInvestigador && (
                     <VincularInvestigador
@@ -817,7 +596,6 @@ function Show({
                         editable={false}
                     />
                 )}
-
                 <div>
                     <h4>Presupuestos:</h4>
                     <div className="input-group">
@@ -829,7 +607,9 @@ function Show({
 
                                 return (
                                     <div key={idx} className="presupuesto-item">
+
                                         <strong>{tipoPresupuesto || "Sin tipo"}</strong>
+
                                         <div>{pres.descripcion || ""}</div>
                                         <div>Categoría: {pres.categoria?.despliegue || "Sin categoría"}</div>
                                         <div>Fecha asignación: {pres.fechaAsignacion || "Sin fecha"}</div>
@@ -842,19 +622,25 @@ function Show({
                                         )}
 
                                         {tipoPresupuesto === "HORAS" && (
-                                            <div>
-                                                Horas: {pres.cantidadHorasMes ?? 0} h / {pres.cantidadMeses ?? 0} m
-                                            </div>
+                                            <>
+                                                <div>
+                                                    Horas: {pres.cantidadHorasMes ?? 0} h /{" "}
+                                                    {pres.cantidadMeses ?? 0} m
+                                                </div>
+                                            </>
                                         )}
+
                                     </div>
                                 );
                             })
                         )}
                     </div>
                 </div>
-
+*/}
                 <fieldset id="input-project-group" className="input-group">
-                    <legend>Documentos Relacionados</legend>
+                    <legend>
+                        Documentos Relacionados
+                    </legend>
 
                     <div className="form-row">
                         <input
@@ -862,48 +648,39 @@ function Show({
                             type="file"
                             multiple
                             onChange={handleFileChange}
-                            className="input-field"
+                            className={`input-field`}
                         />
-                    </div>
+                     </div>
 
-                    {(entity.documentos || []).map((doc, idxDoc) => (
+                    {entity.documentos.map((doc, idxDoc) => (
                         <div key={idxDoc} id="inline-project-group" className="inline-group">
-                            <input
-                                type="text"
-                                readOnly
-                                className="input-field"
-                                value={`${doc.name} (${(doc.size / 1024).toFixed(1)} KB)`}
+                            <input type="text" readOnly className="input-field"
+                                   value={`${doc.name} (${(doc.size / 1024).toFixed(1)} KB)`}
                             />
                             <div className="icon-buttons">
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveItem(["documentos"], idxDoc)}
+                                <button type="button" onClick={() => handleRemoveItem(["documentos"], idxDoc)}
                                 >
                                     ?
                                 </button>
                             </div>
                         </div>
                     ))}
-
                     <label>
-                        Tamaño total: {getTotalFileSizeMB(entity.documentos || []).toFixed(2)} MB / {MAX_TOTAL_SIZE_MB} MB
+                        Tamaño total: {getTotalFileSizeMB(entity.documentos).toFixed(2)} MB / {MAX_TOTAL_SIZE_MB} MB
                     </label>
-
-                    <meter
-                        min="0"
-                        max={MAX_TOTAL_SIZE_MB}
-                        value={getTotalFileSizeMB(entity.documentos || [])}
+                    <meter min="0" max={MAX_TOTAL_SIZE_MB} value={getTotalFileSizeMB(entity.documentos)}
                     >
-                        {Math.round((getTotalFileSizeMB(entity.documentos || []) / MAX_TOTAL_SIZE_MB) * 100)}%
+                        {Math.round((getTotalFileSizeMB(entity.documentos) / MAX_TOTAL_SIZE_MB) * 100)}%
                     </meter>
                 </fieldset>
-
-                <button type="submit" name="btnRegistrarProyecto" id="submit-project-btn" className="submit-btn">
+                <button type="submit"  name="btnRegistrarProyecto"  id="submit-project-btn" className="submit-btn">
                     Registrar Proyecto
                 </button>
-            </form>
-        </div>
-    );
-}
+
+              </form>
+          </div>
+      );
+  }
+
 
 export default RegistroProyecto;

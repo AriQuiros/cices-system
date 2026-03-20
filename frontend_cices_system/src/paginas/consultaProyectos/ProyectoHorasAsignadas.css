@@ -1,132 +1,119 @@
-/* src/paginas/proyecto/ProyectoHorasAsignadas.css */
 .pha-wrap {
-    padding: 80px;
-    background: #f8f9fa;
-    min-height: calc(100vh - 140px);
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .pha-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    gap: 16px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
-    gap: 12px;
+}
+
+.pha-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #1e293b;
 }
 
 .btn-volver {
-    padding: 8px 12px;
-    border: 1px solid #005DA4;
-    background: #005DA4;
-    color: white;
-    border-radius: 20px;
-    cursor: pointer;
-    min-width: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     text-decoration: none;
+    background: #ffffff;
+    border: 1px solid #d8dde3;
+    color: #334155;
+    padding: 10px 14px;
+    border-radius: 8px;
+    transition: 0.2s ease;
+    font-size: 14px;
 }
+
 .btn-volver:hover {
-    background: #00528f;
-    color: #fff;
-    border-color: #00528f;
+    background: #f8fafc;
+    border-color: #19b5ea;
+    color: #0f172a;
 }
 
 .pha-totales {
-    display: flex;
-    gap: 12px;
-    margin: 12px 0 20px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .badge {
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-left: 4px solid #005DA4;
-    padding: 10px 14px;
-    border-radius: 6px;
-    min-width: 220px;
-    flex: 1 1 220px;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
+
 .badge span {
     display: block;
-    font-size: 0.9rem;
-    color: #4a5568;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 8px;
 }
+
 .badge strong {
-    font-size: 1.25rem;
-    color: #111827;
+    font-size: 24px;
+    color: #0f172a;
 }
 
 .pha-card {
-    background: #fff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    overflow-x: auto;
 }
-.pha-card.error {
-    border-left: 4px solid #ef4444;
-    color: #991b1b;
-    background: #fff7f7;
+
+.pha-error {
+    color: #b91c1c;
+    background: #fef2f2;
+    border-color: #fecaca;
+    margin-bottom: 12px;
 }
 
 .pha-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    min-width: 800px;
 }
-.pha-table th,
-.pha-table td {
-    border: 1px solid #e5e7eb;
-    padding: 10px;
-    text-align: left;
+
+.pha-table thead {
+    background: #19b5ea;
 }
+
 .pha-table thead th {
-    background: #f3f4f6;
-    color: #1f2937;
-}
-.pha-table tfoot th {
-    background: #f9fafb;
-}
-
-/* --- RESPONSIVE DESIGN --- */
-@media (max-width: 1024px) {
-    .pha-wrap {
-        padding: 40px;
-    }
+    color: #ffffff;
+    text-align: left;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
-/* --- Ajuste solo para móviles --- */
-@media (max-width: 768px) {
-    .pha-totales {
-        gap: 8px;
-        margin: 8px 0 16px;
-    }
-
-    .badge {
-        min-width: 100%;
-        padding: 6px 10px;       /* más compacto */
-    }
-
-    .badge span {
-        font-size: 0.8rem;       /* texto más pequeño */
-    }
-
-    .badge strong {
-        font-size: 1rem;         /* valor más discreto */
-    }
+.pha-table tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 14px;
 }
 
-@media (max-width: 480px) {
-    .badge {
-        padding: 5px 8px;
-    }
-
-    .badge span {
-        font-size: 0.75rem;
-    }
-
-    .badge strong {
-        font-size: 0.9rem;
-    }
+.pha-table tbody tr:hover {
+    background: #f8fafc;
 }
 
-
+.pha-table tbody td[colspan] {
+    text-align: center;
+    padding: 18px;
+    color: #64748b;
+}

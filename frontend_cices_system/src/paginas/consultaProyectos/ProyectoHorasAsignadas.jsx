@@ -1,22 +1,17 @@
-// src/paginas/proyecto/ProyectoHorasAsignadas.jsx
-import {useContext, useEffect, useState} from "react";
-import {useParams, Link} from "react-router-dom";
-import {AppContext} from "../../context/AppContext.jsx";
+import { useContext, useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { AppContext } from "../../context/AppContext.jsx";
 import "./ProyectoHorasAsignadas.css";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export default function ProyectoHorasAsignadas() {
-    const { id } = useParams();                 // id del proyecto
-    const { token } = useContext(AppContext);   // JWT
+    const { id } = useParams();
+    const { token } = useContext(AppContext);
+
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState("");
-
-    useEffect(() => {
-        console.log("Horas Asignadas:", data);
-    }, [data]);
-
 
     useEffect(() => {
         let cancel = false;
@@ -24,56 +19,86 @@ export default function ProyectoHorasAsignadas() {
         (async () => {
             setLoading(true);
             setErr("");
+
             try {
                 const res = await fetch(`${API}/api/proyectos/${id}/horas-asignadas`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    }
                 });
+
+                const text = await res.text();
+
                 if (!res.ok) {
-                    const msg = `HTTP ${res.status}`;
-                    setErr(msg);
+                    if (!cancel) setErr(`HTTP ${res.status}`);
                     return;
                 }
-                const json = await res.json();
-                if (!cancel) setData(json);
-            } catch {
+
+                const json = text ? JSON.parse(text) : null;
+
+                if (!cancel) {
+                    setData(json);
+                }
+            } catch (e) {
+                console.error("Error cargando horas asignadas:", e);
                 if (!cancel) setErr("No se pudo conectar con el servidor.");
             } finally {
                 if (!cancel) setLoading(false);
             }
         })();
 
-        return () => { cancel = true; };
+        return () => {
+            cancel = true;
+        };
     }, [id, token]);
 
-    if (loading) return <div className="pha-wrap"><p>Cargando…</p></div>;
-    if (err) return (
-        <div className="pha-wrap">
-            <div className="pha-card error">Error: {err}</div>
-            <Link to={`/administrador`} className="btn-volver">← Volver</Link>
-        </div>
-    );
-    if (!data) return null;
+    if (loading) {
+        return (
+            <div className="pha-wrap">
+                <p>Cargando…</p>
+            </div>
+        );
+    }
 
+    if (err) {
+        return (
+            <div className="pha-wrap">
+                <div className="pha-card pha-error">
+                    <strong>Error:</strong> {err}
+                </div>
+                <Link to="/administrador" className="btn-volver">
+                    ← Volver
+                </Link>
+            </div>
+        );
+    }
 
-    const { proyectoNombre = '', investigadores = [], totalHorasAsignadas = 0, totalHorasDisponibles = 0 } = data;
+    const proyectoNombre = data?.proyectoNombre ?? "";
+    const investigadores = Array.isArray(data?.investigadores) ? data.investigadores : [];
+    const totalHorasAsignadas = Number(data?.totalHorasAsignadas ?? 0);
+    const totalHorasDisponibles = Number(data?.totalHorasDisponibles ?? 0);
 
     return (
         <div className="pha-wrap">
             <div className="pha-header">
-                <Link to={`/administrador`} className="btn-volver">← Volver</Link>
-
+                <Link to="/administrador" className="btn-volver">
+                    ← Volver
+                </Link>
                 <h2>Horas asignadas — Proyecto {proyectoNombre}</h2>
             </div>
 
             <div className="pha-totales">
                 <div className="badge">
-                    <span>Presupuesto asignado (Carga academica)</span>
+                    <span>Total de horas asignadas</span>
                     <strong>{totalHorasAsignadas}</strong>
                 </div>
+
                 <div className="badge">
-                    <span>Presupuesto actual (Carga academica)</span>
+                    <span>Total de horas disponibles</span>
                     <strong>{totalHorasDisponibles}</strong>
                 </div>
+
                 <div className="badge">
                     <span>Investigadores totales</span>
                     <strong>{investigadores.length}</strong>
@@ -86,34 +111,38 @@ export default function ProyectoHorasAsignadas() {
                     <tr>
                         <th>#</th>
                         <th>Investigador</th>
-                        <th>Carga Horaria</th>
-                        <th>Horas asignadas al mes</th>
-                        <th>Meses</th>
-                        <th>Horas totales asignadas</th>
+                        <th>Régimen / tipo</th>
+                        <th>Horas al mes</th>
+                        <th>Duración (meses)</th>
+                        <th>Total asignado</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {investigadores.map((inv, index) => (
-                        <tr key={inv.idInvestigador}>
-                            <th>{index + 1}</th>
-                            <td>{inv.nombreCompleto}</td>
-                            <td>{inv.tipoHoras}</td>
-                            <td>{inv.horasMesAsignadas}</td>
-                            <td>{inv.mesesTotales}</td>
-                            <td>{inv.horasMesAsignadas * inv.mesesTotales}</td>
-                        </tr>
-                    ))}
+                    {investigadores.map((inv, index) => {
+                        const horasMes = Number(inv?.horasMesAsignadas ?? 0);
+                        const meses = Number(inv?.mesesTotales ?? 0);
+                        const total = horasMes * meses;
+
+                        return (
+                            <tr key={inv?.idInvestigador ?? index}>
+                                <td>{index + 1}</td>
+                                <td>{inv?.nombreCompleto ?? ""}</td>
+                                <td>{inv?.tipoHoras ?? ""}</td>
+                                <td>{horasMes}</td>
+                                <td>{meses}</td>
+                                <td>{total}</td>
+                            </tr>
+                        );
+                    })}
+
                     {investigadores.length === 0 && (
-                        <tr><td colSpan={3}><em>No hay Investigadores.</em></td></tr>
+                        <tr>
+                            <td colSpan={6}>
+                                <em>No hay horas asignadas para este proyecto.</em>
+                            </td>
+                        </tr>
                     )}
                     </tbody>
-                    <tfoot>
-                    {/*<tr>*/}
-                    {/*    <th>Totales</th>*/}
-                    {/*    <th>{totalHorasAsignadas}</th>*/}
-                    {/*    <th>—</th>*/}
-                    {/*</tr>*/}
-                    </tfoot>
                 </table>
             </div>
         </div>

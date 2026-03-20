@@ -5,6 +5,7 @@ import {useTiposCatalogo} from "../../hooks/useTiposCatalogo.js";
 import Select from "react-select";
 import {useLineas} from "../../hooks/proyectos/useLineas.jsx";
 
+
 function ListadoProyectos() {
     const token = localStorage.getItem("token");
     const {
@@ -117,13 +118,7 @@ function ListadoProyectos() {
                             <p><b>Estado:</b> {p.estado}</p>
                             <p>{p.fechaInicio} - {p.fechaFinalizacion}</p>
 
-                            <Link
-                                to={`/consultar/${p.codigoProyecto}`}
-                                className="ver-mas"
-                            >
-                                Ver más
-                            </Link>
-
+                            <Link to={`/proyectos/${p.codigoProyecto}`}>Ver proyecto</Link>
                         </div>
 
                     ))}

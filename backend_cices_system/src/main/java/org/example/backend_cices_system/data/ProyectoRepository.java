@@ -18,4 +18,5 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Integer> {
 
     @Query("SELECT DISTINCT p.lineaInvestigacion FROM Proyecto p")
     List<String> findDistinctLineasInvestigacion();
+
 }

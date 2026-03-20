@@ -159,7 +159,7 @@ function ConsultaProyectos() {
                                 <p>Fecha Inicio: {proyecto.fechaInicio}</p>
                                 <p>Fecha finalización: {proyecto.fechaFinalizacion}</p>
                                 <p>Línea de investigación: {proyecto.lineaInvestigacion}</p>
-                                <Link to={`/proyectos/${proyecto.idProyecto}/horas-asignadas`}>
+                                <Link to={`/proyectos/${proyecto.idProyecto}/horas-asignadas`} className="ver-horas-link">
                                     Ver horas asignadas
                                 </Link>
                                 <Link to={`/consultar/${proyecto.idProyecto}`} className="ver-horas-link">

@@ -342,85 +342,131 @@ const GestionHoras = () => {
                     <form onSubmit={(e) => { e.preventDefault(); guardarHoras(); }}>
                     {horasForm.map((h, index) => (
 
-                        <div key={index}>
+                        <div key={index} className="fila-horas">
 
-                            <Select required
-                                placeholder="Seleccione investigador"
-                                value={h.investigador ? { label: h.investigador.nombreInvestigador, value: h.investigador.id } : null}
-                                options={investigadoresProyecto
-                                    .filter(i =>
-                                        horaEditando?.investigador?.id === i.id ||
-                                        (!horasRegistradas.some(hr => hr.investigador?.id === i.id) &&
-                                            !horasForm.some((f, idx) => idx !== index && f.investigador?.id === i.id))
-                                    )
-                                    .map(i => ({ label: i.nombreInvestigador, value: i.id }))}
-                                onChange={(option) => actualizarCampo(
-                                    index,
-                                    "investigador",
-                                    investigadoresProyecto.find(i => i.id === option.value)
+                            <div className="campo-formulario">
+                                <label className="label-campo">Investigador</label>
+                                <Select
+                                    required
+                                    placeholder="Seleccione investigador"
+                                    value={h.investigador
+                                        ? { label: h.investigador.nombreInvestigador, value: h.investigador.id }
+                                        : null}
+                                    options={investigadoresProyecto
+                                        .filter(i =>
+                                            horaEditando?.investigador?.id === i.id ||
+                                            (!horasRegistradas.some(hr => hr.investigador?.id === i.id) &&
+                                                !horasForm.some((f, idx) => idx !== index && f.investigador?.id === i.id))
+                                        )
+                                        .map(i => ({ label: i.nombreInvestigador, value: i.id }))}
+                                    onChange={(option) =>
+                                        actualizarCampo(
+                                            index,
+                                            "investigador",
+                                            investigadoresProyecto.find(i => i.id === option.value)
+                                        )
+                                    }
+                                    className="select-campo"
+                                    classNamePrefix="select"
+                                />
+                            </div>
+
+                            <div className="campo-formulario">
+                                <label className="label-campo">Modalidad</label>
+                                <Select
+                                    required
+                                    placeholder="Modalidad"
+                                    value={h.modalidad
+                                        ? { label: h.modalidad.despliegue, value: h.modalidad.valor }
+                                        : null}
+                                    options={tipos["MODALIDAD_HORARIA"]?.map(t => ({
+                                        label: t.despliegue,
+                                        value: t.valor
+                                    }))}
+                                    onChange={(option) =>
+                                        actualizarCampo(
+                                            index,
+                                            "modalidad",
+                                            tipos["MODALIDAD_HORARIA"]?.find(t => t.valor === option.value)
+                                        )
+                                    }
+                                    className="select-campo"
+                                    classNamePrefix="select"
+                                />
+                            </div>
+
+                            <div className="campo-formulario">
+                                <InputField
+                                    label="Horas por mes"
+                                    type="number"
+                                    name={`horasMes-${index}`}
+                                    placeholder="Horas mes"
+                                    value={h.cantidadHorasMes}
+                                    onChange={(e) =>
+                                        actualizarCampo(index, "cantidadHorasMes", e.target.value)
+                                    }
+                                    rules={[
+                                        required(),
+                                        min(1),
+                                        max(h.modalidad?.valor === "REGIMEN POR TIEMPO" ? 40 : 20)
+                                    ]}
+                                    required
+                                    min={1}
+                                    max={h.modalidad?.valor === "REGIMEN POR TIEMPO" ? 40 : 20}
+                                />
+                            </div>
+
+                            <div className="campo-formulario">
+                                <InputField
+                                    label="Cantidad de meses"
+                                    type="number"
+                                    name={`meses-${index}`}
+                                    placeholder="Meses"
+                                    value={h.cantidadMeses}
+                                    onChange={(e) =>
+                                        actualizarCampo(index, "cantidadMeses", e.target.value)
+                                    }
+                                    rules={[
+                                        required(),
+                                        min(1),
+                                        max(calcularMesesParticipacion(h.investigador))
+                                    ]}
+                                    required
+                                    min={1}
+                                    max={calcularMesesParticipacion(h.investigador)}
+                                />
+                            </div>
+
+                            <div className="acciones-formulario">
+                                {horaEditando ? (
+                                    <button
+                                        type="button"
+                                        className="btn-danger"
+                                        onClick={cancelarEdicion}
+                                    >
+                                        Cancelar
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="btn-danger"
+                                        onClick={() => eliminarFila(index)}
+                                    >
+                                        Eliminar
+                                    </button>
                                 )}
-                            />
-
-                            <Select required
-                                placeholder="Modalidad"
-                                value={h.modalidad ? { label: h.modalidad.despliegue, value: h.modalidad.valor } : null}
-                                options={tipos["MODALIDAD_HORARIA"]?.map(t => ({ label: t.despliegue, value: t.valor }))}
-                                onChange={(option) => actualizarCampo(
-                                    index,
-                                    "modalidad",
-                                    tipos["MODALIDAD_HORARIA"]?.find(t => t.valor === option.value)
-                                )}
-                            />
-
-                            <InputField
-                                label="Horas por mes"
-                                type="number"
-                                name={`horasMes-${index}`}
-                                placeholder="Horas mes"
-                                value={h.cantidadHorasMes}
-                                onChange={(e) =>
-                                    actualizarCampo(index, "cantidadHorasMes", e.target.value)
-                                }
-                                rules={[required(), min(1),max(h.modalidad?.valor === "REGIMEN POR TIEMPO" ? 40 : 20)]}
-                                required
-                                min={1}
-                                max={h.modalidad?.valor === "REGIMEN POR TIEMPO" ? 40 : 20}
-                            />
-
-                            <InputField
-                                label="Cantidad de meses"
-                                type="number"
-                                name={`meses-${index}`}
-                                placeholder="Meses"
-                                value={h.cantidadMeses}
-                                onChange={(e) =>
-                                    actualizarCampo(index, "cantidadMeses", e.target.value)
-                                }
-                                rules={[required(), min(1),
-                                    max(calcularMesesParticipacion(h.investigador)) // máximo dinámico
-                                ]}
-                                required min={1} max={calcularMesesParticipacion(h.investigador)}
-                            />
-
-                            {horaEditando ? (
-
-                                <button onClick={cancelarEdicion}>
-                                    Cancelar
-                                </button>
-
-                            ) : (
-
-                                <button onClick={() => eliminarFila(index)}>
-                                    Eliminar
-                                </button>
-
-                            )}
+                            </div>
 
                         </div>
 
                     ))}
 
-                        <button type="button" onClick={agregarFila} hidden={horaEditando}>
+                        <button
+                            type="button"
+                            className="btn-outline-primary"
+                            onClick={agregarFila}
+                            hidden={horaEditando}
+                        >
                             + Agregar horas
                         </button>
 
@@ -469,12 +515,14 @@ const GestionHoras = () => {
                                 <td>
 
                                     <button
+                                        className="btn-editar"
                                         onClick={() => editarHoraRegistrada(h)}
                                     >
                                         Editar
                                     </button>
 
                                     <button
+                                        className="btn-eliminar"
                                         onClick={() => eliminarHoraRegistrada(h)}
                                     >
                                         Eliminar

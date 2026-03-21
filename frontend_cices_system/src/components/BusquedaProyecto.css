@@ -1,0 +1,124 @@
+/* ===== BUSCADOR DE PROYECTO ===== */
+
+.buscador-proyecto h3 {
+    margin-bottom: 12px;
+    color: #1f2937;
+    font-size: 18px;
+}
+
+/* contenedor del react-select */
+.buscador-select {
+    width: 100%;
+}
+
+/* caja principal */
+.buscador__control {
+    min-height: 48px !important;
+    border: 2px solid #19b5ea !important;
+    border-radius: 12px !important;
+    background: #f7fcff !important;
+    box-shadow: none !important;
+    transition: 0.2s !important;
+}
+
+.buscador__control:hover {
+    border-color: #0e9ac7 !important;
+}
+
+.buscador__control--is-focused {
+    border-color: #0e9ac7 !important;
+    box-shadow: 0 0 0 4px rgba(25, 181, 234, 0.15) !important;
+    background: #ffffff !important;
+}
+
+/* texto interno */
+.buscador__value-container {
+    padding: 0 12px !important;
+}
+
+.buscador__placeholder {
+    color: #6b7280 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+}
+
+.buscador__single-value {
+    color: #1f2937 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+}
+
+.buscador__input-container {
+    color: #1f2937 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+}
+
+/* separador e iconos */
+.buscador__indicator-separator {
+    display: none !important;
+}
+
+.buscador__dropdown-indicator,
+.buscador__clear-indicator {
+    color: #19b5ea !important;
+}
+
+.buscador__dropdown-indicator:hover,
+.buscador__clear-indicator:hover {
+    color: #0e9ac7 !important;
+}
+
+/* menú desplegable */
+.buscador__menu {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    border: 1px solid #d9edf7 !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1) !important;
+    z-index: 20 !important;
+}
+
+.buscador__option {
+    font-size: 14px !important;
+    color: #1f2937 !important;
+    cursor: pointer !important;
+}
+
+.buscador__option--is-focused {
+    background: #eef9fd !important;
+}
+
+.buscador__option--is-selected {
+    background: #19b5ea !important;
+    color: #ffffff !important;
+}
+
+.buscador-info{
+    width:100%;
+    height:48px;
+    margin-top:12px;
+    padding:0 14px;
+    background:#f7fcff;
+    border:2px solid #19b5ea;
+    border-radius:12px;
+    font-size:14px;
+    color:#1f2937;
+
+    display:flex;
+    align-items:center;
+}
+
+/* ⭐ clave */
+.buscador-info p{
+    margin:0;
+    line-height:0.3;   /* ⭐ baja el bloque completo */
+}
+
+.buscador-info:hover{
+    border-color:#0e9ac7;
+}
+
+.buscador-info b{
+    font-weight:600;
+    color:#0e9ac7;
+}

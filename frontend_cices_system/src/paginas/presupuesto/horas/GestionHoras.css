@@ -31,13 +31,30 @@
 
 /* ===== SELECT PRESUPUESTO ===== */
 
-.gestion-horas-select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 15px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: #fff;
+.gestion-horas-select{
+    width:100%;
+    height:48px;
+    margin-top:18px;
+    padding:0 14px;
+    border-radius:12px;
+    border:2px solid #19b5ea;
+    background:#f7fcff;
+    font-size:15px;
+    font-weight:500;
+    color:#1f2937;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.gestion-horas-select:hover{
+    border-color:#0e9ac7;
+}
+
+.gestion-horas-select:focus{
+    outline:none;
+    border-color:#0e9ac7;
+    box-shadow:0 0 0 4px rgba(25,181,234,.15);
+    background:#fff;
 }
 
 .gestion-horas-select:focus {
@@ -396,7 +413,17 @@ tbody tr:hover {
     background: #eef9fd;
 }
 
+.tabla-horas thead{
+    background:transparent !important;
+}
 
+.tabla-horas th{
+    background:#19b5ea !important;
+    color: #000000 !important;
+    padding:12px !important;
+    font-size:13px !important;
+    text-align:center !important;
+}
 
 /* ===== RESPONSIVE ===== */
 
@@ -425,3 +452,4 @@ tbody tr:hover {
         grid-column: auto !important;
     }
 }
+

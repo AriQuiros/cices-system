@@ -477,67 +477,55 @@ const GestionHoras = () => {
 
                     <h4>Horas registradas</h4>
 
-                    <table border="1">
-
-                        <thead>
-                        <tr>
-                            <th>Investigador</th>
-                            <th>Fechas Investigador</th>
-                            <th>Modalidad</th>
-                            <th>Tipo Hora</th>
-                            <th>Horas/Mes</th>
-                            <th>Meses</th>
-                            <th>Total</th>
-                            <th>Acciones</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-
-                        {horasRegistradas.map(h => (
-
-                            <tr key={h.id}>
-
-                                <td>{h.investigador?.nombreInvestigador}</td>
-
-                                <td>{h.investigador?.fechaInicio} - {h.investigador?.fechaFin}</td>
-
-                                <td>{h.modalidad?.despliegue}</td>
-
-                                <td>{h.tipoHora?.despliegue || "-"}</td>
-
-                                <td>{h.cantidadHorasMes}</td>
-
-                                <td>{h.cantidadMeses}</td>
-
-                                <td>{(h.cantidadHorasMes || 0) * (h.cantidadMeses || 0)}</td>
-
-                                <td>
-
-                                    <button
-                                        className="btn-editar"
-                                        onClick={() => editarHoraRegistrada(h)}
-                                    >
-                                        Editar
-                                    </button>
-
-                                    <button
-                                        className="btn-eliminar"
-                                        onClick={() => eliminarHoraRegistrada(h)}
-                                    >
-                                        Eliminar
-                                    </button>
-
-                                </td>
-
+                    <div className="tabla-container">
+                        <table className="tabla-horas">
+                            <thead>
+                            <tr>
+                                <th>Investigador</th>
+                                <th>Fechas Investigador</th>
+                                <th>Modalidad</th>
+                                <th>Tipo Hora</th>
+                                <th>Horas/Mes</th>
+                                <th>Meses</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
                             </tr>
+                            </thead>
 
-                        ))}
+                            <tbody>
+                            {horasRegistradas.map((h) => (
+                                <tr key={h.id}>
+                                    <td>{h.investigador?.nombreInvestigador}</td>
+                                    <td>
+                                        {h.investigador?.fechaInicio} - {h.investigador?.fechaFin}
+                                    </td>
+                                    <td>{h.modalidad?.despliegue}</td>
+                                    <td>{h.tipoHora?.despliegue || "-"}</td>
+                                    <td>{h.cantidadHorasMes}</td>
+                                    <td>{h.cantidadMeses}</td>
+                                    <td>{(h.cantidadHorasMes || 0) * (h.cantidadMeses || 0)}</td>
+                                    <td className="acciones-tabla">
+                                        <button
+                                            type="button"
+                                            className="btn-editar"
+                                            onClick={() => editarHoraRegistrada(h)}
+                                        >
+                                            Editar
+                                        </button>
 
-                        </tbody>
-
-                    </table>
-
+                                        <button
+                                            type="button"
+                                            className="btn-eliminar"
+                                            onClick={() => eliminarHoraRegistrada(h)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 </>
 

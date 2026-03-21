@@ -8,9 +8,10 @@ import { obtenerRolesProyecto } from "../../services/RolService.jsx";
 import { InvestigadorProyectoService } from "../../services/InvestigadorProyectoService.jsx";
 import { obtenerInvestigadoresProyecto } from "../../services/ReportesService.jsx";
 import InputField from "../../utils/validaciones/InputField.jsx";
-import {fechaMayorIgualQue, fechaMenorIgualQue, required} from "../../utils/validaciones/Validators.jsx";
+import { fechaMayorIgualQue, fechaMenorIgualQue, required } from "../../utils/validaciones/Validators.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../components/BusquedaProyecto.jsx";
+import "./AsignarInvestigador.css";
 
 const formularioVacio = {
     id: null,
@@ -23,32 +24,23 @@ const formularioVacio = {
 };
 
 const AsignarInvestigadores = () => {
-
-    const {token} = useContext(AppContext);
+    const { token } = useContext(AppContext);
 
     const [roles, setRoles] = useState([]);
-
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
-
     const [filaBuscando, setFilaBuscando] = useState(null);
     const [candidatos, setCandidatos] = useState([]);
-
     const [investigadoresRegistrados, setInvestigadoresRegistrados] = useState([]);
-
-    const [investigadoresForm, setInvestigadoresForm] = useState([{...formularioVacio}]);
-
+    const [investigadoresForm, setInvestigadoresForm] = useState([{ ...formularioVacio }]);
     const [investigadorEditando, setInvestigadorEditando] = useState(null);
 
     useEffect(() => {
-
         if (filaBuscando === null) return;
 
         const texto = investigadoresForm[filaBuscando]?.search;
-
         if (!texto) return;
 
         const timeout = setTimeout(async () => {
-
             try {
                 obtenerRolesProyecto(token).then(setRoles);
 
@@ -58,75 +50,54 @@ const AsignarInvestigadores = () => {
                     const registrados = investigadoresRegistrados.some(
                         reg => reg.identificacionInvestigador === inv.identificacion
                     );
+
                     const agregadosForm = investigadoresForm.some(
                         f => f.investigador?.identificacion === inv.identificacion
                     );
+
                     return !registrados && !agregadosForm;
                 });
 
                 setCandidatos(filtrados);
-
             } catch {
-
                 setCandidatos([]);
-
             }
-
         }, 300);
 
         return () => clearTimeout(timeout);
-
-    }, [investigadoresForm, filaBuscando, token]);
+    }, [investigadoresForm, filaBuscando, token, investigadoresRegistrados]);
 
     const seleccionarProyecto = async (p) => {
         if (!p) {
             setProyectoSeleccionado(null);
             return;
         }
+
         setProyectoSeleccionado(p);
 
         try {
-
             const lista = await obtenerInvestigadoresProyecto(p.codigoProyecto, token);
             setInvestigadoresRegistrados(lista || []);
-
         } catch {
-
             notify.error("Error cargando investigadores");
-
         }
-
     };
 
     const actualizarCampo = (index, campo, valor) => {
-
         const copia = [...investigadoresForm];
-
         copia[index][campo] = valor;
-
         setInvestigadoresForm(copia);
-
     };
 
     const agregarFila = () => {
-
-        setInvestigadoresForm(prev => [
-            ...prev,
-            {...formularioVacio}
-        ]);
-
+        setInvestigadoresForm(prev => [...prev, { ...formularioVacio }]);
     };
 
     const eliminarFila = (index) => {
-
-        setInvestigadoresForm(prev =>
-            prev.filter((_, i) => i !== index)
-        );
-
+        setInvestigadoresForm(prev => prev.filter((_, i) => i !== index));
     };
 
     const editarInvestigadorRegistrado = (inv) => {
-
         setInvestigadorEditando(inv);
 
         setInvestigadoresForm([{
@@ -141,49 +112,38 @@ const AsignarInvestigadores = () => {
             fechaFin: inv.fechaFin || "",
             search: inv.nombreInvestigador
         }]);
-
     };
 
-    function limpiar(){
+    const limpiar = () => {
         setInvestigadorEditando(null);
-        setInvestigadoresForm([{...formularioVacio}]);
-    }
+        setInvestigadoresForm([{ ...formularioVacio }]);
+    };
 
     const cancelarEdicion = () => {
-        limpiar()
+        limpiar();
     };
 
     const eliminarInvestigadorRegistrado = async (inv) => {
-
         if (!(await confirm.delete("¿Eliminar investigador del proyecto?"))) return;
 
         try {
-
             await InvestigadorProyectoService.eliminarInvestigador(inv.id, token);
 
             setInvestigadoresRegistrados(prev =>
                 prev.filter(i => i.id !== inv.id)
             );
 
-            limpiar()
-
+            limpiar();
             notify.success("Investigador eliminado");
-
-        }  catch (error) {
-
+        } catch (error) {
             notify.error(error.message || "Error eliminando investigador");
-
         }
-
     };
 
     const guardarInvestigadores = async () => {
-
         if (!proyectoSeleccionado) {
-
             notify.warning("Seleccione proyecto");
             return;
-
         }
 
         const incompletos = investigadoresForm.some(
@@ -191,16 +151,12 @@ const AsignarInvestigadores = () => {
         );
 
         if (incompletos) {
-
             notify.warning("Complete investigador y rol");
             return;
-
         }
 
         try {
-
             const lista = investigadoresForm.map(f => ({
-
                 id: f.id,
                 identificacionInvestigador: f.investigador.identificacion,
                 nombreInvestigador: f.investigador.nombreCompleto,
@@ -209,7 +165,6 @@ const AsignarInvestigadores = () => {
                 actividadProyecto: f.actividadProyecto,
                 fechaInicio: f.fechaInicio,
                 fechaFin: f.fechaFin
-
             }));
 
             if (investigadorEditando) {
@@ -217,28 +172,21 @@ const AsignarInvestigadores = () => {
 
                 await InvestigadorProyectoService.actualizarInvestigador(lista[0], token);
                 notify.success("Investigador actualizado");
-
             } else {
-
                 await InvestigadorProyectoService.guardarInvestigadoresProyecto(lista, token);
                 notify.success("Investigadores asignados con éxito");
-
             }
 
             const actualizados = await obtenerInvestigadoresProyecto(
                 proyectoSeleccionado.codigoProyecto,
                 token
             );
+
             setInvestigadoresRegistrados(actualizados || []);
-
-            limpiar()
-
+            limpiar();
         } catch {
-
             notify.error("Error guardando investigador");
-
         }
-
     };
 
     const rolesParaAsignar =
@@ -253,6 +201,7 @@ const AsignarInvestigadores = () => {
         value: inv,
         label: inv.nombreCompleto
     }));
+
     const seleccionarInvestigadorSelect = (index, selectedOption) => {
         if (!selectedOption) return;
 
@@ -263,179 +212,225 @@ const AsignarInvestigadores = () => {
         copia[index].search = inv.nombreCompleto;
 
         setInvestigadoresForm(copia);
-        setCandidatos([]); // limpiar candidatos
+        setCandidatos([]);
     };
 
     return (
-
-        <div>
-
+        <div className="asignar-page">
             {!proyectoSeleccionado && (
                 <BuscadorProyecto token={token} onSelect={seleccionarProyecto} />
             )}
 
             {proyectoSeleccionado && (
-
-                <div>
+                <div className="asignar-contenido">
                     <h3>Agregar investigadores</h3>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        guardarInvestigadores();
-                    }}>
-                    {investigadoresForm.map((fila, index) => (
 
-                        <div key={index}>
+                    <form
+                        className="asignar-form"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            guardarInvestigadores();
+                        }}
+                    >
+                        {investigadoresForm.map((fila, index) => (
+                            <div key={index} className="asignar-fila">
+                                <div className="campo-formulario">
+                                    <label className="label-campo">Investigador</label>
+                                    <Select
+                                        className="select-campo"
+                                        classNamePrefix="select"
+                                        required
+                                        placeholder="Buscar investigador..."
+                                        value={
+                                            fila.investigador
+                                                ? {
+                                                    value: fila.investigador,
+                                                    label: fila.investigador.nombreCompleto
+                                                }
+                                                : null
+                                        }
+                                        options={opcionesCandidatos}
+                                        onInputChange={(inputValue) => {
+                                            actualizarCampo(index, "search", inputValue);
+                                            setFilaBuscando(index);
+                                        }}
+                                        onChange={(selectedOption) =>
+                                            seleccionarInvestigadorSelect(index, selectedOption)
+                                        }
+                                        isClearable
+                                        noOptionsMessage={() => "No hay coincidencias"}
+                                        isSearchable
+                                        isDisabled={investigadorEditando}
+                                    />
+                                </div>
 
-                            <Select
-                                required
-                                placeholder="Buscar investigador..."
-                                value={fila.investigador ? { value: fila.investigador, label: fila.investigador.nombreCompleto } : null}
-                                options={opcionesCandidatos}
-                                onInputChange={(inputValue) => {
-                                    actualizarCampo(index, "search", inputValue);
-                                    setFilaBuscando(index);
-                                }}
-                                onChange={(selectedOption) => seleccionarInvestigadorSelect(index, selectedOption)}
-                                isClearable
-                                noOptionsMessage={() => "No hay coincidencias"}
-                                isSearchable
-                                isDisabled={investigadorEditando}
-                            />
+                                <div className="campo-formulario">
+                                    <label className="label-campo">Rol</label>
+                                    <Select
+                                        className="select-campo"
+                                        classNamePrefix="select"
+                                        placeholder="Rol"
+                                        value={
+                                            fila.rolProyecto
+                                                ? {
+                                                    value: fila.rolProyecto,
+                                                    label: fila.rolProyecto.nombreRolProyecto
+                                                }
+                                                : null
+                                        }
+                                        options={roles.map(r => ({
+                                            value: r,
+                                            label: r.nombreRolProyecto,
+                                            isDisabled:
+                                                r.nombreRolProyecto === "PRINCIPAL" &&
+                                                rolesParaAsignar &&
+                                                !investigadorEditando
+                                        }))}
+                                        onChange={(selectedOption) =>
+                                            actualizarCampo(index, "rolProyecto", selectedOption?.value)
+                                        }
+                                        isSearchable
+                                        isClearable={false}
+                                        required
+                                    />
+                                </div>
 
-                            <Select
-                                placeholder="Rol"
-                                value={fila.rolProyecto ? { value: fila.rolProyecto, label: fila.rolProyecto.nombreRolProyecto } : null}
-                                options={roles.map(r => ({
-                                    value: r,
-                                    label: r.nombreRolProyecto,
-                                    isDisabled: r.nombreRolProyecto === "PRINCIPAL" && rolesParaAsignar && !investigadorEditando
-                                }))}
-                                onChange={(selectedOption) => actualizarCampo(index, "rolProyecto", selectedOption?.value)}
-                                isSearchable
-                                isClearable={false} // para que siempre haya un rol seleccionado
-                                required
-                            />
+                                <div className="campo-formulario">
+                                    <InputField
+                                        label="Actividad en proyecto"
+                                        name={`actividad-${index}`}
+                                        placeholder="Opcional"
+                                        value={fila.actividadProyecto}
+                                        onChange={(e) =>
+                                            actualizarCampo(index, "actividadProyecto", e.target.value)
+                                        }
+                                        maxLength={500}
+                                    />
+                                </div>
 
-                            <InputField
-                                label="Actividad en proyecto"
-                                name={`actividad-${index}`}
-                                placeholder="Opcional"
-                                value={fila.actividadProyecto}
-                                onChange={(e) =>
-                                    actualizarCampo(index, "actividadProyecto", e.target.value)
-                                }
-                                maxLength={500}
-                            />
+                                <div className="campo-formulario">
+                                    <InputField
+                                        label="Fecha de inicio"
+                                        type="date"
+                                        name={`fechaInicio-${index}`}
+                                        value={fila.fechaInicio}
+                                        min={proyectoSeleccionado.fechaInicio}
+                                        max={fila.fechaFin || proyectoSeleccionado.fechaFinalizacion}
+                                        required
+                                        onChange={(e) =>
+                                            actualizarCampo(index, "fechaInicio", e.target.value)
+                                        }
+                                        rules={[
+                                            required(),
+                                            fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
+                                            fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)
+                                        ]}
+                                    />
+                                </div>
 
-                            <InputField
-                                label="Fecha de inicio"
-                                type="date"
-                                name={`fechaInicio-${index}`}
-                                value={fila.fechaInicio}
-                                min={proyectoSeleccionado.fechaInicio}
-                                max={fila.fechaFin || proyectoSeleccionado.fechaFinalizacion}
-                                required
-                                onChange={(e) =>
-                                    actualizarCampo(index, "fechaInicio", e.target.value)
-                                }
-                                rules={[required(), fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
-                                fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)]}
-                            />
+                                <div className="campo-formulario">
+                                    <InputField
+                                        label="Fecha fin"
+                                        type="date"
+                                        name={`fechaFin-${index}`}
+                                        value={fila.fechaFin}
+                                        min={fila.fechaInicio}
+                                        max={proyectoSeleccionado.fechaFinalizacion}
+                                        onChange={(e) =>
+                                            actualizarCampo(index, "fechaFin", e.target.value)
+                                        }
+                                        rules={[
+                                            fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
+                                            fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)
+                                        ]}
+                                    />
+                                </div>
 
-                            <InputField
-                                label="Fecha Fin"
-                                type="date"
-                                name={`fechaFin-${index}`}
-                                value={fila.fechaFin}
-                                min={fila.fechaInicio}
-                                max={proyectoSeleccionado.fechaFinalizacion}
-                                onChange={(e) =>
-                                    actualizarCampo(index, "fechaFin", e.target.value)
-                                }
-                                rules={[fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
-                                    fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)]}
-                            />
+                                <div className="acciones-formulario">
+                                    {investigadorEditando ? (
+                                        <button
+                                            type="button"
+                                            className="btn-danger"
+                                            onClick={cancelarEdicion}
+                                        >
+                                            Cancelar
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="btn-danger"
+                                            onClick={() => eliminarFila(index)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
 
-                            {investigadorEditando ? (
+                        <div className="acciones-principales">
 
-                                <button onClick={cancelarEdicion}>
-                                    Cancelar
-                                </button>
+                            <button
+                                type="button"
+                                className="btn-outline-primary"
+                                onClick={agregarFila}
+                            >
+                                + Agregar investigador
+                            </button>
 
-                            ) : (
-
-                                <button onClick={() => eliminarFila(index)}>
-                                    Eliminar
-                                </button>
-
-                            )}
+                            <button
+                                type="submit"
+                                className="btn-primary"
+                            >
+                                {investigadorEditando ? "Actualizar" : "Guardar"}
+                            </button>
 
                         </div>
-
-                    ))}
-
-                        <button type="button" onClick={agregarFila}>+ Agregar investigador</button>
-                        <button type="submit">{investigadorEditando ? "Actualizar" : "Guardar"}</button>
                     </form>
 
                     <h3>Investigadores vinculados</h3>
 
-                    <table border="1">
-
+                    <table className="tabla-horas">
                         <thead>
-
                         <tr>
                             <th>Investigador</th>
                             <th>Rol</th>
                             <th>Actividad</th>
                             <th>Acciones</th>
                         </tr>
-
                         </thead>
 
                         <tbody>
-
-                        {investigadoresRegistrados.map(inv => (
-
+                        {investigadoresRegistrados.map((inv) => (
                             <tr key={inv.id}>
-
                                 <td>{inv.nombreInvestigador}</td>
-
                                 <td>{inv.rolProyecto?.nombreRolProyecto}</td>
-
                                 <td>{inv.actividadProyecto}</td>
-
-                                <td>
-
+                                <td className="acciones">
                                     <button
+                                        type="button"
+                                        className="btn-editar"
                                         onClick={() => editarInvestigadorRegistrado(inv)}
                                     >
                                         Editar
                                     </button>
 
                                     <button
+                                        type="button"
+                                        className="btn-eliminar"
                                         onClick={() => eliminarInvestigadorRegistrado(inv)}
                                     >
                                         Eliminar
                                     </button>
-
                                 </td>
-
                             </tr>
-
                         ))}
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             )}
-
         </div>
-
     );
-}
+};
 
 export default AsignarInvestigadores;

@@ -6,6 +6,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.backend_cices_system.dto.UsuarioDTO;
+import org.example.backend_cices_system.logic.Usuario;
+import org.example.backend_cices_system.service.UsuarioService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,8 +25,12 @@ import java.util.Objects;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwt;
+    private final UsuarioService usuarioService;
 
-    public JwtAuthFilter(JwtUtil jwt){ this.jwt = jwt; }
+    public JwtAuthFilter(JwtUtil jwt, UsuarioService usuarioService) {
+        this.jwt = jwt;
+        this.usuarioService = usuarioService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
@@ -37,7 +44,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = h.substring(7);
             try {
                 DecodedJWT djwt = jwt.verify(token);
-                String user = djwt.getSubject();
+                String username = djwt.getSubject();
+                Usuario usuario = usuarioService.obtenerPorNombreUsuario(username);
                 List<String> roles = djwt.getClaim("roles").asList(String.class);
 
                 List<SimpleGrantedAuthority> auths = roles.stream()
@@ -45,7 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .map(r -> new SimpleGrantedAuthority("ROLE_" + r.toUpperCase()))
                         .toList();
 
-                Authentication auth = new UsernamePasswordAuthenticationToken(user, null, auths);
+                Authentication auth = new UsernamePasswordAuthenticationToken(usuario, null, auths);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (JWTVerificationException ignored) { }
         }

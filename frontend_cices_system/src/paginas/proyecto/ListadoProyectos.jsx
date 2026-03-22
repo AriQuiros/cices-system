@@ -40,9 +40,10 @@ function ListadoProyectos() {
 
         <div className="contenedor_proyectos">
 
-            <div className="buscar">
+            <div className="buscar row">
 
                 <input
+                    className="buscador"
                     type="text"
                     placeholder="Código o nombre"
                     value={filtros.texto}
@@ -50,6 +51,7 @@ function ListadoProyectos() {
                 />
 
                 <Select
+                    classNamePrefix="react-select"
                     options={opcionesLineas}
                     isMulti
                     value={opcionesLineas.filter(l => filtros.lineaInvestigacion.includes(l.value))}
@@ -59,6 +61,7 @@ function ListadoProyectos() {
                 />
 
                 <Select
+                    classNamePrefix="react-select"
                     options={opcionesTipos}
                     isMulti
                     value={opcionesTipos.filter(t => filtros.tipoProyecto.includes(t.value))}
@@ -68,16 +71,20 @@ function ListadoProyectos() {
                 />
 
                 <select
+                    className="filtro"
                     value={filtros.estado}
                     onChange={(e) => handleChange("estado", e.target.value)}
                 >
                     <option value="">Estado de proyecto</option>
                     {tipos["ESTADO_PROYECTO"]?.map((opcion) => (
-                        <option key={opcion.id} value={opcion.valor}>{opcion.despliegue}</option>
+                        <option key={opcion.id} value={opcion.valor}>
+                            {opcion.despliegue}
+                        </option>
                     ))}
                 </select>
 
                 <select
+                    className="filtro"
                     value={`${orden.campo}_${orden.asc ? "asc" : "desc"}`}
                     onChange={e => {
                         const [campo, dir] = e.target.value.split("_");
@@ -90,13 +97,16 @@ function ListadoProyectos() {
                     <option value="fechaFinalizacion_asc">Finalizados / próximos</option>
                 </select>
 
-                <button onClick={limpiarFiltros}>
+                <button
+                    className="boton-limpiar"
+                    onClick={limpiarFiltros}
+                >
                     Limpiar
                 </button>
 
             </div>
 
-            <section className="resultados">
+            <section className="todosLosProyectos">
 
                 {cargando && <p>Cargando proyectos...</p>}
 
@@ -104,7 +114,7 @@ function ListadoProyectos() {
                     <p>No se encontraron proyectos</p>
                 )}
 
-                <div className="lista_proyectos">
+                <div className="label">
 
                     {proyectos.map(p => (
 

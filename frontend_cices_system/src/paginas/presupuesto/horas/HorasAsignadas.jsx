@@ -123,7 +123,7 @@ const ConsultaPresupuestos = () => {
         <div className="horas-asignadas-page">
             <div className="horas-asignadas-card">
 
-            <h2 className="horas-asignadas-title">Consulta de presupuestos</h2>
+            <h2 className="horas-asignadas-title">Consulta de Horas</h2>
 
             <BuscadorProyecto
                 token={token}

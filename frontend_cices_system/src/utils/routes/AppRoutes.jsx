@@ -5,11 +5,13 @@ import Login from "../../paginas/login/Login";
 
 /* USUARIOS */
 import Registro from "../../paginas/usuarios/registro/Registro";
-import RegistroInvestigador from "../../paginas/usuarios/registro/RegistroInvestigador";
 import ConsultaPersonal from "../../paginas/usuarios/ConsultaPersonal";
 import ConsultaInvestigadores from "../../paginas/usuarios/investigadores/ConsultaInvestigadores";
-import Certificaciones from "../../paginas/usuarios/investigadores/Certificaciones";
 import GestionUsuarios from "../../paginas/usuarios/GestionUsuarios";
+
+/* USUARIOS */
+import Certificaciones from "../../paginas/usuarios/investigadores/Certificaciones";
+import CertificacionesInvestigador from "../../paginas/usuarios/investigadores/CertificacionesInvestigador";
 
 /* PROYECTOS */
 import RegistroProyecto from "../../paginas/proyecto/registro/RegistroProyecto";
@@ -47,11 +49,13 @@ function AppRoutes() {
                 {/* USUARIOS */}
                 <Route path="/registro" element={<Registro />} />
                 <Route path="/perfil" element={<Registro modoPerfil={true} />} />
-                <Route path="/registro-investigador" element={<RegistroInvestigador />} />
                 <Route path="/consulta-personal" element={<ConsultaPersonal />} />
                 <Route path="/consulta-investigadores" element={<ConsultaInvestigadores />} />
-                <Route path="/certificaciones" element={<Certificaciones />} />
                 <Route path="/gestion-usuarios" element={<GestionUsuarios />} />
+
+                {/* CERTIFICACIONES */}
+                <Route path="/certificaciones" element={<Certificaciones />} />
+                <Route path="/certificaciones-investigador" element={<CertificacionesInvestigador />} />
 
                 {/* PROYECTOS */}
                 <Route path="/registro-proyecto" element={<RegistroProyecto />} />

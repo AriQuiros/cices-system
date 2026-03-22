@@ -84,7 +84,7 @@ export default function InvestigadorDetalle({ investigador, onClose }) {
                         let color = "bg-gray-400";
 
                         if (estado === "VIGENTE") color = "bg-green-500";
-                        if (estado === "POR VENCER") color = "bg-yellow-500";
+                        if (estado === "PROXIMA A VENCER") color = "bg-yellow-500";
                         if (estado === "VENCIDA") color = "bg-red-500";
 
                         return (

@@ -2,6 +2,7 @@ package org.example.backend_cices_system.report.controller;
 
 import org.example.backend_cices_system.dto.ProyectoFechasDTO;
 import org.example.backend_cices_system.logic.Proyecto;
+import org.example.backend_cices_system.logic.Usuario;
 import org.example.backend_cices_system.report.serviceVw.RepPersonaUsuariaService;
 import org.example.backend_cices_system.report.serviceVw.RepProyectoBaseService;
 import org.example.backend_cices_system.report.view.RepProyectoBase;
@@ -41,25 +42,22 @@ public class RepProyectoBaseController {
 
     @GetMapping("/investigador")
     public List<ProyectoFechasDTO> obtenerProyectos_Investigador(Authentication authentication) {
-        String username = (String) authentication.getPrincipal();
-        Integer idUsuario = repPersonaUsuariaService.idUsuarioPorNombre(username);
-        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(idUsuario);
+        Usuario user = (Usuario) authentication.getPrincipal();
+        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(user.getId());
         return service.obtenerProyectosInvestigador(idInvestigador);
     }
 
     @GetMapping("/investigador/principal")
     public List<ProyectoFechasDTO> obtenerProyectos_InvestigadorPrincipal(Authentication authentication) {
-        String username = (String) authentication.getPrincipal();
-        Integer idUsuario = repPersonaUsuariaService.idUsuarioPorNombre(username);
-        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(idUsuario);
+        Usuario user = (Usuario) authentication.getPrincipal();
+        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(user.getId());
         return service.proyectosPrincipalInvestigador(idInvestigador);
     }
 
     @GetMapping("/investigador/list")
     public ResponseEntity<?> obtenerProyectos_InvestigadorList(Authentication authentication) {
-        String username = (String) authentication.getPrincipal();
-        Integer idUsuario = repPersonaUsuariaService.idUsuarioPorNombre(username);
-        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(idUsuario);
+        Usuario user = (Usuario) authentication.getPrincipal();
+        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(user.getId());
         return ResponseEntity.ok(service.proyectosListadoInvestigador(idInvestigador));
     }
 }

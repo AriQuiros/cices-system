@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class CertificacionService {
@@ -53,6 +54,20 @@ public class CertificacionService {
             return "VIGENTE";
         else
             return "PROXIMA A VENCER";
+    }
+
+    public CertificacionDTO obtenerDTO(Certificacion certificacion){
+        return new CertificacionDTO(certificacion.getId(),
+                entidadService.obtenerDTO(certificacion.getIdEntidad()),
+                certificacion.getNombreCertificacion(),
+                catalogoService.obtenerDto(certificacion.getIdCodigoTipoCertificacion()),
+                certificacion.getFechaExpiracion(),
+                catalogoService.obtenerDto(certificacion.getIdCodigoTipoEstado()));
+    }
+
+    public List<CertificacionDTO> certificacionDTOList(Investigador investigador){
+        return certificacionRepository.findCertificacionByIdInvestigador(investigador).stream()
+                .map(this::obtenerDTO).toList();
     }
 
 }

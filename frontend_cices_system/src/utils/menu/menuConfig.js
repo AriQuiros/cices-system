@@ -88,6 +88,11 @@ export const menuConfig = [
         section: "Usuarios",
         items: [
             {
+                label: "Mis Certificaciones",
+                path: "/certificaciones-investigador",
+                roles: ["INVESTIGADOR"]
+            },
+            {
                 label: "Administradores y asistentes",
                 path: "/consulta-personal",
                 roles: ["DIRECCION"]
@@ -100,7 +105,7 @@ export const menuConfig = [
             {
                 label: "Certificaciones",
                 path: "/certificaciones",
-                roles: ["*"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
                 label: "Gestión usuarios",

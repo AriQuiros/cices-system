@@ -82,6 +82,11 @@ public class UsuarioService {
         return usuarioRepository.findByActivoTrueAndNombreUsuario(username);
     }
 
+    public Usuario obtenerPorNombreUsuario(String username){
+        return usuarioRepository.findByNombreUsuario(username)
+                .orElseThrow(() -> new IllegalStateException("No se encontró un usuario: '" + username + "'"));
+    }
+
     public void cambiarEstadoUsuario(Integer id, boolean activo){
         var usuario = obtenerUsuario(id);
         usuario.setActivo(activo);

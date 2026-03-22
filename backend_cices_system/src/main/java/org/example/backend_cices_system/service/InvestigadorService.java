@@ -87,10 +87,15 @@ public class InvestigadorService {
                 .toList();
     }
 
-
     public Investigador obtenerInvestigador(Integer id){
         return investigadorRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("No se encontró un investigador con el id '" + id + "'"));
+    }
+
+    public Investigador obtenerInvestigadorPorUsuario(Usuario usuario){
+        return investigadorRepository.findByIdEmpleado_IdUsuario(usuario)
+                .orElseThrow(() -> new IllegalStateException
+                        ("No se encontró un investigador con usuario '" + usuario.getNombreUsuario() + "'"));
     }
 
     /*public InvestigadorDTO obtenerDTO (Investigador investigador){

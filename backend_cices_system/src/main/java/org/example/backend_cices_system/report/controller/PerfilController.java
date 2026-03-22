@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.controller;
 
+import org.example.backend_cices_system.logic.Usuario;
 import org.example.backend_cices_system.report.serviceVw.InvestigadorDetalleService;
 import org.example.backend_cices_system.report.serviceVw.PerfilService;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +21,15 @@ public class PerfilController {
 
     @GetMapping("/perfil/empleado")
     public ResponseEntity<?> perfilEmpleado(Authentication authentication) {
-        String username = (String) authentication.getPrincipal();
-        var empleado = perfilService.obtenerPerfilEmpleado(username);
+        Usuario user = (Usuario) authentication.getPrincipal();
+        var empleado = perfilService.obtenerPerfilEmpleado(user.getNombreUsuario());
         return ResponseEntity.ok(empleado);
     }
 
     @GetMapping("/perfil/investigador")
     public ResponseEntity<?> perfilInvestigador (Authentication authentication) {
-        String username = (String) authentication.getPrincipal();
-        var investigador = perfilService.obtenerPerfilInvestigador(username);
+        Usuario user = (Usuario) authentication.getPrincipal();
+        var investigador = perfilService.obtenerPerfilInvestigador(user.getNombreUsuario());
         return ResponseEntity.ok(investigador);
     }
 

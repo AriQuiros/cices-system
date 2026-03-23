@@ -327,11 +327,11 @@ console.log(payload)
 
     return (
 
-        <div className="form-container">
+        <div className={`form-container ${modoPerfil ? "perfil-page" : ""}`}>
 
-            <form className="form-content" onSubmit={handleSubmit}>
+            <form className={`form-content ${modoPerfil ? "perfil-card" : ""}`} onSubmit={handleSubmit}>
 
-                <h2>{modoPerfil ? "Mi Perfil" : "Registro"}</h2>
+                <h2 className={modoPerfil ? "perfil-title" : ""}>{modoPerfil ? "Mi Perfil" : "Registro"}</h2>
                 <div className="row">
                     <InputField
                         label="Nombre Completo"

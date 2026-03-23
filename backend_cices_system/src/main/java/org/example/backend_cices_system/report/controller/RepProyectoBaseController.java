@@ -6,9 +6,11 @@ import org.example.backend_cices_system.logic.Usuario;
 import org.example.backend_cices_system.report.serviceVw.RepPersonaUsuariaService;
 import org.example.backend_cices_system.report.serviceVw.RepProyectoBaseService;
 import org.example.backend_cices_system.report.view.RepProyectoBase;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,21 +45,34 @@ public class RepProyectoBaseController {
     @GetMapping("/investigador")
     public List<ProyectoFechasDTO> obtenerProyectos_Investigador(Authentication authentication) {
         Usuario user = (Usuario) authentication.getPrincipal();
-        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(user.getId());
+        Integer idInvestigador = obtenerIdInvestigador(user.getId());
         return service.obtenerProyectosInvestigador(idInvestigador);
     }
 
     @GetMapping("/investigador/principal")
     public List<ProyectoFechasDTO> obtenerProyectos_InvestigadorPrincipal(Authentication authentication) {
         Usuario user = (Usuario) authentication.getPrincipal();
-        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(user.getId());
+        Integer idInvestigador = obtenerIdInvestigador(user.getId());
         return service.proyectosPrincipalInvestigador(idInvestigador);
     }
 
     @GetMapping("/investigador/list")
     public ResponseEntity<?> obtenerProyectos_InvestigadorList(Authentication authentication) {
         Usuario user = (Usuario) authentication.getPrincipal();
-        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(user.getId());
+        Integer idInvestigador = obtenerIdInvestigador(user.getId());
         return ResponseEntity.ok(service.proyectosListadoInvestigador(idInvestigador));
+    }
+
+    private Integer obtenerIdInvestigador(Integer idUsuario) {
+        Integer idInvestigador = repPersonaUsuariaService.idInvestigadorPorUsuario(idUsuario);
+
+        if (idInvestigador == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "El usuario autenticado no tiene perfil de investigador"
+            );
+        }
+
+        return idInvestigador;
     }
 }

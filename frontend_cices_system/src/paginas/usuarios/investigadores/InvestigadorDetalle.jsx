@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "./InvestigadorDetalle.css";
 
 export default function InvestigadorDetalle({ investigador, onClose }) {
 
@@ -20,75 +21,77 @@ export default function InvestigadorDetalle({ investigador, onClose }) {
     if (!detalle) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+        <div className="id-modal-overlay">
 
-            <div className="bg-white rounded-lg p-6 w-[800px] max-h-[73vh] overflow-y-auto mt-10">
+            <div className="id-modal-card">
 
-                <h2 className="text-xl font-bold mb-4">
+                <h2 className="id-modal-title">
                     {investigador.nombreCompleto}
                 </h2>
 
                 {/* FILA SUPERIOR */}
-                <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="id-top-grid">
 
                     {/* INFORMACION BASE */}
-                    <div>
-                        <h3 className="font-semibold border-b mb-2">
+                    <section className="id-section-card">
+                        <h3 className="id-section-title">
                             Información básica
                         </h3>
 
-                        <p><b>Identificación:</b> {investigador.identificacion}</p>
-                        <p><b>País:</b> {investigador.pais}</p>
-                        <p><b>Correo:</b> {investigador.correo}</p>
-                        <p><b>Teléfono:</b> {investigador.numeroTelefono}</p>
-                        <p><b>Grado:</b> {investigador.gradoAcademico}</p>
-                        <p><b>Institución:</b> {investigador.institucionOrigen}</p>
-                        <p><b>Unidad:</b> {investigador.unidadAcademica}</p>
-                        <p><b>Tema interés:</b> {investigador.temaInteres}</p>
-                    </div>
+                        <div className="id-basic-grid">
+                            <p><b>Identificación:</b> {investigador.identificacion}</p>
+                            <p><b>País:</b> {investigador.pais}</p>
+                            <p><b>Correo:</b> {investigador.correo}</p>
+                            <p><b>Teléfono:</b> {investigador.numeroTelefono}</p>
+                            <p><b>Grado:</b> {investigador.gradoAcademico}</p>
+                            <p><b>Institución:</b> {investigador.institucionOrigen}</p>
+                            <p><b>Unidad:</b> {investigador.unidadAcademica}</p>
+                            <p><b>Tema interés:</b> {investigador.temaInteres}</p>
+                        </div>
+                    </section>
 
                     {/* PROYECTOS */}
-                    <div>
-                        <h3 className="font-semibold border-b mb-2">
+                    <section className="id-section-card">
+                        <h3 className="id-section-title">
                             Proyectos
                         </h3>
 
-                        <ul className="list-disc pl-5">
-                            {detalle.proyectos.map(p => (
+                        <ul className="id-list">
+                            {(detalle.proyectos || []).map(p => (
                                 <li key={p.codigoProyecto}>
                                     {p.codigoProyecto} - {p.nombreProyecto}
                                 </li>
                             ))}
                         </ul>
-                    </div>
+                    </section>
 
                 </div>
 
                 {/* CERTIFICACIONES */}
-                <div className="mb-6">
-                    <h3 className="font-semibold border-b mb-2">
+                <section className="id-section-card id-certificaciones-section">
+                    <h3 className="id-section-title">
                         Certificaciones
                     </h3>
 
                     {/* encabezado */}
-                    <div className="grid grid-cols-[1fr_150px_120px] gap-2 text-sm font-semibold border-b pb-1 mb-2">
+                    <div className="id-cert-row id-cert-header">
                         <span>Información</span>
                         <span>Tipo</span>
                         <span>Estado</span>
                     </div>
 
-                    {detalle.certificaciones.map((c, i) => {
+                    {(detalle.certificaciones || []).map((c, i) => {
 
                         const estado = c.estado?.toUpperCase();
 
-                        let color = "bg-gray-400";
+                        let estadoClass = "id-estado-neutro";
 
-                        if (estado === "VIGENTE") color = "bg-green-500";
-                        if (estado === "PROXIMA A VENCER") color = "bg-yellow-500";
-                        if (estado === "VENCIDA") color = "bg-red-500";
+                        if (estado === "VIGENTE") estadoClass = "id-estado-vigente";
+                        if (estado === "PROXIMA A VENCER") estadoClass = "id-estado-proxima";
+                        if (estado === "VENCIDA") estadoClass = "id-estado-vencida";
 
                         return (
-                            <div key={i} className="grid grid-cols-[1fr_150px_120px] gap-2 py-1 items-center border-b">
+                            <div key={i} className="id-cert-row">
 
                                 {/* INFORMACION */}
                                 <div>
@@ -96,38 +99,38 @@ export default function InvestigadorDetalle({ investigador, onClose }) {
                                 </div>
 
                                 {/* TIPO */}
-                                <div className="flex items-center gap-3">
+                                <div className="id-tipo-cell">
                                     <span>{c.tipo}</span>
                                 </div>
                                 {/* ESTADO */}
-                                <div className="flex items-center gap-2">
-                                    <span className={`w-3 h-3 rounded-full ${color}`}></span>
+                                <div className="id-estado-cell">
+                                    <span className={`id-estado-dot ${estadoClass}`}></span>
                                     <span>{c.estado}</span>
                                 </div>
 
                             </div>
                         );
                     })}
-                </div>
+                </section>
 
                 {/* TITULOS */}
-                <div className="mb-4">
-                    <h3 className="font-semibold border-b mb-2">
+                <section className="id-section-card id-titulos-section">
+                    <h3 className="id-section-title">
                         Títulos
                     </h3>
 
-                    <ul className="list-disc pl-5">
-                        {detalle.titulos.map((t, i) => (
+                    <ul className="id-list">
+                        {(detalle.titulos || []).map((t, i) => (
                             <li key={i}>
                                 {t.nombre} - {t.institucion} ({t.fecha})
                             </li>
                         ))}
                     </ul>
-                </div>
+                </section>
 
-                <div className="text-right">
+                <div className="id-modal-actions">
                     <button
-                        className="bg-red-500 text-white px-3 py-1 rounded"
+                        className="id-btn-cerrar"
                         onClick={onClose}
                     >
                         Cerrar

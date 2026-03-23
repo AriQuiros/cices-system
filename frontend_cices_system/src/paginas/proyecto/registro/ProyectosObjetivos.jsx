@@ -16,7 +16,7 @@ function ProyectoObjetivos({editable}) {
             <label>Objetivos Específicos</label>
 
             {proyecto.objetivosEspecificos.map((objetivo, idxObjetivo) => (
-                <fieldset key={idxObjetivo} className="input-group">
+                <fieldset key={idxObjetivo} className="input-group objetivo-especifico-block">
 
                     <legend>
                         Objetivo Específico {idxObjetivo + 1}
@@ -71,7 +71,7 @@ function ProyectoObjetivos({editable}) {
                     <label>Metas</label>
 
                     {objetivo.metas.map((meta, idxMeta) => (
-                        <fieldset key={idxMeta} className="input-group">
+                        <fieldset key={idxMeta} className="input-group meta-objetivo-block">
 
                             <legend>
                                 Meta {idxMeta + 1}

@@ -6,20 +6,27 @@ import "./ProyectoSeleccionado.css";
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 function ProyectoSeleccionado() {
-    const { codigo } = useParams();
+    const { codigo, id } = useParams();
     const [proyecto, setProyecto] = useState(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!codigo || !codigo.trim()) {
-            setError("Código de proyecto inválido");
+        const referencia = (codigo || id || "").trim();
+
+        if (!referencia) {
+            setError("Referencia de proyecto inválida");
             return;
         }
 
         const obtenerProyecto = async () => {
             try {
-                const res = await fetch(`${API}/api/proyectos/consultar/${codigo}`);
+                const esCodigoProyecto = Boolean(codigo) && isNaN(Number(codigo));
+                const endpoint = esCodigoProyecto
+                    ? `${API}/api/proyectos/${referencia}`
+                    : `${API}/api/proyectos/consultar/${referencia}`;
+
+                const res = await fetch(endpoint);
 
                 if (!res.ok) {
                     const texto = await res.text();
@@ -56,7 +63,7 @@ function ProyectoSeleccionado() {
         };
 
         obtenerProyecto();
-    }, [codigo]);
+    }, [codigo, id]);
 
     const handleVolver = () => {
         navigate(-1);

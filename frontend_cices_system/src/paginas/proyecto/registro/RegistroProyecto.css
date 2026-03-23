@@ -121,3 +121,173 @@ meter{
     width: 100%;
     height: 1rem;
 }
+
+/* Estilo de pagina para actualizar proyecto, alineado con GestionGastos */
+.actualizar-proyecto-page,
+.registro-proyecto-page {
+    padding: 20px;
+    align-items: flex-start;
+}
+
+.actualizar-proyecto-card,
+.registro-proyecto-card {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.actualizar-proyecto-search {
+    margin-bottom: 14px;
+}
+
+.actualizar-proyecto-page .form-content,
+.registro-proyecto-page .form-content {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    max-width: 100%;
+}
+
+.actualizar-proyecto-form,
+.registro-proyecto-form {
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    padding: 16px;
+    background: #fcfeff;
+}
+
+.actualizar-proyecto-title,
+.registro-proyecto-title {
+    margin: 0 0 10px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.actualizar-proyecto-page .btn-secondary,
+.registro-proyecto-page .btn-secondary {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #e6edf2;
+    color: #2f3f4a;
+    width: fit-content;
+}
+
+.actualizar-proyecto-page .submit-btn,
+.registro-proyecto-page .submit-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #0fc3f3;
+    color: #052b3d;
+    width: 100%;
+    transition: filter 0.2s ease;
+}
+
+.actualizar-proyecto-page input[type="file"].input-field,
+.registro-proyecto-page input[type="file"].input-field {
+    width: 100%;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    padding: 8px;
+    background: #ffffff;
+    color: #2f3f4a;
+}
+
+.actualizar-proyecto-page input[type="file"].input-field::file-selector-button,
+.registro-proyecto-page input[type="file"].input-field::file-selector-button {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-right: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #ddeff8;
+    color: #114866;
+    transition: filter 0.2s ease;
+}
+
+.actualizar-proyecto-page input[type="file"].input-field::-webkit-file-upload-button,
+.registro-proyecto-page input[type="file"].input-field::-webkit-file-upload-button {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-right: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #ddeff8;
+    color: #114866;
+    transition: filter 0.2s ease;
+}
+
+.actualizar-proyecto-page .btn-secondary:hover,
+.actualizar-proyecto-page .submit-btn:hover,
+.actualizar-proyecto-page input[type="file"].input-field::file-selector-button:hover,
+.actualizar-proyecto-page input[type="file"].input-field::-webkit-file-upload-button:hover,
+.registro-proyecto-page .btn-secondary:hover,
+.registro-proyecto-page .submit-btn:hover,
+.registro-proyecto-page input[type="file"].input-field::file-selector-button:hover,
+.registro-proyecto-page input[type="file"].input-field::-webkit-file-upload-button:hover {
+    filter: brightness(0.97);
+}
+
+.actualizar-proyecto-page .objetivo-especifico-block,
+.registro-proyecto-page .objetivo-especifico-block {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    padding: 12px;
+    background: #ffffff;
+}
+
+.actualizar-proyecto-page .meta-objetivo-block,
+.registro-proyecto-page .meta-objetivo-block {
+    margin-top: 8px;
+    margin-left: 16px;
+    padding: 10px 10px 10px 14px;
+    border: 1px solid #e1ebf2;
+    border-left: 4px solid #b9d8e8;
+    border-radius: 8px;
+    background: #f8fcff;
+}
+
+.actualizar-proyecto-page .meta-objetivo-block > legend,
+.registro-proyecto-page .meta-objetivo-block > legend {
+    padding-left: 4px;
+    color: #134f6c;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .actualizar-proyecto-page,
+    .registro-proyecto-page {
+        padding: 12px;
+    }
+
+    .actualizar-proyecto-card,
+    .registro-proyecto-card {
+        padding: 14px;
+    }
+
+    .actualizar-proyecto-form,
+    .registro-proyecto-form {
+        padding: 12px;
+    }
+
+    .actualizar-proyecto-page .btn-secondary,
+    .actualizar-proyecto-page .submit-btn,
+    .registro-proyecto-page .btn-secondary,
+    .registro-proyecto-page .submit-btn {
+        width: 100%;
+    }
+}

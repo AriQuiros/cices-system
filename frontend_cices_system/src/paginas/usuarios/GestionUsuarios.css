@@ -1,0 +1,186 @@
+.gu-page {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.gu-card {
+    max-width: 1320px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.gu-title {
+    margin: 0 0 18px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.gu-filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+}
+
+.gu-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.gu-label {
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: #134f6c;
+    font-weight: 600;
+}
+
+.gu-input,
+.gu-select {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 0.95rem;
+    color: #334155;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.gu-input:focus,
+.gu-select:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.gu-select__control {
+    min-height: 42px !important;
+    border-radius: 10px !important;
+    border: 1px solid #b6cbd8 !important;
+    box-shadow: none !important;
+}
+
+.gu-select__control:hover {
+    border-color: #0fc3f3 !important;
+}
+
+.gu-select__control--is-focused {
+    border-color: #0fc3f3 !important;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2) !important;
+}
+
+.gu-select__menu {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 20 !important;
+}
+
+.gu-select__option--is-focused {
+    background: #edf7fc !important;
+}
+
+.gu-select__multi-value {
+    background: #e7f6fd !important;
+    border-radius: 12px !important;
+}
+
+.gu-select__multi-value__label {
+    color: #114866 !important;
+    font-size: 0.8rem !important;
+}
+
+.gu-table-card {
+    width: 100%;
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.gu-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.gu-table th,
+.gu-table td {
+    border: 1px solid #d8e4ec;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.gu-table th {
+    background: #edf7fc;
+    color: #123f57;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.gu-table td {
+    color: #2f3f4a;
+}
+
+.gu-table tbody tr:nth-child(even) {
+    background: #f8fcff;
+}
+
+.gu-empty {
+    text-align: center;
+    color: #6b7280;
+    font-weight: 600;
+    padding: 18px !important;
+}
+
+.gu-action-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.gu-action-btn.danger {
+    background: #fee4e2;
+    color: #912018;
+}
+
+.gu-action-btn.success {
+    background: #e7f8ee;
+    color: #1f7a1f;
+}
+
+.gu-action-btn:hover {
+    filter: brightness(0.97);
+}
+
+@media (max-width: 768px) {
+    .gu-page {
+        padding: 12px;
+    }
+
+    .gu-card {
+        padding: 14px;
+    }
+
+    .gu-filters-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gu-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

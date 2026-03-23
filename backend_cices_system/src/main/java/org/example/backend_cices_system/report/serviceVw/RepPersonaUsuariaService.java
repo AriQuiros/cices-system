@@ -111,7 +111,12 @@ public class RepPersonaUsuariaService {
     }
 
     public Integer idInvestigadorPorUsuario(Integer idUsuario){
-        return personaRepo.findDistinctByIdUsuario(idUsuario).getIdInvestigador();
+        return personaRepo.findByIdUsuario(idUsuario)
+                .stream()
+                .map(RepPersonaUsuaria::getIdInvestigador)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     public Integer idUsuarioPorNombre(String nombre){

@@ -7,17 +7,16 @@ function PresupuestoList({ presupuestos = [], onEditar }) {
     const ordenados = [...horas, ...otros];
 
     return (
-        <div>
-            <hr />
-            <h3>Presupuestos existentes</h3>
+        <div className="presupuesto-list">
+            <h3 className="presupuesto-list-title">Presupuestos existentes</h3>
 
             {ordenados.length === 0 && (
-                <p>No hay presupuestos</p>
+                <p className="presupuesto-empty">No hay presupuestos</p>
             )}
 
             {ordenados.map((p, i) => (
-                <div key={i}>
-                    <div>
+                <div key={i} className="presupuesto-list-item">
+                    <div className="presupuesto-list-item-content">
                         <p><b>Tipo:</b> {p.tipoPresupuesto?.despliegue || "-"}</p>
                         <p><b>Categoría:</b> {p.categoria?.despliegue || "-"}</p>
                         <p><b>Fecha de Asignación:</b> {p.fechaAsignacion || "-"}</p>
@@ -36,8 +35,7 @@ function PresupuestoList({ presupuestos = [], onEditar }) {
                         <p><b>Descripción:</b> {p.descripcion || "-"}</p>
                     </div>
 
-                    <button onClick={() => onEditar(p, i)}>Editar</button>
-                    <hr />
+                    <button className="btn-accion secundario" type="button" onClick={() => onEditar(p, i)}>Editar</button>
                 </div>
             ))}
         </div>

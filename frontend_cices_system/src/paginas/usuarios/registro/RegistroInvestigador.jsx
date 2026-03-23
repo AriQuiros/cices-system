@@ -109,7 +109,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             <h3 className="section-title">Certificaciones</h3>
             <p>No es obligatorio ingresar una certificación en este momento.</p>
             {(investigador.certificaciones || []).length === 0 && (
-                <button type="button" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>Agregar certificación</button>
+                <button className="add-item-btn" type="button" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>Agregar certificación</button>
             )}
             <div className="rows-group">
                 {(investigador.certificaciones || []).map((c, idx) => (
@@ -165,7 +165,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             <h3 className="section-title">Títulos académicos</h3>
             <p>No es obligatorio ingresar titulos en este momento.</p>
             {(investigador.titulos || []).length === 0 && (
-                <button type="button" onClick={() => handleAdd("titulos", TituloDTO)}>Agregar título</button>
+                <button className="add-item-btn" type="button" onClick={() => handleAdd("titulos", TituloDTO)}>Agregar título</button>
             )}
 
             <div className="rows-group">

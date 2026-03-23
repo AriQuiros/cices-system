@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
 import { AppContext } from "../../../context/AppContext.jsx";
+import "./Certificaciones.css";
 
 // Función optimizada de agrupamiento que respeta ordenFecha
 const agruparPorInvestigador = (data, ordenFecha = "desc") => {
@@ -103,12 +104,13 @@ export default function CertificacionesPage() {
         : null;
 
     return (
-        <div>
-            <h1>Certificaciones</h1>
+        <div className="cert-page">
+            <div className="cert-card">
+                <h1 className="cert-title">Certificaciones</h1>
 
             {/* Controles */}
-            <div>
-                <label>
+            <div className="cert-controls">
+                <label className="cert-checkbox-label">
                     <input
                         type="checkbox"
                         checked={agrupado}
@@ -116,34 +118,38 @@ export default function CertificacionesPage() {
                     />{" "}
                     Agrupar por investigador
                 </label>
-            </div>
 
-            <div>
-                <label>Orden por fecha:</label>
+                <div className="cert-order-group">
+                    <label className="cert-label">Orden por fecha:</label>
                 <select
+                    className="cert-select"
                     value={ordenFecha}
                     onChange={(e) => setOrdenFecha(e.target.value)}
                 >
                     <option value="desc">Más recientes primero</option>
                     <option value="asc">Más antiguas primero</option>
                 </select>
+                </div>
             </div>
 
             {/* Filtros */}
-            <div>
-                <label>Nombre Investigador:</label>
+            <div className="cert-filters-grid">
+                <div className="cert-field">
+                    <label className="cert-label">Nombre Investigador:</label>
                 <input
+                    className="cert-input"
                     type="text"
                     value={filtros.nombre}
                     onChange={(e) =>
                         setFiltros((prev) => ({ ...prev, nombre: e.target.value }))
                     }
                 />
-            </div>
+                </div>
 
-            <div>
-                <label>Tipo Certificación:</label>
+                <div className="cert-field">
+                    <label className="cert-label">Tipo Certificación:</label>
                 <Select
+                    classNamePrefix="cert-select"
                     isMulti
                     options={catalogos?.TIPO_CERTIFICACION?.map(({ valor, despliegue }) => ({
                         value: valor,
@@ -153,13 +159,13 @@ export default function CertificacionesPage() {
                     onChange={(selected) =>
                         setFiltros((prev) => ({ ...prev, tipos: selected }))
                     }
-                    styles={{ container: (base) => ({ ...base, marginTop: "5px" }) }}
                 />
-            </div>
+                </div>
 
-            <div>
-                <label>Estado Certificación:</label>
+                <div className="cert-field">
+                    <label className="cert-label">Estado Certificación:</label>
                 <Select
+                    classNamePrefix="cert-select"
                     isMulti
                     options={catalogos?.ESTADO_CERTIFICACION?.map(({ valor, despliegue }) => ({
                         value: valor,
@@ -169,19 +175,19 @@ export default function CertificacionesPage() {
                     onChange={(selected) =>
                         setFiltros((prev) => ({ ...prev, estados: selected }))
                     }
-                    styles={{ container: (base) => ({ ...base, marginTop: "5px" }) }}
                 />
+                </div>
             </div>
 
             {/* Resumen */}
-            <div>
-                <h3>Resumen</h3>
-                <p>
+            <div className="cert-summary">
+                <h3 className="cert-summary-title">Resumen</h3>
+                <p className="cert-summary-total">
                     <strong>Total:</strong> {resumen.total}
                 </p>
-                <div>
+                <div className="cert-summary-status">
                     <strong>Por estado:</strong>
-                    <ul>
+                    <ul className="cert-summary-list">
                         {Object.entries(resumen.porEstado).map(([estado, cantidad]) => (
                             <li key={estado}>
                                 {estado}: {cantidad}
@@ -192,7 +198,8 @@ export default function CertificacionesPage() {
             </div>
 
             {/* Tabla */}
-            <table border="1" cellPadding="4" cellSpacing="0">
+            <div className="cert-table-card">
+            <table className="cert-table">
                 <thead>
                 <tr>
                     <th>Investigador</th>
@@ -204,7 +211,11 @@ export default function CertificacionesPage() {
                 </tr>
                 </thead>
                 <tbody>
-                {agrupado
+                {ordenadas.length === 0 ? (
+                    <tr>
+                        <td colSpan="6" className="cert-empty">No se encontraron resultados</td>
+                    </tr>
+                ) : agrupado
                     ? agrupadas.map(({ identificacion, nombre, certificaciones }) => (
                         <React.Fragment key={identificacion}>
                             <tr>
@@ -238,6 +249,8 @@ export default function CertificacionesPage() {
                     ))}
                 </tbody>
             </table>
+            </div>
+            </div>
         </div>
     );
 }

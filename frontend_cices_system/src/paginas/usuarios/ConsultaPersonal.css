@@ -1,48 +1,49 @@
 .lp-wrapper {
-    min-height: 100vh;
-    background: #f3f4f6;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
     color: #2f3a45;
 }
 
 .lp-content {
-    max-width: 1280px;
+    max-width: 1080px;
     margin: 0 auto;
-    background: #f7f7f7;
-    border-radius: 8px;
-    padding: 10px;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
     box-sizing: border-box;
 }
 
 /* barra principal */
 .lp-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) minmax(260px, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: end;
+    padding: 12px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
 }
 
 .lp-search-input {
-    flex: 1;
-    min-width: 260px;
-    height: 40px;
-    padding: 0 12px;
-    border: 1px solid #d8dde3;
-    border-radius: 4px;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
     background: #ffffff;
     outline: none;
-    font-size: 12px;
+    font-size: 0.95rem;
     color: #334155;
     box-sizing: border-box;
-    margin-top: 16px;
 }
 
 .lp-search-input:focus {
-    border-color: #19b5ea;
-    box-shadow: 0 0 0 2px rgba(25, 181, 234, 0.12);
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
 }
 
 .lp-filter-box {
@@ -50,18 +51,17 @@
     align-items: center;
     gap: 6px;
     background: #ffffff;
-    border: 1px solid #d8dde3;
-    border-radius: 4px;
-    padding: 0 8px;
-    height: 40px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    padding: 0 10px;
+    min-height: 42px;
     box-sizing: border-box;
-    margin-top: 16px;
 
 }
 
 .lp-filter-label {
-    font-size: 11px;
-    color: #6b7280;
+    font-size: 0.85rem;
+    color: #4b5563;
     white-space: nowrap;
 
 }
@@ -70,118 +70,129 @@
     border: none;
     outline: none;
     background: transparent;
-    font-size: 12px;
+    font-size: 0.95rem;
     color: #374151;
     cursor: pointer;
+    width: 100%;
 
 }
 
 .lp-search-button {
-    height: 40px;
+    min-height: 42px;
     padding: 0 18px;
     border: none;
-    border-radius: 4px;
-    background: #19b5ea;
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
+    border-radius: 8px;
+    background: #0fc3f3;
+    color: #052b3d;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
-    margin-top: 16px;
 
 }
 
 .lp-search-button:hover {
-    background: #11a6da;
+    filter: brightness(0.97);
 }
 
 /* filtro extra */
 .lp-extra-filters {
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
 .lp-field {
-    max-width: 340px;
+    width: 100%;
+    max-width: none;
 }
 
 .lp-field-label {
     display: block;
-    font-size: 12px;
-    margin-bottom: 4px;
-    color: #4b5563;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    color: #134f6c;
+    font-weight: 600;
 }
 
 .lp-select__control {
-    min-height: 40px !important;
-    border-radius: 4px !important;
-    border: 1px solid #d8dde3 !important;
+    min-height: 42px !important;
+    border-radius: 10px !important;
+    border: 1px solid #b6cbd8 !important;
     box-shadow: none !important;
 }
 
 .lp-select__control:hover {
-    border-color: #19b5ea !important;
+    border-color: #0fc3f3 !important;
+}
+
+.lp-select__control--is-focused {
+    border-color: #0fc3f3 !important;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2) !important;
 }
 
 .lp-select__multi-value {
-    background: #e0f2fe !important;
+    background: #e7f6fd !important;
     border-radius: 12px !important;
 }
 
 .lp-select__multi-value__label {
-    color: #0369a1 !important;
-    font-size: 11px !important;
+    color: #114866 !important;
+    font-size: 0.8rem !important;
 }
 
 .lp-select__placeholder {
-    font-size: 12px !important;
+    font-size: 0.95rem !important;
     color: #9ca3af !important;
 }
 
 .lp-select__menu {
     z-index: 20 !important;
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.lp-select__option--is-focused {
+    background: #edf7fc !important;
 }
 
 /* tabla */
 .lp-table-card {
     width: 100%;
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
     overflow-x: auto;
-    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+    margin-top: 10px;
 }
 
 .lp-table {
     width: 100%;
-    min-width: 980px;
     border-collapse: collapse;
-}
-
-
-
-.lp-table thead tr,
-.lp-table thead th {
-    background: #e4e4e4 !important;
-    color: #000000 !important;
+    font-size: 0.95rem;
 }
 
 .lp-table th {
     text-align: left;
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 12px 10px;
+    color: #123f57;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 8px 10px;
     white-space: nowrap;
+    background: #edf7fc;
+    border: 1px solid #d8e4ec;
 }
 
 .lp-table td {
-    font-size: 11px;
+    font-size: 0.9rem;
     color: #4b5563;
-    padding: 12px 10px;
-    border-bottom: 1px solid #eef2f7;
+    padding: 8px 10px;
+    border: 1px solid #d8e4ec;
     vertical-align: middle;
     line-height: 1.4;
+}
+
+.lp-table tbody tr:nth-child(even) {
+    background: #f8fcff;
 }
 
 .lp-table tbody tr:hover {
@@ -189,7 +200,7 @@
 }
 
 .lp-email {
-    color: #19b5ea;
+    color: #0b5c7d;
     word-break: break-word;
 }
 
@@ -202,13 +213,16 @@
 
 /* responsive */
 @media (max-width: 768px) {
-    .lp-content {
+    .lp-wrapper {
         padding: 12px;
     }
 
+    .lp-content {
+        padding: 14px;
+    }
+
     .lp-toolbar {
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: 1fr;
     }
 
     .lp-search-input,
@@ -223,5 +237,11 @@
 
     .lp-field {
         max-width: 100%;
+    }
+
+    .lp-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 }

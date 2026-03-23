@@ -35,7 +35,7 @@ export default function ProyectoInvestigador() {
 
         (async () => {
             try {
-                const res = await fetch(`${API}/api/investigador/mis-proyectos`, {
+                const res = await fetch(`${API}/api/reports/proyectos/investigador/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

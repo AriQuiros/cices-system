@@ -67,6 +67,7 @@ function AppRoutes() {
                 <Route path="/consulta-proyectos" element={<ConsultaProyectos />} />
                 <Route path="/investigador" element={<ProyectoInvestigador />} />
                 <Route path="/proyectos/:codigo" element={<ProyectoSeleccionado />} />
+                <Route path="/consultar/:id" element={<ProyectoSeleccionado />} />
                 <Route path="/proyectos/:id/horas-asignadas" element={<ProyectoHorasAsignadas />} />
 
                 {/* PRESUPUESTO */}

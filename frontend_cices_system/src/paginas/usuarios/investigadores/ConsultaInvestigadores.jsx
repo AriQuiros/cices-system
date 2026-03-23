@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
 import InvestigadorDetalle from "./InvestigadorDetalle.jsx";
+import "./ConsultaInvestigadores.css";
 
 export default function ListaInvestigadores() {
     const [investigadorSeleccionado, setInvestigadorSeleccionado] = useState(null);
@@ -57,81 +58,96 @@ export default function ListaInvestigadores() {
     };
 
     return (
-        <div>
-            <h2>Lista de Investigadores</h2>
+        <div className="ci-wrapper">
+            <div className="ci-content">
+                <h2 className="ci-title">Lista de Investigadores</h2>
 
-            <div>
-                <label>Nombre </label>
-                <input
-                    type="text"
-                    value={nombreFiltro}
-                    onChange={(e) => setNombreFiltro(e.target.value)}
-                />
+                <div className="ci-toolbar">
+                    <input
+                        className="ci-search-input"
+                        type="text"
+                        placeholder="Buscar por nombre..."
+                        value={nombreFiltro}
+                        onChange={(e) => setNombreFiltro(e.target.value)}
+                    />
+
+                    <div className="ci-extra-filters">
+                        <div className="ci-field">
+                            <label className="ci-field-label">Grado académico</label>
+                            <Select
+                                classNamePrefix="ci-select"
+                                options={grados.map(g => ({ value: g, label: g }))}
+                                isMulti
+                                value={grados
+                                    .map(g => ({ value: g, label: g }))
+                                    .filter(g => gradosSeleccionados.includes(g.value))
+                                }
+                                onChange={manejarGradosSelect}
+                                placeholder="Seleccione grado(s)"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="ci-table-card">
+                    <table className="ci-table">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Identificación</th>
+                            <th>País</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Grado Académico</th>
+                            <th>Institución</th>
+                            <th>Unidad</th>
+                            <th>Ver</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {personasFiltradas.length === 0 ? (
+                            <tr>
+                                <td colSpan="9" className="ci-empty">
+                                    No se encontraron resultados
+                                </td>
+                            </tr>
+                        ) : (
+                            personasFiltradas.map((p, index) => (
+                                <tr key={index}>
+                                    <td>{p.nombreCompleto}</td>
+                                    <td>{p.identificacion}</td>
+                                    <td>{p.pais}</td>
+                                    <td className="ci-email">{p.correo}</td>
+                                    <td>{p.numeroTelefono}</td>
+                                    <td>{p.gradoAcademico}</td>
+                                    <td>{p.institucionOrigen}</td>
+                                    <td>{p.unidadAcademica}</td>
+                                    <td>
+                                        <button
+                                            className="ci-action-btn"
+                                            onClick={() => {
+                                                setInvestigadorSeleccionado(p);
+                                                setMostrarDetalle(true);
+                                            }}
+                                        >
+                                            Ver
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {mostrarDetalle && (
+                    <InvestigadorDetalle
+                        investigador={investigadorSeleccionado}
+                        onClose={() => setMostrarDetalle(false)}
+                    />
+                )}
             </div>
-
-            <div>
-                <label>Grado académico</label>
-                <Select
-                    options={grados.map(g => ({ value: g, label: g }))}
-                    isMulti
-                    value={grados
-                        .map(g => ({ value: g, label: g }))
-                        .filter(g => gradosSeleccionados.includes(g.value))
-                    }
-                    onChange={manejarGradosSelect}
-                    placeholder="Seleccione grado(s)"
-                />
-            </div>
-
-            <hr/>
-
-            <table border="1">
-                <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Identificación</th>
-                    <th>País</th>
-                    <th>Correo</th>
-                    <th>Teléfono</th>
-                    <th>Grado Académico</th>
-                    <th>Institución</th>
-                    <th>Unidad</th>
-                    <th>Ver</th> {/* Nueva columna */}
-                </tr>
-                </thead>
-
-                <tbody>
-                {personasFiltradas.map((p, index) => (
-                    <tr key={index}>
-                        <td>{p.nombreCompleto}</td>
-                        <td>{p.identificacion}</td>
-                        <td>{p.pais}</td>
-                        <td>{p.correo}</td>
-                        <td>{p.numeroTelefono}</td>
-                        <td>{p.gradoAcademico}</td>
-                        <td>{p.institucionOrigen}</td>
-                        <td>{p.unidadAcademica}</td>
-                        <td>
-                            <button
-                                onClick={() => {
-                                    setInvestigadorSeleccionado(p);
-                                    setMostrarDetalle(true);
-                                }}
-                            >
-                                Ver
-                            </button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-
-            {mostrarDetalle && (
-                <InvestigadorDetalle
-                    investigador={investigadorSeleccionado}
-                    onClose={() => setMostrarDetalle(false)}
-                />
-            )}
         </div>
     );
 }

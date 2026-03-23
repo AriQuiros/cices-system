@@ -1,70 +1,118 @@
-.contenedor_proyectos{
-    padding: 80px;
-    background: #f8f9fa;
-    min-height: calc(100vh - 140px);
+.contenedor_proyectos {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
 }
 
-.todosLosProyectos{
-    margin-top: 1.5rem;
-    padding: 2rem;
+.buscar {
+    display: grid;
+    grid-template-columns: minmax(220px, 300px) minmax(240px, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+}
+
+.filtro,
+.buscador {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    color: #334155;
+    font-size: 0.95rem;
+    background: #ffffff;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.filtro:focus,
+.buscador:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.boton-limpiar {
+    border: none;
     border-radius: 8px;
-    border: 1px solid #e9ecef;
-    background:#ffffff;
-}
-.todosLosProyectos h2{
-    color: #005DA4;
-    margin: 0 0 1.5rem 0;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #005DA4;
+    padding: 10px 14px;
+    min-height: 42px;
     font-weight: 600;
+    cursor: pointer;
+    background: #e6edf2;
+    color: #2f3f4a;
 }
+
+.boton-limpiar:hover:not(:disabled) {
+    filter: brightness(0.97);
+}
+
+.boton-limpiar:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.todosLosProyectos {
+    margin-top: 8px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+    padding: 14px;
+}
+
+.todosLosProyectos h2 {
+    color: #0b2f46;
+    margin: 0 0 14px;
+    font-weight: 700;
+    font-size: 1.35rem;
+}
+
 .label {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
 }
 
-.label label {
-    padding: 1rem 1.5rem;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    font-weight: 500;
-    color: #2c3e50;
-    transition: all 0.3s ease;
-    background: white;
-    border-left: 4px solid #005DA4;
+.label > div {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    background: #f8fcff;
+    padding: 12px;
 }
 
-.filtro {
-    padding: 12px 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    color: #4a5568;
-    font-size: 1rem;
-    cursor: pointer;
-    min-width: 200px;
+.label > div h3 {
+    margin: 0 0 8px;
+    color: #123f57;
+    font-size: 1.05rem;
 }
 
-.filtro:hover {
-    border-color: #005DA4;;
+.label > div p {
+    margin: 0 0 6px;
+    color: #2f3f4a;
 }
 
-.filtro option {
-    padding: 12px 16px;
-    font-size: 14px;
-    color: #4a5568;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
+.ver-horas-link {
+    display: inline-block;
+    margin: 6px 8px 0 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    background: #ddeff8;
+    color: #114866;
 }
 
-.contador-paginacion {
-    text-align: center;
-    margin: 20px 0;
-    padding: 12px 20px;
-    border-radius: 6px;
-    color: #4a5568;
-    border: 1px solid #e2e8f0;
+.ver-horas-link:hover {
+    filter: brightness(0.97);
 }
 
 .paginacion {
@@ -72,86 +120,69 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-top: 30px;
-    padding: 20px 0;
+    margin-top: 18px;
 }
 
-.boton-paginacion {
-    padding: 10px 16px;
-    border: 1px solid #d1d5db;
-    background: white;
-    color: #374151;
-    border-radius: 6px;
+.boton-paginacion,
+.numero-pagina {
+    padding: 9px 12px;
+    border: 1px solid #d1dbe3;
+    background: #ffffff;
+    color: #2f3f4a;
+    border-radius: 8px;
     cursor: pointer;
+    min-width: 42px;
+    font-weight: 600;
 }
 
-.boton-paginacion:hover:not(:disabled) {
-    background: #005DA4;
-    color: white;
-    border-color: #005DA4;
+.boton-paginacion:hover:not(:disabled),
+.numero-pagina:hover {
+    background: #edf7fc;
+}
+
+.numero-pagina.activo {
+    background: #0fc3f3;
+    color: #052b3d;
+    border-color: #0fc3f3;
 }
 
 .boton-paginacion:disabled {
-    background: #f3f4f6;
-    color: #9ca3af;
+    opacity: 0.55;
     cursor: not-allowed;
-    border-color: #d1d5db;
 }
 
 .numeros-pagina {
     display: flex;
-    gap: 4px;
+    gap: 6px;
 }
 
-.numero-pagina {
-    padding: 10px 16px;
-    border: 1px solid #d1d5db;
-    background: white;
-    color: #374151;
-    border-radius: 6px;
-    cursor: pointer;
-    min-width: 44px;
+.contador-paginacion {
+    text-align: center;
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #3f4f5a;
+    border: 1px solid #d8e4ec;
+    background: #f5fbff;
+    font-weight: 500;
 }
 
-.numero-pagina:hover {
-    background: #e5e7eb;
-    border-color: #9ca3af;
-}
+@media (max-width: 768px) {
+    .contenedor_proyectos {
+        padding: 12px;
+    }
 
-.numero-pagina.activo {
-    background: #005DA4;
-    color: white;
-    border-color: #005DA4;
-}
+    .buscar {
+        grid-template-columns: 1fr;
+    }
 
-.ver-horas-link{
-    padding: 8px 12px;
-    border: 1px solid #005DA4;
-    background: #005DA4;
-    color: white;
-    border-radius: 20px;
-    cursor: pointer;
-    min-width: 30px;
-    text-decoration: none;
-}
+    .boton-limpiar {
+        width: 100%;
+    }
 
-@media (max-width: 600px) {
     .paginacion {
         flex-direction: column;
         gap: 12px;
-        padding: 10px 0;
-    }
-
-    .contador-paginacion {
-        font-size: 14px;
-        padding: 10px 12px;
-    }
-
-    .boton-paginacion,
-    .numero-pagina {
-        padding: 8px 12px;
-        font-size: 14px;
-        min-width: 36px;
     }
 
     .numeros-pagina {
@@ -159,22 +190,8 @@
         justify-content: center;
     }
 
-    .label {
-        display: flex;
-        flex-direction: row;
-    }
-
     .ver-horas-link {
-        padding: 6px 10px;
-        font-size: 13px;
-        min-width: 24px;
+        margin-right: 6px;
+        margin-bottom: 2px;
     }
-}
-
-@media (min-width: 1024px) and (max-width: 1366px) {
-    .contenedor_proyectos {
-        padding: 90px;
-    }
-
-
 }

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useProyectos } from "../../hooks/proyectos/useProyectos";
-import "../consultaProyectos/ConsultaProyectos.css";
+import "./ListadoProyectos.css";
 import {useTiposCatalogo} from "../../hooks/useTiposCatalogo.js";
 import Select from "react-select";
 import {useLineas} from "../../hooks/proyectos/useLineas.jsx";
@@ -37,6 +37,12 @@ function ListadoProyectos() {
     };
 
     return (
+
+        <div className="listado-proyectos-page">
+
+            <div className="listado-proyectos-card">
+
+                <h2 className="listado-proyectos-title">Listado de proyectos</h2>
 
         <div className="contenedor_proyectos">
 
@@ -136,6 +142,10 @@ function ListadoProyectos() {
                 </div>
 
             </section>
+
+        </div>
+
+            </div>
 
         </div>
     );

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Select from "react-select";
 import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
 import { AppContext } from "../../../context/AppContext.jsx";
+import "./CertificacionesInvestigador.css";
 
 export default function MisCertificacionesPage() {
     const { token } = useContext(AppContext);
@@ -50,13 +51,15 @@ export default function MisCertificacionesPage() {
     });
 
     return (
-        <div>
-            <h1>Mis Certificaciones</h1>
+        <div className="certificaciones-investigador-page">
+            <div className="certificaciones-investigador-card">
+                <h1 className="certificaciones-investigador-title">Mis Certificaciones</h1>
 
             {/* Filtros */}
-            <div style={{ marginBottom: "1rem" }}>
-                <label>Tipo Certificación:</label>
+            <div className="certificaciones-filtro-item">
+                <label className="certificaciones-label">Tipo Certificacion:</label>
                 <Select
+                    classNamePrefix="react-select"
                     isMulti
                     options={catalogos?.TIPO_CERTIFICACION?.map(
                         ({ valor, despliegue }) => ({
@@ -71,9 +74,10 @@ export default function MisCertificacionesPage() {
                 />
             </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-                <label>Estado Certificación:</label>
+            <div className="certificaciones-filtro-item">
+                <label className="certificaciones-label">Estado Certificacion:</label>
                 <Select
+                    classNamePrefix="react-select"
                     isMulti
                     options={catalogos?.ESTADO_CERTIFICACION?.map(
                         ({ valor, despliegue }) => ({
@@ -89,7 +93,7 @@ export default function MisCertificacionesPage() {
             </div>
 
             {/* Tabla de certificaciones */}
-            <table border="1" cellPadding="4" cellSpacing="0">
+            <table className="certificaciones-table">
                 <thead>
                 <tr>
                     <th>Certificación</th>
@@ -111,6 +115,8 @@ export default function MisCertificacionesPage() {
                 ))}
                 </tbody>
             </table>
+
+            </div>
         </div>
     );
 }

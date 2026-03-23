@@ -89,7 +89,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
 
     return (
 
-        <form id="formPresupuesto" onSubmit={(e) => {
+        <form id="formPresupuesto" className="presupuesto-form" onSubmit={(e) => {
             e.preventDefault();
             onSubmit();
         }}>
@@ -100,11 +100,11 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
 
                 return (
 
-                    <div key={idx}>
+                    <div key={idx} className="presupuesto-form-item">
 
                         <h4>Presupuesto {idx + 1}</h4>
 
-                        <select required={true} disabled={editando}
+                        <select className="presupuesto-select" required={true} disabled={editando}
                             value={p.tipoPresupuesto?.valor || ""}
                             onChange={(e) => {
 
@@ -124,14 +124,14 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
                             ))}
                         </select>
 
-                        <button type="button" onClick={() => removeByPath(null, idx)} hidden={editando} disabled={editando}>
+                        <button className="btn-accion peligro" type="button" onClick={() => removeByPath(null, idx)} hidden={editando} disabled={editando}>
                             Eliminar
                         </button>
 
                         {/* BODY */}
                         {p.tipoPresupuesto?.valor && (
 
-                            <div>
+                            <div className="presupuesto-form-fields">
 
                                 <InputField
                                     label="Fecha de Asignación"
@@ -150,7 +150,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
                                 />
 
                                 {/* CATEGORÍA DINÁMICA */}
-                                <select required
+                                <select className="presupuesto-select" required
                                     value={p.categoria?.valor || ""}
                                     onChange={(e) => {
 
@@ -193,7 +193,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
 
                                     <>
 
-                                        <select required
+                                        <select className="presupuesto-select" required
                                             value={p.fuenteFinanciamiento?.valor || ""}
                                             onChange={(e) => {
 
@@ -270,7 +270,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
                 );
             })}
 
-            <button type="button" onClick={addPresupuesto} hidden={editando}>
+            <button className="btn-accion" type="button" onClick={addPresupuesto} hidden={editando}>
                 + Agregar presupuesto
             </button>
 

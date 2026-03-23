@@ -3,6 +3,7 @@ import Select from "react-select";
 import axios from "axios";
 import {notify} from "../../utils/ui/notify";
 import {confirm} from "../../utils/ui/confirm";
+import "./GestionUsuarios.css";
 
 export default function ListaUsuarios() {
 
@@ -99,18 +100,18 @@ export default function ListaUsuarios() {
 
 
     return (
-        <div>
+        <div className="gu-page">
 
-            <h2>Gestión de Usuarios</h2>
+            <div className="gu-card">
 
-            <hr/>
+            <h2 className="gu-title">Gestión de Usuarios</h2>
 
-            <div>
+            <div className="gu-filters-grid">
 
-                <div>
-                    <label>Nombre</label>
-                    <br/>
+                <div className="gu-field">
+                    <label className="gu-label">Nombre</label>
                     <input
+                        className="gu-input"
                         type="text"
                         value={nombreFiltro}
                         onChange={(e) => setNombreFiltro(e.target.value)}
@@ -118,12 +119,10 @@ export default function ListaUsuarios() {
                     />
                 </div>
 
-                <br/>
-
-                <div>
-                    <label>Estado</label>
-                    <br/>
+                <div className="gu-field">
+                    <label className="gu-label">Estado</label>
                     <select
+                        className="gu-select"
                         value={estadoFiltro}
                         onChange={(e) => setEstadoFiltro(e.target.value)}
                     >
@@ -133,12 +132,10 @@ export default function ListaUsuarios() {
                     </select>
                 </div>
 
-                <br/>
-
-                <div>
-                    <label>Roles</label>
-                    <br />
+                <div className="gu-field">
+                    <label className="gu-label">Roles</label>
                     <Select
+                        classNamePrefix="gu-select"
                         options={rolesDisponibles.map(r => ({ value: r.nombreRol, label: r.nombreRol }))}
                         isMulti
                         value={rolesDisponibles
@@ -152,11 +149,10 @@ export default function ListaUsuarios() {
 
             </div>
 
-            <hr/>
-
             {/* TABLA */}
 
-            <table border="1">
+            <div className="gu-table-card">
+            <table className="gu-table">
 
                 <thead>
                 <tr>
@@ -170,7 +166,13 @@ export default function ListaUsuarios() {
 
                 <tbody>
 
-                {usuariosFiltrados.map(u => (
+                {usuariosFiltrados.length === 0 ? (
+
+                    <tr>
+                        <td colSpan="5" className="gu-empty">No se encontraron resultados</td>
+                    </tr>
+
+                ) : usuariosFiltrados.map(u => (
 
                     <tr key={u.id}>
 
@@ -187,6 +189,7 @@ export default function ListaUsuarios() {
                         <td>
 
                             <button
+                                className={u.activo ? "gu-action-btn danger" : "gu-action-btn success"}
                                 onClick={() =>
                                     cambiarEstado(u.id, u.activo)
                                 }
@@ -203,6 +206,9 @@ export default function ListaUsuarios() {
                 </tbody>
 
             </table>
+            </div>
+
+            </div>
 
         </div>
     );

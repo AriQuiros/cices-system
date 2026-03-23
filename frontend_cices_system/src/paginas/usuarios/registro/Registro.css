@@ -342,3 +342,75 @@ input[type="radio"]{
 .btn-link-login:hover {
     background: #125a9c;
 }
+
+/* Estilo especifico para /perfil */
+.perfil-page {
+    padding: 20px;
+    align-items: flex-start;
+}
+
+.perfil-page .form-content,
+.perfil-card {
+    max-width: 1080px;
+    margin: 0 auto;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.perfil-title {
+    margin: 0 0 10px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.perfil-page .input-field,
+.perfil-page .phone-input-control,
+.perfil-page select {
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+}
+
+.perfil-page .input-field:focus,
+.perfil-page .phone-input-control:focus-within,
+.perfil-page select:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.perfil-page .roles {
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+}
+
+.perfil-page .submit-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #0fc3f3;
+    color: #052b3d;
+}
+
+.perfil-page .submit-btn:hover {
+    filter: brightness(0.97);
+    background: #0fc3f3;
+}
+
+@media (max-width: 768px) {
+    .perfil-page {
+        padding: 12px;
+    }
+
+    .perfil-page .form-content,
+    .perfil-card {
+        padding: 14px;
+    }
+}

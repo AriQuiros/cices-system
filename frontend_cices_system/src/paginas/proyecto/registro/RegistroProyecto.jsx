@@ -180,19 +180,23 @@ console.log(proyectoFinal)
 
     // ================== UI ==================
     return (
-        <div className="form-container">
+        <div className={`form-container ${editable ? "actualizar-proyecto-page" : "registro-proyecto-page"}`}>
+
+            <div className={editable ? "actualizar-proyecto-card" : "registro-proyecto-card"}>
 
             {editable && !proyectoSeleccionado && (
-                <BuscadorProyecto
-                    token={token}
-                    onSelect={seleccionarProyecto}
-                />
+                <div className="actualizar-proyecto-search">
+                    <BuscadorProyecto
+                        token={token}
+                        onSelect={seleccionarProyecto}
+                    />
+                </div>
             )}
 
             {/* 🔹 FORMULARIO */}
             {(!editable || proyectoSeleccionado) && (
 
-                <form className="form-content" onSubmit={handleSubmit}>
+                <form className={`form-content ${editable ? "actualizar-proyecto-form" : "registro-proyecto-form"}`} onSubmit={handleSubmit}>
 
                     {/* 🔹 BOTÓN VOLVER */}
                     {editable && (
@@ -205,7 +209,7 @@ console.log(proyectoFinal)
                         </button>
                     )}
 
-                    <h2>
+                    <h2 className={editable ? "actualizar-proyecto-title" : "registro-proyecto-title"}>
                         {editable ? "Editar Proyecto" : "Registrar Proyecto"}
                     </h2>
 
@@ -225,6 +229,8 @@ console.log(proyectoFinal)
 
             {showPresupuesto && <GestionPresupuesto />}
             {showAsignarInvestigador && <VincularInvestigador />}
+
+            </div>
 
         </div>
     );

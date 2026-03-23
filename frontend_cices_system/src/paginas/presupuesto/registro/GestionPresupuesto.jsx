@@ -9,6 +9,7 @@ import { obtenerPresupuestosProyecto, registrarPresupuestos, actualizarPresupues
 
 import PresupuestoForm from "./PresupuestoForm.jsx";
 import PresupuestoList from "./PresupuestoList.jsx";
+import "./Presupuesto.css";
 
 function GestionPresupuestos({modoRegistro = false, proyecto: proyectoProp, onClose, onSave}) {
     const { token } = useContext(AppContext);
@@ -133,29 +134,33 @@ function GestionPresupuestos({modoRegistro = false, proyecto: proyectoProp, onCl
 
     return (
 
-        <div>
+        <div className="registro-presupuesto-page">
 
-            <h2>Gestión de Presupuestos</h2>
+            <div className="registro-presupuesto-card">
+
+            <h2 className="registro-presupuesto-title">Gestion de presupuestos</h2>
 
             {!modoRegistro && (
-                <BuscadorProyecto
-                    token={token}
-                    onSelect={seleccionarProyecto}
-                />
+                <div className="registro-presupuesto-search">
+                    <BuscadorProyecto
+                        token={token}
+                        onSelect={seleccionarProyecto}
+                    />
+                </div>
             )}
 
             {proyecto && (
 
-                <div>
+                <div className="registro-presupuesto-content">
 
-                    <button onClick={() => {
+                    <button className="btn-accion secundario" type="button" onClick={() => {
                         setEditandoIndex(null);
                         setPresupuestosForm([{}]);
                     }}>
                         Limpiar formulario
                     </button>
 
-                    {editandoIndex === null && <p>Agregando presupuestos</p>}
+                    {editandoIndex === null && <p className="registro-presupuesto-status">Agregando presupuestos</p>}
 
                     <PresupuestoForm
                         proyecto={proyecto}
@@ -170,10 +175,10 @@ function GestionPresupuestos({modoRegistro = false, proyecto: proyectoProp, onCl
                     />
 
                     {editandoIndex !== null && (
-                        <div>
-                            <p>Editando un presupuesto</p>
+                        <div className="registro-presupuesto-editing">
+                            <p className="registro-presupuesto-status">Editando un presupuesto</p>
 
-                            <button onClick={() => {
+                            <button className="btn-accion secundario" type="button" onClick={() => {
                                 setPresupuestosForm([]);
                                 setEditandoIndex(null);
                             }}>
@@ -181,11 +186,14 @@ function GestionPresupuestos({modoRegistro = false, proyecto: proyectoProp, onCl
                             </button>
                         </div>
                     )}
-                    <button form="formPresupuesto" type="submit">
-                        Guardar
-                    </button>
 
-                    {onClose && <button onClick={onClose}>Cerrar</button>}
+                    <div className="registro-presupuesto-actions">
+                        <button className="btn-accion primario" form="formPresupuesto" type="submit">
+                            Guardar
+                        </button>
+
+                        {onClose && <button className="btn-accion" type="button" onClick={onClose}>Cerrar</button>}
+                    </div>
 
                     {!modoRegistro && (
                         <PresupuestoList
@@ -197,6 +205,8 @@ function GestionPresupuestos({modoRegistro = false, proyecto: proyectoProp, onCl
                 </div>
 
             )}
+
+            </div>
 
         </div>
 

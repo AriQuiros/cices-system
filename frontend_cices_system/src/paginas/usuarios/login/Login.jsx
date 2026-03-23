@@ -1,9 +1,8 @@
-import { useAuth } from "../../../context/useAuth.js";
-import "./Login.css";
+import { useAuth } from "../../context/useAuth.js";
+import "../../styles/paginas.css";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useNavigationType } from "react-router-dom";
-import { loginRequest } from "../../../services/AuthService.jsx";
-import { Link } from "react-router-dom";
+import { loginRequest } from "../../services/AuthService.jsx";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -140,11 +139,8 @@ function Login() {
 
                     <div className="login-links">
                         <label>¿No tienes una cuenta?
-                            <Link to="/registro"> Click aquí</Link>
+                            <a href="/Registro"> Click aquí</a>
                         </label>
-                        <div>
-                            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
-                        </div>
                     </div>
 
                     {(localError || secondsLeft > 0) && (

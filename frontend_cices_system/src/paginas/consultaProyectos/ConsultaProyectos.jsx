@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import "./ConsultaProyectos.css";
+import "../../styles/paginas.css";
 import { Link } from "react-router-dom";
 
 function ConsultaProyectos() {

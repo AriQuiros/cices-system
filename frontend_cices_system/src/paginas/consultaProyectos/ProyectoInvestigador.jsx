@@ -1,7 +1,7 @@
 // ProyectoInvestigador.jsx
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
-import "./ProyectoInvestigador.css";
+import "../../styles/paginas.css";
 import {Link} from "react-router-dom";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";

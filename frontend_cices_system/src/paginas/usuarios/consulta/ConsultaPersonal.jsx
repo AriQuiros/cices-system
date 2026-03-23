@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
-import "./ConsultaPersonal.css";
+import "../../styles/paginas.css";
 
 export default function ListaPersonas() {
 

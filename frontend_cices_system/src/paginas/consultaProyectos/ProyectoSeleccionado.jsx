@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from "react";
-import "./ProyectoSeleccionado.css";
+import "../../styles/paginas.css";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 

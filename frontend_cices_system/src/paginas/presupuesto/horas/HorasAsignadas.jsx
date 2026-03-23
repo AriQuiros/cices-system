@@ -5,7 +5,7 @@ import { AppContext } from "../../../context/AppContext.jsx";
 import { DistribucionHoras } from "../../../services/ReportesService.jsx";
 import { obtenerInvestigadoresProyecto } from "../../../services/ReportesService.jsx";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
-import "./HorasAsignadas.css";
+import "../../../styles/paginas.css";
 
 const ConsultaPresupuestos = () => {
 

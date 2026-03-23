@@ -4,7 +4,7 @@ import { AppContext } from "../../../context/AppContext.jsx";
 import { DetalleGastos } from "../../../services/ReportesService.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
-import "./ConsultaGastos.css";
+import "../../../styles/paginas.css";
 
 const ConsultaGastos = () => {
 

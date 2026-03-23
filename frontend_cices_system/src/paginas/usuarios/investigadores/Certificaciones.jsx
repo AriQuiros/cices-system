@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
 import { AppContext } from "../../../context/AppContext.jsx";
-import "./Certificaciones.css";
+import "../../../styles/paginas.css";
 
 // Función optimizada de agrupamiento que respeta ordenFecha
 const agruparPorInvestigador = (data, ordenFecha = "desc") => {

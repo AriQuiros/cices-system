@@ -3,7 +3,7 @@ import Select from "react-select";
 import axios from "axios";
 import {notify} from "../../utils/ui/notify";
 import {confirm} from "../../utils/ui/confirm";
-import "./GestionUsuarios.css";
+import "../../styles/paginas.css";
 
 export default function ListaUsuarios() {
 

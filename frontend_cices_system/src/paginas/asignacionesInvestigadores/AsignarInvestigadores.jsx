@@ -11,7 +11,7 @@ import InputField from "../../utils/validaciones/InputField.jsx";
 import { fechaMayorIgualQue, fechaMenorIgualQue, required } from "../../utils/validaciones/Validators.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../components/BusquedaProyecto.jsx";
-import "./AsignarInvestigador.css";
+import "../../styles/paginas.css";
 
 const formularioVacio = {
     id: null,

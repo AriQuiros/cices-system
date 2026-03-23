@@ -1,5 +1,5 @@
 import { useAuth } from "../../context/useAuth.js";
-import "./Login.css";
+import "../../styles/paginas.css";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useNavigationType } from "react-router-dom";
 import { loginRequest } from "../../services/AuthService.jsx";

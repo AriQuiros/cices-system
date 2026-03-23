@@ -7,7 +7,7 @@ import { DetalleGastos } from "../../../services/ReportesService.jsx";
 import { GastosService } from "../../../services/GastosService.jsx";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import {required, maxLength, min, max, fechaMayorIgualQue, fechaMenorIgualQue} from "../../../utils/validaciones/Validators.jsx";
-import "./GestionGastos.css";
+import "../../../styles/paginas.css";
 
 const formularioVacio = {
     id: null,

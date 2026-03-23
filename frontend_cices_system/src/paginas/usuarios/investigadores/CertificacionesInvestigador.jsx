@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Select from "react-select";
 import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
 import { AppContext } from "../../../context/AppContext.jsx";
-import "./CertificacionesInvestigador.css";
+import "../../../styles/paginas.css";
 
 export default function MisCertificacionesPage() {
     const { token } = useContext(AppContext);

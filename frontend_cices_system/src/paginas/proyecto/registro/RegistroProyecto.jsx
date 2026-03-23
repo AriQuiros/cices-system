@@ -5,8 +5,7 @@ import { notify } from "../../../utils/ui/notify.jsx";
 import { AppContext } from "../../../context/AppContext.jsx";
 import { ProyectoDTO } from "../../../modelos/proyectoDTO.jsx";
 
-import "../../usuarios/registro/Registro.css";
-import "./RegistroProyecto.css";
+import "../../../styles/paginas.css";
 
 import GestionPresupuesto from "../../presupuesto/registro/GestionPresupuesto.jsx";
 import VincularInvestigador from "./VincularInvestigador.jsx";

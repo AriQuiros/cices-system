@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 import { getResumen } from "../../services/UtilsService.jsx";
-import "./Director.css";
+import "../../styles/paginas.css";
 import {notify} from "../../utils/ui/notify.jsx";
 
 export default function PanelResumen() {

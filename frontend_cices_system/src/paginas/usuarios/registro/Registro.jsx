@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import "./Registro.css";
+import "../../../styles/paginas.css";
 import { EmpleadoProvider } from "../../../context/empleadoCtx/EmpleadoProvider.jsx";
 import { InvestigadorProvider } from "../../../context/investigadorCtx/InvestigadorProvider.jsx";
 import { EmpleadoContext } from "../../../context/empleadoCtx/EmpleadoContext.jsx";

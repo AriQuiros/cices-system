@@ -18,6 +18,7 @@ import ProyectoInformes from "./InformesProyectos.jsx";
 import ProyectoDocumentos from "./DocumentosProyectos.jsx";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 import {obtenerProyectoPorId} from "../../../services/ReportesService.jsx";
+import ProyectoDetalles from "./ProyectoDetalles.jsx";
 
 function RegistroProyecto({ editable = false }) {
 
@@ -214,7 +215,7 @@ console.log(proyectoFinal)
                     <ProyectoEntidades editable={editable} />
                     <ProyectoInformes editable={editable} />
                     <ProyectoDocumentos editable={editable} />
-
+                    <ProyectoDetalles editable={editable} />
                     <button type="submit" className="submit-btn">
                         {editable ? "Actualizar Proyecto" : "Registrar Proyecto"}
                     </button>

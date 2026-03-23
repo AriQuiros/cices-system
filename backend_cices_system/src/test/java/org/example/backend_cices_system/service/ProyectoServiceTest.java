@@ -1,5 +1,7 @@
 package org.example.backend_cices_system.service;
 
+import org.example.backend_cices_system.dto.CodigoDTO;
+import org.example.backend_cices_system.dto.ProyectoDTO;
 import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.data.HorasAsignadasRepository;
@@ -10,11 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProyectoServiceTest {
@@ -27,6 +31,9 @@ class ProyectoServiceTest {
 
     @InjectMocks
     private ProyectoService proyectoService;
+
+    @Mock
+    private CatalogoService catalogoService;
 
     @Test
     void debeRetornarResumenHorasCorrectamente() {
@@ -95,5 +102,48 @@ class ProyectoServiceTest {
 
         assertThrows(RuntimeException.class,
                 () -> proyectoService.obtenerResumenHoras(1));
+    }
+
+    @Test
+    void testActualizarProyecto() {
+
+        // 🔹 ID existente → actualización
+        Integer id = 1;
+
+        ProyectoDTO dto = mock(ProyectoDTO.class);
+
+        when(dto.id()).thenReturn(id);
+        when(dto.codigoProyecto()).thenReturn("PROY001");
+        when(dto.nombreProyecto()).thenReturn("Nuevo Nombre");
+        when(dto.descripcion()).thenReturn("Desc");
+        when(dto.objetivoGeneral()).thenReturn("Obj");
+        when(dto.lineaInvestigacion()).thenReturn("Linea");
+        when(dto.fechaInicio()).thenReturn(LocalDate.now());
+        when(dto.fechaFinalizacion()).thenReturn(LocalDate.now().plusDays(10));
+        when(dto.tipoProyecto()).thenReturn(mock(CodigoDTO.class));
+        when(dto.tipoProyecto().id()).thenReturn((short)1);
+
+        // 🔹 Proyecto existente
+        Proyecto proyectoExistente = new Proyecto();
+        proyectoExistente.setId(id);
+
+        when(proyectoRepository.findById(id))
+                .thenReturn(Optional.of(proyectoExistente));
+
+        when(catalogoService.codigoXNombreValor("ESTADO_PROYECTO", "ACTIVO"))
+                .thenReturn((short)1);
+
+        // 🔹 Ejecutar
+        Proyecto resultado = proyectoService.guardarProyecto(dto, List.of());
+
+        // 🔹 Validaciones
+        assertNotNull(resultado);
+        assertEquals("PROY001", resultado.getCodigoProyecto());
+        assertEquals("Nuevo Nombre", resultado.getNombreProyecto());
+
+        // 🔹 Verificaciones CLAVE
+        verify(proyectoRepository).findById(id); // se buscó existente
+        verify(proyectoRepository).save(proyectoExistente); // se guardó el mismo
+
     }
 }

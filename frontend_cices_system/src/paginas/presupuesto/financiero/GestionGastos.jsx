@@ -8,6 +8,7 @@ import { GastosService } from "../../../services/GastosService.jsx";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import {required, maxLength, min, max, fechaMayorIgualQue, fechaMenorIgualQue} from "../../../utils/validaciones/Validators.jsx";
 import "./GestionGastos.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const formularioVacio = {
     id: null,
@@ -231,6 +232,8 @@ const RegistroGastos = () => {
         <div className="gestion-gastos-page">
 
             <div className="gestion-gastos-card">
+                <BotonVolver/>
+
                 <h2 className="gestion-gastos-title">Gestion de gastos</h2>
 
             <BuscadorProyecto

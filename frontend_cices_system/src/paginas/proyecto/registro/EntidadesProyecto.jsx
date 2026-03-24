@@ -63,7 +63,7 @@ function ProyectoEntidades({editable}) {
                                     </button>
 
                                     {(proyecto.entidadesVinculadas[key] || []).length > 1 && (
-                                        <button hidden={editable}
+                                        <button hidden={editable && item?.id}
                                                 type="button" className={"btn-delete"}
                                                 onClick={() =>
                                                     removeByPath(

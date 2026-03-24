@@ -83,7 +83,7 @@ function ProyectoInformes({ editable }) {
                             </button>
 
                             {proyecto.presentacionesInformes.length > 1 && (
-                                <button hidden={editable}
+                                <button hidden={editable && informe?.id}
                                         type="button" className={"btn-delete"}
                                         onClick={() =>
                                             removeByPath(["presentacionesInformes"], idx)

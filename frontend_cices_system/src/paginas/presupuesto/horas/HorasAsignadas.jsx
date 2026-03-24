@@ -6,6 +6,7 @@ import { DistribucionHoras, obtenerInvestigadoresProyecto } from "../../../servi
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 
 import "./GestionHoras.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const ConsultaPresupuestos = () => {
 
@@ -103,6 +104,7 @@ const ConsultaPresupuestos = () => {
 
         <div className="gestion-horas-page">
             <div className="gestion-horas-card">
+                <BotonVolver/>
 
                 <h1 className="gestion-gastos-title">Consulta de Horas</h1>
 

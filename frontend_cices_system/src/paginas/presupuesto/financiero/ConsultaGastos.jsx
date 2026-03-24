@@ -5,6 +5,7 @@ import { DetalleGastos } from "../../../services/ReportesService.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 import "./GestionGastos.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const ConsultaGastos = () => {
 
@@ -106,6 +107,7 @@ const ConsultaGastos = () => {
         <div className="gestion-gastos-page">
 
             <div className="gestion-gastos-card">
+                <BotonVolver/>
 
                 <h2 className="gestion-gastos-title">Consulta de gastos</h2>
 

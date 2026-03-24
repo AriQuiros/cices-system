@@ -12,6 +12,7 @@ import { fechaMayorIgualQue, fechaMenorIgualQue, required } from "../../utils/va
 import Select from "react-select";
 import BuscadorProyecto from "../../components/BusquedaProyecto.jsx";
 import "./AsignarInvestigador.css";
+import BotonVolver from "../../components/BotonVolver.jsx";
 
 const formularioVacio = {
     id: null,
@@ -223,6 +224,8 @@ const AsignarInvestigadores = () => {
 
             {proyectoSeleccionado && (
                 <div className="asignar-contenido">
+                    <BotonVolver/>
+
                     <h3>Agregar investigadores</h3>
 
                     <form

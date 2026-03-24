@@ -10,6 +10,7 @@ import InputField from "../../../utils/validaciones/InputField.jsx";
 import {required, min, max} from "../../../utils/validaciones/Validators.jsx";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 import "./GestionHoras.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const formularioVacio = {
     id: null,
@@ -289,6 +290,8 @@ const GestionHoras = () => {
         <div className="gestion-horas-page">
 
             <div className="gestion-horas-card">
+                <BotonVolver/>
+
                 <h1 className="gestion-gastos-title">Gestión de Horas</h1>
 
             <BuscadorProyecto

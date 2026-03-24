@@ -17,6 +17,7 @@ import ProyectoEntidades from "./EntidadesProyecto.jsx";
 import ProyectoInformes from "./InformesProyectos.jsx";
 import ProyectoDocumentos from "./DocumentosProyectos.jsx";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import BotonVolver from "../../../components/BotonVolver";
 import {obtenerProyectoPorId} from "../../../services/ReportesService.jsx";
 import ProyectoDetalles from "./ProyectoDetalles.jsx";
 
@@ -198,16 +199,7 @@ console.log(proyectoFinal)
 
                 <form className={`form-content ${editable ? "actualizar-proyecto-form" : "registro-proyecto-form"}`} onSubmit={handleSubmit}>
 
-                    {/* 🔹 BOTÓN VOLVER */}
-                    {editable && (
-                        <button
-                            type="button"
-                            onClick={handleVolver}
-                            className="btn-secondary"
-                        >
-                            ← Volver
-                        </button>
-                    )}
+                    <BotonVolver/>
 
                     <h2 className={editable ? "actualizar-proyecto-title" : "registro-proyecto-title"}>
                         {editable ? "Editar Proyecto" : "Registrar Proyecto"}

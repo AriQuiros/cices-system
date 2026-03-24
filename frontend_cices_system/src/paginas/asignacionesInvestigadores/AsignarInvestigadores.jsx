@@ -217,7 +217,10 @@ const AsignarInvestigadores = () => {
     };
 
     return (
+
+
         <div className="asignar-page">
+
             {!proyectoSeleccionado && (
                 <BuscadorProyecto token={token} onSelect={seleccionarProyecto} />
             )}
@@ -225,6 +228,9 @@ const AsignarInvestigadores = () => {
             {proyectoSeleccionado && (
                 <div className="asignar-contenido">
                     <BotonVolver/>
+                    <div className="asignar-header">
+                        <h2>Asignación de Investigadores</h2>
+                    </div>
 
                     <h3>Agregar investigadores</h3>
 

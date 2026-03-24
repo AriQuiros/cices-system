@@ -20,6 +20,7 @@ import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 import BotonVolver from "../../../components/BotonVolver";
 import {obtenerProyectoPorId} from "../../../services/ReportesService.jsx";
 import ProyectoDetalles from "./ProyectoDetalles.jsx";
+import {confirm} from "../../../utils/ui/confirm.jsx";
 
 function RegistroProyecto({ editable = false }) {
 
@@ -135,6 +136,10 @@ function RegistroProyecto({ editable = false }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (editable) {
+            const ok = await confirm.update();
+            if (!ok) return;
+        }
 
         const entidadesVinculadasFormateadas = [
             ...(proyecto.entidadesVinculadas?.unidades || [])

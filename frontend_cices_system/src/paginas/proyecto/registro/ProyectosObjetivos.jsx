@@ -42,7 +42,7 @@ function ProyectoObjetivos({editable}) {
                                 </button>
 
                                 {proyecto.objetivosEspecificos.length > 1 && (
-                                    <button hidden={editable}
+                                    <button hidden={editable && objetivo?.id}
                                         type="button" className={"btn-delete"}
                                         onClick={() =>
                                             removeByPath(["objetivosEspecificos"], idxObjetivo)
@@ -97,7 +97,7 @@ function ProyectoObjetivos({editable}) {
                                         </button>
 
                                         {objetivo.metas.length > 1 && (
-                                            <button hidden={editable}
+                                            <button hidden={editable && meta?.id}
                                                 type="button" className={"btn-delete"}
                                                 onClick={() =>
                                                     removeByPath(
@@ -219,7 +219,7 @@ function ProyectoObjetivos({editable}) {
                                             </button>
 
                                             {meta.indicadores.length > 1 && (
-                                                <button hidden={editable}
+                                                <button hidden={editable && indicador?.id}
                                                     type="button" className={"btn-delete"}
                                                     onClick={() =>
                                                         removeByPath(

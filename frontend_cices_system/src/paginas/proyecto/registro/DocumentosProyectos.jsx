@@ -65,7 +65,7 @@ function ProyectoDocumentos({editable}) {
                     />
 
                     <div className="icon-buttons">
-                        <button hidden={editable}
+                        <button hidden={editable && !doc?.esNuevo}
                                 type="button" className={"btn-delete"}
                                 onClick={() =>
                                     removeByPath(["documentos"], idx)

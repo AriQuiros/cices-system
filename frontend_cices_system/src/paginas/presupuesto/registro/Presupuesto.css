@@ -83,11 +83,6 @@
     }
 }
 
-.popup {
-    max-height: 90vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-}
 
 /* Estilo principal para /registro-presupuesto */
 .registro-presupuesto-page {
@@ -156,7 +151,10 @@
 .presupuesto-form .input-field,
 .presupuesto-select {
     width: 100%;
+    margin-top: 20px;
+    margin-bottom: 0.5em;
     padding: 10px 12px;
+    height: 45px;
     border: 1px solid #b6cbd8;
     border-radius: 10px;
     font-size: 0.95rem;

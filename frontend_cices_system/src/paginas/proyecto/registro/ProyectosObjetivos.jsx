@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { AppContext } from "../../../context/AppContext.jsx";
 import { CodigoDTO } from "../../../modelos/CodigoDTO.jsx";
 import {IndicadorDTO} from "../../../modelos/proyectoDTO.jsx";
+import {PlusSquare, Trash2, PlusCircle, MinusCircle, Plus, X} from "lucide-react";
 
 function ProyectoObjetivos({editable}) {
     const { proyecto, setByPath, addByPath, removeByPath } = useProyecto();
@@ -22,7 +23,7 @@ function ProyectoObjetivos({editable}) {
                         Objetivo Específico {idxObjetivo + 1}
 
                             <div className="icon-buttons">
-                                <button
+                                <button className={"btn-add"}
                                     type="button"
                                     onClick={() =>
                                         addByPath(["objetivosEspecificos"], {
@@ -37,17 +38,17 @@ function ProyectoObjetivos({editable}) {
                                         })
                                     }
                                 >
-                                    +
+                                    <PlusSquare size={18} />
                                 </button>
 
                                 {proyecto.objetivosEspecificos.length > 1 && (
                                     <button hidden={editable}
-                                        type="button"
+                                        type="button" className={"btn-delete"}
                                         onClick={() =>
                                             removeByPath(["objetivosEspecificos"], idxObjetivo)
                                         }
                                     >
-                                        -
+                                        <Trash2 size={18} />
                                     </button>
                                 )}
                             </div>
@@ -56,6 +57,7 @@ function ProyectoObjetivos({editable}) {
                     {/* DESCRIPCIÓN OBJETIVO */}
                     <textarea
                         className="input-field"
+                        placeholder={`Descripción objetivo ${idxObjetivo + 1}`}
                         rows="4"
                         required
                         value={objetivo.descripcion}
@@ -77,7 +79,7 @@ function ProyectoObjetivos({editable}) {
                                 Meta {idxMeta + 1}
 
                                     <div className="icon-buttons">
-                                        <button
+                                        <button className={"btn-add"}
                                             type="button"
                                             onClick={() =>
                                                 addByPath(
@@ -91,12 +93,12 @@ function ProyectoObjetivos({editable}) {
                                                 )
                                             }
                                         >
-                                            +
+                                            <PlusCircle size={18} />
                                         </button>
 
                                         {objetivo.metas.length > 1 && (
                                             <button hidden={editable}
-                                                type="button"
+                                                type="button" className={"btn-delete"}
                                                 onClick={() =>
                                                     removeByPath(
                                                         ["objetivosEspecificos", idxObjetivo, "metas"],
@@ -104,13 +106,14 @@ function ProyectoObjetivos({editable}) {
                                                     )
                                                 }
                                             >
-                                                -
+                                                <MinusCircle size={18} />
                                             </button>
                                         )}
                                     </div>
                             </legend>
 
                             {/* TIPO META */}
+                            <div className={"row"}>
                             <select
                                 className="input-field"
                                 required
@@ -150,10 +153,11 @@ function ProyectoObjetivos({editable}) {
                                     }
                                 />
                             )}
-
+                            </div>
                             {/* DESCRIPCIÓN META */}
                             <textarea
                                 className="input-field"
+                                placeholder={`Descripción meta ${idxMeta + 1} (Objetivo ${idxObjetivo + 1})`}
                                 required
                                 value={meta.descripcion}
                                 onChange={(e) =>
@@ -169,8 +173,11 @@ function ProyectoObjetivos({editable}) {
 
                             {meta.indicadores.map((indicador, idxIndicador) => (
                                 <div key={idxIndicador} className="inline-group">
+                                    <div className={"row"}>
                                     <input
                                         type="text"
+                                        placeholder={`Descripción indicador ${idxIndicador + 1}  (Meta ${idxMeta + 1} - Objetivo ${idxObjetivo + 1})`}
+                                        maxLength={252}
                                         className="input-field"
                                         required
                                         value={indicador.descripcion}
@@ -191,7 +198,7 @@ function ProyectoObjetivos({editable}) {
                                     />
 
                                         <div className="icon-buttons">
-                                            <button
+                                            <button className={"btn-add"}
                                                 type="button"
                                                 onClick={() =>
                                                     addByPath(
@@ -208,12 +215,12 @@ function ProyectoObjetivos({editable}) {
                                                     )
                                                 }
                                             >
-                                                +
+                                                <Plus size={16} />
                                             </button>
 
                                             {meta.indicadores.length > 1 && (
                                                 <button hidden={editable}
-                                                    type="button"
+                                                    type="button" className={"btn-delete"}
                                                     onClick={() =>
                                                         removeByPath(
                                                             [
@@ -227,10 +234,11 @@ function ProyectoObjetivos({editable}) {
                                                         )
                                                     }
                                                 >
-                                                    -
+                                                    <X size={16} />
                                                 </button>
                                             )}
                                         </div>
+                                    </div>
                                 </div>
                             ))}
                         </fieldset>

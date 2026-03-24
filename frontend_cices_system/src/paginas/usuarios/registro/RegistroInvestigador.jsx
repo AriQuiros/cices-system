@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import "./RegistroInvestigador.css";
 
 import {fetchTiposCatalogo} from "../../../services/CatalogoService.js";
 import {InvestigadorContext} from "../../../context/investigadorCtx/InvestigadorContext.jsx";

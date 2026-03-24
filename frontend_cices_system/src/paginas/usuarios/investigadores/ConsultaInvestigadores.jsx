@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
 import InvestigadorDetalle from "./InvestigadorDetalle.jsx";
-import "./ConsultaInvestigadores.css";
+import "../ConsultaPersonal.css";
 
 export default function ListaInvestigadores() {
     const [investigadorSeleccionado, setInvestigadorSeleccionado] = useState(null);

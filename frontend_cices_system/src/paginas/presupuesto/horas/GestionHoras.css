@@ -1,7 +1,7 @@
 :root {
-    --primary: #19b5ea;
+    --primary: #31b1dc;
     --primary-dark: #0e9ac7;
-    --danger: #ef4444;
+    --danger: #e35858;
     --danger-dark: #dc2626;
     --border: #e2e8f0;
 }
@@ -9,8 +9,6 @@
 /* ===== PAGE ===== */
 
 .gestion-horas-page {
-    min-height: 100vh;
-    background: linear-gradient(180deg, #f7fbfe, #eef6fa);
     padding: 40px;
     display: flex;
     justify-content: center;
@@ -34,7 +32,6 @@
 .gestion-horas-select{
     width:100%;
     height:48px;
-    margin-top:18px;
     padding:0 14px;
     border-radius:12px;
     border:2px solid #19b5ea;
@@ -336,7 +333,6 @@ button {
 
 h4 {
     margin-top: 18px;
-    color: var(--primary-dark);
 }
 
 /* ===== TABLE ===== */
@@ -418,8 +414,8 @@ tbody tr:hover {
 }
 
 .tabla-horas th{
-    background:#19b5ea !important;
-    color: #000000 !important;
+    background: #85d6f6 !important;
+    color: #174657 !important;
     padding:12px !important;
     font-size:13px !important;
     text-align:center !important;
@@ -453,3 +449,26 @@ tbody tr:hover {
     }
 }
 
+
+.gestion-horas-content > .tabla-container,
+.gestion-horas-content > table,
+.gestion-horas-content > h4 {
+    width: 100%;
+}
+
+.tabla-container {
+    width: 100%;
+    display: block;
+}
+
+.gestion-horas-filtros {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+h2{
+    margin-top: 18px;
+}

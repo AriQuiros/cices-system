@@ -1,5 +1,6 @@
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
 import EntidadSelect from "../../../components/EntidadSelect.jsx";
+import {PlusSquare, Trash2} from "lucide-react";
 
 function ProyectoEntidades({editable}) {
 
@@ -26,57 +27,61 @@ function ProyectoEntidades({editable}) {
     return (
         <fieldset className="input-group">
             <legend>Entidades vinculadas</legend>
-
             {config.map(({ key, label, tipo }) => (
                 <div key={key}>
+
                     <label>{label}</label>
 
                     {(proyecto.entidadesVinculadas[key] || []).map((item, idx) => (
                         <div key={idx} className="inline-group">
+                            <div className={"row"}>
 
-                            <EntidadSelect
-                                tipo={tipo}
-                                value={item}
-                                onChange={(val) =>
-                                    setByPath(
-                                        ["entidadesVinculadas", key, idx],
-                                        val
-                                    )
-                                }
-                                placeholder={`${label} ${idx + 1}`}
-                                disabled={editable && !!item?.nombre}
-                            />
+                                <EntidadSelect
+                                    tipo={tipo}
+                                    value={item}
+                                    onChange={(val) =>
+                                        setByPath(
+                                            ["entidadesVinculadas", key, idx],
+                                            val
+                                        )
+                                    }
+                                    placeholder={`${label} ${idx + 1}`}
+                                    disabled={editable && !!item?.nombre}
+                                />
 
                                 <div className="icon-buttons">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            addByPath(
-                                                ["entidadesVinculadas", key],
-                                                { nombre: "" }
-                                            )
-                                        }
+                                    <button className={"btn-add"}
+                                            type="button"
+                                            onClick={() =>
+                                                addByPath(
+                                                    ["entidadesVinculadas", key],
+                                                    { nombre: "" }
+                                                )
+                                            }
                                     >
-                                        +
+                                        <PlusSquare/>
                                     </button>
 
                                     {(proyecto.entidadesVinculadas[key] || []).length > 1 && (
                                         <button hidden={editable}
-                                            type="button"
-                                            onClick={() =>
-                                                removeByPath(
-                                                    ["entidadesVinculadas", key],
-                                                    idx
-                                                )
-                                            }
+                                                type="button" className={"btn-delete"}
+                                                onClick={() =>
+                                                    removeByPath(
+                                                        ["entidadesVinculadas", key],
+                                                        idx
+                                                    )
+                                                }
                                         >
-                                            -
+                                            <Trash2/>
                                         </button>
                                     )}
+
                                 </div>
+                            </div>
 
                         </div>
                     ))}
+
                 </div>
             ))}
         </fieldset>

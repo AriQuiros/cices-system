@@ -1,6 +1,6 @@
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
 import { notify } from "../../../utils/ui/notify.jsx";
-
+import { FolderMinusIcon, FolderPlus } from "lucide-react";
 const MAX_TOTAL_SIZE_MB = 550;
 
 const getTotalFileSizeMB = (files = []) => {
@@ -41,18 +41,18 @@ function ProyectoDocumentos({editable}) {
             <legend>Documentos Relacionados</legend>
 
             {/* INPUT FILE */}
-                <div className="form-row">
-                    <input
-                        type="file"
-                        multiple
-                        onChange={handleFileChange}
-                        className="input-field"
-                    />
-                </div>
+            <div className="form-row">
+                <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="input-field"
+                />
+            </div>
 
             {/* LISTA */}
             {(proyecto.documentos || []).map((doc, idx) => (
-                <div key={idx} className="inline-group">
+                <div key={idx} className="inline">
                     <input
                         type="text"
                         readOnly
@@ -64,16 +64,16 @@ function ProyectoDocumentos({editable}) {
                         }
                     />
 
-                        <div className="icon-buttons">
-                            <button hidden={editable}
-                                type="button"
+                    <div className="icon-buttons">
+                        <button hidden={editable}
+                                type="button" className={"btn-delete"}
                                 onClick={() =>
                                     removeByPath(["documentos"], idx)
                                 }
-                            >
-                                -
-                            </button>
-                        </div>
+                        >
+                            <FolderMinusIcon/>
+                        </button>
+                    </div>
                 </div>
             ))}
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../../../../../cssCICES/frontend_cices_system/src/estilos/form.css"
 
 export default function InputField({
                                        label,

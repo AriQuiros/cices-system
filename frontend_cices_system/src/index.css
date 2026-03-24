@@ -19,3 +19,33 @@ html, body {
   flex-direction: column;
   min-height: 100vh;
 }
+
+/*normalizar tamaños de entradas*/
+textarea,
+fieldset,
+legend,
+label,
+select,
+option,
+input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="checkbox"],
+input[type="date"],
+input[type="radio"]{
+  font-family: Arial, sans-serif;
+  font-size: large;
+}
+
+legend {
+  display: flex;
+  gap: 5px;
+}
+
+textarea {
+  resize: none;
+}
+

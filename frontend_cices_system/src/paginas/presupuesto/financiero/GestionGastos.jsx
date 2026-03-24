@@ -290,7 +290,7 @@ const RegistroGastos = () => {
                     {gastosForm.map((gasto, index) => (
 
                         <div key={index} className="gasto-form-item">
-
+                        <div className={"row"}>
                             <InputField
                                 label="Monto"
                                 type="number"
@@ -324,7 +324,7 @@ const RegistroGastos = () => {
                                 min={presupuestoSeleccionado.fechaAsignacion}
                                 max={fechaHoy}
                             />
-
+                        </div>
                             <InputField
                                 label="Descripción"
                                 type="text"

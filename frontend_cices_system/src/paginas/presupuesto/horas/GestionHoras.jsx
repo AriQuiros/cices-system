@@ -287,7 +287,9 @@ const GestionHoras = () => {
     return (
 
         <div className="gestion-horas-page">
+
             <div className="gestion-horas-card">
+                <h1 className="gestion-gastos-title">Gestión de Horas</h1>
 
             <BuscadorProyecto
                 token={token}
@@ -317,11 +319,11 @@ const GestionHoras = () => {
                 <hr className="gestion-horas-divider" />
                 <div className="gestion-horas-content">
                     <p>
-                        Horas asignadas al presupuesto: {presupuestoSeleccionado.cantidadHoras} h/mes
+                        <strong>Horas asignadas al presupuesto:</strong> {presupuestoSeleccionado.cantidadHoras} h/mes
                     </p>
 
                     <p>
-                        Meses del presupuesto: {presupuestoSeleccionado.cantidadMeses}
+                        <strong>Meses del presupuesto:</strong> {presupuestoSeleccionado.cantidadMeses}
                     </p>
 
                     <p>

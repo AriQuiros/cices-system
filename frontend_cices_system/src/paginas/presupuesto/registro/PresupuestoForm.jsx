@@ -130,8 +130,8 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
 
                         {/* BODY */}
                         {p.tipoPresupuesto?.valor && (
-
                             <div className="presupuesto-form-fields">
+                                <div className={"row"}>
 
                                 <InputField
                                     label="Fecha de Asignación"
@@ -177,7 +177,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
                                     ))}
 
                                 </select>
-
+                            </div>
                                 <InputField
                                     label="Descripción"
                                     name="descripcion"
@@ -192,6 +192,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
                                 {p.tipoPresupuesto.valor === "FINANCIERO" && (
 
                                     <>
+                                        <div className={"row"}>
 
                                         <select className="presupuesto-select" required
                                             value={p.fuenteFinanciamiento?.valor || ""}
@@ -219,6 +220,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
 
                                         <InputField
                                             label="Monto (₡)"
+                                            placeholder={"Monto (₡)"}
                                             type="number"
                                             name="monto"
                                             value={p.monto ?? ""}
@@ -226,7 +228,7 @@ function PresupuestoForm({proyecto, tipos, presupuestos, presupuestosExistentes 
                                             rules={[required(), min(1), max(9999999.99)]}
                                             required
                                         />
-
+                                        </div>
                                     </>
 
                                 )}

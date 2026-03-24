@@ -4,8 +4,8 @@ import { registrarProyecto } from "../../../services/ProyectoService.jsx";
 import { notify } from "../../../utils/ui/notify.jsx";
 import { AppContext } from "../../../context/AppContext.jsx";
 import { ProyectoDTO } from "../../../modelos/proyectoDTO.jsx";
+import "../../../estilos/form.css"
 
-import "../../usuarios/registro/Registro.css";
 import "./RegistroProyecto.css";
 
 import GestionPresupuesto from "../../presupuesto/registro/GestionPresupuesto.jsx";

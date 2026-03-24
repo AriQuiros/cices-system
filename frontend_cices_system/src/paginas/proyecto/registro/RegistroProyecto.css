@@ -1,127 +1,3 @@
-
-/*********************Proyectos**********************/
-legend {
-    display: flex;
-    gap: 5px;
-}
-
-textarea {
-    resize: none;
-}
-
-#form-project-content {
-    border-radius: 10px;
-    width: 100%;
-}
-
-#input-project-field {
-    padding: 0.5rem;
-    box-sizing: border-box;
-}
-
-#input-project-group {
-    gap: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-}
-
-#inline-project-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.icon-buttons {
-    display: flex;
-    gap: 0.25rem;
-}
-
-.icon-buttons button {
-    padding: 0.25rem 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-}
-
-#inline-project-group small {
-    white-space: nowrap;
-    display: inline-block;
-}
-
-#checkbox-project-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* Responsive para computadores */
-@media (min-width: 650px) {
-    #form-project-container {
-        justify-content: flex-start;
-        align-items: stretch;
-    }
-
-    #form-project-content {
-        max-width: 100%;
-        border-radius: 0;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 1rem;
-        width: 100%;
-    }
-
-    .form-row .input-field,
-    .form-row select,
-    .form-row textarea {
-        flex: 1;
-    }
-
-    #submit-project-btn {
-        max-width: 200px;
-    }
-
-    .form-row .input-group { /*fechas de proyecto*/
-        flex: 1;
-    }
-    .round-checkbox input[type="checkbox"] {
-        border-radius: 6px;
-        accent-color: #4caf50;
-    }
-
-}
-
-.form-row, .inline-group {
-    margin-bottom: 1rem;
-}
-
-input[type="file"].input-field,
-#tipo-meta,
-#cantidad-meta
-{
-    width: auto;
-    flex: none;
-    padding: 0.25rem;
-    border-radius: 4px;
-}
-
-.input-error {
-    border: 2px solid red;
-    background-color: #ffe6e6;
-}
-
-.error-text {
-    color: red;
-    margin-top: 4px;
-}
-
-meter{
-    width: 100%;
-    height: 1rem;
-}
-
 /* Estilo de pagina para actualizar proyecto, alineado con GestionGastos */
 .actualizar-proyecto-page,
 .registro-proyecto-page {
@@ -156,7 +32,6 @@ meter{
 
 .actualizar-proyecto-form,
 .registro-proyecto-form {
-    border: 1px solid #e6eef3;
     border-radius: 10px;
     padding: 16px;
     background: #fcfeff;
@@ -190,7 +65,7 @@ meter{
     font-weight: 600;
     cursor: pointer;
     background: #0fc3f3;
-    color: #052b3d;
+    color: white;
     width: 100%;
     transition: filter 0.2s ease;
 }
@@ -200,31 +75,14 @@ meter{
     width: 100%;
     border: 1px solid #b6cbd8;
     border-radius: 10px;
-    padding: 8px;
     background: #ffffff;
-    color: #2f3f4a;
 }
 
 .actualizar-proyecto-page input[type="file"].input-field::file-selector-button,
 .registro-proyecto-page input[type="file"].input-field::file-selector-button {
     border: none;
     border-radius: 8px;
-    padding: 9px 12px;
-    margin-right: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    background: #ddeff8;
-    color: #114866;
-    transition: filter 0.2s ease;
-}
-
-.actualizar-proyecto-page input[type="file"].input-field::-webkit-file-upload-button,
-.registro-proyecto-page input[type="file"].input-field::-webkit-file-upload-button {
-    border: none;
-    border-radius: 8px;
-    padding: 9px 12px;
-    margin-right: 10px;
-    font-weight: 600;
+    padding: 2px 5px;
     cursor: pointer;
     background: #ddeff8;
     color: #114866;
@@ -264,7 +122,6 @@ meter{
 .actualizar-proyecto-page .meta-objetivo-block > legend,
 .registro-proyecto-page .meta-objetivo-block > legend {
     padding-left: 4px;
-    color: #134f6c;
     font-weight: 600;
 }
 
@@ -290,4 +147,201 @@ meter{
     .registro-proyecto-page .submit-btn {
         width: 100%;
     }
+}
+
+/* =========================
+   VARIABLES
+========================= */
+:root {
+    --gap: 16px;
+    --radius: 10px;
+    --border: #e0e0e0;
+    --primary: #4a90e2;
+    --bg-soft: #f9fafb;
+}
+
+/* =========================
+   CONTENEDOR GENERAL
+========================= */
+.form-container {
+    display: flex;
+    justify-content: center;
+}
+
+.form-content {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* =========================
+   FILAS Y COLUMNAS
+========================= */
+.form-row {
+    display: flex;
+    gap: var(--gap);
+}
+
+.form-row > * {
+    flex: 1;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+}
+
+/* =========================
+   INPUT GROUP
+========================= */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* inputs */
+.input-field {
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    width: 100%;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(74,144,226,0.2);
+}
+
+/* =========================
+   FIELDSET
+========================= */
+fieldset {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 15px;
+    background: var(--bg-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* título de sección */
+legend {
+    font-weight: bold;
+    padding: 0 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =========================
+   BOTONES (+ / -)
+========================= */
+.icon-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-buttons button {
+    border: none;
+    border-radius: 6px;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+
+.icon-buttons button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.icon-buttons .btn-add {
+    background: #71d3c4;
+    color: white;
+}
+
+
+/* eliminar */
+.icon-buttons .btn-delete {
+    background: #e4796e;
+    color: white;
+}
+
+/* =========================
+   FILAS INTERNAS (meta, indicadores, etc)
+========================= */
+.row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.row > * {
+    flex: 1;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* =========================
+   INDICADORES
+========================= */
+.inline-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 0.5em;
+}
+
+/* =========================
+   TEXTAREAS
+========================= */
+
+input[type="file"].input-field
+{
+    width: auto;
+}
+
+meter{
+    width: 100%;
+    height: 1rem;
+}
+
+/* Altura uniforme para todos */
+.input-field {
+    height: 42px;
+}
+
+textarea.input-field {
+    height: auto;
+    min-height: 80px;
+}
+
+/* INPUT ocupa todo */
+.row .input-field {
+    flex: 1;
+}
+
+/* BOTONES tamaño natural */
+.row .icon-buttons {
+    flex: 0;
+    display: flex;
+    gap: 6px;
+}
+
+meter{
+    width: 100%;
+    height: 1rem;
 }

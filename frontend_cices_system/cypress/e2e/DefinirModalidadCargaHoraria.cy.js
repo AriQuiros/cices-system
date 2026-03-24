@@ -1,53 +1,68 @@
-describe('Gestión de horas - registrar horas', () => {
-    it('debe registrar horas en régimen por tiempo', () => {
-        cy.visit('http://localhost:5173/gestion-horas')
+describe('HU-024 - Actualizar asignación de investigadores', () => {
+    beforeEach(() => {
+        const exp = Math.floor(Date.now() / 1000) + 3600
+        const fakeJwt = `x.${btoa(JSON.stringify({ exp }))}.y`
 
-        cy.url().should('include', '/gestion-horas')
+        const auth = {
+            user: {
+                id: 1,
+                nombre: 'Admin Test',
+                roles: ['ADMINISTRADOR']
+            },
+            token: fakeJwt,
+            exp
+        }
 
-        // Proyecto: react-select, segundo proyecto
-        cy.get('input[id*="react-select"][id$="-input"]')
+        cy.visit('http://localhost:5173/asignar-investigadores', {
+            onBeforeLoad(win) {
+                win.sessionStorage.setItem('auth', JSON.stringify(auth))
+                win.localStorage.setItem('auth', JSON.stringify(auth))
+            }
+        })
+    })
+
+    it('debe editar un investigador vinculado, actualizar la actividad y guardar', () => {
+        cy.url().should('include', '/asignar-investigadores')
+
+        // Seleccionar proyecto
+        cy.get('.buscador-select input[id*="react-select"][id$="-input"]', { timeout: 10000 })
+            .click({ force: true })
+
+        cy.get('.buscador__option, [id*="-option"]', { timeout: 10000 })
             .first()
             .click({ force: true })
 
-        cy.get('[id*="react-select"][id*="-option"]')
-            .eq(1)
-            .click({ force: true })
-
-        // Presupuesto: select nativo, primer presupuesto real
-        cy.get('select.gestion-horas-select')
+        // Esperar la sección de abajo
+        cy.contains(/investigadores vinculados/i, { timeout: 15000 })
             .should('be.visible')
-            .select(1)
+            .scrollIntoView()
 
-        // Investigador: react-select, primer investigador
-        cy.get('input[id*="react-select"][id$="-input"]')
-            .eq(1)
+        // Esperar que exista al menos un botón Editar en la lista inferior
+        cy.contains('button', 'Editar', { timeout: 15000 })
+            .should('exist')
+            .scrollIntoView()
+            .should('be.visible')
             .click({ force: true })
 
-        cy.get('[id*="react-select"][id*="-option"]')
-            .first()
-            .click({ force: true })
-
-        // Modalidad: react-select
-        cy.get('input[id*="react-select"][id$="-input"]')
-            .eq(2)
-            .click({ force: true })
-            .type('tiempo', { force: true })
-
-        cy.contains('[id*="-option"]', /tiempo/i)
-            .click({ force: true })
-
-        // Horas por mes
-        cy.get('input[name="horasMes-0"]')
+        // Cambiar actividad
+        cy.get('input[name="actividad-0"]', { timeout: 10000 })
+            .scrollIntoView()
+            .should('be.visible')
             .clear()
-            .type('20')
+            .type('Nueva actividad de prueba')
 
-        // Cantidad de meses
-        cy.get('input[name="meses-0"]')
-            .clear()
-            .type('2')
-
-        // Guardar
-        cy.contains('button', 'Guardar horas')
+        // Actualizar
+        cy.contains('button', 'Actualizar')
+            .scrollIntoView()
+            .should('be.visible')
             .click({ force: true })
+
+        // Confirmación
+        cy.get('.swal2-confirm', { timeout: 10000 })
+            .should('be.visible')
+            .click({ force: true })
+
+        // Validación final
+        cy.get('body').should('contain.text', 'Nueva actividad de prueba')
     })
 })

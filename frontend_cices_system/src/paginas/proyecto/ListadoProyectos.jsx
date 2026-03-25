@@ -7,7 +7,6 @@ import {useLineas} from "../../hooks/proyectos/useLineas.jsx";
 import {useContext} from "react";
 import {AppContext} from "../../context/AppContext.jsx";
 
-
 function ListadoProyectos() {
     const { token, user } = useContext(AppContext);
     const {

@@ -44,6 +44,7 @@ export const InvestigadorProvider = ({ children }) => {
         <InvestigadorContext.Provider
             value={{
                 investigador: investigadorState.data,
+                setInvestigador: investigadorState.setData,
                 actualizarCampo: investigadorState.actualizarCampo,
                 limpiarInvestigador: investigadorState.limpiar,
                 agregarItem,

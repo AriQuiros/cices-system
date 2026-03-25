@@ -3,10 +3,13 @@ import Select from "react-select";
 import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
 import { AppContext } from "../../../context/AppContext.jsx";
 import "./CertificacionesInvestigador.css";
+import "../../../estilos/form.css"
+import {useDebounce} from "../../../hooks/useDebounce.js";
 
 export default function MisCertificacionesPage() {
     const { token } = useContext(AppContext);
-
+    const [busqueda, setBusqueda] = useState("");
+    const busquedaDebounced = useDebounce(busqueda, 300);
     const [certificaciones, setCertificaciones] = useState([]);
     const [filtros, setFiltros] = useState({
         tipos: [],
@@ -68,6 +71,9 @@ export default function MisCertificacionesPage() {
                 ""
             ).toUpperCase();
 
+            const nombre = String(cert.nombreCertificacion || "").toLowerCase();
+            const institucion = String(cert.entidadEmisora?.nombre || "").toLowerCase();
+
             const matchTipo =
                 filtros.tipos.length === 0 ||
                 filtros.tipos.some((t) => t.value === tipoValor);
@@ -76,9 +82,14 @@ export default function MisCertificacionesPage() {
                 filtros.estados.length === 0 ||
                 filtros.estados.some((e) => e.value === estadoValor);
 
-            return matchTipo && matchEstado;
+            const matchBusqueda =
+                busquedaDebounced.trim() === "" ||
+                nombre.includes(busquedaDebounced.toLowerCase()) ||
+                institucion.includes(busquedaDebounced.toLowerCase());
+
+            return matchTipo && matchEstado && matchBusqueda;
         });
-    }, [certificaciones, filtros]);
+    }, [certificaciones, filtros, busquedaDebounced]);
 
     return (
         <div className="certificaciones-investigador-page">
@@ -86,7 +97,17 @@ export default function MisCertificacionesPage() {
                 <h1 className="certificaciones-investigador-title">
                     Mis Certificaciones
                 </h1>
-
+                <div className={"row"}>
+                    <div className="certificaciones-filtro-item">
+                        <label className="certificaciones-label">Buscar por nombre:</label>
+                        <input
+                            type="text"
+                            placeholder="Ej: AWS, Scrum, etc..."
+                            value={busqueda}
+                            onChange={(e) => setBusqueda(e.target.value)}
+                            className="input-field"
+                        />
+                    </div>
                 <div className="certificaciones-filtro-item">
                     <label className="certificaciones-label">Tipo Certificación:</label>
                     <Select
@@ -122,7 +143,7 @@ export default function MisCertificacionesPage() {
                         }
                     />
                 </div>
-
+                </div>
                 <table className="certificaciones-table">
                     <thead>
                     <tr>

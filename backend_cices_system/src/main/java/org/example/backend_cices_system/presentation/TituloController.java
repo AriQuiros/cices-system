@@ -14,22 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public class TituloController {
 
     private final TituloService tituloService;
-    private final InvestigadorService investigadorService;
 
-    public TituloController(TituloService tituloService,
-                            InvestigadorService investigadorService) {
+    public TituloController(TituloService tituloService) {
         this.tituloService = tituloService;
-        this.investigadorService = investigadorService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> agregarTitulo(
-            @PathVariable String identificacion,
-            @RequestBody @Valid TituloDTO dto) {
-
-        Investigador investigador = investigadorService.buscarPorIdentificacion(identificacion);
-        Titulo titulo = tituloService.guardarTitulo(dto, investigador);
-
-        return ResponseEntity.ok(titulo.getId());
+    @DeleteMapping("/eliminar/{idTitulo}")
+    public ResponseEntity<?> eliminarTitulo(@PathVariable Integer idTitulo){
+        var titulo = tituloService.eliminarTitulo(idTitulo);
+        return ResponseEntity.ok(titulo.nombreTitulo());
     }
 }

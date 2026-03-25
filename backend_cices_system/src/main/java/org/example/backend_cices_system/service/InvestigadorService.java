@@ -35,35 +35,67 @@ public class InvestigadorService {
     @Transactional
     public Investigador crearInvestigador(InvestigadorDTO dto) {
 
-        // 1. Crear investigador
         Investigador investigador = new Investigador();
+
         investigador.setTemaInteres(dto.temaInteres());
 
-        Entidad idInstitucionOrigen = entidadService.guardarEntidad(dto.institucionOrigen());
-        investigador.setIdInstitucionOrigen(idInstitucionOrigen);
+        investigador.setIdInstitucionOrigen(
+                entidadService.guardarEntidad(dto.institucionOrigen())
+        );
 
-        Entidad idUnidadAcademica = entidadService.guardarEntidad(dto.unidadAcademica());
-        investigador.setIdUnidadAcademica(idUnidadAcademica);
+        investigador.setIdUnidadAcademica(
+                entidadService.guardarEntidad(dto.unidadAcademica())
+        );
 
-        // 2. Crear empleado + usuario + rol INVESTIGADOR
-        Empleado empleado = empleadoService.crearEmpleado(dto.empleado());
-        investigador.setIdEmpleado(empleado);
+        investigador.setIdEmpleado(
+                empleadoService.crearEmpleado(dto.empleado())
+        );
 
         investigador = investigadorRepository.save(investigador);
 
-        // 3. Títulos
-        if (dto.titulos() != null) {
-            for (TituloDTO t : dto.titulos()) {
-                tituloService.guardarTitulo(t, investigador);
-            }
-        }
+        guardarTitulos(dto.titulos(), investigador);
+        guardarCertificaciones(dto.certificaciones(), investigador);
 
-        // 4. Certificaciones
-        if (dto.certificaciones() != null) {
-            for (CertificacionDTO c : dto.certificaciones()) {
-                certificacionService.guardarCertificacion(c, investigador);
-            }
+        return investigador;
+    }
+
+    private void guardarTitulos(List<TituloDTO> titulos, Investigador investigador) {
+        if (titulos == null) return;
+
+        for (TituloDTO dto : titulos) {
+            tituloService.guardarTitulo(dto, investigador);
         }
+    }
+
+    private void guardarCertificaciones(List<CertificacionDTO> certificaciones, Investigador investigador) {
+        if (certificaciones == null || certificaciones.isEmpty()) return;
+
+        for (CertificacionDTO dto : certificaciones) {
+            certificacionService.guardarCertificacion(dto, investigador);
+        }
+    }
+
+    @Transactional
+    public Investigador actualizarInvestigador(InvestigadorDTO dto) {
+
+        Investigador investigador = obtenerInvestigador(dto.id());
+
+        investigador.setTemaInteres(dto.temaInteres());
+
+        investigador.setIdInstitucionOrigen(
+                entidadService.guardarEntidad(dto.institucionOrigen())
+        );
+
+        investigador.setIdUnidadAcademica(
+                entidadService.guardarEntidad(dto.unidadAcademica())
+        );
+
+        empleadoService.actualizarEmpleado(dto.empleado());
+
+        investigador = investigadorRepository.save(investigador);
+
+        guardarTitulos(dto.titulos(), investigador);
+        guardarCertificaciones(dto.certificaciones(), investigador);
 
         return investigador;
     }
@@ -98,13 +130,21 @@ public class InvestigadorService {
                         ("No se encontró un investigador con usuario '" + usuario.getNombreUsuario() + "'"));
     }
 
-    /*public InvestigadorDTO obtenerDTO (Investigador investigador){
+    public InvestigadorDTO obtenerDTO (Investigador investigador){
         return new InvestigadorDTO(
+                investigador.getId(),
                 empleadoService.obtenerEmpleadoDTO(investigador.getIdEmpleado()),
                 entidadService.obtenerDTO(investigador.getIdInstitucionOrigen()),
                 entidadService.obtenerDTO(investigador.getIdUnidadAcademica()),
                 investigador.getTemaInteres(),
+                tituloService.tituloDTOList(investigador),
+                certificacionService.certificacionDTOList(investigador)
+        );
+    }
 
-        )
-    }*/
+    public InvestigadorDTO obtenerPerfil(Usuario usuario){
+        var investigador = obtenerInvestigadorPorUsuario(usuario);
+        return obtenerDTO(investigador);
+    }
+
 }

@@ -20,19 +20,36 @@ public class EmpleadoService {
         this.catalogoService = catalogoService;
     }
 
+    private void validarUnicos(EmpleadoDTO dto, Empleado existente) {
+        if (existente == null || !existente.getIdentificacion().equals(dto.identificacion())) {
+            if (empleadoRepository.existsByIdentificacion(dto.identificacion())) {
+                throw new IllegalStateException("La identificación '" + dto.identificacion() + "' ya se encuentra registrada");
+            }
+        }
+
+        if (dto.usuario() != null) {
+
+            String nuevoUsername = dto.usuario().nombreUsuario();
+
+            String actualUsername = existente != null
+                    ? existente.getIdUsuario().getNombreUsuario()
+                    : null;
+
+            if (existente == null || !nuevoUsername.equals(actualUsername)) {
+                if (usuarioService.existeNombreUsuario(nuevoUsername)) {
+                    throw new IllegalStateException("El nombre de usuario '" + nuevoUsername + "' ya se encuentra registrado");
+                }
+            }
+        }
+    }
+
     @Transactional
     public Empleado crearEmpleado(EmpleadoDTO dto) {
 
-        if (existeIdentificacion(dto.identificacion()))
-            throw new IllegalStateException("La identificación '" + dto.identificacion() + "' ya se encuentra registrada");
+        validarUnicos(dto, null);
 
-        if (usuarioService.existeNombreUsuario(dto.usuario().nombreUsuario()))
-            throw new IllegalStateException("El nombre de usuario '" + dto.usuario().nombreUsuario() + "' ya se encuentra registrado");
-
-        // 1. Crear usuario
         Usuario usuario = usuarioService.guardarUsuario(dto.usuario());
 
-        // 2. Crear empleado
         Empleado empleado = new Empleado();
         empleado.setIdUsuario(usuario);
         empleado.setNombreCompleto(dto.nombreCompleto());
@@ -43,10 +60,7 @@ public class EmpleadoService {
         empleado.setNumeroTelefono(dto.numeroTelefono());
         empleado.setIdCodigoTipoGradoAcademico(dto.gradoAcademico().id());
 
-        empleado = empleadoRepository.save(empleado);
-
-
-        return empleado;
+        return empleadoRepository.save(empleado);
     }
 
     boolean existeIdentificacion(String identificacion) {
@@ -63,20 +77,19 @@ public class EmpleadoService {
                 .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
     }
 
+    public EmpleadoDTO obtenerPerfil(Usuario usuario){
+        var empleado = obtenerPorUsuario(usuario);
+        return obtenerEmpleadoDTO(empleado);
+    }
+
     @Transactional
     public Empleado actualizarEmpleado(EmpleadoDTO dto) {
 
-        if (existeIdentificacion(dto.identificacion()))
-            throw new IllegalStateException("La identificación '" + dto.identificacion() + "' ya se encuentra registrada");
-
         Empleado empleado = obtenerEmpleado(dto.id());
 
-        if (usuarioService.existeNombreUsuario(dto.usuario().nombreUsuario()))
-            throw new IllegalStateException("El nombre de usuario '" + dto.usuario().nombreUsuario() + "' ya se encuentra registrado");
+        validarUnicos(dto, empleado);
 
-        // ⚠️ NO cambiar identificación si es clave única
-        // empleado.setIdentificacion(dto.identificacion());
-
+        empleado.setIdentificacion(dto.identificacion());
         empleado.setNombreCompleto(dto.nombreCompleto());
         empleado.setPais(dto.pais());
         empleado.setCorreo(dto.correo());

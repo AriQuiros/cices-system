@@ -110,6 +110,40 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- JasperReports - REPORTES -->
+
+		<!-- Motor principal de JasperReports -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.21.3</version>
+		</dependency>
+
+		<!-- Fuentes embebidas (necesario para PDF con caracteres especiales como tildes) -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>6.21.3</version>
+		</dependency>
+
+		<!-- Apache POI base (requerido por el exportador Excel) -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.4.0</version>
+		</dependency>
+
+		<!-- Exportador Word (.docx via Apache POI) -->
+		<!-- JasperReports exporta Word como RTF nativo; para .docx real usar poi-ooxml directamente -->
+		<!-- Si necesitas .docx real considera jacoco o poi directamente desde los datos -->
+
+		<!-- Logging (suprimir warnings internos de Jasper) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<!-- versión gestionada por Spring Boot -->
+		</dependency>
+
 	</dependencies>
 
 	<build>

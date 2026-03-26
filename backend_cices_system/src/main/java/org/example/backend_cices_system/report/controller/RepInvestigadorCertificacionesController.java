@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.controller;
 
+import org.example.backend_cices_system.report.dto.CertificacionFiltroDTO;
 import org.example.backend_cices_system.report.serviceVw.RepInvestigadorCertificacionesService;
 import org.example.backend_cices_system.report.view.RepInvestigadorCertificaciones;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,19 @@ public class RepInvestigadorCertificacionesController {
         this.service = service;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(service.obtenerTodasCertificaciones());
+    @PostMapping("/filtrar")
+    public ResponseEntity<?> filtrar(@RequestBody CertificacionFiltroDTO filtro,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "12") int size
+    ) {
+        return ResponseEntity.ok(service.filtrarCertificacionesPaginado(filtro, page, size));
     }
 
-    @GetMapping("/identificacion/{identificacion}")
-    public List<RepInvestigadorCertificaciones> getByIdentificacion(@PathVariable String identificacion) {
-        return service.buscarPorIdentificacion(identificacion);
+    @PostMapping("/reporte")
+    public ResponseEntity<byte[]> exportar(
+            @RequestBody CertificacionFiltroDTO filtro,
+            @RequestParam String formato
+    ) {
+        return service.generarReporte(filtro, formato);
     }
 }

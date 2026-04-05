@@ -42,7 +42,12 @@ const ModalBitacora = ({ gasto, token, onClose }) => {
                 {/* Bitácora */}
                 {loading ? (
                     <p>Cargando...</p>
-                ) : (
+                ) : bitacoraOrdenada.length === 0 ? (
+                    <div className="text-center text-gray-500 mt-6">
+                    <p className="text-lg">📭</p>
+                    <p>No hay actualizaciones para este gasto</p>
+                    </div>
+                    ) : (
                     bitacoraOrdenada.map((b, i) => {
 
                         const siguiente = bitacoraOrdenada[i - 1];

@@ -1,33 +1,31 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.NotificacionRepository;
 import org.example.backend_cices_system.data.NotificacionUsuarioRepository;
+import org.example.backend_cices_system.dto.CodigoDTO;
 import org.example.backend_cices_system.dto.NotificacionDTO;
 import org.example.backend_cices_system.dto.UsuarioDTO;
 import org.example.backend_cices_system.logic.Notificacion;
 import org.example.backend_cices_system.logic.NotificacionUsuario;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
+@RequiredArgsConstructor
 public class NotificacionService {
     private final NotificacionRepository notificacionRepository;
-    private final NotificacionUsuarioRepository notificacionUsuarioRepository;
     private final CatalogoService catalogoService;
-    private final UsuarioService usuarioService;
-
-    public NotificacionService(NotificacionRepository notificacionRepository, UsuarioService usuarioService,
-                               NotificacionUsuarioRepository notificacionUsuarioRepository, CatalogoService catalogoService) {
-        this.catalogoService = catalogoService;
-        this.usuarioService = usuarioService;
-        this.notificacionRepository = notificacionRepository;
-        this.notificacionUsuarioRepository = notificacionUsuarioRepository;
-    }
 
     @Transactional
     public Notificacion guardarNotificacion(NotificacionDTO notificacionDTO) {
         var notificacion = new Notificacion();
-        notificacion.setIdCodigoTipoCategoria(notificacionDTO.categoria().id());
+
+        var categoria = codigoPorCategoria(notificacionDTO.categoria());
+        notificacion.setIdCodigoTipoCategoria(categoria);
+
         notificacion.setIdCodigoTipoPrioridad(notificacionDTO.prioridad().id());
         notificacion.setAsunto(notificacionDTO.asunto());
         notificacion.setMensaje(notificacionDTO.mensaje());
@@ -35,16 +33,21 @@ public class NotificacionService {
 
         notificacionRepository.save(notificacion);
 
-        for(UsuarioDTO usuarioDTO : notificacionDTO.usuarios()) {
-            var notificacionUsuario = new NotificacionUsuario();
-            notificacionUsuario.setIdNotificacion(notificacion);
-
-            var usuario = usuarioService.obtenerUsuarioActivo(usuarioDTO.nombreUsuario()).get();
-            notificacionUsuario.setIdUsuario(usuario);
-
-            notificacionUsuarioRepository.save(notificacionUsuario);
-        }
-
         return notificacion;
+    }
+
+    public NotificacionDTO obtenerDTO(Notificacion notificacion){
+        return new NotificacionDTO(
+                notificacion.getId(),
+                catalogoService.obtenerDto(notificacion.getIdCodigoTipoCategoria()).valor(),
+                catalogoService.obtenerDto(notificacion.getIdCodigoTipoPrioridad()),
+                notificacion.getAsunto(),
+                notificacion.getMensaje(),
+                notificacion.getFechaCreacion()
+        );
+    }
+
+    public Short codigoPorCategoria(String categoria){
+        return catalogoService.codigoXNombreValor("CATEGORIA_NOTIFICACION", categoria);
     }
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface NotificacionUsuarioRepository extends JpaRepository<NotificacionUsuario, Integer> {
-	Optional<NotificacionUsuario> findByIdAndIdUsuario_NombreUsuarioIgnoreCase(Integer id, String nombreUsuario);
+    Optional<NotificacionUsuario> findByIdAndIdUsuario_NombreUsuarioIgnoreCase(Integer idNotificacionUsuario, String nombreUsuario);
 }

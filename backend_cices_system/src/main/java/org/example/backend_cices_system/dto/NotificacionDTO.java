@@ -5,10 +5,9 @@ import java.util.List;
 
 public record NotificacionDTO (
     Integer id,
-    CodigoDTO categoria,
+    String categoria,
     CodigoDTO prioridad,
     String asunto,
     String mensaje,
-    LocalDate fechaCreacion,
-    List<UsuarioDTO> usuarios
+    LocalDate fechaCreacion
 ){}

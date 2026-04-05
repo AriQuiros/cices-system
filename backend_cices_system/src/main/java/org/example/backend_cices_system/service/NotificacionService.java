@@ -26,7 +26,7 @@ public class NotificacionService {
         var categoria = codigoPorCategoria(notificacionDTO.categoria());
         notificacion.setIdCodigoTipoCategoria(categoria);
 
-        notificacion.setIdCodigoTipoPrioridad(notificacionDTO.prioridad().id());
+        notificacion.setIdCodigoTipoPrioridad(null);
         notificacion.setAsunto(notificacionDTO.asunto());
         notificacion.setMensaje(notificacionDTO.mensaje());
         notificacion.setFechaCreacion(notificacionDTO.fechaCreacion());
@@ -40,7 +40,7 @@ public class NotificacionService {
         return new NotificacionDTO(
                 notificacion.getId(),
                 catalogoService.obtenerDto(notificacion.getIdCodigoTipoCategoria()).valor(),
-                catalogoService.obtenerDto(notificacion.getIdCodigoTipoPrioridad()),
+                null,
                 notificacion.getAsunto(),
                 notificacion.getMensaje(),
                 notificacion.getFechaCreacion()

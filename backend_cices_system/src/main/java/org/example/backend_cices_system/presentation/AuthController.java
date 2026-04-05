@@ -2,8 +2,12 @@ package org.example.backend_cices_system.presentation;
 import org.example.backend_cices_system.dto.auth.LoginRequest;
 import org.example.backend_cices_system.service.AuthService;
 import org.example.backend_cices_system.service.LoginAttemptService;
+import org.example.backend_cices_system.service.PasswordResetService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -12,10 +16,14 @@ public class AuthController {
 
     private final AuthService authService;
     private final LoginAttemptService attemptService;
+    @Autowired
+    private PasswordResetService passwordResetService;
 
-    public AuthController(AuthService authService, LoginAttemptService attemptService) {
+    public AuthController(AuthService authService, LoginAttemptService attemptService,
+                          PasswordResetService passwordResetService) {
         this.authService = authService;
         this.attemptService = attemptService;
+        this.passwordResetService = passwordResetService;
     }
 
     @PostMapping("/login")
@@ -35,5 +43,24 @@ public class AuthController {
                     .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
                     .body(java.util.Map.of("error","Credenciales inválidas","remaining",remaining));
         }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String correo) {
+
+        passwordResetService.solicitarReset(correo.trim());
+
+        return ResponseEntity.ok("Correo enviado correctamente a: " + correo);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> body) {
+
+        String token = body.get("token");
+        String nuevaPassword = body.get("nuevaPassword");
+
+        passwordResetService.resetearPassword(token, nuevaPassword);
+
+        return ResponseEntity.ok("Contraseña actualizada correctamente");
     }
 }

@@ -1,0 +1,231 @@
+.cert-page {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.cert-card {
+    max-width: 1700px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.cert-title {
+    margin: 0 0 18px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.cert-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+}
+
+.cert-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: #2f3f4a;
+}
+
+.cert-order-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cert-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: #134f6c;
+    font-weight: 600;
+}
+
+.cert-select,
+.cert-input {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 0.95rem;
+    color: #334155;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.cert-select:focus,
+.cert-input:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.cert-filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.cert-field {
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+    padding: 10px;
+}
+
+.cert-select__control {
+    min-height: 42px !important;
+    border-radius: 10px !important;
+    border: 1px solid #b6cbd8 !important;
+    box-shadow: none !important;
+}
+
+.cert-select__control:hover {
+    border-color: #0fc3f3 !important;
+}
+
+.cert-select__control--is-focused {
+    border-color: #0fc3f3 !important;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2) !important;
+}
+
+.cert-select__menu {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 20 !important;
+}
+
+.cert-select__option--is-focused {
+    background: #edf7fc !important;
+}
+
+.cert-select__multi-value {
+    background: #e7f6fd !important;
+    border-radius: 12px !important;
+}
+
+.cert-select__multi-value__label {
+    color: #114866 !important;
+    font-size: 0.8rem !important;
+}
+
+.cert-summary {
+    margin-bottom: 12px;
+    border: 1px solid #d8edf8;
+    border-radius: 10px;
+    background: #f5fbff;
+    padding: 12px;
+}
+
+.cert-summary-title {
+    margin: 0 0 8px;
+    color: #134f6c;
+    font-size: 1.05rem;
+}
+
+.cert-summary-total {
+    margin: 0 0 6px;
+}
+
+.cert-summary-status {
+    margin: 0;
+}
+
+.cert-summary-list {
+    margin: 6px 0 0;
+    padding-left: 18px;
+}
+
+.cert-summary-list li {
+    margin-bottom: 4px;
+}
+
+.cert-table-card {
+    width: 100%;
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.cert-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.cert-table th,
+.cert-table td {
+    border: 1px solid #d8e4ec;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.cert-table th {
+    background: #edf7fc;
+    color: #123f57;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.cert-table td {
+    color: #2f3f4a;
+}
+
+.cert-table th:nth-child(6),
+.cert-table td:nth-child(6) {
+    min-width: 100px;
+}
+
+.cert-table tbody tr:nth-child(even) {
+    background: #f8fcff;
+}
+
+.cert-empty {
+    text-align: center;
+    color: #6b7280;
+    font-weight: 600;
+    padding: 18px !important;
+}
+
+@media (max-width: 768px) {
+    .cert-page {
+        padding: 12px;
+    }
+
+    .cert-card {
+        padding: 14px;
+    }
+
+    .cert-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cert-order-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cert-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

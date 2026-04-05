@@ -209,7 +209,7 @@
             <textField evaluationTime="Report">
                 <reportElement style="FooterText" x="670" y="5" width="112" height="15"/>
                 <textElement textAlignment="Left" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$V{PAGE_COUNT}]]></textFieldExpression>
             </textField>
 
         </band>

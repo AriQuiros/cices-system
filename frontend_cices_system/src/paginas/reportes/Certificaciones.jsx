@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import Select from "react-select";
-import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
-import { useDebounce } from "../../../hooks/useDebounce";
-import { AppContext } from "../../../context/AppContext.jsx";
-import "../../../styles/paginas.css";
+import { useTiposCatalogo } from "../../hooks/useTiposCatalogo.js";
+import { useDebounce } from "../../hooks/useDebounce.js";
+import { AppContext } from "../../context/AppContext.jsx";
+import "./Certificaciones.css";
 
 // Agrupamiento se mantiene en frontend
 const agruparPorInvestigador = (data, ordenFecha = "desc") => {

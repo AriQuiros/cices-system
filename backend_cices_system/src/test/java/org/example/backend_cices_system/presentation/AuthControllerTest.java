@@ -4,6 +4,7 @@ import org.example.backend_cices_system.dto.auth.LoginResponse;
 import org.example.backend_cices_system.dto.auth.UserInfo;
 import org.example.backend_cices_system.service.AuthService;
 import org.example.backend_cices_system.service.LoginAttemptService;
+import org.example.backend_cices_system.service.PasswordResetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,13 +26,14 @@ class AuthControllerTest {
     private MockMvc mockMvc;
     private AuthService authService;
     private LoginAttemptService attemptService;
+    private PasswordResetService passwordResetService;
 
     @BeforeEach
     void setUp() {
         authService = Mockito.mock(AuthService.class);
         attemptService = Mockito.mock(LoginAttemptService.class);
 
-        AuthController controller = new AuthController(authService, attemptService);
+        AuthController controller = new AuthController(authService, attemptService, passwordResetService);
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)

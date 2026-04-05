@@ -2,8 +2,10 @@ package org.example.backend_cices_system.presentation;
 
 import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.GastoDTO;
+import org.example.backend_cices_system.logic.Usuario;
 import org.example.backend_cices_system.service.GastoService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,14 +27,16 @@ public class GastoController {
     }
 
     @PutMapping("/actualizar")
-    public ResponseEntity<?> actualizarGasto (@RequestBody @Valid GastoDTO dto){
-        var gasto = gastoService.actualizarGasto(dto);
+    public ResponseEntity<?> actualizarGasto (@RequestBody @Valid GastoDTO dto, Authentication authentication){
+        var usuario = (Usuario) authentication.getPrincipal();
+        var gasto = gastoService.actualizarGasto(dto, usuario);
         return ResponseEntity.ok(gasto);
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> eliminarGasto (@PathVariable Integer id){
-        var gasto = gastoService.eliminarGasto(id);
+    public ResponseEntity<?> eliminarGasto (@PathVariable Integer id,Authentication authentication){
+        var usuario = (Usuario) authentication.getPrincipal();
+        var gasto = gastoService.eliminarGasto(id, usuario);
         return ResponseEntity.ok(gasto);
     }
 }

@@ -1,8 +1,7 @@
 package org.example.backend_cices_system.report.serviceVw;
 
-import org.example.backend_cices_system.logic.Proyecto;
-import org.example.backend_cices_system.report.audit.PresupuestoBit;
-import org.example.backend_cices_system.report.dao.PresupuestoBitRepository;
+import org.example.backend_cices_system.logic.audit.PresupuestoBit;
+import org.example.backend_cices_system.data.audit.PresupuestoBitRepository;
 import org.example.backend_cices_system.report.dao.RepPresupuestoBaseRepository;
 import org.example.backend_cices_system.report.dao.RepPresupuestoGastosRepository;
 import org.example.backend_cices_system.report.dao.RepPresupuestoHorasRepository;

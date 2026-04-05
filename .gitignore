@@ -31,7 +31,7 @@ cypress/videos/
 logs/
 
 # Environment variables
-.env
+backend_cices_system/.env
 .env.local
 .env.*.local
 

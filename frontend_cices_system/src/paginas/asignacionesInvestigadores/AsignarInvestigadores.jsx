@@ -43,8 +43,6 @@ const AsignarInvestigadores = () => {
 
         const timeout = setTimeout(async () => {
             try {
-                obtenerRolesProyecto(token).then(setRoles);
-
                 const res = await obtenerInvestigadoresActivos(token, texto);
 
                 const filtrados = (res || []).filter(inv => {
@@ -67,7 +65,18 @@ const AsignarInvestigadores = () => {
 
         return () => clearTimeout(timeout);
     }, [investigadoresForm, filaBuscando, token, investigadoresRegistrados]);
+    useEffect(() => {
+        const cargarRoles = async () => {
+            try {
+                const res = await obtenerRolesProyecto(token);
+                setRoles(res || []);
+            } catch {
+                notify.error("Error cargando roles");
+            }
+        };
 
+        cargarRoles();
+    }, [token]);
     const seleccionarProyecto = async (p) => {
         if (!p) {
             setProyectoSeleccionado(null);

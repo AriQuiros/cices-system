@@ -5,6 +5,7 @@ import org.example.backend_cices_system.dto.ProyectoFechasDTO;
 import org.example.backend_cices_system.report.dao.RepProyectoBaseRepository;
 import org.example.backend_cices_system.report.view.RepInvestigadorProyecto;
 import org.example.backend_cices_system.report.view.RepProyectoBase;
+import org.example.backend_cices_system.service.PermisoProyectoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +16,14 @@ public class RepProyectoBaseService {
 
     private final RepProyectoBaseRepository repo;
     private final RepInvestigadorProyectoService repInvestigadorProyectoService;
+    private final PermisoProyectoService permisoProyectoService;
 
-    public RepProyectoBaseService(RepProyectoBaseRepository repo, RepInvestigadorProyectoService repInvestigadorProyectoService) {
+    public RepProyectoBaseService(RepProyectoBaseRepository repo,
+                                  RepInvestigadorProyectoService repInvestigadorProyectoService,
+                                  PermisoProyectoService permisoProyectoService) {
         this.repo = repo;
         this.repInvestigadorProyectoService = repInvestigadorProyectoService;
+        this.permisoProyectoService = permisoProyectoService;
     }
 
     public List<RepProyectoBase> obtenerTodos() {
@@ -63,7 +68,8 @@ public class RepProyectoBaseService {
         return repInvestigadorProyectoService
                 .buscarPorIdInvestigador(id)
                 .stream()
-                .filter(p -> "PRINCIPAL".equalsIgnoreCase(p.getRolProyecto()))
+                .filter(p -> "PRINCIPAL".equalsIgnoreCase(p.getRolProyecto())
+                        || permisoProyectoService.existByInvestigadorProyectoId(p.getIdInvestigadorProyecto()))
                 .map(p -> new ProyectoFechasDTO(
                         p.getCodigoProyecto(),
                         p.getNombreProyecto(),

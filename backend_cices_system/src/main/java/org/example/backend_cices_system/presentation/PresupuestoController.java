@@ -3,9 +3,11 @@ package org.example.backend_cices_system.presentation;
 import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.PresupuestoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
+import org.example.backend_cices_system.logic.Usuario;
 import org.example.backend_cices_system.service.PresupuestoService;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +36,10 @@ public class PresupuestoController {
 
     @PostMapping("/actualizar")
     public ResponseEntity<?> actualizarPresupuesto(
-            @RequestBody @Valid PresupuestoDTO dto) {
-        var presupuesto = presupuestoService.actualizarPresupuesto(dto);
+            @RequestBody @Valid PresupuestoDTO dto,
+            Authentication authentication) {
+        var usuario = (Usuario) authentication.getPrincipal();
+        var presupuesto = presupuestoService.actualizarPresupuesto(dto, usuario);
         return ResponseEntity.ok(presupuesto);
     }
 

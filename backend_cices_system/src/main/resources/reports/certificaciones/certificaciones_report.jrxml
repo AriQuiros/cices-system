@@ -59,28 +59,32 @@
         fontSize="8"
         isBold="true"
         forecolor="#FFFFFF"
-        backcolor="#2E7D32"/>
+        backcolor="#2E7D32"
+        mode="Opaque"/>
 
     <style name="BadgeVencido"
         fontName="DejaVu Sans"
         fontSize="8"
         isBold="true"
         forecolor="#FFFFFF"
-        backcolor="#C62828"/>
+        backcolor="#C62828"
+        mode="Opaque"/>
 
     <style name="BadgePendiente"
         fontName="DejaVu Sans"
         fontSize="8"
         isBold="true"
         forecolor="#FFFFFF"
-        backcolor="#E65100"/>
+        backcolor="#E65100"
+        mode="Opaque"/>
 
     <style name="BadgeDefault"
         fontName="DejaVu Sans"
         fontSize="8"
         isBold="true"
         forecolor="#FFFFFF"
-        backcolor="#546E7A"/>
+        backcolor="#546E7A"
+        mode="Opaque"/>
 
     <style name="SummaryLabel"
         fontName="DejaVu Sans"
@@ -134,8 +138,20 @@
 
     <!-- 4. VARIABLES -->
 
-    <variable name="TOTAL_REGISTROS" class="java.lang.Integer" calculation="Count">
+    <variable name="TOTAL_REGISTROS" class="java.lang.Integer" calculation="Count" resetType="Report">
         <variableExpression><![CDATA[$F{identificacionInvestigador}]]></variableExpression>
+    </variable>
+
+    <variable name="TOTAL_VIGENTE" class="java.lang.Integer" calculation="Count" resetType="Report">
+        <variableExpression><![CDATA[$F{estado} != null && $F{estado}.toUpperCase().contains("VIGENTE") && !$F{estado}.toUpperCase().contains("PROXIMA A VENCER") ? $F{estado} : null]]></variableExpression>
+    </variable>
+
+    <variable name="TOTAL_VENCIDO" class="java.lang.Integer" calculation="Count" resetType="Report">
+        <variableExpression><![CDATA[$F{estado} != null && $F{estado}.toUpperCase().contains("VENCIDA") ? $F{estado} : null]]></variableExpression>
+    </variable>
+
+    <variable name="TOTAL_PENDIENTE" class="java.lang.Integer" calculation="Count" resetType="Report">
+        <variableExpression><![CDATA[$F{estado} != null && $F{estado}.toUpperCase().contains("PROXIMA A VENCER") ? $F{estado} : null]]></variableExpression>
     </variable>
 
     <!-- 5. PAGE HEADER -->
@@ -212,13 +228,13 @@
             </staticText>
 
             <staticText>
-                <reportElement style="ColHeader" x="460" y="0" width="110" height="20"/>
+                <reportElement style="ColHeader" x="460" y="0" width="109" height="20"/>
                 <textElement textAlignment="Center"/>
                 <text><![CDATA[Tipo]]></text>
             </staticText>
 
             <staticText>
-                <reportElement style="ColHeader" x="570" y="0" width="100" height="20"/>
+                <reportElement style="ColHeader" x="571" y="0" width="98" height="20"/>
                 <textElement textAlignment="Center"/>
                 <text><![CDATA[Estado]]></text>
             </staticText>
@@ -274,19 +290,19 @@
 
             <!-- Tipo -->
             <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement x="460" y="1" width="110" height="16"/>
+                <reportElement x="460" y="1" width="109" height="16"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
             </textField>
 
-            <!-- Estado con badge de color condicional -->
+            <!-- Estado — texto con forecolor condicional, sin depender de mode="Opaque" del badge -->
             <textField isBlankWhenNull="true">
-                <reportElement x="575" y="2" width="90" height="14">
+                <reportElement x="570" y="1" width="100" height="16">
                     <styleExpression><![CDATA[
                         $F{estado} == null ? "BadgeDefault"
-                        : $F{estado}.toUpperCase().contains("VIGENTE")   ? "BadgeVigente"
-                        : $F{estado}.toUpperCase().contains("VENCIDO")   ? "BadgeVencido"
-                        : $F{estado}.toUpperCase().contains("PENDIENTE") ? "BadgePendiente"
+                        : $F{estado}.toUpperCase().contains("PROXIMA A VENCER") ? "BadgePendiente"
+                        : $F{estado}.toUpperCase().contains("VENCIDA")          ? "BadgeVencido"
+                        : $F{estado}.toUpperCase().contains("VIGENTE")           ? "BadgeVigente"
                         : "BadgeDefault"
                     ]]></styleExpression>
                 </reportElement>
@@ -323,12 +339,18 @@
                 <textFieldExpression><![CDATA[$P{PIE_TEXTO}]]></textFieldExpression>
             </textField>
 
-            <textField evaluationTime="Report">
-                <reportElement style="FooterText" x="550" y="5" width="232" height="15"/>
+            <!-- Número de página -->
+            <textField>
+                <reportElement style="FooterText" x="550" y="5" width="120" height="15"/>
                 <textElement textAlignment="Right" verticalAlignment="Middle"/>
-                <textFieldExpression>
-                    <![CDATA["Pagina " + $V{PAGE_NUMBER} + " de " + $V{PAGE_COUNT}]]>
-                </textFieldExpression>
+                <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de"]]></textFieldExpression>
+            </textField>
+
+            <!-- Total de páginas -->
+            <textField evaluationTime="Report">
+                <reportElement style="FooterText" x="670" y="5" width="112" height="15"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$V{PAGE_COUNT}]]></textFieldExpression>
             </textField>
 
         </band>
@@ -337,22 +359,76 @@
     <!-- 9. SUMMARY -->
 
     <summary>
-        <band height="24">
+        <band height="135" splitType="Prevent">
 
+            <!-- Línea separadora superior -->
             <line>
                 <reportElement x="0" y="0" width="782" height="1" forecolor="#1E3A5F"/>
-                <graphicElement><pen lineWidth="1.0"/></graphicElement>
+                <graphicElement><pen lineWidth="1.5"/></graphicElement>
             </line>
 
+            <!-- Título del resumen -->
             <staticText>
-                <reportElement style="SummaryLabel" x="0" y="5" width="120" height="14"/>
+                <reportElement style="SummaryLabel" x="0" y="8" width="200" height="14"/>
+                <textElement><paragraph leftIndent="4"/></textElement>
+                <text><![CDATA[Resumen de certificaciones]]></text>
+            </staticText>
+
+            <!-- Total de registros -->
+            <staticText>
+                <reportElement style="SummaryLabel" x="0" y="28" width="130" height="14"/>
                 <textElement><paragraph leftIndent="4"/></textElement>
                 <text><![CDATA[Total de registros:]]></text>
             </staticText>
-
             <textField>
-                <reportElement style="SummaryLabel" x="120" y="5" width="60" height="14"/>
+                <reportElement style="SummaryLabel" x="130" y="28" width="60" height="14"/>
                 <textFieldExpression><![CDATA[$V{TOTAL_REGISTROS}]]></textFieldExpression>
+            </textField>
+
+            <!-- Separador -->
+            <line>
+                <reportElement x="0" y="48" width="782" height="1" forecolor="#E0E0E0"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </line>
+
+            <!-- Subtítulo por estado -->
+            <staticText>
+                <reportElement style="SummaryLabel" x="0" y="54" width="200" height="13"/>
+                <textElement><paragraph leftIndent="4"/></textElement>
+                <text><![CDATA[Cantidad por estado:]]></text>
+            </staticText>
+
+            <!-- Badge VIGENTE + conteo -->
+            <textField isBlankWhenNull="true">
+                <reportElement style="BadgeVigente" x="0" y="71" width="70" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["VIGENTE"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="SummaryLabel" x="76" y="71" width="130" height="14"/>
+                <textFieldExpression><![CDATA["Vigentes: " + $V{TOTAL_VIGENTE}]]></textFieldExpression>
+            </textField>
+
+            <!-- Badge VENCIDA + conteo -->
+            <textField isBlankWhenNull="true">
+                <reportElement style="BadgeVencido" x="0" y="91" width="70" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["VENCIDA"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="SummaryLabel" x="76" y="91" width="130" height="14"/>
+                <textFieldExpression><![CDATA["Vencidas: " + $V{TOTAL_VENCIDO}]]></textFieldExpression>
+            </textField>
+
+            <!-- Badge PROXIMA A VENCER + conteo -->
+            <textField isBlankWhenNull="true">
+                <reportElement style="BadgePendiente" x="0" y="111" width="130" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["PRÓXIMA A VENCER"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="SummaryLabel" x="136" y="111" width="180" height="14"/>
+                <textFieldExpression><![CDATA["Próximas a vencer: " + $V{TOTAL_PENDIENTE}]]></textFieldExpression>
             </textField>
 
         </band>

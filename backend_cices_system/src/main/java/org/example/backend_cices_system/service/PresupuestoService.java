@@ -1,25 +1,23 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.PresupuestoRepository;
-import org.example.backend_cices_system.dto.CodigoDTO;
 import org.example.backend_cices_system.dto.PresupuestoDTO;
-import org.example.backend_cices_system.logic.Codigo;
 import org.example.backend_cices_system.logic.Presupuesto;
 import org.example.backend_cices_system.logic.Proyecto;
+import org.example.backend_cices_system.logic.Usuario;
+import org.example.backend_cices_system.service.audit.PresupuestoBitService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class PresupuestoService {
     private final PresupuestoRepository presupuestoRepository;
+    private final PresupuestoBitService presupuestoBitService;
     private final CatalogoService catalogoService;
 
-    public PresupuestoService(PresupuestoRepository presupuestoRepository, CatalogoService catalogoService) {
-        this.catalogoService = catalogoService;
-        this.presupuestoRepository = presupuestoRepository;
-    }
 
     public Integer guardarPresupuesto(List<PresupuestoDTO> listDTO, Proyecto proyecto) {
         for(PresupuestoDTO presupuestoDTO:listDTO) {
@@ -45,8 +43,14 @@ public class PresupuestoService {
         return listDTO.size();
     }
 
-    public PresupuestoDTO actualizarPresupuesto(PresupuestoDTO presupuestoDTO){
+    public PresupuestoDTO actualizarPresupuesto(PresupuestoDTO presupuestoDTO, Usuario usuario){
         Presupuesto presupuesto = obtenerPresupuesto(presupuestoDTO.id());
+
+        if(existenCambios(presupuestoDTO, presupuesto)) {
+            presupuestoBitService.registrarBitacora(presupuesto,
+                    usuario.getId(),
+                    'U');
+        }
 
         presupuesto.setDescripcion(presupuestoDTO.descripcion());
         presupuesto.setFechaAsignacion(presupuestoDTO.fechaAsignacion());
@@ -62,7 +66,9 @@ public class PresupuestoService {
             presupuesto.setCantidadHorasMes(presupuestoDTO.cantidadHorasMes());
         }
 
-        return obtenerDTO(presupuestoRepository.save(presupuesto));
+        presupuestoRepository.save(presupuesto);
+
+        return presupuestoDTO;
     }
 
     public List<PresupuestoDTO> obtenerPresupuestosPorProyecto(Proyecto proyecto) {
@@ -97,5 +103,15 @@ public class PresupuestoService {
     public Presupuesto obtenerPresupuesto(Integer idPresupuesto) {
         return presupuestoRepository.findById(idPresupuesto)
                 .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado para el ID: " + idPresupuesto));
+    }
+
+    private boolean existenCambios(PresupuestoDTO presupuestoDTO, Presupuesto presupuesto){
+        var monto = presupuestoDTO.monto();
+        var cantidadMeses = presupuestoDTO.cantidadMeses();
+        var horasMes = presupuestoDTO.cantidadHorasMes();
+
+        return monto != null ? !monto.equals(presupuesto.getMontoAsignado()) :
+                !cantidadMeses.equals(presupuesto.getCantidadMeses()) ||
+                        !horasMes.equals(presupuesto.getCantidadHorasMes());
     }
 }

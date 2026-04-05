@@ -6,6 +6,7 @@ import Select from "react-select";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 import "./GestionGastos.css";
 import BotonVolver from "../../../components/BotonVolver.jsx";
+import ModalBitacora from "./ModalBitacora.jsx";
 
 const ConsultaGastos = () => {
 
@@ -21,6 +22,9 @@ const ConsultaGastos = () => {
 
     const [ordenFechaGasto, setOrdenFechaGasto] = useState("desc");
     const [ordenMontoGasto, setOrdenMontoGasto] = useState("ninguno");
+
+    const [mostrarModal, setMostrarModal] = useState(false);
+    const [gastoSeleccionado, setGastoSeleccionado] = useState(null);
 
     const seleccionarProyecto = async (proyecto) => {
         if (!proyecto) {
@@ -100,6 +104,11 @@ const ConsultaGastos = () => {
 
     const manejarCategoriasSelect = (selectedOptions) => {
         setCategoriasFiltro(selectedOptions ? selectedOptions.map(o => o.value) : []);
+    };
+
+    const abrirBitacora = (gasto) => {
+        setGastoSeleccionado(gasto);
+        setMostrarModal(true);
     };
 
     return (
@@ -263,6 +272,7 @@ const ConsultaGastos = () => {
                                             <th>Descripcion</th>
                                             <th>Fecha</th>
                                             <th>Monto</th>
+                                            <th>Acciones</th>
                                         </tr>
                                         </thead>
 
@@ -272,6 +282,14 @@ const ConsultaGastos = () => {
                                                 <td>{g.descripcion}</td>
                                                 <td>{g.fechaGasto}</td>
                                                 <td>{g.monto}</td>
+                                                <td>
+                                                    <button
+                                                        onClick={() => abrirBitacora(g)}
+                                                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                                                    >
+                                                        Ver cambios
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                         </tbody>
@@ -289,6 +307,14 @@ const ConsultaGastos = () => {
                 )}
 
             </div>
+
+            {mostrarModal && (
+                <ModalBitacora
+                    gasto={gastoSeleccionado}
+                    token={token}
+                    onClose={() => setMostrarModal(false)}
+                />
+            )}
 
         </div>
 

@@ -1,0 +1,110 @@
+.login-container {
+    min-height: calc(100vh - 160px);
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: url("/src/assets/images/imgPrincipal.png") no-repeat center center fixed;
+}
+
+.login-card {
+    background: rgba(233, 228, 228, 0.80);
+    border-radius: 10px;
+    padding: 25px 29px;
+    width: 100%;
+    max-width: 350px;
+}
+
+main {
+    background: transparent !important;
+}
+
+.login-card h2 {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 2rem;
+    font-family: "Inria Serif";
+    font-weight: lighter;
+}
+
+.login-card h3 {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: #005DA4;
+    font-family: Inter;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #005da4;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Inter;
+    font-size: 20px;
+}
+
+.btn-login:hover {
+    background: #0d6fc4;
+}
+
+.login-links {
+    margin-top: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.login-links a {
+    color: #005da4;
+    text-decoration: none;
+}
+
+.login-links a:hover {
+    text-decoration: underline;
+}
+
+.error {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    background-color: #fdecea;   /* rojo suave */
+    color: #b71c1c;              /* rojo fuerte */
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1px solid #f5c2c0;
+    text-align: center;
+}
+
+.error {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

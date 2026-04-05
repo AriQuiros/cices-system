@@ -38,7 +38,7 @@ export const menuConfig = [
             {
                 label: "Actualizar",
                 path: "/actualizar-proyecto",
-                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE", "INVESTIGADOR"]
             },
             {
                 label: "Consultar",
@@ -49,6 +49,11 @@ export const menuConfig = [
                 label: "Asignar Investigador",
                 path: "/asignar-investigadores",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
+            },
+            {
+                label: "Permiso Coordinador",
+                path: "/gestion-permiso-proyecto",
+                roles: ["INVESTIGADOR"]
             }
         ]
     },
@@ -103,11 +108,6 @@ export const menuConfig = [
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
-                label: "Certificaciones",
-                path: "/certificaciones",
-                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
-            },
-            {
                 label: "Gestión usuarios",
                 path: "/gestion-usuarios",
                 roles: ["DIRECCION"]
@@ -121,7 +121,7 @@ export const menuConfig = [
             { label: "Proyectos", path: "/reporte-proyectos", roles: ["*"] },
             { label: "Presupuestos", path: "/reporte-presupuestos", roles: ["*"] },
             { label: "Participantes", path: "/reporte-participantes", roles: ["*"] },
-            { label: "Acreditaciones", path: "/reporte-acreditaciones", roles: ["*"] }
+            { label: "Certificaciones", path: "/reporte-certificaciones", roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"] }
         ]
     },
 

@@ -1,4 +1,4 @@
-package org.example.backend_cices_system.report.audit;
+package org.example.backend_cices_system.logic.audit;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -28,10 +28,9 @@ public class PresupuestoBit {
     @Column(name = "ACC_BIT", nullable = false)
     private Character accBit;
 
-    @Size(max = 30)
     @NotNull
-    @Column(name = "USU_BIT", nullable = false, length = 30)
-    private String usuBit;
+    @Column(name = "USU_BIT", nullable = false)
+    private Integer usuBit;
 
     @NotNull
     @Column(name = "ID_PRESUPUESTO", nullable = false)
@@ -45,18 +44,9 @@ public class PresupuestoBit {
     private BigDecimal montoAsignadoOld;
 
     @Column(name = "CANTIDAD_HORAS_MES_OLD")
-    private Double cantidadHorasMesOld;
+    private BigDecimal cantidadHorasMesOld;
 
     @Column(name = "CANTIDAD_MESES_OLD")
     private Short cantidadMesesOld;
-
-    @Column(name = "MONTO_ASIGNADO_NEW", precision = 9, scale = 2)
-    private BigDecimal montoAsignadoNew;
-
-    @Column(name = "CANTIDAD_HORAS_MES_NEW")
-    private Double cantidadHorasMesNew;
-
-    @Column(name = "CANTIDAD_MESES_NEW")
-    private Short cantidadMesesNew;
 
 }

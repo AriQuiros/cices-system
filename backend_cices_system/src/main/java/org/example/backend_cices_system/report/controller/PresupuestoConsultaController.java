@@ -1,6 +1,6 @@
 package org.example.backend_cices_system.report.controller;
 
-import org.example.backend_cices_system.report.audit.PresupuestoBit;
+import org.example.backend_cices_system.logic.audit.PresupuestoBit;
 import org.example.backend_cices_system.report.serviceVw.PresupuestoConsultaService;
 import org.example.backend_cices_system.report.view.RepPresupuestoBase;
 import org.example.backend_cices_system.report.view.RepPresupuestoGastos;

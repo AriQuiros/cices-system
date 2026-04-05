@@ -1,6 +1,6 @@
-package org.example.backend_cices_system.report.dao;
+package org.example.backend_cices_system.data.audit;
 
-import org.example.backend_cices_system.report.audit.PresupuestoBit;
+import org.example.backend_cices_system.logic.audit.PresupuestoBit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

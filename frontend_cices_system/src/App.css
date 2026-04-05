@@ -61,116 +61,6 @@ header {
   width: 100%;
 }
 
-.topbar-actions {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.menu-toggle-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.notification-bell-btn {
-  margin-left: auto;
-  width: 38px;
-  height: 38px;
-  border: none;
-  background: transparent;
-  border-radius: 999px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.notification-bell-img {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-
-.notification-menu-wrapper {
-  margin-left: auto;
-  position: relative;
-}
-
-.notification-summary-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: min(420px, 92vw);
-  max-height: 420px;
-  background: #ffffff;
-  border: 1px solid #d9e6ee;
-  border-radius: 10px;
-  box-shadow: 0 8px 22px rgba(15, 58, 86, 0.18);
-  padding: 12px;
-  z-index: 1200;
-}
-
-.notification-summary-title {
-  margin: 0 0 10px 0;
-  color: #0b4f73;
-  font-weight: 700;
-}
-
-.notification-summary-list {
-  max-height: 280px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.notification-summary-item {
-  border: 1px solid #dbe9f1;
-  border-radius: 8px;
-  padding: 8px;
-  background: #f8fcff;
-}
-
-.notification-summary-item-type {
-  margin: 0 0 4px 0;
-  color: #0f172a;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.notification-summary-item-text {
-  margin: 0;
-  color: #334155;
-  font-size: 0.85rem;
-  line-height: 1.35;
-}
-
-.notification-summary-more {
-  margin: 4px 0 0 0;
-  color: #475569;
-  font-size: 0.85rem;
-  text-align: center;
-}
-
-.notification-view-all-btn {
-  display: block;
-  margin: 12px auto 0;
-  padding: 8px 12px;
-  border: 1px solid #8ed8ef;
-  border-radius: 8px;
-  background: #0FC3F3;
-  color: #052b3d;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.notification-view-all-btn:hover {
-  filter: brightness(0.95);
-}
-
 .divider nav {
   width: 100%;
   justify-content: space-between;
@@ -209,8 +99,8 @@ header {
 }
 
 .Menu button.cerrarSesionbtn:hover {
-    background: #004080;
-    color: white;
+  background: #004080;
+  color: white;
 }
 
 
@@ -328,7 +218,7 @@ footer {
   }
 
   main{
-      flex:1;
+    flex:1;
   }
 
   .page-name{
@@ -354,11 +244,11 @@ footer {
 
   /* Footer ya no fijo */
   footer {
-      margin-top: auto;
-      width: 100%;
-      position: relative;
-      background: #ccc;
-      padding: 0 20px;
+    margin-top: auto;
+    width: 100%;
+    position: relative;
+    background: #ccc;
+    padding: 0 20px;
   }
 
   .footer-content {
@@ -371,111 +261,111 @@ footer {
 
 
 .topbar-actions {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .menu-toggle-btn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 .notification-bell-btn {
-    margin-left: auto;
-    width: 38px;
-    height: 38px;
-    border: none;
-    background: transparent;
-    border-radius: 999px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+  margin-left: auto;
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .notification-bell-img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
 
 .notification-menu-wrapper {
-    margin-left: auto;
-    position: relative;
+  margin-left: auto;
+  position: relative;
 }
 
 .notification-summary-menu {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    width: min(420px, 92vw);
-    max-height: 420px;
-    background: #ffffff;
-    border: 1px solid #d9e6ee;
-    border-radius: 10px;
-    box-shadow: 0 8px 22px rgba(15, 58, 86, 0.18);
-    padding: 12px;
-    z-index: 1200;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(420px, 92vw);
+  max-height: 420px;
+  background: #ffffff;
+  border: 1px solid #d9e6ee;
+  border-radius: 10px;
+  box-shadow: 0 8px 22px rgba(15, 58, 86, 0.18);
+  padding: 12px;
+  z-index: 1200;
 }
 
 .notification-summary-title {
-    margin: 0 0 10px 0;
-    color: #0b4f73;
-    font-weight: 700;
+  margin: 0 0 10px 0;
+  color: #0b4f73;
+  font-weight: 700;
 }
 
 .notification-summary-list {
-    max-height: 280px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .notification-summary-item {
-    border: 1px solid #dbe9f1;
-    border-radius: 8px;
-    padding: 8px;
-    background: #f8fcff;
+  border: 1px solid #dbe9f1;
+  border-radius: 8px;
+  padding: 8px;
+  background: #f8fcff;
 }
 
 .notification-summary-item-type {
-    margin: 0 0 4px 0;
-    color: #0f172a;
-    font-weight: 700;
-    font-size: 0.9rem;
+  margin: 0 0 4px 0;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
 .notification-summary-item-text {
-    margin: 0;
-    color: #334155;
-    font-size: 0.85rem;
-    line-height: 1.35;
+  margin: 0;
+  color: #334155;
+  font-size: 0.85rem;
+  line-height: 1.35;
 }
 
 .notification-summary-more {
-    margin: 4px 0 0 0;
-    color: #475569;
-    font-size: 0.85rem;
-    text-align: center;
+  margin: 4px 0 0 0;
+  color: #475569;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 .notification-view-all-btn {
-    display: block;
-    margin: 12px auto 0;
-    padding: 8px 12px;
-    border: 1px solid #8ed8ef;
-    border-radius: 8px;
-    background: #0FC3F3;
-    color: #052b3d;
-    font-weight: 700;
-    cursor: pointer;
+  display: block;
+  margin: 12px auto 0;
+  padding: 8px 12px;
+  border: 1px solid #8ed8ef;
+  border-radius: 8px;
+  background: #0FC3F3;
+  color: #052b3d;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .notification-view-all-btn:hover {
-    filter: brightness(0.95);
+  filter: brightness(0.95);
 }

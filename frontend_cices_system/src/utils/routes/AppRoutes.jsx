@@ -47,9 +47,6 @@ import NotificacionesPage from "../../paginas/usuarios/Notificaciones.jsx";
 /* REPORTES */
 import Certificaciones from "../../paginas/reportes/Certificaciones.jsx";
 
-/* NOTIFICACIONES */
-import NotificacionesPage from "../../paginas/usuarios/notificaciones";
-
 function AppRoutes() {
     return (
         <main>

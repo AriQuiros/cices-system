@@ -120,7 +120,7 @@ const RegistroGastos = () => {
 
         try {
 
-            await GastosService.eliminarGasto(gasto.id);
+            await GastosService.eliminarGasto(gasto.id, token);
 
             const data = await DetalleGastos.obtenerPorProyecto(proyectoSeleccionado.codigoProyecto);
             setPresupuestos(data || []);
@@ -192,7 +192,7 @@ const RegistroGastos = () => {
                     monto: parseFloat(gasto.monto),
                     descripcion: gasto.descripcion,
                     fechaGasto: gasto.fechaGasto
-                });
+                }, token);
 
                 notify.success("Gasto actualizado");
 

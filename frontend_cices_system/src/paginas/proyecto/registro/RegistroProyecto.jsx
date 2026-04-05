@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { useProyecto } from "../../../context/proyectoCtx/UseProyecto.jsx";
 import { registrarProyecto } from "../../../services/ProyectoService.jsx";
 import { notify } from "../../../utils/ui/notify.jsx";
@@ -24,7 +24,7 @@ import {confirm} from "../../../utils/ui/confirm.jsx";
 
 function RegistroProyecto({ editable = false }) {
 
-    const { token } = useContext(AppContext);
+    const { token, user } = useContext(AppContext);
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
     const {
         proyecto,
@@ -43,11 +43,6 @@ function RegistroProyecto({ editable = false }) {
     // (los dejo por si los usas luego)
     const [showPresupuesto, setShowPresupuesto] = useState(false);
     const [showAsignarInvestigador, setShowAsignarInvestigador] = useState(false);
-
-    const handleVolver = () => {
-        setProyectoSeleccionado(null);
-        limpiarProyecto();
-    };
 
     const agruparEntidades = (lista = []) => {
 
@@ -194,6 +189,8 @@ console.log(proyectoFinal)
                 <div className="actualizar-proyecto-search">
                     <BuscadorProyecto
                         token={token}
+                        user={user}
+                        principal={true}
                         onSelect={seleccionarProyecto}
                     />
                 </div>

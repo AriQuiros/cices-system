@@ -14,7 +14,7 @@ sqlplus system/root @"%~dp0crear_constraints.sql" > "%OUTDIR%\crear_constraints.
 sqlplus system/root @"%~dp0crear_funciones.sql" > "%OUTDIR%\crear_funciones.txt"
 sqlplus system/root @"%~dp0crear_vistas.sql" > "%OUTDIR%\crear_vistas.txt"
 
-sqlplus system/root @"%~dp0%triggers%.sql" > "%OUTDIR%\%triggers%.txt"
+sqlplus system/root @"%~dp0crear_triggers_estados.sql" > "%OUTDIR%\crear_triggers_estados.txt"
 sqlplus system/root @"%~dp0tipos_codigos.sql" > "%OUTDIR%\tipos_codigos.txt"
 sqlplus system/root @"%~dp0datos_fijos.sql" > "%OUTDIR%\datos_fijos.txt"
 

@@ -5,7 +5,7 @@ import "./BotonVolver.css";
 
 const BotonVolver = ({ texto = "Volver" }) => {
     const { user } = useContext(AppContext);
-    const ruta = user.roles.includes("DIRECCION") ? "/dashboard" : "/listado-proyectos";
+    const ruta = user?.roles?.includes("DIRECCION") ? "/dashboard" : "/listado-proyectos";
     const navigate = useNavigate();
 
     const handleClick = () => {

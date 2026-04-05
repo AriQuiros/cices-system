@@ -1,13 +1,16 @@
 import { Routes, Route } from "react-router-dom";
 
 /* LOGIN */
-import Login from "../../paginas/login/Login";
+import Login from "../../paginas/usuarios/login/Login";
+import ForgotPassword from "../../paginas/usuarios/login/ForgotPassword";
+import ResetPassword from "../../paginas/usuarios/login/ResetPassword";
 
 /* USUARIOS */
-import Registro from "../../paginas/usuarios/registro/Registro";
-import ConsultaPersonal from "../../paginas/usuarios/ConsultaPersonal";
+import Registro from "../../paginas/usuarios/formUsuario/Registro";
+import Perfil from "../../paginas/usuarios/formUsuario/Perfil";
+import ConsultaPersonal from "../../paginas/usuarios/consulta/ConsultaPersonal.jsx";
 import ConsultaInvestigadores from "../../paginas/usuarios/investigadores/ConsultaInvestigadores";
-import GestionUsuarios from "../../paginas/usuarios/GestionUsuarios";
+import GestionUsuarios from "../../paginas/usuarios/consulta/GestionUsuarios.jsx";
 
 /* USUARIOS */
 import Certificaciones from "../../paginas/usuarios/investigadores/Certificaciones";
@@ -35,6 +38,8 @@ import HorasAsignadas from "../../paginas/presupuesto/horas/HorasAsignadas";
 import AsignarInvestigadores from "../../paginas/asignacionesInvestigadores/AsignarInvestigadores";
 import AsignarInvestigadoresHoras from "../../paginas/asignacionesInvestigadores/AsignarInvestigadorHoras.jsx";
 
+import GestionPermisoProyecto from "../../paginas/asignacionesInvestigadores/permisoProyecto/GestionPermisosProyecto.jsx";
+
 /* DIRECTOR */
 import PanelResumen from "../../paginas/director/PanelResumen";
 
@@ -45,10 +50,12 @@ function AppRoutes() {
 
                 {/* LOGIN */}
                 <Route path="/" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
                 {/* USUARIOS */}
                 <Route path="/registro" element={<Registro />} />
-                <Route path="/perfil" element={<Registro modoPerfil={true} />} />
+                <Route path="/perfil" element={<Perfil />} />
                 <Route path="/consulta-personal" element={<ConsultaPersonal />} />
                 <Route path="/consulta-investigadores" element={<ConsultaInvestigadores />} />
                 <Route path="/gestion-usuarios" element={<GestionUsuarios />} />
@@ -79,6 +86,7 @@ function AppRoutes() {
                 {/* ASIGNACIONES */}
                 <Route path="/asignar-investigadores" element={<AsignarInvestigadores />} />
                 <Route path="/asignar-investigadores-horas" element={<AsignarInvestigadoresHoras />} />
+                <Route path="/gestion-permiso-proyecto" element={<GestionPermisoProyecto />} />
 
                 {/* DIRECTOR */}
                 <Route path="/dashboard" element={<PanelResumen />} />

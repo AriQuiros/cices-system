@@ -114,4 +114,9 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
+
+    public Usuario cambiarContrasena(Usuario usuario, String contrasena){
+        usuario.setContrasena(encoder.encode(contrasena));
+        return usuarioRepository.save(usuario);
+    }
 }

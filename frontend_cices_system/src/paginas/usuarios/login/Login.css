@@ -3,7 +3,7 @@
     display: grid;
     place-items: center;
     padding: 20px;
-    background: url("/src/assets/images/ImgPrincipal.png") no-repeat center center fixed;
+    background: url("/src/assets/images/imgPrincipal.png") no-repeat center center fixed;
 }
 
 .login-card {
@@ -72,6 +72,7 @@ main {
 .login-links {
     margin-top: 35px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     font-size: 0.9rem;
     font-weight: bold;

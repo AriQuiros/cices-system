@@ -38,7 +38,7 @@ export const menuConfig = [
             {
                 label: "Actualizar",
                 path: "/actualizar-proyecto",
-                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
+                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE", "INVESTIGADOR"]
             },
             {
                 label: "Consultar",
@@ -49,6 +49,11 @@ export const menuConfig = [
                 label: "Asignar Investigador",
                 path: "/asignar-investigadores",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
+            },
+            {
+                label: "Permiso Coordinador",
+                path: "/gestion-permiso-proyecto",
+                roles: ["INVESTIGADOR"]
             }
         ]
     },

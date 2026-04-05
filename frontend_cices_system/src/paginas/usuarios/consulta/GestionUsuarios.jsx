@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
-import {notify} from "../../utils/ui/notify";
-import {confirm} from "../../utils/ui/confirm";
+import {notify} from "../../../utils/ui/notify.jsx";
+import {confirm} from "../../../utils/ui/confirm.jsx";
 import "./GestionUsuarios.css";
 
 export default function ListaUsuarios() {

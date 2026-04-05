@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Registro.css";
+import "../../../styles/paginas.css";
 
 import { EmpleadoProvider } from "../../../context/empleadoCtx/EmpleadoProvider.jsx";
 import { InvestigadorProvider } from "../../../context/investigadorCtx/InvestigadorProvider.jsx";
@@ -59,6 +59,24 @@ function RegistroInner({ modoPerfil = false }) {
     } = useAuthConfirm(user);
 
     const [confirmarContrasena, setConfirmarContrasena] = useState("");
+    const [mostrarContrasenas, setMostrarContrasenas] = useState(false);
+
+    const rolesSeleccionados = usuario?.roles || [];
+    const ROL_INVESTIGADOR = "INVESTIGADOR";
+
+    const puedeAgregarRol = (nombreRol) => {
+        if (rolesSeleccionados.some((r) => r.nombreRol === nombreRol)) return true;
+        if (rolesSeleccionados.length === 0) return true;
+        if (rolesSeleccionados.length >= 2) return false;
+
+        const rolActual = rolesSeleccionados[0]?.nombreRol;
+
+        if (rolActual === ROL_INVESTIGADOR) {
+            return nombreRol !== ROL_INVESTIGADOR;
+        }
+
+        return nombreRol === ROL_INVESTIGADOR;
+    };
 
     const countryOptions = Object.entries(countries.getNames("es")).map(
         ([code, name]) => ({ value: code, label: name })
@@ -102,6 +120,23 @@ function RegistroInner({ modoPerfil = false }) {
     return (
         <div className={`form-container ${modoPerfil ? "perfil-page" : ""}`}>
             <form className={`form-content ${modoPerfil ? "perfil-card" : ""}`} onSubmit={onSubmit}>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <button
+                        type="button"
+                        onClick={() => { window.location.href = "http://localhost:5173/"; }}
+                        style={{
+                            fontSize: "12px",
+                            padding: "6px 10px",
+                            borderRadius: "6px",
+                            border: "none",
+                            background: "#0FC3F3",
+                            color: "#ffffff",
+                            cursor: "pointer"
+                        }}
+                    >
+                        Volver al login
+                    </button>
+                </div>
                 <h2 className={modoPerfil ? "perfil-title" : ""}>{modoPerfil ? "Mi Perfil" : "Registro"}</h2>
                 <div className="row">
                     <InputField
@@ -273,7 +308,7 @@ function RegistroInner({ modoPerfil = false }) {
                     <>
                         <InputField
                             label="Contraseña"
-                            type="password"
+                            type={mostrarContrasenas ? "text" : "password"}
                             name="contrasena"
                             value={usuario?.contrasena || ""}
                             onChange={(e) =>
@@ -285,7 +320,7 @@ function RegistroInner({ modoPerfil = false }) {
 
                         <InputField
                             label="Confirmar Contraseña"
-                            type="password"
+                            type={mostrarContrasenas ? "text" : "password"}
                             value={confirmarContrasena}
                             onChange={(e) => setConfirmarContrasena(e.target.value)}
                             rules={[
@@ -297,38 +332,59 @@ function RegistroInner({ modoPerfil = false }) {
                             ]}
                             required
                         />
+
+                        <div className="input-group">
+                            <label className="input-label">
+                                <input
+                                    type="checkbox"
+                                    checked={mostrarContrasenas}
+                                    onChange={(e) => setMostrarContrasenas(e.target.checked)}
+                                    style={{ marginRight: "8px" }}
+                                />
+                                Mostrar contraseñas
+                            </label>
+                        </div>
                     </>
                 )}
 
                 {/* --- ROLES --- */}
                 <div className="roles">
-                    {rolesBD.map((rol) => (
-                        <label key={rol.id}>
-                            <input
-                                type="checkbox"
-                                value={rol.nombreRol}
-                                checked={(usuario?.roles || []).some(
-                                    (r) => r.nombreRol === rol.nombreRol
-                                )}
-                                onChange={(e) => {
-                                    const checked = e.target.checked;
-                                    let roles = [...(usuario.roles || [])];
+                    {rolesBD.map((rol) => {
+                        const checked = rolesSeleccionados.some(
+                            (r) => r.nombreRol === rol.nombreRol
+                        );
 
-                                    if (checked) {
-                                        roles.push(rol);
-                                    } else {
-                                        roles = roles.filter(
-                                            (r) => r.nombreRol !== rol.nombreRol
-                                        );
+                        return (
+                            <label key={rol.id}>
+                                <input
+                                    type="checkbox"
+                                    value={rol.nombreRol}
+                                    checked={checked}
+                                    onChange={(e) => {
+                                        const marcar = e.target.checked;
+                                        let roles = [...rolesSeleccionados];
+
+                                        if (marcar) {
+                                            if (!puedeAgregarRol(rol.nombreRol)) return;
+                                            if (!roles.some((r) => r.nombreRol === rol.nombreRol)) {
+                                                roles.push(rol);
+                                            }
+                                        } else {
+                                            roles = roles.filter(
+                                                (r) => r.nombreRol !== rol.nombreRol
+                                            );
+                                        }
+
+                                        actualizarCampoUsuario("roles", roles);
+                                    }}
+                                    disabled={
+                                        modoPerfil || (!checked && !puedeAgregarRol(rol.nombreRol))
                                     }
-
-                                    actualizarCampoUsuario("roles", roles);
-                                }}
-                                disabled={modoPerfil}
-                            />
-                            {rol.nombreRol}
-                        </label>
-                    ))}
+                                />
+                                {rol.nombreRol}
+                            </label>
+                        );
+                    })}
                 </div>
 
                 {/* --- INVESTIGADOR --- */}

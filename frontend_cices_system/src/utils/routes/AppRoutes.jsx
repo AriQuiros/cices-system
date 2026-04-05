@@ -8,6 +8,7 @@ import Registro from "../../paginas/usuarios/registro/Registro";
 import ConsultaPersonal from "../../paginas/usuarios/ConsultaPersonal";
 import ConsultaInvestigadores from "../../paginas/usuarios/investigadores/ConsultaInvestigadores";
 import GestionUsuarios from "../../paginas/usuarios/GestionUsuarios";
+import Notificaciones from "../../paginas/usuarios/Notificaciones";
 
 /* USUARIOS */
 import Certificaciones from "../../paginas/usuarios/investigadores/Certificaciones";
@@ -52,6 +53,8 @@ function AppRoutes() {
                 <Route path="/consulta-personal" element={<ConsultaPersonal />} />
                 <Route path="/consulta-investigadores" element={<ConsultaInvestigadores />} />
                 <Route path="/gestion-usuarios" element={<GestionUsuarios />} />
+                <Route path="/notificaciones" element={<Notificaciones />} />
+                <Route path="/Notificaciones" element={<Notificaciones />} />
 
                 {/* CERTIFICACIONES */}
                 <Route path="/certificaciones" element={<Certificaciones />} />

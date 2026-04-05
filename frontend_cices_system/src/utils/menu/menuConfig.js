@@ -108,11 +108,6 @@ export const menuConfig = [
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
-                label: "Certificaciones",
-                path: "/certificaciones",
-                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
-            },
-            {
                 label: "Gestión usuarios",
                 path: "/gestion-usuarios",
                 roles: ["DIRECCION"]
@@ -126,7 +121,7 @@ export const menuConfig = [
             { label: "Proyectos", path: "/reporte-proyectos", roles: ["*"] },
             { label: "Presupuestos", path: "/reporte-presupuestos", roles: ["*"] },
             { label: "Participantes", path: "/reporte-participantes", roles: ["*"] },
-            { label: "Acreditaciones", path: "/reporte-acreditaciones", roles: ["*"] }
+            { label: "Certificaciones", path: "/reporte-certificaciones", roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"] }
         ]
     },
 

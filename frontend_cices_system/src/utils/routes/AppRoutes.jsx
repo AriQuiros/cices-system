@@ -13,7 +13,6 @@ import ConsultaInvestigadores from "../../paginas/usuarios/investigadores/Consul
 import GestionUsuarios from "../../paginas/usuarios/consulta/GestionUsuarios.jsx";
 
 /* USUARIOS */
-import Certificaciones from "../../paginas/usuarios/investigadores/Certificaciones";
 import CertificacionesInvestigador from "../../paginas/usuarios/investigadores/CertificacionesInvestigador";
 
 /* PROYECTOS */
@@ -42,6 +41,10 @@ import GestionPermisoProyecto from "../../paginas/asignacionesInvestigadores/per
 
 /* DIRECTOR */
 import PanelResumen from "../../paginas/director/PanelResumen";
+
+/* REPORTES */
+
+import Certificaciones from "../../paginas/reportes/Certificaciones.jsx";
 
 function AppRoutes() {
     return (
@@ -90,6 +93,9 @@ function AppRoutes() {
 
                 {/* DIRECTOR */}
                 <Route path="/dashboard" element={<PanelResumen />} />
+
+                {/* REPORTES */}
+                <Route path="/reporte-certificaciones" element={<Certificaciones />} />
 
             </Routes>
         </main>

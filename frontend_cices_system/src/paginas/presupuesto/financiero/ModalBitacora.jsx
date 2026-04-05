@@ -32,8 +32,7 @@ const ModalBitacora = ({ gasto, token, onClose }) => {
 
                 <h2 className="text-xl font-bold mb-4">Bitácora</h2>
                 <p>Actualizaciones del gasto</p>
-
-                {/* Gasto actual */}
+                <h4 className="font-bold text-blue-900">Gasto Actual:</h4>
                 <div className="mb-4 p-3 rounded bg-gray-50">
                     <p><b>Descripción:</b> {gasto.descripcion}</p>
                     <p><b>Fecha:</b> {gasto.fechaGasto}</p>

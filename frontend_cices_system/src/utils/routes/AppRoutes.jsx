@@ -42,6 +42,9 @@ import GestionPermisoProyecto from "../../paginas/asignacionesInvestigadores/per
 /* DIRECTOR */
 import PanelResumen from "../../paginas/director/PanelResumen";
 
+/* NOTIFICACIONES */
+import NotificacionesPage from "../../paginas/usuarios/Notificaciones.jsx";
+
 /* REPORTES */
 
 import Certificaciones from "../../paginas/reportes/Certificaciones.jsx";
@@ -93,6 +96,9 @@ function AppRoutes() {
 
                 {/* DIRECTOR */}
                 <Route path="/dashboard" element={<PanelResumen />} />
+
+                {/* NOTIFICACIONES */}
+                <Route path="/notificaciones" element={<NotificacionesPage />} />
 
                 {/* REPORTES */}
                 <Route path="/reporte-certificaciones" element={<Certificaciones />} />

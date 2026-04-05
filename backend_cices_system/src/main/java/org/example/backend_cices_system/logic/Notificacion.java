@@ -24,7 +24,6 @@ public class Notificacion {
     @Column(name = "ID_CODIGO_TIPO_CATEGORIA", nullable = false)
     private Short idCodigoTipoCategoria;
 
-    @NotNull
     @Column(name = "ID_CODIGO_TIPO_PRIORIDAD")
     private Short idCodigoTipoPrioridad;
 

@@ -26,18 +26,23 @@ public class CertificacionService {
     }
 
     public Certificacion guardarCertificacion(CertificacionDTO certificacionDTO, Investigador investigador) {
-        var certificacion = new Certificacion();
+        var id = certificacionDTO.id();
+        var certificacion = id != null ? obtenerPorId(id) : new Certificacion();
         certificacion.setIdInvestigador(investigador);
 
         Entidad idEntidadEmisora = entidadService.guardarEntidad(certificacionDTO.entidadEmisora());
         certificacion.setIdEntidad(idEntidadEmisora);
 
         certificacion.setNombreCertificacion(certificacionDTO.nombreCertificacion());
-        certificacion.setFechaExpiracion(certificacionDTO.fechaExpiracion());
+
+        var fechaExpira = certificacionDTO.fechaExpiracion();
+        certificacion.setFechaExpiracion(fechaExpira);
 
         certificacion.setIdCodigoTipoCertificacion(certificacionDTO.tipoCertificacion().id());
 
-        Short codigoTipoEstado = catalogoService.codigoXNombreValor("ESTADO_CERTIFICACION", obtenerEstadoCertificacion(certificacionDTO.fechaExpiracion()));
+        Short codigoTipoEstado = catalogoService.codigoXNombreValor("ESTADO_CERTIFICACION",
+                fechaExpira != null ? obtenerEstadoCertificacion(fechaExpira): "VIGENTE");
+
         certificacion.setIdCodigoTipoEstado(codigoTipoEstado);
 
         certificacionRepository.save(certificacion);
@@ -68,6 +73,18 @@ public class CertificacionService {
     public List<CertificacionDTO> certificacionDTOList(Investigador investigador){
         return certificacionRepository.findCertificacionByIdInvestigador(investigador).stream()
                 .map(this::obtenerDTO).toList();
+    }
+
+    public Certificacion obtenerPorId(Integer id){
+        return certificacionRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException
+                        ("No se encontró certificación con id '" + id + "'"));
+    }
+
+    public CertificacionDTO eliminarCertificacion(Integer id){
+        var certificacionDto = obtenerDTO(obtenerPorId(id));
+        certificacionRepository.deleteById(id);
+        return certificacionDto;
     }
 
 }

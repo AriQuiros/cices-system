@@ -11,7 +11,8 @@ import InputField from "../../utils/validaciones/InputField.jsx";
 import { fechaMayorIgualQue, fechaMenorIgualQue, required } from "../../utils/validaciones/Validators.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../components/BusquedaProyecto.jsx";
-import "../../styles/paginas.css";
+import "./AsignarInvestigador.css";
+import BotonVolver from "../../components/BotonVolver.jsx";
 
 const formularioVacio = {
     id: null,
@@ -216,13 +217,21 @@ const AsignarInvestigadores = () => {
     };
 
     return (
+
+
         <div className="asignar-page">
+
             {!proyectoSeleccionado && (
                 <BuscadorProyecto token={token} onSelect={seleccionarProyecto} />
             )}
 
             {proyectoSeleccionado && (
                 <div className="asignar-contenido">
+                    <BotonVolver/>
+                    <div className="asignar-header">
+                        <h2>Asignación de Investigadores</h2>
+                    </div>
+
                     <h3>Agregar investigadores</h3>
 
                     <form

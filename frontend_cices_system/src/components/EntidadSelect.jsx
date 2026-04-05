@@ -8,7 +8,8 @@ export default function EntidadSelect({
                                           onChange,
                                           placeholder,
                                           disabled,
-                                          maxLength = 252
+                                          maxLength = 252,
+                                            required
                                       }) {
     const [inputValue, setInputValue] = useState("");
     const { getOptionsByTipo } = useEntidades();
@@ -37,6 +38,7 @@ export default function EntidadSelect({
 
     return (
         <CreatableSelect
+            required={required}
             options={options}
             value={
                 value?.nombre

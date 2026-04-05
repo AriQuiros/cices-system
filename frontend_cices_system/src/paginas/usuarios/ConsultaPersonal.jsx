@@ -4,6 +4,7 @@ import axios from "axios";
 import "../../styles/paginas.css";
 
 export default function ListaPersonas() {
+
     const [personas, setPersonas] = useState([]);
     const [personasFiltradas, setPersonasFiltradas] = useState([]);
     const [grados, setGrados] = useState([]);
@@ -36,6 +37,7 @@ export default function ListaPersonas() {
     };
 
     const aplicarFiltros = () => {
+
         let resultado = [...personas];
 
         if (nombreFiltro) {
@@ -60,51 +62,52 @@ export default function ListaPersonas() {
     };
 
     return (
-        <div className="lp-wrapper">
-            <div className="lp-content">
+        <div className="ci-wrapper">
+            <div className="ci-content">
 
-                <div className="lp-toolbar">
+                <h2 className="ci-title">Lista de Personal</h2>
+
+                <div className="ci-toolbar row">
+
                     <input
-                        className="lp-search-input"
+                        className="ci-search-input"
                         type="text"
                         placeholder="Buscar por nombre..."
                         value={nombreFiltro}
                         onChange={(e) => setNombreFiltro(e.target.value)}
                     />
 
-                    <div className="lp-filter-box">
-                        <label className="lp-filter-label">Roles:</label>
+                        <div className="ci-field">
+                            <select
+                                className="ci-search-input"
+                                value={rolFiltro}
+                                onChange={(e) => setRolFiltro(e.target.value)}
+                            >
+                                <option value="">Rol</option>
+                                <option value="ASISTENTE">Asistente</option>
+                                <option value="ADMINISTRATIVO">Administrativo</option>
+                            </select>
+                        </div>
 
-                        <select
-                            className="lp-filter-select"
-                            value={rolFiltro}
-                            onChange={(e) => setRolFiltro(e.target.value)}
-                        >
-                            <option value="">Todos</option>
-                            <option value="ASISTENTE">Asistente</option>
-                            <option value="ADMINISTRATIVO">Administrativo</option>
-                        </select>
-                    </div>
-                <div className="lp-extra-filters">
-                    <div className="lp-field">
-                        <label className="lp-field-label">Grado académico</label>
-                        <Select
-                            classNamePrefix="lp-select"
-                            options={grados.map(g => ({ value: g, label: g }))}
-                            isMulti
-                            value={grados
-                                .map(g => ({ value: g, label: g }))
-                                .filter(g => gradosSeleccionados.includes(g.value))
-                            }
-                            onChange={manejarGradosSelect}
-                            placeholder="Seleccione grado(s)"
-                        />
-                    </div>
-                </div>
+                        <div className="ci-field">
+                            <label className="ci-field-label">Grado académico</label>
+                            <Select
+                                classNamePrefix="ci-select"
+                                options={grados.map(g => ({ value: g, label: g }))}
+                                isMulti
+                                value={grados
+                                    .map(g => ({ value: g, label: g }))
+                                    .filter(g => gradosSeleccionados.includes(g.value))
+                                }
+                                onChange={manejarGradosSelect}
+                                placeholder="Seleccione grado(s)"
+                            />
+                        </div>
                 </div>
 
-                <div className="lp-table-card">
-                    <table className="lp-table">
+                <div className="ci-table-card">
+                    <table className="ci-table">
+
                         <thead>
                         <tr>
                             <th>Nombre</th>
@@ -118,26 +121,35 @@ export default function ListaPersonas() {
                         </thead>
 
                         <tbody>
+
                         {personasFiltradas.length === 0 ? (
+
                             <tr>
-                                <td colSpan="7" className="lp-empty">
+                                <td colSpan="7" className="ci-empty">
                                     No se encontraron resultados
                                 </td>
                             </tr>
+
                         ) : (
+
                             personasFiltradas.map((p, index) => (
+
                                 <tr key={index}>
                                     <td>{p.nombreCompleto}</td>
                                     <td>{p.identificacion}</td>
                                     <td>{p.pais}</td>
-                                    <td className="lp-email">{p.correo}</td>
+                                    <td className="ci-email">{p.correo}</td>
                                     <td>{p.numeroTelefono}</td>
                                     <td>{p.gradoAcademico}</td>
                                     <td>{p.roles.join(", ")}</td>
                                 </tr>
+
                             ))
+
                         )}
+
                         </tbody>
+
                     </table>
                 </div>
 

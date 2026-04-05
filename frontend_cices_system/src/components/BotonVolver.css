@@ -1,0 +1,39 @@
+/* =========================
+   BOTÓN VOLVER (alineado a tu UI)
+========================= */
+
+.btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+
+    font-weight: 600;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    background: #e6edf2;
+    color: #2f3f4a;
+
+    transition: all 0.2s ease;
+}
+
+/* hover igual que tus botones */
+.btn-volver:hover {
+    filter: brightness(0.97);
+}
+
+/* versión opcional (más destacada) */
+.btn-volver.primary {
+    background: #0fc3f3;
+    color: white;
+}
+
+/* alineación en páginas */
+.volver-container {
+    margin-bottom: 12px;
+}

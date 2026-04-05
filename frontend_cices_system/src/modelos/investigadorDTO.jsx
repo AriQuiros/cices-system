@@ -3,6 +3,7 @@ import { EntidadDTO } from "./entidadDTO.jsx";
 import {CodigoDTO} from "./CodigoDTO.jsx";
 
 export const InvestigadorDTO = {
+    id: null,
     empleado: { ...EmpleadoDTO },
     institucionOrigen: { ...EntidadDTO, tipo: "INSTITUCION" },
     unidadAcademica: { ...EntidadDTO, tipo: "UNIDAD" },

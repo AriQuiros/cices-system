@@ -9,7 +9,8 @@ import { fetchTiposCatalogo } from "../../../services/CatalogoService.js";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import {required, min, max} from "../../../utils/validaciones/Validators.jsx";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
-import "../../../styles/paginas.css";
+import "./GestionHoras.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const formularioVacio = {
     id: null,
@@ -287,7 +288,11 @@ const GestionHoras = () => {
     return (
 
         <div className="gestion-horas-page">
+
             <div className="gestion-horas-card">
+                <BotonVolver/>
+
+                <h1 className="gestion-gastos-title">Gestión de Horas</h1>
 
             <BuscadorProyecto
                 token={token}
@@ -317,11 +322,11 @@ const GestionHoras = () => {
                 <hr className="gestion-horas-divider" />
                 <div className="gestion-horas-content">
                     <p>
-                        Horas asignadas al presupuesto: {presupuestoSeleccionado.cantidadHoras} h/mes
+                        <strong>Horas asignadas al presupuesto:</strong> {presupuestoSeleccionado.cantidadHoras} h/mes
                     </p>
 
                     <p>
-                        Meses del presupuesto: {presupuestoSeleccionado.cantidadMeses}
+                        <strong>Meses del presupuesto:</strong> {presupuestoSeleccionado.cantidadMeses}
                     </p>
 
                     <p>

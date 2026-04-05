@@ -18,7 +18,12 @@ export const menuConfig = [
         section: "Personal",
         items: [
             { label: "Perfil", path: "/perfil", roles: ["*"] },
-            { label: "Notificaciones", path: "/dashboard", roles: ["*"] }
+            { label: "Notificaciones", path: "/dashboard", roles: ["*"] },
+            {
+                label: "Mis Certificaciones",
+                path: "/certificaciones-investigador",
+                roles: ["INVESTIGADOR"]
+            },
         ]
     },
 
@@ -87,11 +92,6 @@ export const menuConfig = [
     {
         section: "Usuarios",
         items: [
-            {
-                label: "Mis Certificaciones",
-                path: "/certificaciones-investigador",
-                roles: ["INVESTIGADOR"]
-            },
             {
                 label: "Administradores y asistentes",
                 path: "/consulta-personal",

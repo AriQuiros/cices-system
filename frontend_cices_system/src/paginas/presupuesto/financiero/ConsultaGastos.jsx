@@ -4,7 +4,8 @@ import { AppContext } from "../../../context/AppContext.jsx";
 import { DetalleGastos } from "../../../services/ReportesService.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
-import "../../../styles/paginas.css";
+import "./GestionGastos.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const ConsultaGastos = () => {
 
@@ -26,19 +27,15 @@ const ConsultaGastos = () => {
             setProyectoSeleccionado(null);
             return;
         }
+
         setProyectoSeleccionado(proyecto);
 
         try {
-
             const data = await DetalleGastos.obtenerPorProyecto(proyecto.codigoProyecto);
             setPresupuestos(data || []);
-
         } catch {
-
             notify.error("Error cargando presupuestos");
-
         }
-
     };
 
     const categoriasDisponibles = useMemo(() =>
@@ -50,11 +47,7 @@ const ConsultaGastos = () => {
         let lista = [...presupuestos];
 
         if (categoriasFiltro.length > 0) {
-
-            lista = lista.filter(p =>
-                categoriasFiltro.includes(p.categoria)
-            );
-
+            lista = lista.filter(p => categoriasFiltro.includes(p.categoria));
         }
 
         if (ordenFechaPresupuesto === "desc") {
@@ -84,11 +77,7 @@ const ConsultaGastos = () => {
         );
 
         const totalGastos = presupuestos.reduce((acc,p)=>
-
-                acc + (p.gastos || []).reduce(
-                    (a,g)=> a + (g.monto || 0),0
-                )
-
+                acc + (p.gastos || []).reduce((a,g)=> a + (g.monto || 0),0)
             ,0);
 
         const cantidadGastos = presupuestos.reduce(
@@ -96,12 +85,10 @@ const ConsultaGastos = () => {
             ,0);
 
         return {
-
             montoAsignado,
             totalGastos,
             cantidadGastos,
             restante: montoAsignado - totalGastos
-
         };
 
     }, [presupuestos]);
@@ -114,211 +101,192 @@ const ConsultaGastos = () => {
     const manejarCategoriasSelect = (selectedOptions) => {
         setCategoriasFiltro(selectedOptions ? selectedOptions.map(o => o.value) : []);
     };
+
     return (
 
-        <div className="consulta-gastos-page">
+        <div className="gestion-gastos-page">
 
-            <div className="consulta-gastos-card">
+            <div className="gestion-gastos-card">
+                <BotonVolver/>
 
-            <h2 className="consulta-gastos-title">Consulta de gastos</h2>
+                <h2 className="gestion-gastos-title">Consulta de gastos</h2>
 
-            <BuscadorProyecto
-                token={token}
-                user={user}
-                onSelect={seleccionarProyecto}
-            />
+                <BuscadorProyecto
+                    token={token}
+                    user={user}
+                    onSelect={seleccionarProyecto}
+                />
 
-            {proyectoSeleccionado && (
+                {proyectoSeleccionado && (
 
-                <div className="consulta-gastos-content">
+                    <div className="gestion-gastos-content">
 
-                    <h3 className="consulta-gastos-subtitle">Resumen del proyecto</h3>
+                        <h3 className="gestion-gastos-subtitle">Resumen del proyecto</h3>
 
-                    <div className="consulta-gastos-resumen">
-                        <p>Total presupuestos: {presupuestos.length}</p>
-                        <p>Total gastos registrados: {resumenGeneral.cantidadGastos}</p>
-                        <p>Monto total asignado: {resumenGeneral.montoAsignado}</p>
-                        <p>Total gastado: {resumenGeneral.totalGastos}</p>
-                        <p className={resumenGeneral.restante < 0 ? "consulta-restante negativo" : "consulta-restante"}>
-                            Presupuesto restante: {resumenGeneral.restante}
-                        </p>
-                    </div>
+                        <div className="gestion-gastos-resumen">
+                            <p>Total presupuestos: {presupuestos.length}</p>
+                            <p>Total gastos registrados: {resumenGeneral.cantidadGastos}</p>
+                            <p>Monto total asignado: {resumenGeneral.montoAsignado}</p>
+                            <p>Total gastado: {resumenGeneral.totalGastos}</p>
+                            <p className={resumenGeneral.restante < 0 ? "presupuesto-restante negativo" : "presupuesto-restante"}>
+                                Presupuesto restante: {resumenGeneral.restante}
+                            </p>
+                        </div>
 
-                    <h3 className="consulta-gastos-subtitle">Filtros</h3>
+                        <h3 className="gestion-gastos-subtitle">Filtros</h3>
 
-                    <div className="consulta-filtro-item">
-                        <label className="consulta-label">Categorias</label>
-                        <Select
-                            options={opcionesCategorias}
-                            isMulti
-                            value={opcionesCategorias.filter(c => categoriasFiltro.includes(c.value))}
-                            onChange={manejarCategoriasSelect}
-                            placeholder="Seleccione categoría(s)"
-                            closeMenuOnSelect={false}
-                        />
-                    </div>
+                        <div className="consulta-grid-filtros">
 
-                    <h3 className="consulta-gastos-subtitle">Ordenar presupuestos</h3>
-
-                    <div className="consulta-grid-filtros">
-
-                    <div className="consulta-filtro-item">
-
-                        <label className="consulta-label">Fecha</label>
-
-                        <select
-                            className="consulta-select"
-                            value={ordenFechaPresupuesto}
-                            onChange={(e)=> setOrdenFechaPresupuesto(e.target.value)}
-                        >
-
-                            <option value="desc">Más recientes</option>
-                            <option value="asc">Más antiguos</option>
-
-                        </select>
-
-                    </div>
-
-                    <div className="consulta-filtro-item">
-
-                        <label className="consulta-label">Monto</label>
-
-                        <select
-                            className="consulta-select"
-                            value={ordenMontoPresupuesto}
-                            onChange={(e)=> setOrdenMontoPresupuesto(e.target.value)}
-                        >
-                            <option value="ninguno">Sin orden</option>
-                            <option value="desc">Mayor monto</option>
-                            <option value="asc">Menor monto</option>
-
-                        </select>
-
-                    </div>
-
-                    </div>
-
-                    <h3 className="consulta-gastos-subtitle">Ordenar gastos</h3>
-
-                    <div className="consulta-grid-filtros">
-
-                    <div className="consulta-filtro-item">
-
-                        <label className="consulta-label">Fecha</label>
-
-                        <select
-                            className="consulta-select"
-                            value={ordenFechaGasto}
-                            onChange={(e)=> setOrdenFechaGasto(e.target.value)}
-                        >
-                            <option value="desc">Más recientes</option>
-                            <option value="asc">Más antiguos</option>
-                        </select>
-
-                    </div>
-
-                    <div className="consulta-filtro-item">
-
-                        <label className="consulta-label">Monto</label>
-
-                        <select
-                            className="consulta-select"
-                            value={ordenMontoGasto}
-                            onChange={(e)=> setOrdenMontoGasto(e.target.value)}
-                        >
-
-                            <option value="ninguno">Sin orden</option>
-                            <option value="desc">Mayor monto</option>
-                            <option value="asc">Menor monto</option>
-
-                        </select>
-
-                    </div>
-
-                    </div>
-
-                    <hr className="consulta-divider" />
-                    {presupuestosFiltrados.map(presupuesto => {
-
-                        let gastos = [...(presupuesto.gastos || [])];
-
-                        if (ordenFechaGasto === "desc") {
-                            gastos.sort((a,b)=> new Date(b.fechaGasto) - new Date(a.fechaGasto));
-                        }
-
-                        if (ordenFechaGasto === "asc") {
-                            gastos.sort((a,b)=> new Date(a.fechaGasto) - new Date(b.fechaGasto));
-                        }
-
-                        if (ordenMontoGasto === "desc") {
-                            gastos.sort((a,b)=> b.monto - a.monto);
-                        }
-
-                        if (ordenMontoGasto === "asc") {
-                            gastos.sort((a,b)=> a.monto - b.monto);
-                        }
-
-                        const totalGastos = gastos.reduce(
-                            (acc,g)=> acc + g.monto,0
-                        );
-
-                        const restante = presupuesto.monto - totalGastos;
-
-                        return (
-
-                            <div key={presupuesto.id}>
-
-                                <h4 className="consulta-presupuesto-title">
-                                    {presupuesto.categoria} - {presupuesto.descripcion}
-                                </h4>
-
-                                <div className="consulta-presupuesto-resumen">
-                                    <p>Fecha de asignacion: {presupuesto.fechaAsignacion}</p>
-                                    <p>Monto asignado: {presupuesto.monto}</p>
-                                    <p>Total gastos: {totalGastos}</p>
-                                    <p className={restante < 0 ? "consulta-restante negativo" : "consulta-restante"}>Restante: {restante}</p>
-                                    <p>Cantidad de gastos: {gastos.length}</p>
-                                </div>
-
-                                <table className="consulta-gastos-table">
-
-                                    <thead>
-
-                                    <tr>
-                                        <th>Descripcion</th>
-                                        <th>Fecha</th>
-                                        <th>Monto</th>
-                                    </tr>
-
-                                    </thead>
-
-                                    <tbody>
-
-                                    {gastos.map(g => (
-
-                                        <tr key={g.id}>
-
-                                            <td>{g.descripcion}</td>
-                                            <td>{g.fechaGasto}</td>
-                                            <td>{g.monto}</td>
-
-                                        </tr>
-
-                                    ))}
-
-                                    </tbody>
-
-                                </table>
-
+                            <div className="gasto-form-item">
+                                <label>Categorías</label>
+                                <Select
+                                    options={opcionesCategorias}
+                                    isMulti
+                                    value={opcionesCategorias.filter(c => categoriasFiltro.includes(c.value))}
+                                    onChange={manejarCategoriasSelect}
+                                    placeholder="Seleccione categoría(s)"
+                                    closeMenuOnSelect={false}
+                                />
                             </div>
 
-                        );
+                        </div>
 
-                    })}
+                        <h3 className="gestion-gastos-subtitle">Ordenar presupuestos</h3>
 
-                </div>
+                        <div className="consulta-grid-filtros">
 
-            )}
+                            <div className="gasto-form-item">
+                                <label>Fecha</label>
+                                <select
+                                    className="gestion-gastos-select"
+                                    value={ordenFechaPresupuesto}
+                                    onChange={(e)=> setOrdenFechaPresupuesto(e.target.value)}
+                                >
+                                    <option value="desc">Más recientes</option>
+                                    <option value="asc">Más antiguos</option>
+                                </select>
+                            </div>
+
+                            <div className="gasto-form-item">
+                                <label>Monto</label>
+                                <select
+                                    className="gestion-gastos-select"
+                                    value={ordenMontoPresupuesto}
+                                    onChange={(e)=> setOrdenMontoPresupuesto(e.target.value)}
+                                >
+                                    <option value="ninguno">Sin orden</option>
+                                    <option value="desc">Mayor monto</option>
+                                    <option value="asc">Menor monto</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <h3 className="gestion-gastos-subtitle">Ordenar gastos</h3>
+
+                        <div className="consulta-grid-filtros">
+
+                            <div className="gasto-form-item">
+                                <label>Fecha</label>
+                                <select
+                                    className="gestion-gastos-select"
+                                    value={ordenFechaGasto}
+                                    onChange={(e)=> setOrdenFechaGasto(e.target.value)}
+                                >
+                                    <option value="desc">Más recientes</option>
+                                    <option value="asc">Más antiguos</option>
+                                </select>
+                            </div>
+
+                            <div className="gasto-form-item">
+                                <label>Monto</label>
+                                <select
+                                    className="gestion-gastos-select"
+                                    value={ordenMontoGasto}
+                                    onChange={(e)=> setOrdenMontoGasto(e.target.value)}
+                                >
+                                    <option value="ninguno">Sin orden</option>
+                                    <option value="desc">Mayor monto</option>
+                                    <option value="asc">Menor monto</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <hr />
+
+                        {presupuestosFiltrados.map(presupuesto => {
+
+                            let gastos = [...(presupuesto.gastos || [])];
+
+                            if (ordenFechaGasto === "desc") {
+                                gastos.sort((a,b)=> new Date(b.fechaGasto) - new Date(a.fechaGasto));
+                            }
+
+                            if (ordenFechaGasto === "asc") {
+                                gastos.sort((a,b)=> new Date(a.fechaGasto) - new Date(b.fechaGasto));
+                            }
+
+                            if (ordenMontoGasto === "desc") {
+                                gastos.sort((a,b)=> b.monto - a.monto);
+                            }
+
+                            if (ordenMontoGasto === "asc") {
+                                gastos.sort((a,b)=> a.monto - b.monto);
+                            }
+
+                            const totalGastos = gastos.reduce((acc,g)=> acc + g.monto,0);
+                            const restante = presupuesto.monto - totalGastos;
+
+                            return (
+
+                                <div key={presupuesto.id}>
+
+                                    <h4 className="gestion-gastos-subtitle">
+                                        {presupuesto.categoria} - {presupuesto.descripcion}
+                                    </h4>
+
+                                    <div className="gestion-gastos-resumen">
+                                        <p>Fecha de asignacion: {presupuesto.fechaAsignacion}</p>
+                                        <p>Monto asignado: {presupuesto.monto}</p>
+                                        <p>Total gastos: {totalGastos}</p>
+                                        <p className={restante < 0 ? "presupuesto-restante negativo" : "presupuesto-restante"}>
+                                            Restante: {restante}
+                                        </p>
+                                        <p>Cantidad de gastos: {gastos.length}</p>
+                                    </div>
+
+                                    <table className="gestion-gastos-table">
+
+                                        <thead>
+                                        <tr>
+                                            <th>Descripcion</th>
+                                            <th>Fecha</th>
+                                            <th>Monto</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        {gastos.map(g => (
+                                            <tr key={g.id}>
+                                                <td>{g.descripcion}</td>
+                                                <td>{g.fechaGasto}</td>
+                                                <td>{g.monto}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            );
+
+                        })}
+
+                    </div>
+
+                )}
 
             </div>
 

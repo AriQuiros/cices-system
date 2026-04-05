@@ -55,6 +55,7 @@ function ProyectoDatosBasicos({editable}) {
                     <label>Nombre:</label>
                     <input
                         type="text"
+                        placeholder={"Nombre del proyecto"}
                         className="input-field"
                         required
                         maxLength={252}
@@ -67,6 +68,8 @@ function ProyectoDatosBasicos({editable}) {
 
             {/* TIPO + LÍNEA */}
             <div className="form-row">
+                <div className="input-group">
+                    <label>Tipo de proyecto:</label>
 
                 <select
                     className="input-field"
@@ -87,7 +90,7 @@ function ProyectoDatosBasicos({editable}) {
                         </option>
                     ))}
                 </select>
-
+                </div>
                 <div className="input-group">
                     <label>Línea de investigación:</label>
 

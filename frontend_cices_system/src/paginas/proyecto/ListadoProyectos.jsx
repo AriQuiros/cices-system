@@ -4,10 +4,11 @@ import "../../styles/paginas.css";
 import {useTiposCatalogo} from "../../hooks/useTiposCatalogo.js";
 import Select from "react-select";
 import {useLineas} from "../../hooks/proyectos/useLineas.jsx";
-
+import {useContext} from "react";
+import {AppContext} from "../../context/AppContext.jsx";
 
 function ListadoProyectos() {
-    const token = localStorage.getItem("token");
+    const { token, user } = useContext(AppContext);
     const {
         proyectos,
         orden,
@@ -36,13 +37,15 @@ function ListadoProyectos() {
         handleChange("tipoProyecto", selectedOptions ? selectedOptions.map(o => o.value) : []);
     };
 
+    const esSoloInvestigador = user.roles.length === 1 && user.roles[0] === "INVESTIGADOR";
+
     return (
 
         <div className="listado-proyectos-page">
 
             <div className="listado-proyectos-card">
 
-                <h2 className="listado-proyectos-title">Listado de proyectos</h2>
+                <h2 className="listado-proyectos-title">{esSoloInvestigador?"Mis Proyectos":"Listado de proyectos"}</h2>
 
         <div className="contenedor_proyectos">
 

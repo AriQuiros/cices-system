@@ -2,17 +2,17 @@ import React, { useContext, useMemo, useState } from "react";
 import { notify } from "../../../utils/ui/notify.jsx";
 import { AppContext } from "../../../context/AppContext.jsx";
 
-import { DistribucionHoras } from "../../../services/ReportesService.jsx";
-import { obtenerInvestigadoresProyecto } from "../../../services/ReportesService.jsx";
+import { DistribucionHoras, obtenerInvestigadoresProyecto } from "../../../services/ReportesService.jsx";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
-import "../../../styles/paginas.css";
+
+import "./GestionHoras.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const ConsultaPresupuestos = () => {
 
     const { token, user } = useContext(AppContext);
 
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
-
     const [presupuestos, setPresupuestos] = useState([]);
     const [investigadoresProyecto, setInvestigadoresProyecto] = useState([]);
 
@@ -30,22 +30,6 @@ const ConsultaPresupuestos = () => {
 
     const toTimestamp = (fecha) => {
         if (!fecha) return 0;
-
-        if (/^\d{4}-\d{2}-\d{2}/.test(fecha)) {
-            const time = Date.parse(fecha);
-            return Number.isNaN(time) ? 0 : time;
-        }
-
-        if (/^\d{2}\/\d{2}\/\d{4}$/.test(fecha)) {
-            const [dia, mes, anio] = fecha.split("/").map(Number);
-            return new Date(anio, mes - 1, dia).getTime();
-        }
-
-        if (/^\d{2}-\d{2}-\d{4}$/.test(fecha)) {
-            const [dia, mes, anio] = fecha.split("-").map(Number);
-            return new Date(anio, mes - 1, dia).getTime();
-        }
-
         const time = Date.parse(fecha);
         return Number.isNaN(time) ? 0 : time;
     };
@@ -69,11 +53,8 @@ const ConsultaPresupuestos = () => {
 
         try {
             await cargarDatosProyecto(proyecto.codigoProyecto);
-
         } catch {
-
             notify.error("Error cargando datos");
-
         }
 
     };
@@ -92,6 +73,7 @@ const ConsultaPresupuestos = () => {
     const presupuestosOrdenados = useMemo(() => {
 
         return [...presupuestos].sort((a, b) => {
+
             if (ordenFecha) {
                 const fa = toTimestamp(a.fechaAsignacion);
                 const fb = toTimestamp(b.fechaAsignacion);
@@ -120,184 +102,166 @@ const ConsultaPresupuestos = () => {
 
     return (
 
-        <div className="horas-asignadas-page">
-            <div className="horas-asignadas-card">
+        <div className="gestion-horas-page">
+            <div className="gestion-horas-card">
+                <BotonVolver/>
 
-            <h2 className="horas-asignadas-title">Consulta de Horas</h2>
+                <h1 className="gestion-gastos-title">Consulta de Horas</h1>
 
-            <BuscadorProyecto
-                token={token}
-                user={user}
-                onSelect={seleccionarProyecto}
-            />
+                <BuscadorProyecto
+                    token={token}
+                    user={user}
+                    onSelect={seleccionarProyecto}
+                />
 
-            {proyectoSeleccionado && (
+                {proyectoSeleccionado && (
 
-                <div className="horas-asignadas-content">
+                    <>
+                        <h2><strong>Ordenamientos:</strong></h2>
+                        <div className="gestion-horas-filtros">
+                            <div className="filtro-item">
+                                <label>Fecha asignacion</label>
+                                <select
+                                    className="gestion-horas-select"
+                                    value={ordenFecha}
+                                    onChange={(e) => setOrdenFecha(e.target.value)}
+                                >
+                                    <option value="reciente">Más reciente</option>
+                                    <option value="antiguo">Más antiguo</option>
+                                </select>
+                            </div>
 
-                    <h3 className="horas-asignadas-subtitle">Informacion del presupuesto - horas</h3>
+                            <div className="filtro-item">
+                                <label>Monto presupuesto</label>
+                                <select
+                                    className="gestion-horas-select"
+                                    value={ordenMonto}
+                                    onChange={(e) => setOrdenMonto(e.target.value)}
+                                >
+                                    <option value="">Sin ordenar</option>
+                                    <option value="mayor">Mayor a menor</option>
+                                    <option value="menor">Menor a mayor</option>
+                                </select>
+                            </div>
+                            <div className="filtro-item">
+                                <label>Horas asignadas</label>
+                                <select
+                                    className="gestion-horas-select"
+                                    value={ordenHoras}
+                                    onChange={(e) => setOrdenHoras(e.target.value)}
+                                >
+                                    <option value="">Sin ordenar</option>
+                                    <option value="mayor">Mayor a menor</option>
+                                    <option value="menor">Menor a mayor</option>
+                                </select>
+                            </div>
 
-                    <div className="horas-filtros-grid">
+                        </div>
 
-                    <div className="horas-filtro-item">
-                    <label className="horas-label">Fecha asignacion</label>
+                        <hr className="gestion-horas-divider" />
 
-                    <select
-                        className="horas-select"
-                        value={ordenFecha}
-                        onChange={(e) => setOrdenFecha(e.target.value)}
-                    >
-                        <option value="reciente">Más reciente</option>
-                        <option value="antiguo">Más antiguo</option>
-                    </select>
+                        {presupuestosOrdenados.map(p => {
 
-                    </div>
+                            const total = totalPresupuesto(p);
+                            const usadas = totalHorasAsignadas(p);
+                            const restantes = total - usadas;
 
-                    <div className="horas-filtro-item">
+                            const investigadoresOrdenados = [...investigadoresProyecto].sort((a, b) => {
 
-                    <label className="horas-label">Monto presupuesto</label>
+                                const ha = p.horas?.find(h => esMismoInvestigador(h.investigador?.id, a.id));
+                                const hb = p.horas?.find(h => esMismoInvestigador(h.investigador?.id, b.id));
 
-                    <select
-                        className="horas-select"
-                        value={ordenMonto}
-                        onChange={(e) => setOrdenMonto(e.target.value)}
-                    >
-                        <option value="">Sin ordenar</option>
-                        <option value="mayor">Mayor a menor</option>
-                        <option value="menor">Menor a mayor</option>
-                    </select>
+                                const totalA = toNumber(ha?.cantidadHorasMes) * toNumber(ha?.cantidadMeses);
+                                const totalB = toNumber(hb?.cantidadHorasMes) * toNumber(hb?.cantidadMeses);
 
-                    </div>
+                                if (ordenHoras === "mayor") return totalB - totalA;
+                                if (ordenHoras === "menor") return totalA - totalB;
 
-                    <div className="horas-filtro-item">
+                                return 0;
 
-                    <label className="horas-label">Horas asignadas</label>
+                            });
 
-                    <select
-                        className="horas-select"
-                        value={ordenHoras}
-                        onChange={(e) => setOrdenHoras(e.target.value)}
-                    >
-                        <option value="">Sin ordenar</option>
-                        <option value="mayor">Mayor a menor</option>
-                        <option value="menor">Menor a mayor</option>
-                    </select>
+                            return (
 
-                    </div>
 
-                    </div>
+                                <div key={p.id} className="gestion-horas-content">
+                                    <div className={"input"}>
+                                    <h3><strong>{p.categoria} - {p.descripcion}</strong></h3>
+                                    </div>
+                                    <p><strong>Fecha asignacion:</strong> {p.fechaAsignacion}</p>
+                                    <p><strong>Horas por mes:</strong> {p.cantidadHoras}</p>
+                                    <p><strong>Meses:</strong> {p.cantidadMeses}</p>
+                                    <p><strong>Total horas presupuesto:</strong> {total}</p>
+                                    <p><strong>Horas asignadas:</strong> {usadas}</p>
+                                    <p>
+                                        <strong>Horas restantes:</strong> {restantes}
+                                    </p>
 
-                    <hr className="horas-divider" />
+                                    <h4>Horas asignadas a investigadores</h4>
 
-                    {presupuestosOrdenados.map(p => {
+                                    <div className="tabla-container">
+                                        <table className="tabla-horas">
 
-                        const total = totalPresupuesto(p);
-                        const usadas = totalHorasAsignadas(p);
-                        const restantes = total - usadas;
+                                            <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Investigador</th>
+                                                <th>Rol</th>
+                                                <th>Fecha inicio</th>
+                                                <th>Fecha fin</th>
+                                                <th>Horas/Mes</th>
+                                                <th>Meses</th>
+                                                <th>Total</th>
+                                            </tr>
+                                            </thead>
 
-                        // ORDENAR INVESTIGADORES POR HORAS EN ESTE PRESUPUESTO
-                        const investigadoresOrdenados = [...investigadoresProyecto].sort((a, b) => {
+                                            <tbody>
 
-                            const ha = p.horas?.find(h => esMismoInvestigador(h.investigador?.id, a.id));
-                            const hb = p.horas?.find(h => esMismoInvestigador(h.investigador?.id, b.id));
+                                            {investigadoresOrdenados.map(inv => {
 
-                            const totalA = toNumber(ha?.cantidadHorasMes) * toNumber(ha?.cantidadMeses);
-                            const totalB = toNumber(hb?.cantidadHorasMes) * toNumber(hb?.cantidadMeses);
+                                                const h = p.horas?.find(hora => esMismoInvestigador(hora.investigador?.id, inv.id));
 
-                            if (ordenHoras === "mayor") return totalB - totalA;
-                            if (ordenHoras === "menor") return totalA - totalB;
+                                                const totalInv =
+                                                    toNumber(h?.cantidadHorasMes) *
+                                                    toNumber(h?.cantidadMeses);
 
-                            return 0;
+                                                return (
 
-                        });
+                                                    <tr key={inv.id}>
 
-                        return (
+                                                        <td>{inv.identificacionInvestigador}</td>
+                                                        <td>{inv.nombreInvestigador}</td>
+                                                        <td>{inv.rolProyecto?.nombreRolProyecto}</td>
+                                                        <td>{inv.fechaInicio || "-"}</td>
+                                                        <td>{inv.fechaFin || "-"}</td>
+                                                        <td>{h?.cantidadHorasMes || 0}</td>
+                                                        <td>{h?.cantidadMeses || 0}</td>
+                                                        <td>{totalInv}</td>
 
-                            <div key={p.id} className="horas-presupuesto-card">
+                                                    </tr>
 
-                                <h3 className="horas-presupuesto-title">{p.categoria} - {p.descripcion}</h3>
+                                                );
 
-                                <div className="horas-resumen-grid">
-                                <p><strong>Fecha asignacion:</strong> {p.fechaAsignacion}</p>
+                                            })}
 
-                                <p><strong>Horas por mes:</strong> {p.cantidadHoras}</p>
+                                            </tbody>
 
-                                <p><strong>Meses:</strong> {p.cantidadMeses}</p>
+                                        </table>
+                                    </div>
 
-                                <p><strong>Total horas presupuesto:</strong> {total}</p>
-
-                                <p><strong>Horas asignadas:</strong> {usadas}</p>
-
-                                <p>
-                                    <strong>Horas restantes:</strong> {restantes}
-                                </p>
+                                    <hr className="gestion-horas-divider" />
 
                                 </div>
 
-                                <h4 className="horas-asignadas-subtitle">Horas asignadas a investigadores</h4>
+                            );
 
-                                <table className="horas-asignadas-table">
+                        })}
 
-                                    <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Investigador</th>
-                                        <th>Rol</th>
-                                        <th>Fecha inicio</th>
-                                        <th>Fecha fin</th>
-                                        <th>Horas/Mes</th>
-                                        <th>Meses</th>
-                                        <th>Total</th>
-                                    </tr>
-                                    </thead>
+                    </>
 
-                                    <tbody>
-
-                                    {investigadoresOrdenados.map(inv => {
-
-                                        const h = p.horas?.find(hora => esMismoInvestigador(hora.investigador?.id, inv.id));
-
-                                        const totalInv =
-                                            toNumber(h?.cantidadHorasMes) *
-                                            toNumber(h?.cantidadMeses);
-
-                                        return (
-
-                                            <tr key={inv.id}>
-
-                                                <td>{inv.identificacionInvestigador}</td>
-                                                <td>{inv.nombreInvestigador}</td>
-                                                <td>{inv.rolProyecto?.nombreRolProyecto}</td>
-                                                <td>{inv.fechaInicio || "-"}</td>
-                                                <td>{inv.fechaFin || "-"}</td>
-                                                <td>{h?.cantidadHorasMes || 0}</td>
-                                                <td>{h?.cantidadMeses || 0}</td>
-                                                <td>{totalInv}</td>
-
-                                            </tr>
-
-                                        );
-
-                                    })}
-
-                                    </tbody>
-
-                                </table>
-
-                                <hr className="horas-divider" />
-
-                            </div>
-
-                        );
-
-                    })}
-
-                </div>
-
-            )}
+                )}
 
             </div>
-
         </div>
 
     );

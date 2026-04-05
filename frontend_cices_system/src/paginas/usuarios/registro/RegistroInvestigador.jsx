@@ -1,15 +1,17 @@
 import React, {useContext, useEffect, useState} from "react";
-import "../../../styles/paginas.css";
 
 import {fetchTiposCatalogo} from "../../../services/CatalogoService.js";
 import {InvestigadorContext} from "../../../context/investigadorCtx/InvestigadorContext.jsx";
 import {CertificacionDTO, TituloDTO} from "../../../modelos/investigadorDTO.jsx";
 
 import InputField from "../../../utils/validaciones/InputField.jsx";
-import {maxLength, required} from "../../../utils/validaciones/Validators.jsx";
+import {fechaMenorIgualQue, maxLength, required} from "../../../utils/validaciones/Validators.jsx";
 import EntidadSelect from "../../../components/EntidadSelect.jsx";
+import {eliminarFormacion} from "../../../services/CertificacionesTitulosService.jsx";
+import {confirm} from "../../../utils/ui/confirm.jsx";
+import {notify} from "../../../utils/ui/notify.jsx";
 
-function RegistroInvestigadorInner({ nivelAcademico }) {
+function RegistroInvestigadorInner({ nivelAcademico, modoPerfil }) {
 
     const {
         investigador,
@@ -66,7 +68,33 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
     };
 
     const handleAdd = (collection, dto) => { agregarItem(collection, dto); };
-    const handleRemove = (collection, idx) => { eliminarItem(collection, idx); };
+    const handleRemove = async (collection, idx) => {
+
+        const item = investigador[collection][idx];
+
+        if (modoPerfil && item?.id) {
+            const nombresSingular = {
+                titulos: "título",
+                certificaciones: "certificación"
+            };
+            const nombre = nombresSingular[collection] || collection;
+
+            if (!(await confirm.delete(`¿Eliminar ${nombre}?`))) return;
+
+            try {
+                const res = await eliminarFormacion(collection, item.id);
+                if(res.ok)
+                    notify.success(`${nombre} eliminado/a exitosamente`)
+
+            } catch (e) {
+                console.error("Error eliminando:", e);
+                return;
+            }
+        }
+
+        eliminarItem(collection, idx);
+    };
+
     // ----- Resto del formulario ----- //
     return (
         <div>
@@ -76,6 +104,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             <div className="input-group">
                 <label className="input-label">Institución de origen</label>
                 <EntidadSelect
+                    required={true}
                     tipo="INSTITUCION"
                     value={investigador.institucionOrigen}
                     onChange={(val) => actualizarCampo("institucionOrigen", val)}
@@ -87,6 +116,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
             <div className="input-group">
                 <label className="input-label">Unidad académica</label>
                 <EntidadSelect
+                    required={true}
                     tipo="UNIDAD"
                     value={investigador.unidadAcademica}
                     onChange={(val) => actualizarCampo("unidadAcademica", val)}
@@ -123,6 +153,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             required maxLength={254}
                         />
                         <EntidadSelect
+                            required={true}
                             tipo="INSTITUCION"
                             value={c.entidadEmisora}
                             onChange={(val) =>
@@ -181,6 +212,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             maxLength={254}
                         />
                         <EntidadSelect
+                            required={true}
                             tipo="INSTITUCION"
                             value={t.entidadEmisora}
                             onChange={(val) =>
@@ -196,6 +228,7 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                         <div className="input-group">
                             <label className="input-label">Nivel Académico</label>
                             <select
+                                required={true}
                                 value={t.nivelTitulo?.valor || ""}
                                 onChange={(e) => handleArrayChange("titulos", idx, "nivelTitulo", e.target.value)}
                             >
@@ -210,7 +243,8 @@ function RegistroInvestigadorInner({ nivelAcademico }) {
                             type="date"
                             value={t.fechaEmision || ""}
                             onChange={(e) => handleArrayChange("titulos", idx, "fechaEmision", e.target.value)}
-                            rules={[required()]}
+                            rules={[required(), fechaMenorIgualQue(new Date())]}
+                            max={new Date().toISOString().split("T")[0]}
                             required
                         />
                         <button type="button" className="icon-btn remove-btn" onClick={() => handleRemove("titulos", idx)} disabled={(investigador.titulos || []).length === 0}>✖</button>

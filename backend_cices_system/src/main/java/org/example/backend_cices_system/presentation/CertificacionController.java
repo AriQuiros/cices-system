@@ -24,17 +24,6 @@ public class CertificacionController {
         this.investigadorService = investigadorService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> agregarCertificacion(
-            @PathVariable String identificacion,
-            @RequestBody @Valid CertificacionDTO dto) {
-
-        Investigador investigador = investigadorService.buscarPorIdentificacion(identificacion);
-        Certificacion certificacion = certificacionService.guardarCertificacion(dto, investigador);
-
-        return ResponseEntity.ok(certificacion.getId());
-    }
-
     @GetMapping("/investigador")
     public ResponseEntity<?> certificacionesInvestigador(Authentication authentication){
         var user = (Usuario) authentication.getPrincipal();
@@ -42,4 +31,11 @@ public class CertificacionController {
         var certificaciones = certificacionService.certificacionDTOList(investigador);
         return ResponseEntity.ok(certificaciones);
     }
+
+    @DeleteMapping("/eliminar/{idCertificacion}")
+    public ResponseEntity<?> eliminarCertificacion(@PathVariable Integer idCertificacion){
+        var certificacion = certificacionService.eliminarCertificacion(idCertificacion);
+        return ResponseEntity.ok(certificacion.nombreCertificacion());
+    }
+
 }

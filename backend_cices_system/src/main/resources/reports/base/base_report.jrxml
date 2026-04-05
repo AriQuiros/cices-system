@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  base_report.jrxml
+  ═══════════════════════════════════════════════════════════════════════
+  Plantilla base compartida por todos los reportes del sistema CICES.
+
+  CÓMO USAR:
+    Los reportes específicos NO heredan directamente este archivo.
+    En su lugar, este archivo define los parámetros y bandas comunes
+    que los reportes específicos replican. El JasperBaseService inyecta
+    los valores de estos parámetros automáticamente.
+
+  PARÁMETROS COMUNES (inyectados por JasperBaseService):
+    - SISTEMA_NOMBRE    : nombre del sistema en el encabezado
+    - REPORTE_TITULO    : título del reporte específico
+    - FECHA_GENERACION  : fecha de generación (dd/MM/yyyy)
+    - PIE_TEXTO         : texto en el pie de página
+    - LOGO_PATH         : ruta del logo (puede ser null)
+
+  ESTRUCTURA DE BANDAS:
+    pageHeader  → Logo + nombre del sistema + título del reporte
+    pageFooter  → Texto pie + número de página
+    (sin detail — cada reporte específico define su propia banda detail)
+═══════════════════════════════════════════════════════════════════════
+-->
+<jasperReport
+    xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+        http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="base_report"
+    pageWidth="842"
+    pageHeight="595"
+    orientation="Landscape"
+    columnWidth="782"
+    leftMargin="30"
+    rightMargin="30"
+    topMargin="20"
+    bottomMargin="20"
+    uuid="a1b2c3d4-0001-0001-0001-000000000001">
+
+    <!-- ═══════════════════════════════════════════
+         PARÁMETROS COMUNES
+         Todos los reportes que usen JasperBaseService
+         recibirán estos parámetros automáticamente.
+    ═══════════════════════════════════════════ -->
+
+    <parameter name="SISTEMA_NOMBRE" class="java.lang.String">
+        <defaultValueExpression><![CDATA["CICES"]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="REPORTE_TITULO" class="java.lang.String">
+        <defaultValueExpression><![CDATA["Reporte"]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="FECHA_GENERACION" class="java.lang.String">
+        <defaultValueExpression><![CDATA["--/--/----"]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="PIE_TEXTO" class="java.lang.String">
+        <defaultValueExpression><![CDATA["Documento generado automáticamente."]]></defaultValueExpression>
+    </parameter>
+
+    <!-- null si no hay logo configurado -->
+    <parameter name="LOGO_PATH" class="java.lang.String">
+        <defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+    </parameter>
+
+    <!-- ═══════════════════════════════════════════
+         ESTILOS BASE
+    ═══════════════════════════════════════════ -->
+
+    <style name="BaseFont"
+        isDefault="true"
+        fontName="DejaVu Sans"
+        fontSize="9"
+        pdfFontName="Helvetica"/>
+
+    <style name="HeaderBand"
+        style="BaseFont"
+        backcolor="#1E3A5F"
+        forecolor="#FFFFFF"
+        isBold="true"/>
+
+    <style name="FooterText"
+        style="BaseFont"
+        forecolor="#666666"
+        fontSize="8"/>
+
+    <style name="ReportTitle"
+        style="BaseFont"
+        fontSize="14"
+        isBold="true"
+        forecolor="#1E3A5F"/>
+
+    <style name="SystemName"
+        style="BaseFont"
+        fontSize="10"
+        isBold="true"
+        forecolor="#1E3A5F"/>
+
+    <style name="DateText"
+        style="BaseFont"
+        fontSize="8"
+        forecolor="#666666"/>
+
+    <!-- ═══════════════════════════════════════════
+         PAGE HEADER — Encabezado reutilizable
+         ─────────────────────────────────────────
+         Estructura:
+         ┌──────────┬───────────────────────────┬────────────┐
+         │  [LOGO]  │   SISTEMA_NOMBRE          │            │
+         │          │   REPORTE_TITULO          │ FECHA      │
+         └──────────┴───────────────────────────┴────────────┘
+         Línea separadora azul
+    ═══════════════════════════════════════════ -->
+
+    <pageHeader>
+        <band height="60" splitType="Stretch">
+
+            <!-- Fondo del encabezado (línea superior de color) -->
+            <rectangle>
+                <reportElement x="0" y="0" width="782" height="4" backcolor="#1E3A5F" forecolor="#1E3A5F"/>
+                <graphicElement>
+                    <pen lineWidth="0"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Logo (se muestra solo si LOGO_PATH no es null) -->
+            <image onErrorType="Blank" scaleImage="RetainShape">
+                <reportElement x="0" y="8" width="50" height="45"
+                               isPrintWhenDetailOverflows="false">
+                    <printWhenExpression><![CDATA[$P{LOGO_PATH} != null]]></printWhenExpression>
+                </reportElement>
+                <imageExpression><![CDATA[$P{LOGO_PATH}]]></imageExpression>
+            </image>
+
+            <!-- Nombre del sistema -->
+            <textField>
+                <reportElement style="SystemName" x="58" y="8" width="500" height="16"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{SISTEMA_NOMBRE}]]></textFieldExpression>
+            </textField>
+
+            <!-- Título del reporte específico -->
+            <textField>
+                <reportElement style="ReportTitle" x="58" y="26" width="500" height="20"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{REPORTE_TITULO}]]></textFieldExpression>
+            </textField>
+
+            <!-- Fecha de generación (esquina derecha) -->
+            <staticText>
+                <reportElement style="DateText" x="620" y="8" width="80" height="12"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Fecha de generación:]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="DateText" x="620" y="20" width="80" height="12" forecolor="#333333"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$P{FECHA_GENERACION}]]></textFieldExpression>
+            </textField>
+
+            <!-- Línea separadora inferior del header -->
+            <line>
+                <reportElement x="0" y="56" width="782" height="1" forecolor="#1E3A5F"/>
+                <graphicElement>
+                    <pen lineWidth="1.5"/>
+                </graphicElement>
+            </line>
+
+        </band>
+    </pageHeader>
+
+    <!-- ═══════════════════════════════════════════
+         PAGE FOOTER — Pie de página reutilizable
+         ─────────────────────────────────────────
+         Estructura:
+         ┌─────────────────────────────┬──────────────┐
+         │  PIE_TEXTO                  │  Página X/Y  │
+         └─────────────────────────────┴──────────────┘
+         Línea separadora gris
+    ═══════════════════════════════════════════ -->
+
+    <pageFooter>
+        <band height="25" splitType="Stretch">
+
+            <!-- Línea separadora superior del footer -->
+            <line>
+                <reportElement x="0" y="0" width="782" height="1" forecolor="#CCCCCC"/>
+            </line>
+
+            <!-- Texto del pie (izquierda) -->
+            <textField>
+                <reportElement style="FooterText" x="0" y="5" width="550" height="15"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{PIE_TEXTO}]]></textFieldExpression>
+            </textField>
+
+            <!-- Número de página (derecha): "Página 1 de 3" -->
+            <!-- Página actual -->
+            <textField>
+                <reportElement style="FooterText" x="550" y="5" width="120" height="15"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de"]]></textFieldExpression>
+            </textField>
+
+            <!-- Total de páginas -->
+            <textField evaluationTime="Report">
+                <reportElement style="FooterText" x="670" y="5" width="112" height="15"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </pageFooter>
+
+    <!-- La banda detail queda vacía en el base.
+         Los reportes específicos definen sus propias columnas. -->
+    <detail>
+        <band height="0"/>
+    </detail>
+
+</jasperReport>

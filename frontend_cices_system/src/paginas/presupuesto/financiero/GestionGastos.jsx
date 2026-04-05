@@ -7,7 +7,8 @@ import { DetalleGastos } from "../../../services/ReportesService.jsx";
 import { GastosService } from "../../../services/GastosService.jsx";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import {required, maxLength, min, max, fechaMayorIgualQue, fechaMenorIgualQue} from "../../../utils/validaciones/Validators.jsx";
-import "../../../styles/paginas.css";
+import "./GestionGastos.css";
+import BotonVolver from "../../../components/BotonVolver.jsx";
 
 const formularioVacio = {
     id: null,
@@ -231,6 +232,8 @@ const RegistroGastos = () => {
         <div className="gestion-gastos-page">
 
             <div className="gestion-gastos-card">
+                <BotonVolver/>
+
                 <h2 className="gestion-gastos-title">Gestion de gastos</h2>
 
             <BuscadorProyecto
@@ -290,7 +293,7 @@ const RegistroGastos = () => {
                     {gastosForm.map((gasto, index) => (
 
                         <div key={index} className="gasto-form-item">
-
+                        <div className={"row"}>
                             <InputField
                                 label="Monto"
                                 type="number"
@@ -324,7 +327,7 @@ const RegistroGastos = () => {
                                 min={presupuestoSeleccionado.fechaAsignacion}
                                 max={fechaHoy}
                             />
-
+                        </div>
                             <InputField
                                 label="Descripción"
                                 type="text"

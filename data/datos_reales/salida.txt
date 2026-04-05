@@ -1,14 +1,14 @@
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 3 23:41:57 2026
+SQL*Plus: Release 21.0.0.0.0 - Production on Sun Apr 5 00:22:09 2026
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
 
 ERROR:
-ORA-28002: the password will expire within 4 days
+ORA-28002: the password will expire within 2 days
 
 
-Last Successful login time: Fri Apr 03 2026 23:41:57 -06:00
+Last Successful login time: Sun Apr 05 2026 00:22:08 -06:00
 
 Connected to:
 Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
@@ -376,7 +376,7 @@ Verificando secuencia SEC_TIPO
 
 NVL(MAX(ID_TIPO),0)
 -------------------
-		 17
+		 20
 
 Ajustando secuencia SEC_TIPO
 DECLARE

@@ -11,7 +11,7 @@ public interface RepNotificacionesUsuarioRepository extends JpaRepository<RepNot
 
     List<RepNotificacionesUsuario> findByIdUsuario(Integer idUsuario);
 
-    List<RepNotificacionesUsuario> findByNombreUsuarioContainingIgnoreCase(String nombreUsuario);
+    List<RepNotificacionesUsuario> findByNombreUsuarioIgnoreCase(String nombreUsuario);
 
     List<RepNotificacionesUsuario> findByAsuntoContainingIgnoreCase(String titulo);
 

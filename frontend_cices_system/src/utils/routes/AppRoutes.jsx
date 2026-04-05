@@ -18,7 +18,6 @@ import CertificacionesInvestigador from "../../paginas/usuarios/investigadores/C
 /* PROYECTOS */
 import RegistroProyecto from "../../paginas/proyecto/registro/RegistroProyecto";
 import RegistroPresupuesto from "../../paginas/presupuesto/registro/GestionPresupuesto.jsx";
-import VincularInvestigador from "../../paginas/proyecto/registro/VincularInvestigador";
 import ListadoProyectos from "../../paginas/proyecto/ListadoProyectos";
 
 /* CONSULTA PROYECTOS */
@@ -43,8 +42,10 @@ import GestionPermisoProyecto from "../../paginas/asignacionesInvestigadores/per
 import PanelResumen from "../../paginas/director/PanelResumen";
 
 /* REPORTES */
-
 import Certificaciones from "../../paginas/reportes/Certificaciones.jsx";
+
+/* NOTIFICACIONES */
+import NotificacionesPage from "../../paginas/usuarios/notificaciones";
 
 function AppRoutes() {
     return (
@@ -64,7 +65,6 @@ function AppRoutes() {
                 <Route path="/gestion-usuarios" element={<GestionUsuarios />} />
 
                 {/* CERTIFICACIONES */}
-                <Route path="/certificaciones" element={<Certificaciones />} />
                 <Route path="/certificaciones-investigador" element={<CertificacionesInvestigador />} />
 
                 {/* PROYECTOS */}
@@ -96,6 +96,9 @@ function AppRoutes() {
 
                 {/* REPORTES */}
                 <Route path="/reporte-certificaciones" element={<Certificaciones />} />
+
+                {/* NOTIFICACIONES */}
+                <Route path="/notificaciones" element={<NotificacionesPage />} />
 
             </Routes>
         </main>

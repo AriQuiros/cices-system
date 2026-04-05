@@ -37,3 +37,5 @@ backend_cices_system/.env
 
 #data
 data/crear/salida/
+
+frontend_cices_system/cypress/screenshots/

@@ -1,5 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
+import NotificationMenu from "./components/NotificationMenu";
 import AppRoutes from "./utils/routes/AppRoutes";
 import { Toaster } from "sonner";
 
@@ -58,20 +59,23 @@ function Header({ menuAbierto, setMenuAbierto }) {
                 <Link to="/dashboard" className="page-name">
                     Sistema de Información del CICES
                 </Link>
+
                 <div className="logos">
                     <img src={logoUCR} alt="Logo UCR" />
                     <img src={logoCICES} alt="Logo CICES" />
                 </div>
             </div>
+
             <div className="divider">
                 {user && (
-                    <div className="divider">
+                    <div className="topbar-actions">
                         <button
                             onClick={() => setMenuAbierto(!menuAbierto)}
-                            className="p-1 text-2"
+                            className="p-1 text-2 menu-toggle-btn"
                         >
                             ☰
                         </button>
+                        <NotificationMenu />
                     </div>
                 )}
             </div>

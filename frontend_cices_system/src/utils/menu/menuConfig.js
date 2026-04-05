@@ -18,7 +18,7 @@ export const menuConfig = [
         section: "Personal",
         items: [
             { label: "Perfil", path: "/perfil", roles: ["*"] },
-            { label: "Notificaciones", path: "/dashboard", roles: ["*"] },
+            { label: "Notificaciones", path: "/notificaciones", roles: ["*"] },
             {
                 label: "Mis Certificaciones",
                 path: "/certificaciones-investigador",

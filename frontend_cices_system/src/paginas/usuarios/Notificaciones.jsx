@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
-import "./Notificaciones.css";
+import "../../styles/paginas.css";
 
 const estadoTexto = (valor) => (valor ? "Leida" : "No leida");
 

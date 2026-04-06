@@ -34,6 +34,9 @@ class AuthServiceTest {
     @Mock
     private UsuarioService usuarioService;
 
+    @Mock
+    private RolUsuarioService rolUsuarioService;
+
     @InjectMocks
     private AuthService authService;
 
@@ -53,7 +56,7 @@ class AuthServiceTest {
         when(attemptService.isBlocked("juan.perez")).thenReturn(false);
         when(usuarioService.obtenerUsuarioActivo("juan.perez")).thenReturn(Optional.of(usuario));
         when(encoder.matches("123456", "$2a$10$hashEjemplo")).thenReturn(true);
-        when(usuarioService.obtenerRolesUsuarioPorIdUsuario(1)).thenReturn(List.of("DIRECTOR"));
+        when(rolUsuarioService.obtenerRolesUsuarioPorIdUsuario(1)).thenReturn(List.of("DIRECTOR"));
         when(jwt.generate("juan.perez", List.of("DIRECTOR"))).thenReturn("fake-jwt-token");
 
         LoginResponse response = authService.login("juan.perez", "123456");

@@ -6,6 +6,8 @@ import org.example.backend_cices_system.dto.RolProyectoDTO;
 import org.example.backend_cices_system.logic.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class InvestigadorProyectoService {
@@ -82,6 +84,11 @@ public class InvestigadorProyectoService {
     public InvestigadorProyecto obtenerInvestigadorProyecto(Integer id) {
         return investigadorProyectoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("InvestigadorProyecto no encontrado para el investigador y proyecto dados"));
+    }
+
+    public List<InvestigadorProyecto> obtenerPorProyecto(Proyecto proyecto) {
+        return investigadorProyectoRepository
+                .findByIdProyecto(proyecto);
     }
 
 }

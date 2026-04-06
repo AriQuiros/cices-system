@@ -58,4 +58,9 @@ public class PresentacionInformeService {
         return presentacionInformeRepository.findPresentacionInformeByIdProyecto(proyecto).stream()
                 .map(this::obtenerDTO).toList();
     }
+
+    public List<PresentacionInforme> buscarEntreFechas(LocalDate inicio, LocalDate fin) {
+        return presentacionInformeRepository
+                .findByFechaPresentacionBetween(inicio, fin);
+    }
 }

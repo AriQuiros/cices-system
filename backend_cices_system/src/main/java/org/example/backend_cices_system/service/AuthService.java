@@ -22,14 +22,16 @@ public class AuthService {
     private final JwtUtil jwt;
     private final LoginAttemptService attemptService;
     private final UsuarioService usuarioService;
+    private final RolUsuarioService rolUsuarioService;
 
     public AuthService(PasswordEncoder encoder, JwtUtil jwt, LoginAttemptService attemptService,
-            UsuarioService usuarioService
+            UsuarioService usuarioService, RolUsuarioService rolUsuarioService
     ) {
         this.encoder = encoder;
         this.jwt = jwt;
         this.attemptService = attemptService;
         this.usuarioService = usuarioService;
+        this.rolUsuarioService = rolUsuarioService;
     }
 
     public LoginResponse login(String username, String password) {
@@ -55,7 +57,7 @@ public class AuthService {
 
         attemptService.onSuccess(username);
 
-        var roles = usuarioService.obtenerRolesUsuarioPorIdUsuario(u.getId());
+        var roles = rolUsuarioService.obtenerRolesUsuarioPorIdUsuario(u.getId());
         var token = jwt.generate(u.getNombreUsuario(), roles);
         var nombre = u.getNombreUsuario().split("\\.")[0];
 

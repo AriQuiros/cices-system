@@ -28,6 +28,9 @@ class UsuarioServiceTest {
     private UsuarioRepository usuarioRepository;
 
     @Mock
+    private RolUsuarioService rolUsuarioService;
+
+    @Mock
     private PasswordEncoder encoder;
 
     @Mock
@@ -100,7 +103,7 @@ class UsuarioServiceTest {
         when(rolService.obtenerRol((short) 1)).thenReturn(rol1);
         when(rolService.obtenerRol((short) 2)).thenReturn(rol2);
 
-        usuarioService.guardarRoles(user, roles);
+        rolUsuarioService.guardarRoles(user, roles);
 
         verify(rolUsuarioRepository, times(2)).save(any(RolUsuario.class));
     }

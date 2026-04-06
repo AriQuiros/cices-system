@@ -87,5 +87,15 @@ public class CertificacionService {
         return certificacionDto;
     }
 
+    public List<Certificacion> buscarEntreFechas(LocalDate inicio, LocalDate fin) {
+        return certificacionRepository
+                .findByFechaExpiracionBetween(inicio, fin);
+    }
+
+    public List<Certificacion> buscarVencidas(LocalDate hoy) {
+        return certificacionRepository
+                .findByFechaExpiracionBefore(hoy);
+    }
+
 }
 

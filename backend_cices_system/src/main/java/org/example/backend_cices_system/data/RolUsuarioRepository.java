@@ -11,4 +11,5 @@ public interface RolUsuarioRepository extends JpaRepository<RolUsuario, Short> {
     List<String> findRoleNamesByUsuarioId(@Param("userId") Integer userId);
 
     List<RolUsuario> findByIdUsuario(Usuario idUsuario);
+    List<RolUsuario> findByIdRol_NombreRolContainingIgnoreCase(String idRolNombreRol);
 }

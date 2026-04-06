@@ -43,21 +43,9 @@ public class PermisoProyectoService {
 
         permisoProyectoRepository.save(permisoProyecto);
 
-        generarNotificacionPermiso(permisoProyecto);
+        notificacionUsuarioService.guardarNotificacionPermiso(permisoProyecto);
 
         return permisoDto;
-    }
-
-    public void generarNotificacionPermiso(PermisoProyecto permiso){
-        var usuario = permiso.getIdInvestigadorProyecto().getIdInvestigador().getIdEmpleado().getIdUsuario();
-        var codigoProyecto = permiso.getIdInvestigadorProyecto().getIdProyecto().getCodigoProyecto();
-
-        var mensaje = "Se ha otorgado el permiso 'COORDINADOR' en el proyecto '" + codigoProyecto +
-                "' durante el periodo del " + permiso.getFechaInicioPermiso() + " a";
-
-        mensaje = permiso.getFechaFinPermiso() != null ? mensaje + "l " + permiso.getFechaInicioPermiso() : mensaje + " indefinido. ";
-
-        notificacionUsuarioService.guardarNotificacionPermiso(usuario, codigoProyecto, mensaje);
     }
 
     public void delete(Integer id) {

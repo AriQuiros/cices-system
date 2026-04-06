@@ -21,6 +21,15 @@ public class Notificacion {
     private Integer id;
 
     @NotNull
+    @Column(name = "ID_REFERENCIA", nullable = false)
+    private Integer idReferencia;
+
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "CLAVE", nullable = false, length = 100)
+    private String clave;
+
+    @NotNull
     @Column(name = "ID_CODIGO_TIPO_CATEGORIA", nullable = false)
     private Short idCodigoTipoCategoria;
 
@@ -38,5 +47,6 @@ public class Notificacion {
     @ColumnDefault("SYSDATE")
     @Column(name = "FECHA_CREACION")
     private LocalDate fechaCreacion;
+
 
 }

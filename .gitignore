@@ -32,6 +32,7 @@ logs/
 
 # Environment variables
 backend_cices_system/.env
+.env
 .env.local
 .env.*.local
 

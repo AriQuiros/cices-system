@@ -23,7 +23,7 @@ public class NotificacionUsuario {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "ID_NOTIFICACION", nullable = false)
     private Notificacion idNotificacion;
 
@@ -43,5 +43,6 @@ public class NotificacionUsuario {
 
     @Column(name = "FECHA_LEIDO")
     private LocalDate fechaLeido;
+
 
 }

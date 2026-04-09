@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.Clock;
+import java.time.ZoneId;
 
 @SpringBootApplication
 @EnableScheduling
@@ -18,6 +19,6 @@ BackendCicesSystemApplication {
 
 	@Bean
 	public Clock clock() {
-		return Clock.systemDefaultZone();
+		return Clock.system(ZoneId.of("America/Costa_Rica"));
 	}
 }

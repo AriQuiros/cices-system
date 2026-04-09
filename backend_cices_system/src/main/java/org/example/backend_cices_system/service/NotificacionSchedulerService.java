@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.NotificacionDTO;
 import org.example.backend_cices_system.logic.Certificacion;
 import org.example.backend_cices_system.logic.Notificacion;
+import org.example.backend_cices_system.logic.Usuario;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 @Service
@@ -29,8 +31,8 @@ public class NotificacionSchedulerService {
 
     private final Clock clock;
 
-    //@Scheduled(cron = "0 0 0 * * *", zone = "America/Costa_Rica") // todos los días a media noche
-    @Scheduled(cron = "0 0 */12 * * *", zone = "America/Costa_Rica") // cada 12 horas
+    //@Scheduled(cron = "0 0 0 * * *", zone = "America/Costa_Rica") // todos los días a media noche -> 00:00
+    @Scheduled(cron = "0 0 */12 * * *", zone = "America/Costa_Rica") // cada 12 horas -> 00:00 y 12:00
     public synchronized void ejecutarNotificaciones() {
         generarNotificacionesInformes();
         generarNotificacionesCertificacionesProximas();
@@ -56,7 +58,8 @@ public class NotificacionSchedulerService {
         for (var inf : informes) {
 
             long dias = ChronoUnit.DAYS.between(hoy, inf.getFechaPresentacion());
-            if (!List.of(30, 15, 7, 3, 0).contains(dias)) continue;
+
+            if (!List.of(30L, 15L, 7L, 3L, 0L).contains(dias)) continue;
 
             var proyecto = inf.getIdProyecto();
 
@@ -105,19 +108,21 @@ public class NotificacionSchedulerService {
 
             long dias = ChronoUnit.DAYS.between(hoy, cert.getFechaExpiracion());
 
-            if (!List.of(90, 60, 30, 14).contains(dias)) continue;
+            if (!List.of(90L, 60L, 30L, 14L).contains(dias)) continue;
 
             var clave = notificacionService.crearClave(categoria, cert.getId(), (int) dias);
             if (notificacionService.existeNotificacionHoy(clave)) continue;
 
+            var empleado = cert.getIdInvestigador().getIdEmpleado();
             var notificacion = notificacionService.guardarNotificacion(
                     new NotificacionDTO(
                             null,
                             categoria,
                             null,
-                            "Certificación por vencer",
+                            "Certificación por vencer - " + empleado.getIdentificacion(),
                             "Certificación: " + cert.getNombreCertificacion()
-                                    + " | Expira: " + cert.getFechaExpiracion(),
+                                    + " | Expira: " + cert.getFechaExpiracion()
+                                    + " pertenece al investigador: " + empleado.getNombreCompleto(),
                             hoy()
                     ),
                     cert.getId(),
@@ -141,14 +146,16 @@ public class NotificacionSchedulerService {
 
             if (notificacionService.existeNotificacionHoy(clave)) continue;
 
+            var empleado = cert.getIdInvestigador().getIdEmpleado();
             var notificacion = notificacionService.guardarNotificacion(
                     new NotificacionDTO(
                             null,
                             categoria,
                             null,
-                            "Certificación vencida",
-                            clave + " | Certificación: " + cert.getNombreCertificacion()
-                                    + " venció el " + cert.getFechaExpiracion(),
+                            "Certificación vencida - " + empleado.getIdentificacion(),
+                            "Certificación: " + cert.getNombreCertificacion()
+                                    + " venció el " + cert.getFechaExpiracion()
+                            + " pertenece al investigador: " + empleado.getNombreCompleto(),
                             hoy()
                     ),
                     cert.getId(),
@@ -160,25 +167,16 @@ public class NotificacionSchedulerService {
     }
 
     private void asignarUsuariosCertificacion(Notificacion notificacion, Certificacion cert) {
+        var usuarioInv = cert.getIdInvestigador().getIdEmpleado().getIdUsuario();
 
-        var usuarioInvestigador = cert.getIdInvestigador()
-                .getIdEmpleado()
-                .getIdUsuario();
+        var todos = new LinkedHashSet<Usuario>();
+        todos.add(usuarioInv);
+        rolUsuarioService.obtenerRolesUsuarioPorNombreRol("ADMINISTRACION")
+                .forEach(r -> todos.add(r.getIdUsuario()));
+        rolUsuarioService.obtenerRolesUsuarioPorNombreRol("DIRECCION")
+                .forEach(r -> todos.add(r.getIdUsuario()));
 
-        notificacionUsuarioService
-                .guardarNotificacionUsuario(notificacion, usuarioInvestigador);
-
-        var admins = rolUsuarioService.obtenerRolesUsuarioPorNombreRol("ADMINISTRACION");
-        admins.forEach(r ->
-                notificacionUsuarioService
-                        .guardarNotificacionUsuario(notificacion, r.getIdUsuario())
-        );
-
-        var directores = rolUsuarioService.obtenerRolesUsuarioPorNombreRol("DIRECCION");
-        directores.forEach(r ->
-                notificacionUsuarioService
-                        .guardarNotificacionUsuario(notificacion, r.getIdUsuario())
-        );
+        todos.forEach(u -> notificacionUsuarioService.guardarNotificacionUsuario(notificacion, u));
     }
 
     // =========================

@@ -34,7 +34,11 @@ public class NotificacionService {
         notificacion.setClave(clave);
         notificacion.setAsunto(notificacionDTO.asunto());
         notificacion.setMensaje(notificacionDTO.mensaje());
-        notificacion.setFechaCreacion(notificacionDTO.fechaCreacion());
+        notificacion.setFechaCreacion(
+                notificacionDTO.fechaCreacion() != null
+                        ? notificacionDTO.fechaCreacion()
+                        : LocalDate.now(clock)
+        );
 
         notificacionRepository.save(notificacion);
 

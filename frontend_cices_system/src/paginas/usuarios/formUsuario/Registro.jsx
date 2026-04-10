@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Registro.css";
+import "../../../estilos/form.css";
 
 import { EmpleadoProvider }    from "../../../context/empleadoCtx/EmpleadoProvider.jsx";
 import { InvestigadorProvider } from "../../../context/investigadorCtx/InvestigadorProvider.jsx";
@@ -26,6 +27,7 @@ const CLASES_REGISTRO = {
     btnLogin:          "btn-link-login",
     authModal:         "",            // no aplica en registro
     authBox:           "",            // no aplica en registro
+    phoneCss:         "phone-input-control",
 };
 
 function RegistroInner() {

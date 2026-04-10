@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 import { getResumen } from "../../services/UtilsService.jsx";
-import "../../styles/paginas.css";
+import "./Director.css";
 import {notify} from "../../utils/ui/notify.jsx";
 
 export default function PanelResumen() {
@@ -37,8 +37,10 @@ export default function PanelResumen() {
                         <label>Total proyectos: {data.totalProyectos || 0}</label>
                         <label>Proyectos activos: {data.proyectosActivos || 0}</label>
                         <label>Proyectos inactivos: {data.proyectosInactivos || 0}</label>
-                        <label>Certificaciones vencidas: {data.certificacionesVencidas || 0}</label>
+                        <label>Certificaciones vigentes: {data.certificacionesVigentes || 0}</label>
                         <label>Certificaciones por vencer: {data.certificacionesPorVencer || 0}</label>
+                        <label>Certificaciones vencidas: {data.certificacionesVencidas || 0}</label>
+
                     </div>
                 </section>
 

@@ -5,6 +5,7 @@ import PermisoProyectoForm from "./PermisoProyectoForm.jsx";
 import { obtenerInvestigadoresProyecto } from "../../../services/ReportesService.jsx";
 import { notify } from "../../../utils/ui/notify.jsx";
 import {confirm} from "../../../utils/ui/confirm.jsx";
+import "../AsignarInvestigador.css"
 
 const API = "/api/permiso-proyecto";
 
@@ -103,7 +104,7 @@ export default function GestionPermisosProyecto() {
 
     return (
 
-        <div>
+        <div className="asignar-page">
 
             <h2>Gestión de Permisos de Proyecto</h2>
 
@@ -139,7 +140,7 @@ export default function GestionPermisosProyecto() {
                         <p>No hay permisos asignados</p>
                     ) : (
 
-                        <table>
+                        <table className="tabla-horas">
                             <thead>
                             <tr>
                                 <th>Investigador</th>
@@ -167,11 +168,14 @@ export default function GestionPermisosProyecto() {
                                     </td>
 
                                     <td>
-                                        {p.fechaFin || "Sin fecha fin"}
+                                        {p.fechaFin || "Indefinida"}
                                     </td>
 
                                     <td>
-                                        <button onClick={() => removerPermiso(p.id)}>
+                                        <button
+                                            className="btn-danger"
+                                            onClick={() => removerPermiso(p.id)}
+                                        >
                                             Remover
                                         </button>
                                     </td>

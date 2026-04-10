@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import {fechaMayorIgualQue, fechaMenorIgualQue, required} from "../../../utils/validaciones/Validators.jsx";
+import "../AsignarInvestigador.css";
 
 const hoy = () => {
     return new Date().toISOString().split("T")[0];
@@ -51,60 +52,74 @@ export default function PermisoProyectoForm({   proyectoSeleccionado,
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="asignar-form" onSubmit={handleSubmit}>
 
-            <div>
-                <label>Investigador</label>
-                <Select
-                    required
-                    placeholder="Seleccione investigador"
-                    value={
-                        form.investigador
-                            ? {
-                                label: form.investigador.nombreInvestigador,
-                                value: form.investigador.id
-                            }
-                            : null
-                    }
-                    options={investigadoresProyecto.map(i => ({
-                        label: i.nombreInvestigador,
-                        value: i.id
-                    }))}
-                    onChange={(option) =>
-                        actualizarCampo(
-                            "investigador",
-                            investigadoresProyecto.find(i => i.id === option.value)
-                        )
-                    }
-                />
+            <div className="asignar-fila">
+
+                <div className="campo-formulario">
+                    <label className="label-campo">Investigador</label>
+                    <Select
+                        classNamePrefix="select"
+                        required
+                        placeholder="Seleccione investigador"
+                        value={
+                            form.investigador
+                                ? {
+                                    label: form.investigador.nombreInvestigador,
+                                    value: form.investigador.id
+                                }
+                                : null
+                        }
+                        options={investigadoresProyecto.map(i => ({
+                            label: i.nombreInvestigador,
+                            value: i.id
+                        }))}
+                        onChange={(option) =>
+                            actualizarCampo(
+                                "investigador",
+                                investigadoresProyecto.find(i => i.id === option.value)
+                            )
+                        }
+                    />
+                </div>
+
+                <div className="campo-formulario">
+                    <InputField
+                        label="Fecha inicio"
+                        type="date"
+                        name="fechaInicio"
+                        value={form.fechaInicio}
+                        onChange={(e) => actualizarCampo("fechaInicio", e.target.value)}
+                        rules={[
+                            required(),
+                            fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
+                            fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)
+                        ]}
+                        required
+                        min={proyectoSeleccionado.fechaInicio}
+                        max={form.fechaFin || proyectoSeleccionado.fechaFinalizacion}
+                    />
+                </div>
+
+                <div className="campo-formulario">
+                    <InputField
+                        label="Fecha fin (opcional)"
+                        type="date"
+                        name="fechaFin"
+                        value={form.fechaFin}
+                        onChange={(e) => actualizarCampo("fechaFin", e.target.value)}
+                        rules={[
+                            fechaMayorIgualQue(form.fechaInicio),
+                            fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)
+                        ]}
+                        min={proyectoSeleccionado.fechaInicio || form.fechaFin}
+                        max={proyectoSeleccionado.fechaFinalizacion}
+                    />
+                </div>
+
             </div>
 
-            <InputField
-                label="Fecha inicio"
-                type="date"
-                name="fechaInicio"
-                value={form.fechaInicio}
-                onChange={(e) => actualizarCampo("fechaInicio", e.target.value)}
-                rules={[required(), fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
-                    fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)]}
-                required
-                min={proyectoSeleccionado.fechaInicio}
-                max={form.fechaFin || proyectoSeleccionado.fechaFinalizacion}
-            />
-
-            <InputField
-                label="Fecha fin (opcional)"
-                type="date"
-                name="fechaFin"
-                value={form.fechaFin}
-                onChange={(e) => actualizarCampo("fechaFin", e.target.value)}
-                rules={[fechaMayorIgualQue(form.fechaInicio),
-                    fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)]}
-                min={proyectoSeleccionado.fechaInicio || form.fechaFin}
-                max={proyectoSeleccionado.fechaFinalizacion}
-            />
-
-            <button type="submit">
+            <button className="btn-primary" type="submit">
                 Otorgar permiso
             </button>
 

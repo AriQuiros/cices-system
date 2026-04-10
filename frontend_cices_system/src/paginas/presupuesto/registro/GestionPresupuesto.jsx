@@ -9,7 +9,7 @@ import { obtenerPresupuestosProyecto, registrarPresupuestos, actualizarPresupues
 
 import PresupuestoForm from "./PresupuestoForm.jsx";
 import PresupuestoList from "./PresupuestoList.jsx";
-import "../../../styles/paginas.css";
+import "./Presupuesto.css";
 
 function GestionPresupuestos({modoRegistro = false, proyecto: proyectoProp, onClose, onSave}) {
     const { token } = useContext(AppContext);

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import Select from "react-select";
 import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
 import { AppContext } from "../../../context/AppContext.jsx";
-import "../../../styles/paginas.css";
 import "../../../estilos/form.css"
 import {useDebounce} from "../../../hooks/useDebounce.js";
 

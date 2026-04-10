@@ -10,23 +10,25 @@ import { AppContext }            from "../../../context/AppContext.jsx";
 
 import FormularioUsuario from "./FormularioUsuario.jsx";
 
+import "./Perfil.css";
 /**
  * Clases CSS para la página de Perfil.
  * De momento están vacías — agregar las clases propias de Perfil aquí
  * cuando se defina el CSS correspondiente.
  */
 const CLASES_PERFIL = {
-    contenedor: "",
-    form:       "",
-    titulo:     "",
-    fila:       "",
-    grupoInput: "",
-    label:      "",
-    btnSubmit:  "",
-    btnEditar:  "",
-    roles:      "",
-    authModal:  "",
-    authBox:    "",
+    contenedor: "perfil-container",
+    form:       "perfil-form",
+    titulo:     "perfil-title",
+    fila:       "perfil-row",
+    grupoInput: "perfil-input-group",
+    label:      "perfil-label",
+    btnSubmit:  "perfil-btn-submit",
+    btnEditar:  "perfil-btn-editar",
+    roles:      "perfil-roles",
+    authModal:  "perfil-auth-modal",
+    authBox:    "perfil-auth-box",
+    phoneCss:    "phone-input-control"
 };
 
 function PerfilInner() {

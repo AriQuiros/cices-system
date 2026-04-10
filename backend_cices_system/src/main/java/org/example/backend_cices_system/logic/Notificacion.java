@@ -33,9 +33,6 @@ public class Notificacion {
     @Column(name = "ID_CODIGO_TIPO_CATEGORIA", nullable = false)
     private Short idCodigoTipoCategoria;
 
-    @Column(name = "ID_CODIGO_TIPO_PRIORIDAD")
-    private Short idCodigoTipoPrioridad;
-
     @Size(max = 50)
     @Column(name = "ASUNTO", length = 50)
     private String asunto;

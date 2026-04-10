@@ -51,10 +51,6 @@ public class RepNotificacionesUsuario {
     @Column(name = "CATEGORIA", length = 30)
     private String categoria;
 
-    @Size(max = 30)
-    @Column(name = "PRIORIDAD", length = 30)
-    private String prioridad;
-
     @Column(name = "LEIDO")
     private Boolean leido;
 

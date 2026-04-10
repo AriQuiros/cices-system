@@ -95,13 +95,10 @@ function getIdConfig(tipoId) {
 const formatearRol = (nombreRol = "") =>
     nombreRol.charAt(0).toUpperCase() + nombreRol.slice(1).toLowerCase();
 
-// ── Componente principal ────────────────────────────────────────────────────
 
 export default function FormularioUsuario({
-    // ── Estado del formulario ──────────────────────────────────────────────
     empleado,
     usuario,
-    investigador,
     tipos,
     rolesBD,
     loading,
@@ -148,6 +145,7 @@ export default function FormularioUsuario({
         btnLogin          = "",
         authModal         = "",
         authBox           = "",
+        phoneCss                 = "",
     } = clases;
 
     // ── Estado local ───────────────────────────────────────────────────────
@@ -233,6 +231,8 @@ export default function FormularioUsuario({
                         />
                     </div>
 
+                    <div className={grupoInput}>
+
                     <InputField
                         label="Número de Identificación"
                         name="identificacion"
@@ -256,6 +256,7 @@ export default function FormularioUsuario({
                         </button>
                     )}
                 </div>
+                </div>
 
                 {/* ── Fila 2: País · Teléfono · Grado Académico ────────────── */}
                 <div className={fila}>
@@ -278,6 +279,7 @@ export default function FormularioUsuario({
                     <div className={grupoInput}>
                         <label className={label}>Número de teléfono</label>
                         <PhoneInput
+                            className={phoneCss}
                             required
                             id="numeroTelefono"
                             name="numeroTelefono"
@@ -438,13 +440,14 @@ export default function FormularioUsuario({
                         <div className={authBox}>
                             <h3>Confirmar identidad</h3>
                             <p>{user?.username}</p>
-                            <input
+                            <InputField
                                 type="password"
                                 placeholder="contraseña"
                                 value={authPassword}
+                                rules={[required(), minLength(8)]}
                                 onChange={(e) => setAuthPassword(e.target.value)}
                             />
-                            <button type="button" onClick={handleReAuth}>
+                            <button type="button" onClick={handleReAuth} disabled={!authPassword}>
                                 Confirmar
                             </button>
                             <button type="button" onClick={() => setRequiereAuth(false)}>

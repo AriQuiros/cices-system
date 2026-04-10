@@ -285,7 +285,7 @@ const ConsultaGastos = () => {
                                                 <td>
                                                     <button
                                                         onClick={() => abrirBitacora(g)}
-                                                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                                                        className="bg-blue-400 text-white px-2 py-1 rounded"
                                                     >
                                                         Ver cambios
                                                     </button>

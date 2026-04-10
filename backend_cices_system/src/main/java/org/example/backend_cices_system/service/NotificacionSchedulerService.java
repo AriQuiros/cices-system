@@ -122,7 +122,7 @@ public class NotificacionSchedulerService {
                             "Certificación por vencer - " + empleado.getIdentificacion(),
                             "Certificación: " + cert.getNombreCertificacion()
                                     + " | Expira: " + cert.getFechaExpiracion()
-                                    + " pertenece al investigador: " + empleado.getNombreCompleto(),
+                                    + " pertenece al investigador/a: " + empleado.getNombreCompleto(),
                             hoy()
                     ),
                     cert.getId(),
@@ -155,7 +155,7 @@ public class NotificacionSchedulerService {
                             "Certificación vencida - " + empleado.getIdentificacion(),
                             "Certificación: " + cert.getNombreCertificacion()
                                     + " venció el " + cert.getFechaExpiracion()
-                            + " pertenece al investigador: " + empleado.getNombreCompleto(),
+                            + " pertenece al investigador/a: " + empleado.getNombreCompleto(),
                             hoy()
                     ),
                     cert.getId(),

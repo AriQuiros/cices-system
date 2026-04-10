@@ -1,0 +1,149 @@
+.listado-proyectos-page {
+    padding: 20px;
+}
+
+.listado-proyectos-card {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.listado-proyectos-title {
+    margin: 0 0 18px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.contenedor_proyectos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.buscar.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    align-items: end;
+    padding: 12px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+}
+
+.buscador,
+.filtro {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #fff;
+    outline: none;
+}
+
+.buscador:focus,
+.filtro:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.boton-limpiar {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    min-height: 42px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #e6edf2;
+    color: #2f3f4a;
+}
+
+.boton-limpiar:hover {
+    filter: brightness(0.97);
+}
+
+.todosLosProyectos {
+    margin-top: 4px;
+}
+
+.label {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.proyecto_card {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    background: #f8fcff;
+    padding: 12px;
+}
+
+.proyecto_card h3 {
+    margin: 0 0 8px;
+    color: #123f57;
+}
+
+.proyecto_card p {
+    margin: 0 0 6px;
+    color: #25485d;
+}
+
+.proyecto_card a {
+    display: inline-block;
+    margin-top: 6px;
+    color: #0b5c7d;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.proyecto_card a:hover {
+    text-decoration: underline;
+}
+
+.react-select__control {
+    min-height: 42px !important;
+    border: 1px solid #b6cbd8 !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+
+.react-select__control--is-focused {
+    border-color: #0fc3f3 !important;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2) !important;
+}
+
+.react-select__menu {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.react-select__option--is-focused {
+    background: #edf7fc !important;
+}
+
+@media (max-width: 768px) {
+    .listado-proyectos-page {
+        padding: 12px;
+    }
+
+    .listado-proyectos-card {
+        padding: 14px;
+    }
+
+    .buscar.row {
+        grid-template-columns: 1fr;
+    }
+
+    .boton-limpiar {
+        width: 100%;
+    }
+}

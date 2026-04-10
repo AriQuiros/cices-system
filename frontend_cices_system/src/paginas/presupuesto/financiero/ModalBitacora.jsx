@@ -30,8 +30,7 @@ const ModalBitacora = ({ gasto, token, onClose }) => {
 
             <div className="bg-white w-[600px] max-h-[80vh] overflow-y-auto p-6 rounded-lg">
 
-                <h2 className="text-xl font-bold mb-4">Bitácora</h2>
-                <p>Actualizaciones del gasto</p>
+                <h2 className="text-xl font-bold mb-4">Bitácora Gasto</h2>
                 <h4 className="font-bold text-blue-900">Gasto Actual:</h4>
                 <div className="mb-4 p-3 rounded bg-gray-50">
                     <p><b>Descripción:</b> {gasto.descripcion}</p>

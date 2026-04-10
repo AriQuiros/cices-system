@@ -275,6 +275,7 @@ export default function NotificacionesPage() {
                             <option value="MAS_ANTIGUA">Mas antigua primero</option>
                         </select>
                     </div>
+                    <label> Resultados : {listaFiltrada.length}</label>
                 </div>
 
                 {loading && <p className="notificaciones-feedback">Cargando notificaciones...</p>}

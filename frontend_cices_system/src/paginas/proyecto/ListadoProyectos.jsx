@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { useProyectos } from "../../hooks/proyectos/useProyectos";
-import "../../styles/paginas.css";
 import {useTiposCatalogo} from "../../hooks/useTiposCatalogo.js";
 import Select from "react-select";
 import {useLineas} from "../../hooks/proyectos/useLineas.jsx";
 import {useContext} from "react";
 import {AppContext} from "../../context/AppContext.jsx";
+import "./ListadoProyectos.css";
 
 function ListadoProyectos() {
     const { token, user } = useContext(AppContext);

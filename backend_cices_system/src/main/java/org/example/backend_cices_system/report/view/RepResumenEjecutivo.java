@@ -54,4 +54,7 @@ public class RepResumenEjecutivo {
     @Column(name = "CERTIFICACIONES_POR_VENCER")
     private Long certificacionesPorVencer;
 
+    @Column(name = "CERTIFICACIONES_VIGENTES")
+    private Long certificacionesVigentes;
+
 }

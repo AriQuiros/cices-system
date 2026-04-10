@@ -17,5 +17,4 @@ public interface RepNotificacionesUsuarioRepository extends JpaRepository<RepNot
 
     List<RepNotificacionesUsuario> findByCategoria(String categoria);
 
-    List<RepNotificacionesUsuario> findByPrioridad(String prioridad);
 }

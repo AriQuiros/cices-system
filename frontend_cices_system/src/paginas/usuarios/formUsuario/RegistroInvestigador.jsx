@@ -11,6 +11,8 @@ import {eliminarFormacion} from "../../../services/CertificacionesTitulosService
 import {confirm} from "../../../utils/ui/confirm.jsx";
 import {notify} from "../../../utils/ui/notify.jsx";
 
+import "./Registro.css";
+
 function RegistroInvestigadorInner({ nivelAcademico, modoPerfil }) {
 
     const {
@@ -97,8 +99,7 @@ function RegistroInvestigadorInner({ nivelAcademico, modoPerfil }) {
 
     // ----- Resto del formulario ----- //
     return (
-        <div>
-            <h2>Registro Investigador</h2>
+        <div className="formacion-section">
 
             {/* Institución de origen */}
             <div className="input-group">
@@ -135,15 +136,83 @@ function RegistroInvestigadorInner({ nivelAcademico, modoPerfil }) {
                 maxLength={254}
             />
 
+            <h2 className="formacion-title">FORMACIÓN</h2>
+
+
+            {/* Títulos académicos */}
+            <h3 className="formacion-subtitle"> Títulos Acádemicos (Formal)</h3>
+            <p>No es obligatorio ingresar titulos en este momento.</p>
+            {(investigador.titulos || []).length === 0 && (
+                <button className="add-item-btn" type="button" onClick={() => handleAdd("titulos", TituloDTO)}>Agregar título</button>
+            )}
+
+            <div className="rows-group">
+                {(investigador.titulos || []).map((t, idx) => (
+                    <div className="formacion-row" key={idx}>
+                        <InputField
+                            name={`titulo-nombre-${idx}`}
+                            placeholder="Nombre del título"
+                            value={t.nombreTitulo || ""}
+                            onChange={(e) => handleArrayChange("titulos", idx, "nombreTitulo", e.target.value)}
+                            rules={[required(), maxLength(254)]}
+                            required
+                            maxLength={254}
+                        />
+                        <EntidadSelect
+                            required={true}
+                            tipo="INSTITUCION"
+                            value={t.entidadEmisora}
+                            onChange={(val) =>
+                                handleArrayChange(
+                                    "titulos",
+                                    idx,
+                                    "entidadEmisora",
+                                    val
+                                )
+                            }
+                            placeholder="Institución"
+                        />
+                        <div className="input-group">
+                            <label className="input-label">Nivel Académico</label>
+                            <select
+                                className="select"
+                                required={true}
+                                value={t.nivelTitulo?.valor || ""}
+                                onChange={(e) => handleArrayChange("titulos", idx, "nivelTitulo", e.target.value)}
+                            >
+                                <option value="">Nivel</option>
+                                {nivelAcademico?.map(tipo => (
+                                    <option key={tipo.id} value={tipo.valor}>{tipo.despliegue}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <InputField
+                            name={`titulo-fecha-${idx}`}
+                            type="date"
+                            value={t.fechaEmision || ""}
+                            onChange={(e) => handleArrayChange("titulos", idx, "fechaEmision", e.target.value)}
+                            rules={[required(), fechaMenorIgualQue(new Date())]}
+                            max={new Date().toISOString().split("T")[0]}
+                            required
+                        />
+                        <div className="formacion-actions">
+                            <button type="button" className="icon-btn remove-btn" onClick={() => handleRemove("titulos", idx)} disabled={(investigador.titulos || []).length === 0}>✖</button>
+                            <button type="button" className="icon-btn" onClick={() => handleAdd("titulos", TituloDTO)}>+</button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {/* Certificaciones */}
-            <h3 className="section-title">Certificaciones</h3>
+            <h3 className="formacion-subtitle"> Certificaciones (Informal)</h3>
             <p>No es obligatorio ingresar una certificación en este momento.</p>
+
             {(investigador.certificaciones || []).length === 0 && (
                 <button className="add-item-btn" type="button" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>Agregar certificación</button>
             )}
             <div className="rows-group">
                 {(investigador.certificaciones || []).map((c, idx) => (
-                    <div className="row" key={idx}>
+                    <div className="formacion-row" key={idx}>
                         <InputField
                             name={`cert-nombre-${idx}`}
                             placeholder="Nombre de la certificación"
@@ -192,66 +261,6 @@ function RegistroInvestigadorInner({ nivelAcademico, modoPerfil }) {
                 ))}
             </div>
 
-            {/* Títulos académicos */}
-            <h3 className="section-title">Títulos académicos</h3>
-            <p>No es obligatorio ingresar titulos en este momento.</p>
-            {(investigador.titulos || []).length === 0 && (
-                <button className="add-item-btn" type="button" onClick={() => handleAdd("titulos", TituloDTO)}>Agregar título</button>
-            )}
-
-            <div className="rows-group">
-                {(investigador.titulos || []).map((t, idx) => (
-                    <div className="row" key={idx}>
-                        <InputField
-                            name={`titulo-nombre-${idx}`}
-                            placeholder="Nombre del título"
-                            value={t.nombreTitulo || ""}
-                            onChange={(e) => handleArrayChange("titulos", idx, "nombreTitulo", e.target.value)}
-                            rules={[required(), maxLength(254)]}
-                            required
-                            maxLength={254}
-                        />
-                        <EntidadSelect
-                            required={true}
-                            tipo="INSTITUCION"
-                            value={t.entidadEmisora}
-                            onChange={(val) =>
-                                handleArrayChange(
-                                    "titulos",
-                                    idx,
-                                    "entidadEmisora",
-                                    val
-                                )
-                            }
-                            placeholder="Institución"
-                        />
-                        <div className="input-group">
-                            <label className="input-label">Nivel Académico</label>
-                            <select
-                                required={true}
-                                value={t.nivelTitulo?.valor || ""}
-                                onChange={(e) => handleArrayChange("titulos", idx, "nivelTitulo", e.target.value)}
-                            >
-                                <option value="">Nivel</option>
-                                {nivelAcademico?.map(tipo => (
-                                    <option key={tipo.id} value={tipo.valor}>{tipo.despliegue}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <InputField
-                            name={`titulo-fecha-${idx}`}
-                            type="date"
-                            value={t.fechaEmision || ""}
-                            onChange={(e) => handleArrayChange("titulos", idx, "fechaEmision", e.target.value)}
-                            rules={[required(), fechaMenorIgualQue(new Date())]}
-                            max={new Date().toISOString().split("T")[0]}
-                            required
-                        />
-                        <button type="button" className="icon-btn remove-btn" onClick={() => handleRemove("titulos", idx)} disabled={(investigador.titulos || []).length === 0}>✖</button>
-                        <button type="button" className="icon-btn" onClick={() => handleAdd("titulos", TituloDTO)}>+</button>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 }

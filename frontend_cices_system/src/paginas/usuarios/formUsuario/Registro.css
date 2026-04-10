@@ -23,24 +23,31 @@
     font-size: 1rem;
     width: 100%;
 }
-
+/* ---- PHONE INPUT MEJORADO ---- */
 .phone-input-control {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 10px;
-    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    background: var(--color-bg);
+    transition: all 0.2s ease;
 }
 
 .phone-input-control:focus-within {
-    border-color: #0FC3F3;
-    box-shadow: 0 0 0 2px rgba(15, 195, 243, 0.2);
+    border-color: var(--color-focus);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.phone-input-control .PhoneInputCountry {
+    margin-right: 6px;
 }
 
 .phone-input-control .PhoneInputInput {
     border: none;
     outline: none;
-    font-size: 1rem;
+    font-size: 17px;
     width: 100%;
     background: transparent;
 }
@@ -57,16 +64,6 @@
     margin-bottom: 6px;
     display: block;
     transition: color 0.3s ease;
-}
-
-.input-label-error {
-    color: #d32f2f !important;
-}
-
-.input-message {
-    font-size: 0.8rem;
-    color: #555;
-    margin-top: 4px;
 }
 
 .roles {
@@ -90,136 +87,7 @@
 .submit-btn:hover {
     background-color: #0aa8d4;
 }
-/*normalizar tamaños de entradas*/
-textarea,
-fieldset,
-legend,
-label,
-select,
-option,
-input,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="search"],
-input[type="checkbox"],
-input[type="date"],
-input[type="radio"]{
-    font-family: Arial, sans-serif;
-    font-size: large;
-}
 
-/* Estilos para popups y mensajes de error/éxito */
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(2px);
-}
-
-.popup-overlay-error {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 3000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(2px);
-}
-
-.popup-content {
-    position: relative;
-    background: #f3f3f3;
-    border: 1px solid #bdbdbd;
-    color: #333;
-    padding: 24px 32px 20px 32px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-    min-width: 320px;
-    max-width: 90vw;
-    text-align: center;
-}
-
-.popup-content-general {
-    position: relative;
-    background: #e0e0e0;
-    border: 1px solid #bdbdbd;
-    color: #333;
-    padding: 24px 32px 20px 32px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-    min-width: 320px;
-    max-width: 90vw;
-    text-align: center;
-}
-
-.popup-close-btn {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    color: #888;
-    cursor: pointer;
-}
-
-.popup-title-error {
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-    color: #d32f2f;
-}
-
-.popup-title-success {
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-    color: #388e3c;
-}
-
-.popup-message {
-    font-size: 1rem;
-}
-
-.popup-success {
-    position: fixed;
-    top: 6%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 4000;
-    background: #e0e0e0;
-    border: 1px solid #bdbdbd;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-    min-width: 320px;
-    max-width: 90vw;
-    text-align: center;
-    padding: 18px 32px 16px 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Estilos para mensajes de validación */
-.validation-error-message {
-    color: #d32f2f;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px;
-}
 
 /* Estilos para contenedores de contraseña */
 .password-container {
@@ -260,51 +128,7 @@ input[type="radio"]{
     font-size: 1rem;
 }
 
-/* Estilos para popup de investigador */
-.investigador-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.investigador-error-bubble {
-    position: absolute;
-    top: 8%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #d32f2f;
-    color: #fff;
-    padding: 12px 28px;
-    border-radius: 24px;
-    font-weight: bold;
-    font-size: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
-    z-index: 10000;
-}
-
-.investigador-popup-content {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
-    padding: 32px 28px;
-    min-width: 350px;
-    max-width: 95vw;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-}
-
-.investigador-popup-title {
-    text-align: center;
-    margin-bottom: 18px;
-}
 
 /* --- Responsive --- */
 @media (max-width: 600px) {
@@ -343,74 +167,92 @@ input[type="radio"]{
     background: #125a9c;
 }
 
-/* Estilo especifico para /perfil */
-.perfil-page {
+
+
+/* ---- SECCION FORMACION ---- */
+.formacion-section {
+    margin-top: 25px;
     padding: 20px;
-    align-items: flex-start;
+    border: 1px solid #e3eef5;
+    border-radius: 12px;
+    background: #f9fcff;
 }
 
-.perfil-page .form-content,
-.perfil-card {
-    max-width: 1080px;
-    margin: 0 auto;
-    border: 1px solid #d9e6ee;
-    border-radius: 14px;
-    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
-    padding: 24px;
-}
-
-.perfil-title {
-    margin: 0 0 10px;
-    color: #0b2f46;
-    font-size: 1.5rem;
+.formacion-title {
+    font-size: 1.3rem;
     font-weight: 700;
+    color: #0b2f46;
+    margin-bottom: 15px;
 }
 
-.perfil-page .input-field,
-.perfil-page .phone-input-control,
-.perfil-page select {
-    border: 1px solid #b6cbd8;
-    border-radius: 10px;
-}
-
-.perfil-page .input-field:focus,
-.perfil-page .phone-input-control:focus-within,
-.perfil-page select:focus {
-    border-color: #0fc3f3;
-    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
-}
-
-.perfil-page .roles {
-    gap: 10px;
-    flex-wrap: wrap;
-    padding: 10px;
-    border: 1px solid #e6eef3;
-    border-radius: 10px;
-    background: #fcfeff;
-}
-
-.perfil-page .submit-btn {
-    border: none;
-    border-radius: 8px;
-    padding: 10px 12px;
+/* Sub-secciones */
+.formacion-subtitle {
+    font-size: 1.1rem;
     font-weight: 600;
+    margin: 15px 0 10px;
+    color: #333;
+}
+
+/* Filas reutilizando tu .row */
+.formacion-row {
+    display: flex;
+    gap: var(--gap);
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+/* Inputs dentro */
+.formacion-row .input,
+.formacion-row .select {
+    flex: 1;
+    min-width: 180px;
+}
+
+/* Botones */
+.formacion-actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* Botón agregar */
+.add-item-btn {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    border: 1px dashed var(--color-focus);
+    background: transparent;
     cursor: pointer;
-    background: #0fc3f3;
-    color: #052b3d;
+    transition: 0.2s;
 }
 
-.perfil-page .submit-btn:hover {
-    filter: brightness(0.97);
-    background: #0fc3f3;
+.add-item-btn:hover {
+    background: rgba(74, 144, 226, 0.08);
 }
 
+/* Botón iconos */
+.icon-btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #e6eef3;
+}
+
+.icon-btn:hover {
+    background: #d4e4ef;
+}
+
+.remove-btn {
+    background: #f8d7da;
+}
+
+.remove-btn:hover {
+    background: #f1b0b7;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .perfil-page {
-        padding: 12px;
-    }
-
-    .perfil-page .form-content,
-    .perfil-card {
-        padding: 14px;
+    .formacion-row {
+        flex-direction: column;
     }
 }

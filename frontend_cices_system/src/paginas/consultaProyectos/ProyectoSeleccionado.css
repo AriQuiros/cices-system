@@ -1,0 +1,117 @@
+.proyecto-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    font-family: "Inter", sans-serif;
+    color: #333;
+}
+
+.proyecto-container h3 {
+    color: #004d80;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 6px;
+}
+
+.proyecto-container p {
+    margin: 6px 0;
+    line-height: 1.6;
+    font-size: 1rem;
+
+}
+
+.titulo {
+    background: #9AD5ED;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: black;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 700px) {
+    .proyecto-container {
+        padding: 20px;
+    }
+    .titulo {
+        font-size: 1.4rem;
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    font-family: Arial, sans-serif;
+}
+
+thead th {
+    background-color: #004080;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+thead td{
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+table tbody {
+    background-color: #eef5ff;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tbody td {
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+
+@media (max-width: 600px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+}
+
+.main{
+    padding: 50px;
+}
+
+.botonVolver{
+    padding: 10px 16px;
+    border: 1px solid #005DA4;
+    background: #005DA4;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    min-width: 44px;
+}
+
+.botonVolver:hover {
+    background: #e5e7eb;
+    color: #005DA4;
+    border-color: #9ca3af;
+}
+
+
+@media (min-width: 1024px) and (max-width: 1366px) {
+.main{
+    padding: 100px;
+}
+    .botonVolver{
+        margin: 1%;
+    }
+
+}
+
+
+

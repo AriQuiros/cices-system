@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { AppContext } from "../../context/AppContext.jsx";
-import "../../styles/paginas.css";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 

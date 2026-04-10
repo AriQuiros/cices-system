@@ -1,0 +1,197 @@
+.contenedor_proyectos {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+}
+
+.buscar {
+    display: grid;
+    grid-template-columns: minmax(220px, 300px) minmax(240px, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+}
+
+.filtro,
+.buscador {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    color: #334155;
+    font-size: 0.95rem;
+    background: #ffffff;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.filtro:focus,
+.buscador:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+}
+
+.boton-limpiar {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    min-height: 42px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #e6edf2;
+    color: #2f3f4a;
+}
+
+.boton-limpiar:hover:not(:disabled) {
+    filter: brightness(0.97);
+}
+
+.boton-limpiar:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.todosLosProyectos {
+    margin-top: 8px;
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    background: #fcfeff;
+    padding: 14px;
+}
+
+.todosLosProyectos h2 {
+    color: #0b2f46;
+    margin: 0 0 14px;
+    font-weight: 700;
+    font-size: 1.35rem;
+}
+
+.label {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.label > div {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    background: #f8fcff;
+    padding: 12px;
+}
+
+.label > div h3 {
+    margin: 0 0 8px;
+    color: #123f57;
+    font-size: 1.05rem;
+}
+
+.label > div p {
+    margin: 0 0 6px;
+    color: #2f3f4a;
+}
+
+.ver-horas-link {
+    display: inline-block;
+    margin: 6px 8px 0 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    background: #ddeff8;
+    color: #114866;
+}
+
+.ver-horas-link:hover {
+    filter: brightness(0.97);
+}
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.boton-paginacion,
+.numero-pagina {
+    padding: 9px 12px;
+    border: 1px solid #d1dbe3;
+    background: #ffffff;
+    color: #2f3f4a;
+    border-radius: 8px;
+    cursor: pointer;
+    min-width: 42px;
+    font-weight: 600;
+}
+
+.boton-paginacion:hover:not(:disabled),
+.numero-pagina:hover {
+    background: #edf7fc;
+}
+
+.numero-pagina.activo {
+    background: #0fc3f3;
+    color: #052b3d;
+    border-color: #0fc3f3;
+}
+
+.boton-paginacion:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.numeros-pagina {
+    display: flex;
+    gap: 6px;
+}
+
+.contador-paginacion {
+    text-align: center;
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #3f4f5a;
+    border: 1px solid #d8e4ec;
+    background: #f5fbff;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .contenedor_proyectos {
+        padding: 12px;
+    }
+
+    .buscar {
+        grid-template-columns: 1fr;
+    }
+
+    .boton-limpiar {
+        width: 100%;
+    }
+
+    .paginacion {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .numeros-pagina {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .ver-horas-link {
+        margin-right: 6px;
+        margin-bottom: 2px;
+    }
+}

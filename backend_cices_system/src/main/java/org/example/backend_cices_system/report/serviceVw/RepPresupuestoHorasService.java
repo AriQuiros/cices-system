@@ -61,7 +61,7 @@ public class RepPresupuestoHorasService {
                     .map(h -> new HorasAsignadasDTO(h.getIdHorasAsignadas(),
                             new InvestigadorProyectoDTO(h.getIdInvestigadorProyecto(),
                                     null,
-                                    h.getNombreInvestigador(),null,null,null,
+                                    h.getNombreInvestigador(),null,null,null,null,
                                     h.getFechaInicioInvestigador(),h.getFechaFinInvestigador()),
                             h.getIdPresupuesto(),
                             catalogoService.obtenerDto(h.getIdCodigoTipoModalidad()),

@@ -6,6 +6,7 @@ public record InvestigadorProyectoDTO(
         Integer id,
         String identificacionInvestigador,
         String nombreInvestigador,
+        String gradoAcademico,
         String codigoProyecto,
         RolProyectoDTO rolProyecto,
         String actividadProyecto,

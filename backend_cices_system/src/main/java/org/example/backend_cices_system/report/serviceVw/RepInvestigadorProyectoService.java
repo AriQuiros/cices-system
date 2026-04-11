@@ -37,6 +37,7 @@ public class RepInvestigadorProyectoService {
         return new InvestigadorProyectoDTO( r.getIdInvestigadorProyecto(),
                 r.getIdentificacion(),
                 r.getNombreInvestigador(),
+                r.getGradoAcademico(),
                 r.getCodigoProyecto(),
                 new RolProyectoDTO(r.getIdRolProyecto(),r.getRolProyecto()),
                 r.getActividadProyecto(),

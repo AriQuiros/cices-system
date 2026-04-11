@@ -68,7 +68,7 @@ public class InvestigadorProyectoService {
 
     public InvestigadorProyectoDTO obtenerDTO(InvestigadorProyecto inv){
         return new InvestigadorProyectoDTO(inv.getId(), inv.getIdInvestigador().getIdEmpleado().getIdentificacion(),
-                inv.getIdInvestigador().getIdEmpleado().getNombreCompleto(),inv.getIdProyecto().getCodigoProyecto(),
+                inv.getIdInvestigador().getIdEmpleado().getNombreCompleto(),inv.getIdInvestigador().getIdEmpleado().getIdCodigoTipoGradoAcademico().toString(),inv.getIdProyecto().getCodigoProyecto(),
                 obtenerRolProyectoDTO(inv.getIdRolProyecto()),inv.getActividadProyecto(),inv.getFechaInicioInvestigador(),
                 inv.getFechaFinInvestigador());
     }

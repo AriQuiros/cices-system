@@ -9,15 +9,13 @@ import org.hibernate.annotations.Immutable;
 
 import java.time.LocalDate;
 
-/**
- * Mapping for DB view
- */
 @Getter
 @Setter
 @Entity
 @Immutable
 @Table(name = "REP_INVESTIGADOR_PROYECTO")
 public class RepInvestigadorProyecto {
+
     @Id
     @NotNull
     @Column(name = "ID_INVESTIGADOR_PROYECTO", nullable = false)
@@ -41,6 +39,14 @@ public class RepInvestigadorProyecto {
     @NotNull
     @Column(name = "CORREO_INVESTIGADOR", nullable = false, length = 254)
     private String correoInvestigador;
+
+    @NotNull
+    @Column(name = "ID_CODIGO_TIPO_GRADO_ACADEMICO", nullable = false)
+    private Integer idCodigoTipoGradoAcademico;
+
+    @Size(max = 30)
+    @Column(name = "GRADO_ACADEMICO", length = 30)
+    private String gradoAcademico;
 
     @NotNull
     @Column(name = "ID_PROYECTO", nullable = false)
@@ -71,13 +77,15 @@ public class RepInvestigadorProyecto {
 
     @Column(name = "FECHA_FIN_INVESTIGADOR")
     private LocalDate fechaFinInvestigador;
+
     @NotNull
     @Column(name = "ID_ROL_PROYECTO", nullable = false)
     private Short idRolProyecto;
+
     @NotNull
     @Column(name = "FECHA_INICIO", nullable = false)
     private LocalDate fechaInicio;
+
     @Column(name = "FECHA_FINALIZACION")
     private LocalDate fechaFinalizacion;
-
 }

@@ -120,7 +120,7 @@ export const menuConfig = [
         items: [
             { label: "Proyectos", path: "/reporte-proyectos", roles: ["*"] },
             { label: "Presupuestos", path: "/reporte-presupuestos", roles: ["*"] },
-            { label: "Participantes", path: "/reporte-participantes", roles: ["*"] },
+            { label: "Participantes", path: "/reporte-participantes", roles: ["ADMINISTRADOR","DIRECCION"] },
             { label: "Certificaciones", path: "/reporte-certificaciones", roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"] }
         ]
     },

@@ -99,6 +99,52 @@ export default function NotificacionesPage() {
         };
     }, [user?.username, token]);
 
+    useEffect(() => {
+        if (!user?.username) return undefined;
+
+        let cancelado = false;
+
+        const refrescar = async () => {
+            try {
+                const headers = {
+                    "Content-Type": "application/json",
+                };
+
+                if (token) {
+                    headers.Authorization = `Bearer ${token}`;
+                }
+
+                const res = await fetch(
+                    `/api/reports/notificaciones/usuario/${encodeURIComponent(user.username)}/detalladas`,
+                    { headers }
+                );
+
+                if (!res.ok) {
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (!cancelado) {
+                    setNotificaciones(Array.isArray(data) ? data.filter((n) => n?.eliminado !== true) : []);
+                }
+            } catch {
+                // Ignorar errores transitorios en refrescos por evento.
+            }
+        };
+
+        const manejarActualizacion = () => {
+            refrescar();
+        };
+
+        window.addEventListener("notificaciones:actualizadas", manejarActualizacion);
+
+        return () => {
+            cancelado = true;
+            window.removeEventListener("notificaciones:actualizadas", manejarActualizacion);
+        };
+    }, [user?.username, token]);
+
     const llamarAccion = async (idNotificacionUsuario, accion) => {
         if (!user?.username || !idNotificacionUsuario) return;
 

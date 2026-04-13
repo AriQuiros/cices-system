@@ -72,8 +72,9 @@ public class NotificacionSchedulerService {
                             categoria,
                             null,
                             "Presentación de informe - " + proyecto.getCodigoProyecto(),
-                            "Proyecto: " + proyecto.getCodigoProyecto()
-                                    + " | Fecha: " + inf.getFechaPresentacion(),
+                            "Codigo de proyecto: " + proyecto.getCodigoProyecto()
+                                    + "; Numero de informe: " + inf.getId()
+                                    + "; Fecha de presentacion: " + inf.getFechaPresentacion(),
                             hoy()
                     ),
                     inf.getId(),
@@ -120,9 +121,9 @@ public class NotificacionSchedulerService {
                             categoria,
                             null,
                             "Certificación por vencer - " + empleado.getIdentificacion(),
-                            "Certificación: " + cert.getNombreCertificacion()
-                                    + " | Expira: " + cert.getFechaExpiracion()
-                                    + " pertenece al investigador/a: " + empleado.getNombreCompleto(),
+                            "Nombre de la acreditacion o licencia: " + cert.getNombreCertificacion()
+                                    + "; Fecha de expiracion: " + cert.getFechaExpiracion()
+                                    + "; Nombre del investigador: " + empleado.getNombreCompleto(),
                             hoy()
                     ),
                     cert.getId(),
@@ -153,9 +154,9 @@ public class NotificacionSchedulerService {
                             categoria,
                             null,
                             "Certificación vencida - " + empleado.getIdentificacion(),
-                            "Certificación: " + cert.getNombreCertificacion()
-                                    + " venció el " + cert.getFechaExpiracion()
-                            + " pertenece al investigador/a: " + empleado.getNombreCompleto(),
+                            "Nombre de la acreditacion o licencia: " + cert.getNombreCertificacion()
+                                    + "; Fecha de expiracion: " + cert.getFechaExpiracion()
+                                    + "; Nombre del investigador: " + empleado.getNombreCompleto(),
                             hoy()
                     ),
                     cert.getId(),

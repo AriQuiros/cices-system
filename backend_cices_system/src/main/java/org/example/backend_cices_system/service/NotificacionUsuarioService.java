@@ -18,6 +18,7 @@ import java.time.LocalDate;
 public class NotificacionUsuarioService {
     private final NotificacionUsuarioRepository notificacionUsuarioRepository;
     private final NotificacionService notificacionService;
+    private final NotificacionCambioService notificacionCambioService;
     private final Clock clock;
 
     public NotificacionUsuario guardarNotificacionUsuario(Notificacion notificacion, Usuario usuario){
@@ -26,7 +27,9 @@ public class NotificacionUsuarioService {
 
         notificacionUsuario.setIdUsuario(usuario);
 
-       return notificacionUsuarioRepository.save(notificacionUsuario);
+        var guardada = notificacionUsuarioRepository.save(notificacionUsuario);
+        notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
+        return guardada;
     }
 
     @Transactional
@@ -34,11 +37,13 @@ public class NotificacionUsuarioService {
         var usuario = permisoProyecto.getIdInvestigadorProyecto().getIdInvestigador().getIdEmpleado().getIdUsuario();
         var codigoProyecto = permisoProyecto.getIdInvestigadorProyecto().getIdProyecto().getCodigoProyecto();
 
-        var mensaje = "Se ha otorgado el permiso 'COORDINADOR' en el proyecto '" + codigoProyecto +
-                "' durante el periodo del " + permisoProyecto.getFechaInicioPermiso() + " a";
+        var fechaFin = permisoProyecto.getFechaFinPermiso() != null
+                ? permisoProyecto.getFechaFinPermiso().toString()
+                : "Indefinido";
 
-        mensaje = permisoProyecto.getFechaFinPermiso() != null ?
-                mensaje + "l " + permisoProyecto.getFechaFinPermiso() : mensaje + " indefinido. ";
+        var mensaje = "Codigo de proyecto: " + codigoProyecto
+                + "; Fecha de inicio: " + permisoProyecto.getFechaInicioPermiso()
+                + "; Fecha fin: " + fechaFin;
 
         var categoria = "PERMISO_COORDINADOR";
         var clave = notificacionService.crearClave(categoria, permisoProyecto.getId(), 0);

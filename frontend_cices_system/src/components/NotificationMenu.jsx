@@ -116,14 +116,55 @@ export default function NotificationMenu() {
         canceladoRef.current = false;
 
         cargarNotificaciones();
-        const intervalo = setInterval(cargarNotificaciones, 30000);
+        let detener = false;
+
+        const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        const escucharCambios = async () => {
+            while (!detener && !canceladoRef.current) {
+                if (!user?.username) {
+                    break;
+                }
+
+                try {
+                    const headers = {
+                        "Content-Type": "application/json",
+                    };
+
+                    if (token) {
+                        headers.Authorization = `Bearer ${token}`;
+                    }
+
+                    const res = await fetch(
+                        `/api/reports/notificaciones/usuario/${encodeURIComponent(user.username)}/esperar-cambios`,
+                        { headers, cache: "no-store" }
+                    );
+
+                    if (detener || canceladoRef.current) {
+                        break;
+                    }
+
+                    if (res.ok) {
+                        await cargarNotificaciones();
+                        window.dispatchEvent(new Event("notificaciones:actualizadas"));
+                    }
+                } catch {
+                    if (detener || canceladoRef.current) {
+                        break;
+                    }
+
+                    await esperar(2000);
+                }
+            }
+        };
 
         const manejarRefresh = () => cargarNotificaciones();
         window.addEventListener("notificaciones:actualizadas", manejarRefresh);
+        escucharCambios();
 
         return () => {
+            detener = true;
             canceladoRef.current = true;
-            clearInterval(intervalo);
             window.removeEventListener("notificaciones:actualizadas", manejarRefresh);
         };
     }, [user?.username, token]);

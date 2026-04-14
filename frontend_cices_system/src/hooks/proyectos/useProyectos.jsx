@@ -1,10 +1,17 @@
-import {useContext, useEffect, useMemo, useState} from "react";
-import { obtenerProyectos } from "../../services/proyectoService";
+import {useContext, useEffect, useState} from "react";
 import {AppContext} from "../../context/AppContext.jsx";
+import {obtenerProyectos} from "../../services/ProyectoService.jsx";
 
 export function useProyectos() {
-    const {token, user} = useContext(AppContext)
+    const { token, user } = useContext(AppContext);
+
     const [proyectos, setProyectos] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const [page, setPage] = useState(0);
+    const size = 8;
+
     const [orden, setOrden] = useState({ campo: "fechaInicio", asc: false });
     const [cargando, setCargando] = useState(true);
 
@@ -16,22 +23,29 @@ export function useProyectos() {
         institucion: ""
     });
 
-    useEffect(() => {
-        const cargar = async () => {
-            try {
-                const data = await obtenerProyectos(token, user);
-                setProyectos(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setCargando(false);
-            }
-        };
+    const cargar = async () => {
+        setCargando(true);
+        try {
+            const data = await obtenerProyectos(token, user, filtros, page, size, orden);
 
+            setProyectos(data.content);
+            setTotal(data.totalElements);
+            setTotalPages(data.totalPages);
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setCargando(false);
+        }
+    };
+
+    // recargar cuando cambie algo
+    useEffect(() => {
         cargar();
-    }, []);
+    }, [filtros, page, orden]);
 
     const handleChange = (campo, valor) => {
+        setPage(0); // resetear página al filtrar
         setFiltros(prev => ({
             ...prev,
             [campo]: valor
@@ -39,46 +53,22 @@ export function useProyectos() {
     };
 
     const limpiarFiltros = () => {
+        setPage(0);
         setFiltros({
             texto: "",
-            lineaInvestigacion: "",
+            lineaInvestigacion: [],
             tipoProyecto: [],
             estado: "",
             institucion: ""
         });
     };
 
-    const proyectosFiltrados = useMemo(() => {
-        let resultado = proyectos.filter(p => {
-            // filtro por texto
-            if (filtros.texto) {
-                const texto = filtros.texto.toLowerCase();
-                if (!p.nombreProyecto?.toLowerCase().includes(texto) && !p.codigoProyecto?.toLowerCase().includes(texto)) {
-                    return false;
-                }
-            }
-
-            if (filtros.estado && p.estado?.toUpperCase() !== filtros.estado.toUpperCase()) return false;
-            if (filtros.tipoProyecto.length > 0 && !filtros.tipoProyecto.map(t => t.toUpperCase()).includes(p.tipoProyecto?.toUpperCase())) return false;
-            if (filtros.lineaInvestigacion.length > 0 && !filtros.lineaInvestigacion.includes(p.lineaInvestigacion)) return false;
-            if (filtros.institucion && !p.institucion?.toLowerCase().includes(filtros.institucion.toLowerCase())) return false;
-
-            return true;
-        });
-
-        // ordenar
-        resultado.sort((a, b) => {
-            const valA = new Date(a[orden.campo]);
-            const valB = new Date(b[orden.campo]);
-            return orden.asc ? valA - valB : valB - valA;
-        });
-
-        return resultado;
-
-    }, [proyectos, filtros, orden]);
-
     return {
-        proyectos: proyectosFiltrados,
+        proyectos,
+        total,
+        totalPages,
+        page,
+        setPage,
         orden,
         setOrden,
         cargando,

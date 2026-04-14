@@ -9,8 +9,9 @@ public class CertificacionSpecification {
 
     public static Specification<RepInvestigadorCertificaciones> filtrar(
             String nombre,
-            List<String> tipos,
-            List<String> estados
+            List<Short> tipos,
+            List<Short> estados,
+            String ordenFecha
     ) {
         return (root, query, cb) -> {
 
@@ -27,18 +28,20 @@ public class CertificacionSpecification {
 
             if (tipos != null && !tipos.isEmpty()) {
                 predicates = cb.and(predicates,
-                        root.get("tipoCertificacion").in(tipos)
+                        root.get("idCodigoTipoCertificacion").in(tipos)
                 );
             }
 
             if (estados != null && !estados.isEmpty()) {
                 predicates = cb.and(predicates,
-                        cb.upper(root.get("estadoCertificacion")).in(
-                                estados.stream()
-                                        .map(String::toUpperCase)
-                                        .toList()
-                        )
+                        root.get("idCodigoTipoEstado").in(estados)
                 );
+            }
+
+            if ("desc".equalsIgnoreCase(ordenFecha)) {
+                query.orderBy(cb.desc(root.get("fechaExpiracion")));
+            } else {
+                query.orderBy(cb.asc(root.get("fechaExpiracion")));
             }
 
             return predicates;

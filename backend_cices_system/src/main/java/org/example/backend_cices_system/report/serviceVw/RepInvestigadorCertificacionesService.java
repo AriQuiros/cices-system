@@ -52,7 +52,8 @@ public class RepInvestigadorCertificacionesService {
         var spec = CertificacionSpecification.filtrar(
                 filtro.getNombre(),
                 filtro.getTipos(),
-                filtro.getEstados()
+                filtro.getEstados(),
+                filtro.getOrdenFecha()
         );
 
         return repo.findAll(spec, pageable)
@@ -63,7 +64,8 @@ public class RepInvestigadorCertificacionesService {
         var spec = CertificacionSpecification.filtrar(
                 filtro.getNombre(),
                 filtro.getTipos(),
-                filtro.getEstados()
+                filtro.getEstados(),
+                filtro.getOrdenFecha()
         );
 
         return repo.findAll(spec, sort(filtro.getOrdenFecha()))

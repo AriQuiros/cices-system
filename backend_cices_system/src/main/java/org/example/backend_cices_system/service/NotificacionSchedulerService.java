@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.NotificacionDTO;
 import org.example.backend_cices_system.logic.Certificacion;
@@ -32,7 +33,9 @@ public class NotificacionSchedulerService {
     private final Clock clock;
 
     //@Scheduled(cron = "0 0 0 * * *", zone = "America/Costa_Rica") // todos los días a media noche -> 00:00
-    @Scheduled(cron = "0 0 */12 * * *", zone = "America/Costa_Rica") // cada 12 horas -> 00:00 y 12:00
+    //@Scheduled(cron = "0 0 */12 * * *", zone = "America/Costa_Rica") // cada 12 horas -> 00:00 y 12:00
+    @Scheduled(cron = "0 */5 * * * *", zone = "America/Costa_Rica") // cada  5 minutos
+    @Transactional
     public synchronized void ejecutarNotificaciones() {
         generarNotificacionesInformes();
         generarNotificacionesCertificacionesProximas();

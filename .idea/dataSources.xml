@@ -5,7 +5,7 @@
       <driver-ref>oracle.19</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>
-      <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
+      <jdbc-driver>oracle.jdbc.driver.OracleDriver</jdbc-driver>
       <jdbc-url>jdbc:oracle:thin:@localhost:1521:XE</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
@@ -16,7 +16,6 @@
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="User Data Source" uuid="dae478a1-3bc4-4394-bb23-4dd98b4f996a">
-      <driver-ref>13e78f7e-9001-4de1-aaab-0389fb60d361</driver-ref>
       <synchronize>true</synchronize>
       <configured-by-url>true</configured-by-url>
       <jdbc-driver>java.sql.Driver</jdbc-driver>

@@ -36,6 +36,7 @@ export default function CertificacionesPage() {
 
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
     const [formato, setFormato] = useState("pdf");
     const [exportando, setExportando] = useState(false);
     const [certificaciones, setCertificaciones] = useState([]);
@@ -72,6 +73,7 @@ export default function CertificacionesPage() {
             .then((data) => {
                 setCertificaciones(data.content);
                 setTotalPages(data.totalPages);
+                setTotalElements(data.totalElements);
             })
             .catch(console.error);
     }, [nombreDebounced, filtros.tipos, filtros.estados, ordenFecha, page]);
@@ -82,16 +84,17 @@ export default function CertificacionesPage() {
 
     // Resumen (sobre datos del backend)
     const resumen = useMemo(() => {
-        const total = certificaciones.length;
-
         const porEstado = certificaciones.reduce((acc, cert) => {
             const estado = cert.estado || "SIN ESTADO";
             acc[estado] = (acc[estado] || 0) + 1;
             return acc;
         }, {});
 
-        return { total, porEstado };
-    }, [certificaciones]);
+        return {
+            total: totalElements,
+            porEstado
+        };
+    }, [certificaciones, totalElements]);
 
     // Agrupamiento opcional
     const agrupadas = agrupado
@@ -186,8 +189,9 @@ export default function CertificacionesPage() {
                         <label className="cert-label">Tipo Certificación:</label>
                         <Select
                             isMulti
-                            options={catalogos?.TIPO_CERTIFICACION?.map(({ valor, despliegue }) => ({
-                                value: valor,
+                            options={catalogos?.TIPO_CERTIFICACION?.map(({id, despliegue }) => ({
+                                key: id,
+                                value: id,
                                 label: despliegue,
                             }))}
                             value={filtros.tipos}
@@ -201,8 +205,9 @@ export default function CertificacionesPage() {
                         <label className="cert-label">Estado Certificación:</label>
                         <Select
                             isMulti
-                            options={catalogos?.ESTADO_CERTIFICACION?.map(({ valor, despliegue }) => ({
-                                value: valor,
+                            options={catalogos?.ESTADO_CERTIFICACION?.map(({ id, despliegue }) => ({
+                                key: id,
+                                value: id,
                                 label: despliegue,
                             }))}
                             value={filtros.estados}

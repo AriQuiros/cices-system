@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.12</version>
+		<version>3.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.example</groupId>
@@ -52,10 +52,10 @@
 		</dependency>
 
 		<dependency>
-    			<groupId>org.springframework.boot</groupId>
-   			 <artifactId>spring-boot-devtools</artifactId>
-   			 <scope>runtime</scope>
-    			<optional>true</optional>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -110,35 +110,20 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- .env con librería -->
-
-		<dependency>
-			<groupId>io.github.cdimascio</groupId>
-			<artifactId>dotenv-java</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-
 		<!-- JasperReports - REPORTES -->
 
 		<!-- Motor principal de JasperReports -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>7.0.5</version>
+			<version>6.21.3</version>
 		</dependency>
 
 		<!-- Fuentes embebidas (necesario para PDF con caracteres especiales como tildes) -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-fonts</artifactId>
-			<version>7.0.5</version>
-		</dependency>
-
-		<!-- Fuerza versión corregida por CVE-2025-48734 -->
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>1.11.0</version>
+			<version>6.21.3</version>
 		</dependency>
 
 		<!-- Apache POI base (requerido por el exportador Excel) -->
@@ -159,6 +144,13 @@
 			<!-- versión gestionada por Spring Boot -->
 		</dependency>
 
+		<!-- .env con librería -->
+
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

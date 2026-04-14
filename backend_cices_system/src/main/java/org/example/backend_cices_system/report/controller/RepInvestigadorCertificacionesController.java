@@ -22,7 +22,7 @@ public class RepInvestigadorCertificacionesController {
     @PostMapping("/filtrar")
     public ResponseEntity<?> filtrar(@RequestBody CertificacionFiltroDTO filtro,
                                      @RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "12") int size
+                                     @RequestParam(defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(service.filtrarCertificacionesPaginado(filtro, page, size));
     }

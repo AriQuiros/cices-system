@@ -4,6 +4,7 @@ import { useTiposCatalogo } from "../../../hooks/useTiposCatalogo";
 import { AppContext } from "../../../context/AppContext.jsx";
 import "../../../estilos/form.css"
 import {useDebounce} from "../../../hooks/useDebounce.js";
+import "./CertificacionesInvestigador.css";
 
 export default function MisCertificacionesPage() {
     const { token } = useContext(AppContext);

@@ -5,8 +5,13 @@ import org.example.backend_cices_system.data.HorasAsignadasRepository;
 import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.dto.InvestigadorHorasDTO;
 import org.example.backend_cices_system.dto.ProyectoDTO;
+import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.*;
+import org.example.backend_cices_system.report.filter.ProyectoSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -170,6 +175,32 @@ public class ProyectoService {
     public ProyectoDTO obtenerProyectoCompleto(String codigo){
         var proyecto = obtenerProyectoPorCodigo(codigo);
         return obtenerDTO(proyecto);
+    }
+
+    public Page<ProyectoDatosDTO> buscarConFiltros(
+            String texto,
+            Short estado,
+            List<Short> tipos,
+            List<String> lineas,
+            String institucion,
+            Pageable pageable
+    ) {
+
+        Specification<Proyecto> spec = ProyectoSpecification.conFiltros(
+                texto, estado, tipos, lineas, institucion
+        );
+
+        return proyectoRepository.findAll(spec, pageable)
+                .map(p -> new ProyectoDatosDTO(
+                        p.getId(),
+                        p.getCodigoProyecto(),
+                        p.getNombreProyecto(),
+                        p.getLineaInvestigacion(),
+                        catalogoService.obtenerCodigo(p.getIdCodigoTipoProyecto()).getDespliegue(),
+                        catalogoService.obtenerCodigo(p.getIdCodigoTipoEstado()).getDespliegue(),
+                        p.getFechaInicio(),
+                        p.getFechaFinalizacion()
+                ));
     }
 
     public ResumenHorasProyectoDTO obtenerResumenHoras(Integer idProyecto) {

@@ -57,10 +57,29 @@ export async function cargarProyectos(token, user, principal) {
     return await res.json();
 }
 
-export async function obtenerProyectos(token, user) {
+export async function obtenerProyectos(token, user, filtros, page = 0, size = 8, orden) {
+
+    const params = new URLSearchParams();
+
+    // filtros
+    if (filtros.texto) params.append("texto", filtros.texto);
+    if (filtros.estado) params.append("estado", filtros.estado);
+
+    filtros.tipoProyecto?.forEach(t => params.append("tipoProyecto", t));
+    filtros.lineaInvestigacion?.forEach(l => params.append("lineaInvestigacion", l));
+
+    // paginación
+    params.append("page", page);
+    params.append("size", size);
+
+    // orden
+    if (orden) {
+        params.append("sort", `${orden.campo},${orden.asc ? "asc" : "desc"}`);
+    }
+
     const url = esSoloInvestigador(user)
-        ? `${API}/api/reports/proyectos/investigador/list`
-        : `${API}/api/reports/proyectos/list`;
+        ? `${API}/api/investigadores/proyectos?${params}`
+        : `${API}/api/proyectos/listar?${params}`;
 
     const res = await fetch(url, {
         headers: {
@@ -70,6 +89,7 @@ export async function obtenerProyectos(token, user) {
     });
 
     if (!res.ok) throw new Error("Error obteniendo proyectos");
+
     return await res.json();
 }
 
@@ -83,4 +103,38 @@ export async function obtenerLineas(token) {
 
     if (!res.ok) throw new Error("Error obteniendo lineas de investigación");
     return await res.json();
+}
+export async function exportarReporteProyectos(token, filtros, formato) {
+
+    const res = await fetch(
+        `${API}/api/reports/proyectos/exportar?formato=${formato}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(filtros)
+        }
+    );
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Error exportando reporte");
+    }
+
+    const blob = await res.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+
+    link.setAttribute("download", `reporte_proyectos.${formato}`);
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
 }

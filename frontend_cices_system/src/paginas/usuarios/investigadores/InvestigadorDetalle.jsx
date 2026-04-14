@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "./InvestigadorDetalle.css";
 
 export default function InvestigadorDetalle({ investigador, onClose }) {
 

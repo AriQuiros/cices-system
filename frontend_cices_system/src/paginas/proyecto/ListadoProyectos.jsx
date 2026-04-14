@@ -5,6 +5,7 @@ import Select from "react-select";
 import {useLineas} from "../../hooks/proyectos/useLineas.jsx";
 import {useContext} from "react";
 import {AppContext} from "../../context/AppContext.jsx";
+import FiltrosProyectos from "../../components/FiltradoProyectos";
 import "./ListadoProyectos.css";
 
 function ListadoProyectos() {
@@ -16,7 +17,11 @@ function ListadoProyectos() {
         cargando,
         filtros,
         handleChange,
-        limpiarFiltros
+        limpiarFiltros,
+        total,
+        page,
+        setPage,
+        totalPages
     } = useProyectos();
 
     const { tipos } = useTiposCatalogo(token, [
@@ -25,17 +30,10 @@ function ListadoProyectos() {
     ]);
 
     const opcionesTipos = tipos["TIPO_PROYECTO"]?.map(t => ({
-        value: t.valor,
+        value: t.id,
         label: t.despliegue
     })) || [];
     const { opciones: opcionesLineas } = useLineas();
-    const manejarLineasSelect = selectedOptions => {
-        handleChange("lineaInvestigacion", selectedOptions ? selectedOptions.map(o => o.value) : []);
-    };
-
-    const manejarTiposSelect = selectedOptions => {
-        handleChange("tipoProyecto", selectedOptions ? selectedOptions.map(o => o.value) : []);
-    };
 
     const esSoloInvestigador = user.roles.length === 1 && user.roles[0] === "INVESTIGADOR";
 
@@ -49,72 +47,17 @@ function ListadoProyectos() {
 
         <div className="contenedor_proyectos">
 
-            <div className="buscar row">
-
-                <input
-                    className="buscador"
-                    type="text"
-                    placeholder="Código o nombre"
-                    value={filtros.texto}
-                    onChange={(e) => handleChange("texto", e.target.value)}
-                />
-
-                <Select
-                    classNamePrefix="react-select"
-                    options={opcionesLineas}
-                    isMulti
-                    value={opcionesLineas.filter(l => filtros.lineaInvestigacion.includes(l.value))}
-                    onChange={manejarLineasSelect}
-                    placeholder="Línea(s) de investigación"
-                    closeMenuOnSelect={false}
-                />
-
-                <Select
-                    classNamePrefix="react-select"
-                    options={opcionesTipos}
-                    isMulti
-                    value={opcionesTipos.filter(t => filtros.tipoProyecto.includes(t.value))}
-                    onChange={manejarTiposSelect}
-                    placeholder="Tipo(s) de proyecto"
-                    closeMenuOnSelect={false}
-                />
-
-                <select
-                    className="filtro"
-                    value={filtros.estado}
-                    onChange={(e) => handleChange("estado", e.target.value)}
-                >
-                    <option value="">Estado de proyecto</option>
-                    {tipos["ESTADO_PROYECTO"]?.map((opcion) => (
-                        <option key={opcion.id} value={opcion.valor}>
-                            {opcion.despliegue}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    className="filtro"
-                    value={`${orden.campo}_${orden.asc ? "asc" : "desc"}`}
-                    onChange={e => {
-                        const [campo, dir] = e.target.value.split("_");
-                        setOrden({ campo, asc: dir === "asc" });
-                    }}
-                >
-                    <option value="fechaInicio_desc">Proyectos más nuevos</option>
-                    <option value="fechaInicio_asc">Proyectos más antiguos</option>
-                    <option value="fechaFinalizacion_desc">Fecha fin lejana</option>
-                    <option value="fechaFinalizacion_asc">Finalizados / próximos</option>
-                </select>
-
-                <button
-                    className="boton-limpiar"
-                    onClick={limpiarFiltros}
-                >
-                    Limpiar
-                </button>
-
-            </div>
-
+            <FiltrosProyectos
+                filtros={filtros}
+                onChange={handleChange}
+                onClear={limpiarFiltros}
+                orden={orden}
+                setOrden={setOrden}
+                opcionesLineas={opcionesLineas}
+                opcionesTipos={opcionesTipos}
+                opcionesEstado={tipos["ESTADO_PROYECTO"] || []}
+            />
+            <p>Total de proyectos: {total}</p>
             <section className="todosLosProyectos">
 
                 {cargando && <p>Cargando proyectos...</p>}
@@ -145,7 +88,19 @@ function ListadoProyectos() {
                 </div>
 
             </section>
+            <div className="paginacion">
 
+                <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+                    Anterior
+                </button>
+
+                <span>Página {page + 1} de {totalPages}</span>
+
+                <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>
+                    Siguiente
+                </button>
+
+            </div>
         </div>
 
             </div>

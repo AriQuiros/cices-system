@@ -1,9 +1,8 @@
 package org.example.backend_cices_system.reportes.generator;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.example.backend_cices_system.reportes.model.*;
 import org.springframework.stereotype.Component;
 
@@ -12,18 +11,34 @@ import java.util.List;
 
 @Component
 public class PdfDocumentGenerator implements DocumentGenerator {
+
     private static final float MARGIN = 30;
     private static final float START_Y = 750;
     private static final float BOTTOM_MARGIN = 50;
 
-    private PDPage ensureSpace(PDDocument doc, PDPage currentPage, float neededHeight, float yRef[]) {
-        if (yRef[0] - neededHeight < BOTTOM_MARGIN) {
+    private static final PDType1Font FONT =
+            new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+
+    private static final PDType1Font FONT_BOLD =
+            new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+
+    private static class PageState {
+        PDPage page;
+        float y;
+
+        PageState(PDPage page, float y) {
+            this.page = page;
+            this.y = y;
+        }
+    }
+
+    private PageState ensureSpace(PDDocument doc, PageState state, float neededHeight) {
+        if (state.y - neededHeight < BOTTOM_MARGIN) {
             PDPage newPage = new PDPage();
             doc.addPage(newPage);
-            yRef[0] = START_Y;
-            return newPage;
+            return new PageState(newPage, START_Y);
         }
-        return currentPage;
+        return state;
     }
 
     @Override
@@ -33,75 +48,65 @@ public class PdfDocumentGenerator implements DocumentGenerator {
 
     @Override
     public byte[] generate(ReportDocument doc) {
-        try {
-            PDDocument pdf = new PDDocument();
-            PDPage page = new PDPage();
-            pdf.addPage(page);
+        try (PDDocument pdf = new PDDocument()) {
 
-            float y = 750;
+            PDPage firstPage = new PDPage();
+            pdf.addPage(firstPage);
+
+            PageState state = new PageState(firstPage, START_Y);
 
             for (ReportSection section : doc.sections()) {
 
-                y = writeText(pdf, page, safe(section.heading()), 18, true, y);
+                state = writeText(pdf, state, safe(section.heading()), 18, true);
 
                 for (ReportElement element : section.elements()) {
 
                     if (element instanceof ReportParagraph(String text)) {
-                        y = writeText(pdf, page, safe(text), 11, false, y);
-                        y -= 8;
+                        state = writeText(pdf, state, safe(text), 11, false);
                     }
 
                     if (element instanceof ReportTable t) {
-                        y = writeTable(pdf, page, t, y);
-                        y -= 25;
+                        state = writeTable(pdf, state, t);
+                        state.y -= 25;
                     }
                 }
             }
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             pdf.save(out);
-            pdf.close();
-
             return out.toByteArray();
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("Error generando PDF", e);
         }
     }
 
-    private float writeText(PDDocument doc, PDPage page,
-                            String text, int size, boolean bold, float y) {
+    private PageState writeText(PDDocument doc, PageState state,
+                                String text, int size, boolean bold) {
 
-        float[] yRef = new float[]{y};
+        state = ensureSpace(doc, state, 20);
 
-        try {
-            page = ensureSpace(doc, page, 20, yRef);
-
-            try (var content = new PDPageContentStream(doc, page,
-                    PDPageContentStream.AppendMode.APPEND, true)) {
-
-                content.beginText();
-                content.setFont(
-                        bold ? PDType1Font.HELVETICA_BOLD : PDType1Font.HELVETICA,
-                        size
-                );
-                content.newLineAtOffset(30, yRef[0]);
-                content.showText(safe(text));
-                content.endText();
-            }
-
+        try (PDPageContentStream content = new PDPageContentStream(
+                doc,
+                state.page,
+                PDPageContentStream.AppendMode.APPEND,
+                true
+        )) {
+            content.beginText();
+            content.setFont(bold ? FONT_BOLD : FONT, size);
+            content.newLineAtOffset(MARGIN, state.y);
+            content.showText(safe(text));
+            content.endText();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return yRef[0] - 20;
+        state.y -= 20;
+        return state;
     }
 
-    private float writeTable(PDDocument doc, PDPage page,
-                             ReportTable table, float y) {
-
-        float[] yRef = new float[]{y};
+    private PageState writeTable(PDDocument doc, PageState state,
+                                 ReportTable table) {
 
         float tableWidth = 540;
         float rowHeight = 20;
@@ -112,72 +117,61 @@ public class PdfDocumentGenerator implements DocumentGenerator {
         boolean hasHeader = table.headers() != null && !table.headers().isEmpty();
         List<String> headers = hasHeader ? table.headers() : null;
 
-        if (table.headers() != null && !table.headers().isEmpty()) {
-            cols = table.headers().size();
+        if (hasHeader) {
+            cols = headers.size();
         } else if (table.rows() != null && !table.rows().isEmpty()) {
-            cols = table.rows().get(0).size();
+            cols = table.rows().getFirst().size();
         }
 
-        if (cols == 0) return y;
+        if (cols == 0) return state;
 
         float colWidth = tableWidth / cols;
 
         try {
 
             // HEADER
-            if (table.headers() != null && !table.headers().isEmpty()) {
+            if (hasHeader) {
+                state = ensureSpace(doc, state, rowHeight * 2);
 
-                float neededHeight = rowHeight + rowHeight; // header + 1 fila
-
-                page = ensureSpace(doc, page, neededHeight, yRef);
-
-                float dynamicHeight;
-
-                float headerHeight;
-
-                try (var content = new PDPageContentStream(doc, page,
+                try (PDPageContentStream content = new PDPageContentStream(
+                        doc, state.page,
                         PDPageContentStream.AppendMode.APPEND, true)) {
 
-                    headerHeight = drawRow(content, headers, startX, yRef[0], colWidth, true);
+                    float headerHeight = drawRow(content, headers, startX, state.y, colWidth, true);
+                    state.y -= headerHeight;
                 }
-
-                yRef[0] -= headerHeight;
             }
 
             // FILAS
             if (table.rows() != null) {
                 for (var row : table.rows()) {
 
-                    float estimatedHeight = 20 * 3; // aprox o calcula wrap antes
+                    float estimatedHeight = 60;
 
-                    if (yRef[0] - estimatedHeight < BOTTOM_MARGIN) {
-                        page = new PDPage();
-                        doc.addPage(page);
-                        yRef[0] = START_Y;
+                    if (state.y - estimatedHeight < BOTTOM_MARGIN) {
+                        PDPage newPage = new PDPage();
+                        doc.addPage(newPage);
+                        state = new PageState(newPage, START_Y);
 
                         // repetir header
                         if (hasHeader) {
-                            float headerHeight;
-
-                            try (var content = new PDPageContentStream(doc, page,
+                            try (PDPageContentStream content = new PDPageContentStream(
+                                    doc, state.page,
                                     PDPageContentStream.AppendMode.APPEND, true)) {
 
-                                headerHeight = drawRow(content, headers, startX, yRef[0], colWidth, true);
+                                float headerHeight = drawRow(content, headers, startX, state.y, colWidth, true);
+                                state.y -= headerHeight;
                             }
-
-                            yRef[0] -= headerHeight;
                         }
                     }
 
-                    float dynamicHeight;
-
-                    try (var content = new PDPageContentStream(doc, page,
+                    try (PDPageContentStream content = new PDPageContentStream(
+                            doc, state.page,
                             PDPageContentStream.AppendMode.APPEND, true)) {
 
-                        dynamicHeight = drawRow(content, row, startX, yRef[0], colWidth, false);
+                        float dynamicHeight = drawRow(content, row, startX, state.y, colWidth, false);
+                        state.y -= dynamicHeight;
                     }
-
-                    yRef[0] -= dynamicHeight;
                 }
             }
 
@@ -185,7 +179,7 @@ public class PdfDocumentGenerator implements DocumentGenerator {
             throw new RuntimeException(e);
         }
 
-        return yRef[0];
+        return state;
     }
 
     private float drawRow(PDPageContentStream content,
@@ -195,7 +189,7 @@ public class PdfDocumentGenerator implements DocumentGenerator {
                           float colWidth,
                           boolean bold) throws Exception {
 
-        PDType1Font font = bold ? PDType1Font.HELVETICA_BOLD : PDType1Font.HELVETICA;
+        PDType1Font font = bold ? FONT_BOLD : FONT;
         int fontSize = 10;
         float padding = 2;
 
@@ -214,14 +208,12 @@ public class PdfDocumentGenerator implements DocumentGenerator {
 
         for (List<String> cellLines : wrappedCells) {
 
-            // borde
             content.addRect(x, y - rowHeight, colWidth, rowHeight);
             content.stroke();
 
             float textY = y - fontSize - padding;
 
             for (String line : cellLines) {
-
                 content.beginText();
                 content.setFont(font, fontSize);
                 content.newLineAtOffset(x + padding, textY);

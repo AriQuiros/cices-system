@@ -1,33 +1,27 @@
 package org.example.backend_cices_system.report.serviceVw;
 
-import org.example.backend_cices_system.jasper.CertificacionesJasperService;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.report.dao.RepInvestigadorCertificacionesRepository;
 import org.example.backend_cices_system.report.dto.CertificacionFiltroDTO;
 import org.example.backend_cices_system.report.dto.FormacionDTO;
 import org.example.backend_cices_system.report.filter.CertificacionSpecification;
 import org.example.backend_cices_system.report.view.RepInvestigadorCertificaciones;
+import org.example.backend_cices_system.reportes.builder.CertificacionesReportBuilder;
+import org.example.backend_cices_system.reportes.service.DocumentService;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class RepInvestigadorCertificacionesService {
 
     private final RepInvestigadorCertificacionesRepository repo;
-    private final CertificacionesJasperService jasperService;
+    private final DocumentService documentService;
+    private final CertificacionesReportBuilder certificacionesReportBuilder;
 
-    public RepInvestigadorCertificacionesService(
-            RepInvestigadorCertificacionesRepository repo,
-            CertificacionesJasperService jasperService
-    ) {
-        this.repo          = repo;
-        this.jasperService = jasperService;
-    }
 
     // ------------------------------------------------------------------
     // Consultas
@@ -84,13 +78,12 @@ public class RepInvestigadorCertificacionesService {
     ) {
         List<FormacionDTO> data = filtrarCertificaciones(filtro);
 
-        byte[] archivo = jasperService.generar(data, formato);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=certificaciones." + formato)
-                .contentType(contentType(formato))
-                .body(archivo);
+        return documentService.generarResponse(
+                certificacionesReportBuilder,
+                data,
+                formato,
+                "reporte_certificaciones"
+                );
     }
 
     // ------------------------------------------------------------------
@@ -116,15 +109,4 @@ public class RepInvestigadorCertificacionesService {
         );
     }
 
-
-    private MediaType contentType(String formato) {
-        return switch (formato.toLowerCase()) {
-            case "pdf"  -> MediaType.APPLICATION_PDF;
-            case "xlsx" -> MediaType.parseMediaType(
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            case "docx" -> MediaType.parseMediaType(
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-            default     -> MediaType.APPLICATION_OCTET_STREAM;
-        };
-    }
 }

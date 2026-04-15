@@ -1,9 +1,12 @@
 package org.example.backend_cices_system.report.serviceVw;
 
-import org.example.backend_cices_system.jasper.ProyectosJasperService;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.report.dto.ProyectoFiltroDTO;
 import org.example.backend_cices_system.report.dto.ProyectoReporteDTO;
+import org.example.backend_cices_system.reportes.builder.ProyectosReportBuilder;
+import org.example.backend_cices_system.reportes.service.DocumentService;
 import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,18 +19,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RepProyectoReporteService {
 
-    private final ProyectoService        proyectoService;
-    private final ProyectosJasperService jasperService;
-
-    public RepProyectoReporteService(
-            ProyectoService proyectoService,
-            ProyectosJasperService jasperService
-    ) {
-        this.proyectoService = proyectoService;
-        this.jasperService   = jasperService;
-    }
+    private final ProyectoService proyectoService;
+    private final DocumentService documentService;
+    private final ProyectosReportBuilder proyectosReportBuilder;
 
     // ------------------------------------------------------------------
     // Exportación (PDF / XLSX / DOCX)
@@ -45,17 +42,14 @@ public class RepProyectoReporteService {
             ProyectoFiltroDTO filtro,
             String formato
     ) {
-        // Paso 2 y 3: obtener todos los registros (sin paginación)
-        List<ProyectoReporteDTO> data = obtenerParaReporte(filtro);
+        List<ProyectoDatosDTO> data = obtenerParaReporte(filtro);
 
-        // Paso 4 y 5: generar bytes y responder
-        byte[] archivo = jasperService.generar(data, formato);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=proyectos." + formato)
-                .contentType(contentType(formato))
-                .body(archivo);
+        return documentService.generarResponse(
+                proyectosReportBuilder,
+                data,
+                formato,
+                "proyectos_reportes"
+        );
     }
 
     // ------------------------------------------------------------------
@@ -68,7 +62,7 @@ public class RepProyectoReporteService {
      * Patrón: se llama buscarConFiltros con un Pageable de tamaño máximo
      * y se extrae el contenido. No se duplica la lógica de filtros.
      */
-    private List<ProyectoReporteDTO> obtenerParaReporte(ProyectoFiltroDTO filtro) {
+    private List<ProyectoDatosDTO> obtenerParaReporte(ProyectoFiltroDTO filtro) {
         Pageable sinLimite = PageRequest.of(0, Integer.MAX_VALUE, sort(filtro.getOrdenFecha()));
 
         return proyectoService.buscarConFiltros(
@@ -80,23 +74,9 @@ public class RepProyectoReporteService {
                         sinLimite
                 )
                 .getContent()          // Page → List<ProyectoDatosDTO>
-                .stream()
-                .map(this::toDTO)      // ProyectoDatosDTO → ProyectoReporteDTO
-                .toList();
+                .stream().toList();
     }
 
-    /** Convierte ProyectoDatosDTO (dominio) → ProyectoReporteDTO (Jasper bean) */
-    private ProyectoReporteDTO toDTO(ProyectoDatosDTO p) {
-        return new ProyectoReporteDTO(
-                p.codigoProyecto(),
-                p.nombreProyecto(),
-                p.lineaInvestigacion(),
-                p.tipoProyecto(),
-                p.estado(),
-                p.fechaInicio(),
-                p.fechaFinalizacion()
-        );
-    }
 
     private Sort sort(String ordenFecha) {
         return Sort.by(
@@ -105,14 +85,4 @@ public class RepProyectoReporteService {
         );
     }
 
-    private MediaType contentType(String formato) {
-        return switch (formato.toLowerCase()) {
-            case "pdf"  -> MediaType.APPLICATION_PDF;
-            case "xlsx" -> MediaType.parseMediaType(
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            case "docx" -> MediaType.parseMediaType(
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-            default     -> MediaType.APPLICATION_OCTET_STREAM;
-        };
-    }
 }

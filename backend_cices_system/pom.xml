@@ -110,32 +110,43 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- JasperReports - REPORTES -->
-
-		<!-- Motor principal de JasperReports -->
+		<!-- DOCX4J -->
 		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-			<version>6.21.3</version>
+			<groupId>org.docx4j</groupId>
+			<artifactId>docx4j-core</artifactId>
+			<version>11.5.12</version>
 		</dependency>
 
-		<!-- Fuentes embebidas (necesario para PDF con caracteres especiales como tildes) -->
 		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports-fonts</artifactId>
-			<version>6.21.3</version>
+			<groupId>org.docx4j</groupId>
+			<artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+			<version>11.5.12</version>
 		</dependency>
 
-		<!-- Apache POI base (requerido por el exportador Excel) -->
+		<!-- Excel -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>5.4.0</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.18.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.27.1</version>
+		</dependency>
 
-		<!-- Exportador Word (.docx via Apache POI) -->
-		<!-- JasperReports exporta Word como RTF nativo; para .docx real usar poi-ooxml directamente -->
-		<!-- Si necesitas .docx real considera jacoco o poi directamente desde los datos -->
+
+		<!-- PDF -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.30</version>
+		</dependency>
 
 		<!-- Logging (suprimir warnings internos de Jasper) -->
 		<dependency>

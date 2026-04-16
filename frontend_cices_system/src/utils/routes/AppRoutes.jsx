@@ -46,7 +46,7 @@ import NotificacionesPage from "../../paginas/usuarios/Notificaciones.jsx";
 
 /* REPORTES */
 import Certificaciones from "../../paginas/reportes/Certificaciones.jsx";
-import ReporteParticipantes from "../../paginas/reportes/ReporteInvestigadorProyecto.jsx"
+import ReporteInvestigadoresParticipantes from "../../paginas/reportes/ReporteInvestigadoresParticipantes.jsx";
 import ReporteProyectos from "../../paginas/reportes/ReportesProyectos.jsx"
 
 function AppRoutes() {
@@ -101,7 +101,7 @@ function AppRoutes() {
 
                 {/* REPORTES */}
                 <Route path="/reporte-certificaciones" element={<Certificaciones />} />
-                <Route path="/reporte-participantes" element={<ReporteParticipantes />} />
+                <Route path="/reporte-participantes" element={<ReporteInvestigadoresParticipantes />} />
                 <Route path="/reporte-proyectos" element={<ReporteProyectos />} />
 
 

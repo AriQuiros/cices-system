@@ -5,7 +5,7 @@ import { useTiposCatalogo } from "../../hooks/useTiposCatalogo.js";
 import { useLineas } from "../../hooks/proyectos/useLineas.jsx";
 import FiltrosProyectos from "../../components/FiltradoProyectos";
 import { exportarReporteInvestigadoresParticipantes } from "../../services/ReporteInvestigadoresService.jsx";
-import "../proyecto/ListadoProyectos.css";
+import "./ReporteInvestigadoresParticipantes.css";
 
 function ReporteInvestigadoresParticipantes() {
     const { token } = useContext(AppContext);

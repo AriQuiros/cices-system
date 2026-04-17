@@ -5,7 +5,7 @@ import { useTiposCatalogo } from "../../hooks/useTiposCatalogo.js";
 import { useLineas } from "../../hooks/proyectos/useLineas.jsx";
 import FiltrosProyectos from "../../components/FiltradoProyectos";
 import { exportarReporteProyectos } from "../../services/proyectoService";
-import "../proyecto/ListadoProyectos.css";
+import "./ReportesProyectos.css";
 
 function ReportesProyectos() {
 

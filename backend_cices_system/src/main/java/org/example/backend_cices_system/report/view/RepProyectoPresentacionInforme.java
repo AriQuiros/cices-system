@@ -30,16 +30,6 @@ public class RepProyectoPresentacionInforme {
     @Column(name = "ID_PROYECTO", nullable = false)
     private Integer idProyecto;
 
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
-    private String codigoProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "NOMBRE_PROYECTO", nullable = false, length = 254)
-    private String nombreProyecto;
-
     @Size(max = 30)
     @Column(name = "TIPO_INFORME", length = 30)
     private String tipoInforme;
@@ -51,11 +41,5 @@ public class RepProyectoPresentacionInforme {
     @NotNull
     @Column(name = "FECHA_PRESENTACION", nullable = false)
     private LocalDate fechaPresentacion;
-    @NotNull
-    @Column(name = "ID_CODIGO_TIPO_INFORME", nullable = false)
-    private Short idCodigoTipoInforme;
-    @NotNull
-    @Column(name = "ID_CODIGO_TIPO_ESTADO", nullable = false)
-    private Short idCodigoTipoEstado;
 
 }

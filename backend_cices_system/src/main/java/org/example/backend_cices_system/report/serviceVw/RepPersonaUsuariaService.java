@@ -4,7 +4,6 @@ import org.example.backend_cices_system.report.dao.RepPersonaUsuariaRepository;
 import org.example.backend_cices_system.report.dto.InvestigadorConsultaDTO;
 import org.example.backend_cices_system.report.dto.PersonaUsuariaDTO;
 import org.example.backend_cices_system.report.dto.UsuarioPersonaDTO;
-import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

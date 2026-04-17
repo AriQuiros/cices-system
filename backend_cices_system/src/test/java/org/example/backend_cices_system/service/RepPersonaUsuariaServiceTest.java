@@ -3,7 +3,6 @@ package org.example.backend_cices_system.service;
 import org.example.backend_cices_system.report.dao.RepPersonaUsuariaRepository;
 import org.example.backend_cices_system.report.dto.PersonaUsuariaDTO;
 import org.example.backend_cices_system.report.serviceVw.RepPersonaUsuariaService;
-import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

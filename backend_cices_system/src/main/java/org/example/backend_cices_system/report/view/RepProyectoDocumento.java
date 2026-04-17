@@ -27,22 +27,7 @@ public class RepProyectoDocumento {
 
     @Size(max = 254)
     @NotNull
-    @Column(name = "NOMBRE_PROYECTO", nullable = false, length = 254)
-    private String nombreProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
-    private String codigoProyecto;
-
-    @Size(max = 254)
-    @NotNull
     @Column(name = "NOMBRE_DOCUMENTO", nullable = false, length = 254)
     private String nombreDocumento;
-
-    @NotNull
-    @Lob
-    @Column(name = "DIRECTORIO", nullable = false)
-    private String directorio;
 
 }

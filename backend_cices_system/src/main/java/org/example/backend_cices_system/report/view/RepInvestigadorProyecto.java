@@ -21,10 +21,6 @@ public class RepInvestigadorProyecto {
     @Column(name = "ID_INVESTIGADOR_PROYECTO", nullable = false)
     private Integer idInvestigadorProyecto;
 
-    @NotNull
-    @Column(name = "ID_INVESTIGADOR", nullable = false)
-    private Integer idInvestigador;
-
     @Size(max = 254)
     @NotNull
     @Column(name = "NOMBRE_INVESTIGADOR", nullable = false, length = 254)
@@ -35,32 +31,9 @@ public class RepInvestigadorProyecto {
     @Column(name = "IDENTIFICACION", nullable = false, length = 20)
     private String identificacion;
 
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "CORREO_INVESTIGADOR", nullable = false, length = 254)
-    private String correoInvestigador;
-
-    @NotNull
-    @Column(name = "ID_CODIGO_TIPO_GRADO_ACADEMICO", nullable = false)
-    private Integer idCodigoTipoGradoAcademico;
-
-    @Size(max = 30)
-    @Column(name = "GRADO_ACADEMICO", length = 30)
-    private String gradoAcademico;
-
     @NotNull
     @Column(name = "ID_PROYECTO", nullable = false)
     private Integer idProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
-    private String codigoProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "NOMBRE_PROYECTO", nullable = false, length = 254)
-    private String nombreProyecto;
 
     @Size(max = 50)
     @NotNull
@@ -78,14 +51,4 @@ public class RepInvestigadorProyecto {
     @Column(name = "FECHA_FIN_INVESTIGADOR")
     private LocalDate fechaFinInvestigador;
 
-    @NotNull
-    @Column(name = "ID_ROL_PROYECTO", nullable = false)
-    private Short idRolProyecto;
-
-    @NotNull
-    @Column(name = "FECHA_INICIO", nullable = false)
-    private LocalDate fechaInicio;
-
-    @Column(name = "FECHA_FINALIZACION")
-    private LocalDate fechaFinalizacion;
 }

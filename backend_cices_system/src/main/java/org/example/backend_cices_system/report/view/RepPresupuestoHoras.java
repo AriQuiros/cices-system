@@ -34,32 +34,19 @@ public class RepPresupuestoHoras {
     @Column(name = "ID_PRESUPUESTO", nullable = false)
     private Integer idPresupuesto;
 
+    @Size(max = 20)
     @NotNull
-    @Column(name = "ID_PROYECTO", nullable = false)
-    private Integer idProyecto;
+    @Column(name = "IDENTIFICACION", nullable = false, length = 20)
+    private String identificacion;
 
     @Size(max = 254)
     @NotNull
-    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
-    private String codigoProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "NOMBRE_PROYECTO", nullable = false, length = 254)
-    private String nombreProyecto;
+    @Column(name = "NOMBRE_COMPLETO", nullable = false, length = 254)
+    private String nombreCompleto;
 
     @NotNull
-    @Column(name = "ID_INVESTIGADOR", nullable = false)
-    private Integer idInvestigador;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "NOMBRE_INVESTIGADOR", nullable = false, length = 254)
-    private String nombreInvestigador;
-
-    @NotNull
-    @Column(name = "HORAS_MES", nullable = false)
-    private Double horasMes;
+    @Column(name = "CANTIDAD_HORAS_MES", nullable = false)
+    private Double cantidadHorasMes;
 
     @NotNull
     @Column(name = "CANTIDAD_MESES", nullable = false)
@@ -68,12 +55,11 @@ public class RepPresupuestoHoras {
     @Size(max = 30)
     @Column(name = "MODALIDAD", length = 30)
     private String modalidad;
-    @NotNull
-    @Column(name = "ID_CODIGO_TIPO_MODALIDAD", nullable = false)
-    private Short idCodigoTipoModalidad;
+
     @NotNull
     @Column(name = "FECHA_INICIO_INVESTIGADOR", nullable = false)
     private LocalDate fechaInicioInvestigador;
+
     @Column(name = "FECHA_FIN_INVESTIGADOR")
     private LocalDate fechaFinInvestigador;
 

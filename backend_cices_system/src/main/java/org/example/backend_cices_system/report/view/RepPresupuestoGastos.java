@@ -32,21 +32,7 @@ public class RepPresupuestoGastos {
     private Integer idPresupuesto;
 
     @NotNull
-    @Column(name = "ID_PROYECTO", nullable = false)
-    private Integer idProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
-    private String codigoProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "NOMBRE_PROYECTO", nullable = false, length = 254)
-    private String nombreProyecto;
-
-    @NotNull
-    @Column(name = "MONTO_GASTO", nullable = false, precision = 9, scale = 2)
+    @Column(name = "MONTO", nullable = false, precision = 9, scale = 2)
     private BigDecimal montoGasto;
 
     @NotNull
@@ -55,10 +41,7 @@ public class RepPresupuestoGastos {
 
     @Size(max = 254)
     @NotNull
-    @Column(name = "DESCRIPCION_GASTO", nullable = false, length = 254)
+    @Column(name = "DESCRIPCION", nullable = false, length = 254)
     private String descripcionGasto;
-
-    @Column(name = "CATEGORIA_PRESUPUESTO")
-    private String categoriaPresupuesto;
 
 }

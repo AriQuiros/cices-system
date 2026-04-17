@@ -31,16 +31,6 @@ public class RepPresupuestoBase {
     @Column(name = "ID_PROYECTO", nullable = false)
     private Integer idProyecto;
 
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "NOMBRE_PROYECTO", nullable = false, length = 254)
-    private String nombreProyecto;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
-    private String codigoProyecto;
-
     @Size(max = 30)
     @Column(name = "TIPO_PRESUPUESTO", length = 30)
     private String tipoPresupuesto;
@@ -54,10 +44,10 @@ public class RepPresupuestoBase {
     private String categoriaPresupuesto;
 
     @Size(max = 254)
-    @Column(name = "DESCRIPCION_PRESUPUESTO", length = 254)
+    @Column(name = "DESCRIPCION", length = 254)
     private String descripcionPresupuesto;
 
-    @Column(name = "CANTIDAD_HORAS")
+    @Column(name = "CANTIDAD_HORAS_MES")
     private BigDecimal cantidadHoras;
 
     @Column(name = "CANTIDAD_MESES")

@@ -54,9 +54,6 @@ public class RepNotificacionesUsuario {
     @Column(name = "LEIDO")
     private Boolean leido;
 
-    @Column(name = "ELIMINADO")
-    private Boolean eliminado;
-
     @Column(name = "FECHA_CREACION")
     private LocalDate fechaCreacion;
 

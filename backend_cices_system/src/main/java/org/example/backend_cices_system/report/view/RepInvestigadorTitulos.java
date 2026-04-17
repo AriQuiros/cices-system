@@ -57,10 +57,4 @@ public class RepInvestigadorTitulos {
     @NotNull
     @Column(name = "FECHA_EMISION", nullable = false)
     private LocalDate fechaEmision;
-    @Column(name = "ID_CODIGO_TIPO_NIVEL_TITULO")
-    private Short idCodigoTipoNivelTitulo;
-    @NotNull
-    @Column(name = "ID_ENTIDAD", nullable = false)
-    private Integer idEntidad;
-
 }

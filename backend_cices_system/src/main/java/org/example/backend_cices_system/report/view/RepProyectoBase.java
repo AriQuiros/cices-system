@@ -60,11 +60,5 @@ public class RepProyectoBase {
 
     @Column(name = "FECHA_FINALIZACION")
     private LocalDate fechaFinalizacion;
-    @NotNull
-    @Column(name = "ID_CODIGO_TIPO_ESTADO", nullable = false)
-    private Short idCodigoTipoEstado;
-    @NotNull
-    @Column(name = "ID_CODIGO_TIPO_PROYECTO", nullable = false)
-    private Short idCodigoTipoProyecto;
 
 }

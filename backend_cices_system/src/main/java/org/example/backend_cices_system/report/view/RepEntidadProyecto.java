@@ -38,10 +38,6 @@ public class RepEntidadProyecto {
     @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
     private String codigoProyecto;
 
-    @NotNull
-    @Column(name = "ID_ENTIDAD", nullable = false)
-    private Integer idEntidad;
-
     @Size(max = 254)
     @NotNull
     @Column(name = "NOMBRE_ENTIDAD", nullable = false, length = 254)

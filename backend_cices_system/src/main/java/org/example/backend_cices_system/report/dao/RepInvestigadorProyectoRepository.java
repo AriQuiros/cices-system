@@ -6,26 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public interface RepInvestigadorProyectoRepository extends JpaRepository<RepInvestigadorProyecto, Integer> {
 
-    List<RepInvestigadorProyecto> findAll();
-
-    List<RepInvestigadorProyecto> findByIdInvestigador(Integer idInvestigador);
-
     List<RepInvestigadorProyecto> findByIdentificacion(String identificacion);
-
-    List<RepInvestigadorProyecto> findByNombreInvestigadorContainingIgnoreCase(String nombreInvestigador);
-
-    List<RepInvestigadorProyecto> findByCodigoProyecto(String codigoProyecto);
 
     List<RepInvestigadorProyecto> findByIdProyecto(Integer idProyecto);
 
-    List<RepInvestigadorProyecto> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
-
-    List<RepInvestigadorProyecto> findByRolProyecto(String rolEnProyecto);
+    List<RepInvestigadorProyecto> findByIdInvestigador(Integer idInvestigador);
 
     @Query(value = """
         SELECT

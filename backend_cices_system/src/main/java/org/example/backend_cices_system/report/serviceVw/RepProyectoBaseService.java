@@ -1,82 +1,38 @@
 package org.example.backend_cices_system.report.serviceVw;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.dto.ProyectoFechasDTO;
 import org.example.backend_cices_system.report.dao.RepProyectoBaseRepository;
+import org.example.backend_cices_system.report.specification.ProyectoSpecification;
 import org.example.backend_cices_system.report.view.RepInvestigadorProyecto;
 import org.example.backend_cices_system.report.view.RepProyectoBase;
 import org.example.backend_cices_system.service.PermisoProyectoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RepProyectoBaseService {
 
     private final RepProyectoBaseRepository repo;
     private final RepInvestigadorProyectoService repInvestigadorProyectoService;
-    private final PermisoProyectoService permisoProyectoService;
 
-    public RepProyectoBaseService(RepProyectoBaseRepository repo,
-                                  RepInvestigadorProyectoService repInvestigadorProyectoService,
-                                  PermisoProyectoService permisoProyectoService) {
-        this.repo = repo;
-        this.repInvestigadorProyectoService = repInvestigadorProyectoService;
-        this.permisoProyectoService = permisoProyectoService;
-    }
-
-    public List<RepProyectoBase> obtenerTodos() {
-        return repo.findAll();
+    public Page<RepProyectoBase> obtenerTodos(
+            Specification<RepProyectoBase> spec,
+            Pageable pageable) {
+        return repo.findAll(spec, pageable);
     }
 
     public List<ProyectoFechasDTO> obtenerTodos_fechas() {
         return repo.findAll().stream()
-                .map(p -> new ProyectoFechasDTO(
-                        p.getCodigoProyecto(),
-                        p.getNombreProyecto(),
-                        p.getFechaInicio(),
-                        p.getFechaFinalizacion()
-                ))
+                .map(this::obtenerProyectoFechasDTO)
                 .collect(Collectors.toList());
-    }
-
-    public RepProyectoBase buscarPorId(Integer idProyecto) {
-        return repo.findById(idProyecto).orElse(null);
-    }
-
-    public RepProyectoBase buscarPorCodigoProyecto(String codigoProyecto) {
-        return repo.findByCodigoProyecto(codigoProyecto);
-    }
-
-    public List<RepProyectoBase> buscarPorNombreProyecto(String nombreProyecto) {
-        return repo.findByNombreProyectoContainingIgnoreCase(nombreProyecto);
-    }
-
-    public List<ProyectoFechasDTO> obtenerProyectosInvestigador(Integer id){
-        return repInvestigadorProyectoService.buscarPorIdInvestigador(id).stream()
-                .map(p -> new ProyectoFechasDTO(
-                        p.getCodigoProyecto(),
-                        p.getNombreProyecto(),
-                        p.getFechaInicio(),
-                        p.getFechaFinalizacion()
-                )).toList();
-    }
-
-    public List<ProyectoFechasDTO> proyectosPrincipalInvestigador(Integer id){
-
-        return repInvestigadorProyectoService
-                .buscarPorIdInvestigador(id)
-                .stream()
-                .filter(p -> "PRINCIPAL".equalsIgnoreCase(p.getRolProyecto())
-                        || permisoProyectoService.existByInvestigadorProyectoId(p.getIdInvestigadorProyecto()))
-                .map(p -> new ProyectoFechasDTO(
-                        p.getCodigoProyecto(),
-                        p.getNombreProyecto(),
-                        p.getFechaInicio(),
-                        p.getFechaFinalizacion()
-                ))
-                .toList();
     }
 
     public List<ProyectoDatosDTO> proyectosListado(){
@@ -94,16 +50,19 @@ public class RepProyectoBaseService {
                 .toList();
     }
 
-    public List<ProyectoDatosDTO> proyectosListadoInvestigador(Integer id){
+    public Page<ProyectoDatosDTO> buscarConFiltros(
+            String texto,
+            String estado,
+            List<String> tipos,
+            List<String> lineas,
+            Pageable pageable
+    ) {
 
-        List<Integer> idsInvestigador = repInvestigadorProyectoService
-                .buscarPorIdInvestigador(id)
-                .stream()
-                .map(RepInvestigadorProyecto::getIdProyecto)
-                .toList();
+        Specification<RepProyectoBase> spec = ProyectoSpecification.filtrar(
+                texto, estado, tipos, lineas
+        );
 
-        return repo.findAll().stream()
-                .filter(p -> idsInvestigador.contains(p.getIdProyecto()))
+        return repo.findAll(spec, pageable)
                 .map(p -> new ProyectoDatosDTO(
                         p.getIdProyecto(),
                         p.getCodigoProyecto(),
@@ -113,10 +72,20 @@ public class RepProyectoBaseService {
                         p.getEstadoProyecto(),
                         p.getFechaInicio(),
                         p.getFechaFinalizacion()
-                ))
-                .toList();
+                ));
     }
 
+    public List<RepProyectoBase> buscarPorIds(List<Integer> idsProyectos) {
+        return repo.findByIdProyectoIn(idsProyectos);
+    }
 
+    public ProyectoFechasDTO obtenerProyectoFechasDTO(RepProyectoBase p){
+        return new ProyectoFechasDTO(
+                p.getCodigoProyecto(),
+                p.getNombreProyecto(),
+                p.getFechaInicio(),
+                p.getFechaFinalizacion()
+        );
+    }
 }
 

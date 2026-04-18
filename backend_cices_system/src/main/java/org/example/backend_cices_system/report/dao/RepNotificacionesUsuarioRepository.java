@@ -15,6 +15,4 @@ public interface RepNotificacionesUsuarioRepository extends JpaRepository<RepNot
 
     List<RepNotificacionesUsuario> findByAsuntoContainingIgnoreCase(String titulo);
 
-    List<RepNotificacionesUsuario> findByCategoria(String categoria);
-
 }

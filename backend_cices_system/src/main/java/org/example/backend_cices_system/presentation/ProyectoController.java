@@ -1,13 +1,9 @@
 package org.example.backend_cices_system.presentation;
 
-import jakarta.validation.Valid;
 import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.service.ProyectoService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,23 +68,5 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoService.obtenerResumenHoras(id));
     }
 
-    @GetMapping("/listar")
-    public Page<ProyectoDatosDTO> listar(
-            @RequestParam(required = false) String texto,
-            @RequestParam(required = false) Short estado,
-            @RequestParam(required = false) List<Short> tipoProyecto,
-            @RequestParam(required = false) List<String> lineaInvestigacion,
-            @RequestParam(required = false) String institucion,
-            Pageable pageable
-    ) {
-        return proyectoService.buscarConFiltros(
-                texto,
-                estado,
-                tipoProyecto,
-                lineaInvestigacion,
-                institucion,
-                pageable
-        );
-    }
 
 }

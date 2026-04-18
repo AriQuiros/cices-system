@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.report.serviceVw.ExportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,14 +12,11 @@ import java.util.Map;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/export")
 public class ExportController {
 
     private final ExportService exportService;
-
-    public ExportController(ExportService exportService) {
-        this.exportService = exportService;
-    }
 
     @GetMapping("/{codigo}/academico")
     public Map<String, Object> exportarAcademico(@PathVariable String codigo) {

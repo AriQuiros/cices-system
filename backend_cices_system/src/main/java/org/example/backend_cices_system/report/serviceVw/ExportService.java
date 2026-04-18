@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.serviceVw;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.audit.PresupuestoBitRepository;
 import org.example.backend_cices_system.report.dao.*;
 import org.example.backend_cices_system.report.view.RepProyectoBase;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class ExportService {
 
     private final RepProyectoBaseRepository proyectoBaseRepo;
@@ -21,23 +23,6 @@ public class ExportService {
     private final PresupuestoBitRepository presupuestoBitRepository;
     private final RepPresupuestoGastosRepository gastosRepo;
     private final RepPresupuestoHorasRepository horasRepo;
-
-    public ExportService(RepProyectoBaseRepository proyectoBaseRepo, RepEntidadProyectoRepository entidadProyectoRepo,
-                         RepInvestigadorProyectoRepository investigadorRepo, RepProyectoResultadosRepository resultadosRepo,
-                         RepProyectoDocumentoRepository documentosRepo, RepProyectoPresentacionInformeRepository informesRepo,
-                         RepPresupuestoBaseRepository presupuestoBaseRepo, PresupuestoBitRepository presupuestoBitRepository,
-                         RepPresupuestoGastosRepository gastosRepo, RepPresupuestoHorasRepository horasRepo) {
-        this.proyectoBaseRepo = proyectoBaseRepo;
-        this.entidadProyectoRepo = entidadProyectoRepo;
-        this.investigadorRepo = investigadorRepo;
-        this.resultadosRepo = resultadosRepo;
-        this.documentosRepo = documentosRepo;
-        this.informesRepo = informesRepo;
-        this.presupuestoBaseRepo = presupuestoBaseRepo;
-        this.presupuestoBitRepository = presupuestoBitRepository;
-        this.gastosRepo = gastosRepo;
-        this.horasRepo = horasRepo;
-    }
 
     public Map<String, Object> exportarProyectoAcademico(String codigoProyecto) {
         return Map.of(

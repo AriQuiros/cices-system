@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.serviceVw;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.report.dao.RepPresupuestoGastosRepository;
 import org.example.backend_cices_system.report.dto.GastoPresupuestoDTO;
 import org.example.backend_cices_system.report.dto.PresupuestoFinancieroDTO;
@@ -10,33 +11,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RepPresupuestoGastosService {
 
     private final RepPresupuestoGastosRepository repo;
     private final RepPresupuestoBaseService repPresupuestoBaseService;
 
-    public RepPresupuestoGastosService(
-            RepPresupuestoGastosRepository repo,
-            RepPresupuestoBaseService repPresupuestoBaseService
-    ) {
-        this.repo = repo;
-        this.repPresupuestoBaseService = repPresupuestoBaseService;
-    }
-
     public List<RepPresupuestoGastos> obtenerTodos() {
         return repo.findAll();
     }
 
-    public RepPresupuestoGastos buscarPorId(Integer idGasto) {
-        return repo.findById(idGasto).orElse(null);
-    }
-
     public List<RepPresupuestoGastos> buscarPorIdPresupuesto(Integer idPresupuesto) {
         return repo.findByIdPresupuesto(idPresupuesto);
-    }
-
-    public List<RepPresupuestoGastos> buscarPorCodigoProyecto(String codigoProyecto) {
-        return repo.findByCodigoProyecto(codigoProyecto);
     }
 
     public List<PresupuestoFinancieroDTO> gastosPresupuesto(String codigo) {

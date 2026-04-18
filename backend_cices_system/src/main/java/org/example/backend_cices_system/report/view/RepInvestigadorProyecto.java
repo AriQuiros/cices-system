@@ -21,6 +21,24 @@ public class RepInvestigadorProyecto {
     @Column(name = "ID_INVESTIGADOR_PROYECTO", nullable = false)
     private Integer idInvestigadorProyecto;
 
+    @NotNull
+    @Column(name = "ID_PROYECTO", nullable = false)
+    private Integer idProyecto;
+
+    @NotNull
+    @Column(name = "ID_INVESTIGADOR", nullable = false)
+    private Integer idInvestigador;
+
+    @Size(max = 254)
+    @NotNull
+    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
+    private String codigoProyecto;
+
+    @Size(max = 254)
+    @NotNull
+    @Column(name = "NOMBRE_PROYECTO", nullable = false, length = 254)
+    private String nombreProyecto;
+
     @Size(max = 254)
     @NotNull
     @Column(name = "NOMBRE_INVESTIGADOR", nullable = false, length = 254)
@@ -30,10 +48,6 @@ public class RepInvestigadorProyecto {
     @NotNull
     @Column(name = "IDENTIFICACION", nullable = false, length = 20)
     private String identificacion;
-
-    @NotNull
-    @Column(name = "ID_PROYECTO", nullable = false)
-    private Integer idProyecto;
 
     @Size(max = 50)
     @NotNull
@@ -51,4 +65,14 @@ public class RepInvestigadorProyecto {
     @Column(name = "FECHA_FIN_INVESTIGADOR")
     private LocalDate fechaFinInvestigador;
 
+    // PERMISO COORDINADOR
+
+    @Column(name = "ID_PERMISO_PROYECTO")
+    private Integer idPermisoProyecto;
+
+    @Column(name = "FECHA_INICIO_PERMISO")
+    private LocalDate fechaInicioPermiso;
+
+    @Column(name = "FECHA_FIN_PERMISO")
+    private LocalDate fechaFinPermiso;
 }

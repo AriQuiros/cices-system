@@ -9,6 +9,5 @@ import java.util.Optional;
 
 public interface EntidadProyectoRepository extends JpaRepository<EntidadProyecto, Short> {
     List<EntidadProyecto> findEntidadProyectoByIdProyecto(Proyecto proyecto);
-    Optional<EntidadProyecto> findByIdProyecto_IdAndIdEntidad_Id(Integer idProyectoId, Integer idEntidadId);
     boolean existsByIdProyecto_IdAndIdEntidad_Id(Integer idProyectoId, Integer idEntidadId);
 }

@@ -12,7 +12,5 @@ import java.util.Optional;
 
 public interface InvestigadorProyectoRepository extends JpaRepository<InvestigadorProyecto, Integer> {
     Optional<InvestigadorProyecto> findByIdProyectoAndIdInvestigador(Proyecto proyecto, Investigador investigador);
-    Optional<InvestigadorProyecto> findByIdProyecto_CodigoProyectoAndIdInvestigador_IdEmpleado_Identificacion(String idProyectoCodigoProyecto, String idInvestigadorIdEmpleadoIdentificacion);
     List<InvestigadorProyecto> findByIdProyecto(Proyecto proyectoId);
-    List<InvestigadorProyecto> findByIdProyecto_CodigoProyecto(String idProyectoCodigoProyecto);
 }

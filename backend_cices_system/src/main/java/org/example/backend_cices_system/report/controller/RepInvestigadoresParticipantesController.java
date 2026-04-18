@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.report.dto.RepInvestigadoresParticipantesDTO;
 import org.example.backend_cices_system.report.dto.RepInvestigadoresParticipantesFiltroDTO;
 import org.example.backend_cices_system.report.serviceVw.RepInvestigadoresParticipantesArchivoService;
@@ -13,20 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/reportes/investigadores-participantes")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RepInvestigadoresParticipantesController {
 
     private final RepInvestigadoresParticipantesService reporteService;
     private final RepInvestigadoresParticipantesArchivoService archivoService;
-
-    public RepInvestigadoresParticipantesController(
-            RepInvestigadoresParticipantesService reporteService,
-            RepInvestigadoresParticipantesArchivoService archivoService
-    ) {
-        this.reporteService = reporteService;
-        this.archivoService = archivoService;
-    }
 
     @GetMapping("/exportar")
     public ResponseEntity<byte[]> exportarReporte(

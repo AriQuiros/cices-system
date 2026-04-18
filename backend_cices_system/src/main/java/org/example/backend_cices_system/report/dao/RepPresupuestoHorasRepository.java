@@ -9,19 +9,6 @@ import java.util.List;
 @Repository
 public interface RepPresupuestoHorasRepository extends JpaRepository<RepPresupuestoHoras, Integer> {
 
-    List<RepPresupuestoHoras> findAll();
-
-    List<RepPresupuestoHoras> findByCodigoProyecto(String codigoProyecto);
-
     List<RepPresupuestoHoras> findByIdPresupuesto(Integer idPresupuesto);
 
-    List<RepPresupuestoHoras> findByIdProyecto(Integer idProyecto);
-
-    List<RepPresupuestoHoras> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
-
-    List<RepPresupuestoHoras> findByIdInvestigador(Integer idInvestigador);
-
-    List<RepPresupuestoHoras> findByNombreInvestigadorContainingIgnoreCase(String nombreInvestigador);
-
-    List<RepPresupuestoHoras> findByModalidad(String modalidad);
 }

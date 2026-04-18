@@ -7,6 +7,6 @@ public record InvestigadorDetalleDTO (
     String id,
     List<FormacionDTO> certificaciones,
     List<FormacionDTO> titulos,
-    List<ProyectoCodigoDTO> proyectos
+    List<String> proyectos
 
     ){}

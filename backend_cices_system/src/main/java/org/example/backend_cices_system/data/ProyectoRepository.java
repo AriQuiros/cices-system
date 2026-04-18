@@ -11,10 +11,6 @@ import java.util.Optional;
 public interface ProyectoRepository extends JpaRepository<Proyecto, Integer>, JpaSpecificationExecutor<Proyecto> {
     Optional<Proyecto> findByCodigoProyecto(String codigoProyecto);
 
-    List<Proyecto> findByIdCodigoTipoEstado(Short idCodigoEstado);
-
-    Proyecto findProyectoById(Short id);
-
     boolean existsByCodigoProyecto(String codigoProyecto);
 
     @Query("SELECT DISTINCT p.lineaInvestigacion FROM Proyecto p")

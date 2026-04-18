@@ -1,21 +1,17 @@
 package org.example.backend_cices_system.report.controller;
 
-import org.example.backend_cices_system.dto.ProyectoDatosDTO;
-import org.example.backend_cices_system.report.dto.ProyectoFiltroDTO;
+import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.report.filter.ProyectoFiltroDTO;
 import org.example.backend_cices_system.report.serviceVw.RepProyectoReporteService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/reports/proyectos")
 public class RepProyectoReporteController {
 
     private final RepProyectoReporteService service;
-
-    public RepProyectoReporteController(RepProyectoReporteService service) {
-        this.service = service;
-    }
 
     /**
      * Genera y descarga el reporte en el formato indicado.

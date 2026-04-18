@@ -12,22 +12,25 @@ import org.hibernate.annotations.Immutable;
 @Getter
 @Entity
 @Immutable
-@Table(name = "REP_PERSONA")
-public class RepPersona {
+@Table(name = "REP_PERSONA_USUARIA")
+public class RepPersonaUsuaria {
     @Id
+    @Column(name = "ID_ROL_USUARIO")
+    private Integer idRolUsuario;
+
     @NotNull
     @Column(name = "ID_EMPLEADO", nullable = false)
     private Integer idEmpleado;
-
-    @Size(max = 20)
-    @NotNull
-    @Column(name = "IDENTIFICACION", nullable = false, length = 20)
-    private String identificacion;
 
     @Size(max = 254)
     @NotNull
     @Column(name = "NOMBRE_COMPLETO", nullable = false, length = 254)
     private String nombreCompleto;
+
+    @Size(max = 20)
+    @NotNull
+    @Column(name = "IDENTIFICACION", nullable = false, length = 20)
+    private String identificacion;
 
     @Size(max = 30)
     @Column(name = "TIPO_IDENTIFICACION", length = 30)
@@ -66,5 +69,19 @@ public class RepPersona {
     @Column(name = "TEMA_INTERES", length = 254)
     private String temaInteres;
 
+    @Column(name = "ID_USUARIO")
+    private Integer idUsuario;
+
+    @Size(max = 254)
+    @Column(name = "NOMBRE_USUARIO", length = 254)
+    private String nombreUsuario;
+
+    @Column(name = "ACTIVO")
+    private Boolean activo;
+
+    @Size(max = 50)
+    @Column(name = "NOMBRE_ROL", length = 50)
+    private String nombreRol;
 
 }
+

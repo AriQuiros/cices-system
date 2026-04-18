@@ -11,7 +11,6 @@ public record RepNotificacionDetalladaDTO(
         String tipo,
         List<CampoDetalleDTO> detalle,
         Boolean leido,
-        Boolean eliminado,
         LocalDate fechaCreacion,
         LocalDate fechaLeido,
         LocalDate fechaObjetivo

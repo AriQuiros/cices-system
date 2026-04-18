@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface InvestigadorRepository extends JpaRepository<Investigador,Integer> {
-    Optional<Investigador> findByIdEmpleado(Empleado empleado);
     Optional<Investigador> findByIdEmpleadoIdentificacion(String identificacion);
     Optional<Investigador> findByIdEmpleado_IdUsuario(Usuario idEmpleadoIdUsuario);
     List<Investigador> findByIdEmpleado_IdUsuario_ActivoAndIdEmpleadoNombreCompletoContainsIgnoreCase(Boolean idEmpleadoIdUsuarioActivo, String idEmpleadoNombreCompleto);

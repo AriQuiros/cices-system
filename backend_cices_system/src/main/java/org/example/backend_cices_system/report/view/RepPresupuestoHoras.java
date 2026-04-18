@@ -62,6 +62,9 @@ public class RepPresupuestoHoras {
 
     @Column(name = "FECHA_FIN_INVESTIGADOR")
     private LocalDate fechaFinInvestigador;
+    @NotNull
+    @Column(name = "ID_PROYECTO", nullable = false)
+    private Integer idProyecto;
 
 
 }

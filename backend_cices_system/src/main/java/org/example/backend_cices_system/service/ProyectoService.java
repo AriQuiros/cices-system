@@ -1,17 +1,13 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.HorasAsignadasRepository;
 import org.example.backend_cices_system.data.ProyectoRepository;
 import org.example.backend_cices_system.dto.InvestigadorHorasDTO;
 import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
 import org.example.backend_cices_system.logic.*;
-import org.example.backend_cices_system.report.filter.ProyectoSpecification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProyectoService {
     private final EntidadService entidadService;
     private final ProyectoRepository proyectoRepository;
@@ -34,25 +31,6 @@ public class ProyectoService {
     private final InvestigadorProyectoService investigadorProyectoService;
     private final DocumentoService documentoService;
 
-
-    public ProyectoService(ProyectoRepository proyectoRepository, HorasAsignadasRepository horasRepository, EntidadProyectoService entidadProyectoService,
-                           ObjetivosEspecificosService objetivosEspecificosService, EntidadService entidadService,
-                           PresentacionInformeService presentacionInformeService, CatalogoService catalogoService,
-                           PresupuestoService presupuestoService, InvestigadorProyectoService investigadorProyectoService,
-                           InvestigadorService investigadorService, DocumentoService documentoService) {
-        this.horasRepository = horasRepository;
-        this.catalogoService = catalogoService;
-        this.proyectoRepository = proyectoRepository;
-        this.entidadService = entidadService;
-        this.entidadProyectoService = entidadProyectoService;
-        this.objetivosEspecificosService = objetivosEspecificosService;
-        this.presentacionInformeService = presentacionInformeService;
-
-        this.investigadorService = investigadorService;
-        this.investigadorProyectoService = investigadorProyectoService;
-        this.presupuestoService = presupuestoService;
-        this.documentoService = documentoService;
-    }
 
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO proyectoDTO, List<MultipartFile> documentos) {
@@ -117,11 +95,6 @@ public class ProyectoService {
         }
     }
 
-    public Proyecto buscarProyectoPorCodigo(String codigoProyecto) {
-        return proyectoRepository.findByCodigoProyecto(codigoProyecto)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado para codigo " + codigoProyecto));
-    }
-
     public List<Proyecto> obtenerProyectos() {
         return proyectoRepository.findAll();
     }
@@ -177,32 +150,6 @@ public class ProyectoService {
         return obtenerDTO(proyecto);
     }
 
-    public Page<ProyectoDatosDTO> buscarConFiltros(
-            String texto,
-            Short estado,
-            List<Short> tipos,
-            List<String> lineas,
-            String institucion,
-            Pageable pageable
-    ) {
-
-        Specification<Proyecto> spec = ProyectoSpecification.conFiltros(
-                texto, estado, tipos, lineas, institucion
-        );
-
-        return proyectoRepository.findAll(spec, pageable)
-                .map(p -> new ProyectoDatosDTO(
-                        p.getId(),
-                        p.getCodigoProyecto(),
-                        p.getNombreProyecto(),
-                        p.getLineaInvestigacion(),
-                        catalogoService.obtenerCodigo(p.getIdCodigoTipoProyecto()).getDespliegue(),
-                        catalogoService.obtenerCodigo(p.getIdCodigoTipoEstado()).getDespliegue(),
-                        p.getFechaInicio(),
-                        p.getFechaFinalizacion()
-                ));
-    }
-
     public ResumenHorasProyectoDTO obtenerResumenHoras(Integer idProyecto) {
 
         Proyecto proyecto = proyectoRepository.findById(idProyecto)
@@ -230,6 +177,12 @@ public class ProyectoService {
                 totalAsignadas,
                 disponibles,
                 lista
+        );
+    }
+
+    public Proyecto buscarProyectoPorCodigo(String codigo) {
+        return proyectoRepository.findByCodigoProyecto(codigo).orElseThrow( () ->
+                new RuntimeException("Proyecto no encontrado para codigo: " + codigo)
         );
     }
 }

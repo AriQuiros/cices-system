@@ -1,26 +1,20 @@
 package org.example.backend_cices_system.report.serviceVw;
 
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.report.dto.FormacionDTO;
 import org.example.backend_cices_system.report.dto.InvestigadorDetalleDTO;
-import org.example.backend_cices_system.report.dto.ProyectoCodigoDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class InvestigadorDetalleService {
     private final RepInvestigadorCertificacionesService repInvestigadorCertificacionesService;
     private final RepInvestigadorTitulosService repInvestigadorTitulosService;
     private final RepInvestigadorProyectoService repInvestigadorProyectoService;
-
-    public InvestigadorDetalleService(RepInvestigadorCertificacionesService repInvestigadorCertificacionesService,
-                                      RepInvestigadorTitulosService repInvestigadorTitulosService,
-                                      RepInvestigadorProyectoService repInvestigadorProyectoService) {
-        this.repInvestigadorCertificacionesService = repInvestigadorCertificacionesService;
-        this.repInvestigadorTitulosService = repInvestigadorTitulosService;
-        this.repInvestigadorProyectoService = repInvestigadorProyectoService;
-    }
 
     public InvestigadorDetalleDTO obtenerInvestigador(String id){
         List<FormacionDTO> certificaciones = repInvestigadorCertificacionesService.buscarPorIdentificacion(id)
@@ -47,12 +41,12 @@ public class InvestigadorDetalleService {
                                 c.getFechaEmision()
                         )).toList();
 
-        List<ProyectoCodigoDTO> proyectos = repInvestigadorProyectoService.buscarPorIdentificacionInvestigador(id)
-                .stream().map(p ->
-                        new ProyectoCodigoDTO(
-                                p.getCodigoProyecto(),
-                                p.getNombreProyecto()
-                        )).toList();
+        List<String> proyectos =
+                repInvestigadorProyectoService
+                        .buscarPorIdentificacionInvestigador(id)
+                        .stream()
+                        .map(rep -> rep.getCodigoProyecto() + " - " + rep.getNombreProyecto())
+                        .toList();
 
         return new InvestigadorDetalleDTO(id,certificaciones, titulos, proyectos);
     }

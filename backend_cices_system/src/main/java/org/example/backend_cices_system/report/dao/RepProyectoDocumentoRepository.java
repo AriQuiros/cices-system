@@ -9,13 +9,6 @@ import java.util.List;
 @Repository
 public interface RepProyectoDocumentoRepository extends JpaRepository<RepProyectoDocumento, Integer> {
 
-    List<RepProyectoDocumento> findAll();
-
     List<RepProyectoDocumento> findByIdProyecto(Integer idProyecto);
 
-    List<RepProyectoDocumento> findByCodigoProyecto(String codigoProyecto);
-
-    List<RepProyectoDocumento> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
-
-    List<RepProyectoDocumento> findByNombreDocumentoContainingIgnoreCase(String nombreDocumento);
 }

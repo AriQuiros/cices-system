@@ -1,14 +1,16 @@
 package org.example.backend_cices_system.report.dao;
 
+import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-public interface RepPersonaUsuariaRepository extends JpaRepository<RepPersonaUsuaria, Integer> {
-    List<RepPersonaUsuaria> findByIdentificacion(String identificacion);
-    RepPersonaUsuaria findDistinctByIdUsuario(Integer idUsuario);
-    RepPersonaUsuaria findDistinctFirstByNombreUsuario(String nombreUsuario);
+public interface RepPersonaUsuariaRepository extends
+        JpaRepository<RepPersonaUsuaria, Integer>,
+        JpaSpecificationExecutor<RepPersonaUsuaria> {
 
-    List<RepPersonaUsuaria> findByNombreUsuario(String nombreUsuario);
-    List<RepPersonaUsuaria> findByIdUsuario(Integer idUsuario);
+     Optional<RepPersonaUsuaria> findFirstByIdUsuario(Integer idUsuario);
 }

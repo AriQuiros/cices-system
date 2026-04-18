@@ -27,6 +27,11 @@ public class RepPresupuestoBase {
     @Column(name = "ID_PRESUPUESTO", nullable = false)
     private Integer idPresupuesto;
 
+    @Size(max = 254)
+    @NotNull
+    @Column(name = "CODIGO_PROYECTO", nullable = false, length = 254)
+    private String codigoProyecto;
+
     @NotNull
     @Column(name = "ID_PROYECTO", nullable = false)
     private Integer idProyecto;

@@ -3,7 +3,6 @@ import org.example.backend_cices_system.dto.auth.LoginRequest;
 import org.example.backend_cices_system.service.AuthService;
 import org.example.backend_cices_system.service.LoginAttemptService;
 import org.example.backend_cices_system.service.PasswordResetService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +15,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final LoginAttemptService attemptService;
-    @Autowired
-    private PasswordResetService passwordResetService;
+    private final PasswordResetService passwordResetService;
 
     public AuthController(AuthService authService, LoginAttemptService attemptService,
                           PasswordResetService passwordResetService) {

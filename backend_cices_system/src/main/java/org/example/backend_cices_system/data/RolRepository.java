@@ -6,5 +6,4 @@ import org.example.backend_cices_system.logic.Rol;
 import java.util.Optional;
 
 public interface RolRepository extends JpaRepository<Rol,Short> {
-    Optional<Rol> findByNombreRolIgnoreCase(String nombreRol);
 }

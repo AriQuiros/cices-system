@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.serviceVw;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.HorasAsignadasDTO;
 import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
 import org.example.backend_cices_system.report.dao.RepPresupuestoHorasRepository;
@@ -12,18 +13,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RepPresupuestoHorasService {
 
     private final RepPresupuestoHorasRepository repo;
     private final RepPresupuestoBaseService repPresupuestoBaseService;
     private final CatalogoService catalogoService;
-
-    public RepPresupuestoHorasService(RepPresupuestoHorasRepository repo, RepPresupuestoBaseService repPresupuestoBaseService,
-                                      CatalogoService catalogoService) {
-        this.repo = repo;
-        this.repPresupuestoBaseService = repPresupuestoBaseService;
-        this.catalogoService = catalogoService;
-    }
 
     public List<RepPresupuestoHoras> obtenerTodos() {
         return repo.findAll();
@@ -31,22 +26,6 @@ public class RepPresupuestoHorasService {
 
     public List<RepPresupuestoHoras> buscarPorIdPresupuesto(Integer idPresupuesto) {
         return repo.findByIdPresupuesto(idPresupuesto);
-    }
-
-    public List<RepPresupuestoHoras> buscarPorIdProyecto(Integer idProyecto) {
-        return repo.findByIdProyecto(idProyecto);
-    }
-
-    public List<RepPresupuestoHoras> buscarPorNombreProyecto(String nombreProyecto) {
-        return repo.findByNombreProyectoContainingIgnoreCase(nombreProyecto);
-    }
-
-    public List<RepPresupuestoHoras> buscarPorIdInvestigador(Integer idInvestigador) {
-        return repo.findByIdInvestigador(idInvestigador);
-    }
-
-    public List<RepPresupuestoHoras> buscarPorCodigoProyecto(String codigoProyecto) {
-        return repo.findByCodigoProyecto(codigoProyecto);
     }
 
     public List<PresupuestoHorasDTO> horasPresupuesto(String codigoProyecto) {
@@ -61,12 +40,12 @@ public class RepPresupuestoHorasService {
                     .map(h -> new HorasAsignadasDTO(h.getIdHorasAsignadas(),
                             new InvestigadorProyectoDTO(h.getIdInvestigadorProyecto(),
                                     null,
-                                    h.getNombreInvestigador(),null,null,null,null,
+                                    h.getNombreCompleto(),null,null,null,null,
                                     h.getFechaInicioInvestigador(),h.getFechaFinInvestigador()),
                             h.getIdPresupuesto(),
-                            catalogoService.obtenerDto(h.getIdCodigoTipoModalidad()),
+                            catalogoService.codigoXNombreValor(h.getModalidad()),
                             null,
-                            h.getHorasMes(),
+                            h.getCantidadHorasMes(),
                             h.getCantidadMeses()
                     ))
                     .toList();

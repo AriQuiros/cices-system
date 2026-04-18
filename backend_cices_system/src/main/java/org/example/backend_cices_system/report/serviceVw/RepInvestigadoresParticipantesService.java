@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.serviceVw;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.report.dao.RepInvestigadorProyectoRepository;
 import org.example.backend_cices_system.report.dto.RepInvestigadoresParticipantesDTO;
 import org.example.backend_cices_system.report.dto.RepInvestigadoresParticipantesFiltroDTO;
@@ -15,13 +16,10 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class RepInvestigadoresParticipantesService {
 
     private final RepInvestigadorProyectoRepository repo;
-
-    public RepInvestigadoresParticipantesService(RepInvestigadorProyectoRepository repo) {
-        this.repo = repo;
-    }
 
     public List<RepInvestigadoresParticipantesDTO> obtenerDatosReporte(
             RepInvestigadoresParticipantesFiltroDTO filtros

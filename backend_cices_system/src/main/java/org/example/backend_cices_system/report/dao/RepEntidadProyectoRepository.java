@@ -8,10 +8,6 @@ import java.util.List;
 
 @Repository
 public interface RepEntidadProyectoRepository extends JpaRepository<RepEntidadProyecto, Integer> {
-
-
-    List<RepEntidadProyecto> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
-
     List<RepEntidadProyecto> findByCodigoProyecto(String codigoProyecto);
 
     List<RepEntidadProyecto> findByNombreEntidadContainingIgnoreCase(String nombreEntidad);

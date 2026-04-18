@@ -8,10 +8,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,13 +55,19 @@ class RepPersonaUsuariaControllerTest {
                 )
         );
 
-        when(personaService.obtenerAsistentesAdministrativos())
-                .thenReturn(lista);
+        Page<PersonaUsuariaDTO> pageMock =
+                new PageImpl<>(lista);
 
-        List<PersonaUsuariaDTO> resultado =
-                controller.obtenerEmpleados();
+        when(personaService.obtenerPersonaPorRoles(
+                any(),
+                any(),
+                any()
+        )).thenReturn(pageMock);
 
-        assertEquals(2, resultado.size());
+        Page<PersonaUsuariaDTO> resultado =
+                controller.obtenerEmpleados(null, Pageable.unpaged());
+
+        assertEquals(2, resultado.getContent().size());
     }
 
     // =========================================
@@ -67,12 +77,18 @@ class RepPersonaUsuariaControllerTest {
     @Test
     void HU10_controllerDebeRetornarListaVacia() {
 
-        when(personaService.obtenerAsistentesAdministrativos())
-                .thenReturn(List.of());
+        Page<PersonaUsuariaDTO> pageMock =
+                new PageImpl<>(List.of());
 
-        List<PersonaUsuariaDTO> resultado =
-                controller.obtenerEmpleados();
+        when(personaService.obtenerPersonaPorRoles(
+                any(),
+                any(),
+                any()
+        )).thenReturn(pageMock);
 
-        assertTrue(resultado.isEmpty());
+        Page<PersonaUsuariaDTO> resultado =
+                controller.obtenerEmpleados(null, Pageable.unpaged());
+
+        assertTrue(resultado.getContent().isEmpty());
     }
 }

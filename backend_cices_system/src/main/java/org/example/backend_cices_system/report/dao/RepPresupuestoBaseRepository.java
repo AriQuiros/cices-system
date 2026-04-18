@@ -9,13 +9,7 @@ import java.util.List;
 @Repository
 public interface RepPresupuestoBaseRepository extends JpaRepository<RepPresupuestoBase, Integer> {
 
-    List<RepPresupuestoBase> findAll();
-
     List<RepPresupuestoBase> findByCodigoProyecto(String codigoProyecto);
 
-    List<RepPresupuestoBase> findByCodigoProyectoAndTipoPresupuestoContainsIgnoreCase(String codigoProyecto, String tipoPresupuesto);
-
-    List<RepPresupuestoBase> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
-
-    List<RepPresupuestoBase> findByIdPresupuesto(Integer idPresupuesto);
+    List<RepPresupuestoBase> findByCodigoProyectoAndTipoPresupuestoContainsIgnoreCase(String codigoProyecto, String horas);
 }

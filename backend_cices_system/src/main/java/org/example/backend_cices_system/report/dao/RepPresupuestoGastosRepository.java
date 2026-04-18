@@ -9,15 +9,6 @@ import java.util.List;
 @Repository
 public interface RepPresupuestoGastosRepository extends JpaRepository<RepPresupuestoGastos, Integer> {
 
-    List<RepPresupuestoGastos> findAll();
-
     List<RepPresupuestoGastos> findByIdPresupuesto(Integer idPresupuesto);
 
-    List<RepPresupuestoGastos> findByCodigoProyecto(String codigoProyecto);
-
-    List<RepPresupuestoGastos> findByIdProyecto(Integer idProyecto);
-
-    List<RepPresupuestoGastos> findByNombreProyectoContainingIgnoreCase(String nombreProyecto);
-
-    List<RepPresupuestoGastos> findByDescripcionGastoContainingIgnoreCase(String descripcionGasto);
 }

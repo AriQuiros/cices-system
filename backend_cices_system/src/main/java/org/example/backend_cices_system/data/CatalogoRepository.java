@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface CatalogoRepository extends JpaRepository<Codigo, Short> {
     List<Codigo> findByIdTipoNombreIn(List<String> nombresTipos);
     List<Codigo> findCodigoByIdTipo_Nombre(String nombre);
-    List<Codigo> findByIdTipo(Tipo idTipo);
     Optional<Codigo> findByIdTipoNombreIgnoreCaseAndValorIgnoreCase(String nombre, String valor);
 
 }

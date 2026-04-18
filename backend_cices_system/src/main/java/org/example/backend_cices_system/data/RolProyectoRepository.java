@@ -13,10 +13,4 @@ import java.util.Optional;
 @Repository
 public interface RolProyectoRepository extends JpaRepository<RolProyecto, Short> {
 
-    @Query("select r from RolProyecto r order by r.id asc")
-    List<RolProyecto> listar();
-
-    Optional<RolProyecto> findByNombreIgnoreCaseRolProyecto(String nombre);
-    Optional<RolProyecto> findByNombreRolProyectoIgnoreCase(String nombre);
-
 }

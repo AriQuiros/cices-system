@@ -1,23 +1,17 @@
 package org.example.backend_cices_system.report.controller;
 
-import org.example.backend_cices_system.report.dto.CertificacionFiltroDTO;
+import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.report.filter.CertificacionFiltroDTO;
 import org.example.backend_cices_system.report.serviceVw.RepInvestigadorCertificacionesService;
-import org.example.backend_cices_system.report.view.RepInvestigadorCertificaciones;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/reports/certificaciones")
+@RequiredArgsConstructor
 public class RepInvestigadorCertificacionesController {
 
     private final RepInvestigadorCertificacionesService service;
-
-    public RepInvestigadorCertificacionesController(RepInvestigadorCertificacionesService service) {
-        this.service = service;
-    }
 
     @PostMapping("/filtrar")
     public ResponseEntity<?> filtrar(@RequestBody CertificacionFiltroDTO filtro,

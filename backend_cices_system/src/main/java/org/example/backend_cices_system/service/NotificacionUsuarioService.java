@@ -65,5 +65,38 @@ public class NotificacionUsuarioService {
 
     }
 
+    private NotificacionUsuario obtenerNotificacionUsuarioPorIdYUsuario(Integer id, Usuario usuario){
+        return notificacionUsuarioRepository.findByIdAndIdUsuario(id, usuario).orElseThrow(() ->
+                new RuntimeException("No se encontró la notificación para el usuario")
+        );
+    }
+
+    @Transactional
+    public void marcarLeida(Integer idNotificacionUsuario, Usuario usuario) {
+        NotificacionUsuario notificacionUsuario = obtenerNotificacionUsuarioPorIdYUsuario(idNotificacionUsuario, usuario);
+        notificacionUsuario.setLeido(true);
+        notificacionUsuario.setFechaLeido(LocalDate.now());
+        notificacionUsuarioRepository.save(notificacionUsuario);
+        notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
+    }
+
+    @Transactional
+    public void marcarNoLeida(Integer idNotificacionUsuario, Usuario usuario) {
+        NotificacionUsuario notificacionUsuario = obtenerNotificacionUsuarioPorIdYUsuario(idNotificacionUsuario, usuario);
+        notificacionUsuario.setLeido(false);
+        notificacionUsuario.setFechaLeido(null);
+        notificacionUsuarioRepository.save(notificacionUsuario);
+        notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
+    }
+
+    @Transactional
+    public void eliminar(Integer idNotificacionUsuario, Usuario usuario) {
+        NotificacionUsuario notificacionUsuario = obtenerNotificacionUsuarioPorIdYUsuario(idNotificacionUsuario, usuario);
+        notificacionUsuario.setEliminado(true);
+        notificacionUsuarioRepository.save(notificacionUsuario);
+        notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
+    }
+
+
 
 }

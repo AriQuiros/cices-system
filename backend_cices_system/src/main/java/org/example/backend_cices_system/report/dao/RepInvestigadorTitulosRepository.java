@@ -9,14 +9,6 @@ import java.util.List;
 @Repository
 public interface RepInvestigadorTitulosRepository extends JpaRepository<RepInvestigadorTitulos, Integer> {
 
-    List<RepInvestigadorTitulos> findAll();
-
-    List<RepInvestigadorTitulos> findByIdInvestigador(Integer idInvestigador);
-
     List<RepInvestigadorTitulos> findByIdentificacion(String identificacion);
-
-    List<RepInvestigadorTitulos> findByNombreInvestigadorContainingIgnoreCase(String nombreInvestigador);
-
-    List<RepInvestigadorTitulos> findByNombreTituloContainingIgnoreCase(String nombreTitulo);
 
 }

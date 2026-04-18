@@ -2,9 +2,9 @@ package org.example.backend_cices_system.report.serviceVw;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.report.dao.RepInvestigadorCertificacionesRepository;
-import org.example.backend_cices_system.report.dto.CertificacionFiltroDTO;
+import org.example.backend_cices_system.report.filter.CertificacionFiltroDTO;
 import org.example.backend_cices_system.report.dto.FormacionDTO;
-import org.example.backend_cices_system.report.filter.CertificacionSpecification;
+import org.example.backend_cices_system.report.specification.CertificacionSpecification;
 import org.example.backend_cices_system.report.view.RepInvestigadorCertificaciones;
 import org.example.backend_cices_system.reportes.builder.CertificacionesReportBuilder;
 import org.example.backend_cices_system.reportes.service.DocumentService;
@@ -40,14 +40,14 @@ public class RepInvestigadorCertificacionesService {
             int page,
             int size
     ) {
-        Sort sort = sort(filtro.getOrdenFecha());
+        Sort sort = sort(filtro.ordenFecha());
         Pageable pageable = PageRequest.of(page, size, sort);
 
         var spec = CertificacionSpecification.filtrar(
-                filtro.getNombre(),
-                filtro.getTipos(),
-                filtro.getEstados(),
-                filtro.getOrdenFecha()
+                filtro.nombre(),
+                filtro.tipos(),
+                filtro.estados(),
+                filtro.ordenFecha()
         );
 
         return repo.findAll(spec, pageable)
@@ -56,13 +56,13 @@ public class RepInvestigadorCertificacionesService {
 
     public List<FormacionDTO> filtrarCertificaciones(CertificacionFiltroDTO filtro) {
         var spec = CertificacionSpecification.filtrar(
-                filtro.getNombre(),
-                filtro.getTipos(),
-                filtro.getEstados(),
-                filtro.getOrdenFecha()
+                filtro.nombre(),
+                filtro.tipos(),
+                filtro.estados(),
+                filtro.ordenFecha()
         );
 
-        return repo.findAll(spec, sort(filtro.getOrdenFecha()))
+        return repo.findAll(spec, sort(filtro.ordenFecha()))
                 .stream()
                 .map(this::toDTO)
                 .toList();

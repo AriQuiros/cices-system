@@ -1,18 +1,13 @@
 package org.example.backend_cices_system.report.serviceVw;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.ProyectoDatosDTO;
-import org.example.backend_cices_system.report.dto.ProyectoFiltroDTO;
-import org.example.backend_cices_system.report.dto.ProyectoReporteDTO;
+import org.example.backend_cices_system.report.filter.ProyectoFiltroDTO;
 import org.example.backend_cices_system.reportes.builder.ProyectosReportBuilder;
 import org.example.backend_cices_system.reportes.service.DocumentService;
-import org.example.backend_cices_system.service.ProyectoService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RepProyectoReporteService {
 
-    private final ProyectoService proyectoService;
+    private final RepProyectoBaseService repProyectoBaseService;
     private final DocumentService documentService;
     private final ProyectosReportBuilder proyectosReportBuilder;
 
@@ -63,14 +58,13 @@ public class RepProyectoReporteService {
      * y se extrae el contenido. No se duplica la lógica de filtros.
      */
     private List<ProyectoDatosDTO> obtenerParaReporte(ProyectoFiltroDTO filtro) {
-        Pageable sinLimite = PageRequest.of(0, Integer.MAX_VALUE, sort(filtro.getOrdenFecha()));
+        Pageable sinLimite = PageRequest.of(0, Integer.MAX_VALUE, sort(filtro.ordenFecha()));
 
-        return proyectoService.buscarConFiltros(
-                        filtro.getTexto(),
-                        filtro.getEstado(),
-                        filtro.getTipos(),
-                        filtro.getLineas(),
-                        filtro.getInstitucion(),
+        return repProyectoBaseService.buscarConFiltros(
+                        filtro.texto(),
+                        filtro.estado(),
+                        filtro.tipos(),
+                        filtro.lineas(),
                         sinLimite
                 )
                 .getContent()          // Page → List<ProyectoDatosDTO>

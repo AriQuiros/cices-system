@@ -8,10 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface HorasAsignadasRepository extends JpaRepository<HorasAsignada, Integer> {
-    List<HorasAsignada> findByIdInvestigadorProyecto_IdProyecto_Id(Short proyectoId);
-    void deleteByIdInvestigadorProyecto(InvestigadorProyecto ip);
-    List<HorasAsignada> findByIdInvestigadorProyecto(InvestigadorProyecto ip);
-
     boolean existsByIdInvestigadorProyecto_Id(Integer idInvestigadorProyectoId);
 
     @Query(value = """

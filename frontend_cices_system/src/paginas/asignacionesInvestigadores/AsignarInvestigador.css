@@ -337,3 +337,18 @@
     font-size: 22px;
     font-weight: 600;
 }
+
+.asignar-page > h2{
+    margin: 0 0 22px 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    border-bottom: 3px solid var(--celeste);
+    padding-bottom: 10px;
+}
+
+.asignar-page{
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}

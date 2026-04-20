@@ -1,141 +1,64 @@
 package org.example.backend_cices_system.reportes.builder;
 
-import org.docx4j.jaxb.Context;
-import org.docx4j.wml.*;
+import org.apache.poi.xwpf.usermodel.*;
 import org.example.backend_cices_system.reportes.model.ReportDocument;
 import org.springframework.stereotype.Component;
 
-import java.math.BigInteger;
+import java.util.Map;
 
 @Component
 public class WordHeaderBuilder {
 
-    public Tbl buildHeader(ReportDocument doc) {
+    public void buildHeader(XWPFDocument document, ReportDocument doc) {
 
-        ObjectFactory factory = Context.getWmlObjectFactory();
-        Tbl table = factory.createTbl();
+        Map<String, String> values = Map.of(
+                "${titulo}", doc.title(),
+                "${fecha}", doc.date().toString()
+        );
 
-        // =========================
-        // TABLE WIDTH
-        // =========================
-        TblPr tblPr = factory.createTblPr();
-
-        TblWidth width = new TblWidth();
-        width.setType("pct");
-        width.setW(BigInteger.valueOf(5000));
-        tblPr.setTblW(width);
-
-        // =========================
-        // BORDER STYLE
-        // =========================
-        TblBorders borders = factory.createTblBorders();
-
-        CTBorder border = new CTBorder();
-        border.setVal(STBorder.SINGLE);
-        border.setSz(BigInteger.valueOf(10));
-        border.setColor("000000");
-
-        borders.setTop(border);
-        borders.setBottom(border);
-        borders.setLeft(border);
-        borders.setRight(border);
-
-        tblPr.setTblBorders(borders);
-        table.setTblPr(tblPr);
-
-        // =========================
-        // ROW
-        // =========================
-        Tr row = factory.createTr();
-
-        row.getContent().add(createCell("LOGO", JcEnumeration.LEFT));
-
-        row.getContent().add(createTitleCell(
-                doc.systemName() + "\n" + doc.title()
-        ));
-
-        row.getContent().add(createCell(
-                "Creación:\n" + doc.date(),
-                JcEnumeration.RIGHT
-        ));
-
-        table.getContent().add(row);
-
-        return table;
+        replaceInHeaders(document, values);
     }
 
     // =========================
-    // CELL
+    // HEADER REPLACE
     // =========================
-    private Tc createCell(String text, JcEnumeration align) {
+    private void replaceInHeaders(XWPFDocument document, Map<String, String> values) {
 
-        ObjectFactory factory = Context.getWmlObjectFactory();
-        Tc tc = factory.createTc();
+        for (XWPFHeader header : document.getHeaderList()) {
 
-        P p = factory.createP();
-        R r = factory.createR();
-        Text t = factory.createText();
+            // párrafos directos
+            for (XWPFParagraph paragraph : header.getParagraphs()) {
+                replaceInParagraph(paragraph, values);
+            }
 
-        t.setValue(text != null ? text : "");
-
-        r.getContent().add(t);
-        p.getContent().add(r);
-
-        PPr ppr = factory.createPPr();
-        Jc jc = factory.createJc();
-        jc.setVal(align);
-        ppr.setJc(jc);
-
-        p.setPPr(ppr);
-        tc.getContent().add(p);
-
-        return tc;
+            // tablas dentro del header (TU CASO)
+            for (XWPFTable table : header.getTables()) {
+                for (XWPFTableRow row : table.getRows()) {
+                    for (XWPFTableCell cell : row.getTableCells()) {
+                        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                            replaceInParagraph(paragraph, values);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // =========================
-    // TITLE CELL
+    // PARAGRAPH REPLACE
     // =========================
-    private Tc createTitleCell(String text) {
+    private void replaceInParagraph(XWPFParagraph paragraph, Map<String, String> values) {
 
-        ObjectFactory factory = Context.getWmlObjectFactory();
-        Tc tc = factory.createTc();
+        for (XWPFRun run : paragraph.getRuns()) {
+            String text = run.getText(0);
 
-        P p = factory.createP();
+            if (text == null) continue;
 
-        PPr ppr = factory.createPPr();
+            for (Map.Entry<String, String> entry : values.entrySet()) {
+                text = text.replace(entry.getKey(), entry.getValue());
+            }
 
-        PPrBase.PStyle style = factory.createPPrBasePStyle();
-        style.setVal("Title");
-        ppr.setPStyle(style);
-
-        Jc jc = factory.createJc();
-        jc.setVal(JcEnumeration.CENTER);
-        ppr.setJc(jc);
-
-        p.setPPr(ppr);
-
-        R r = factory.createR();
-        Text t = factory.createText();
-        t.setValue(text != null ? text : "");
-
-
-        /*RPr rpr = factory.createRPr();
-        // tamaño (en half-points)
-        HpsMeasure size = new HpsMeasure();
-        size.setVal(BigInteger.valueOf(36)); // 36 = 18pt
-
-        rpr.setSz(size);
-
-        // (opcional) también para compatibilidad
-        rpr.setSzCs(size);
-
-        r.setRPr(rpr);*/
-
-        r.getContent().add(t);
-        p.getContent().add(r);
-
-        tc.getContent().add(p);
-
-        return tc;
+            run.setText(text, 0);
+        }
     }
 }

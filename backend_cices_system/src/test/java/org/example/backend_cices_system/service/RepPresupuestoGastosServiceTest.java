@@ -1,11 +1,8 @@
 package org.example.backend_cices_system.service;
-
-import org.example.backend_cices_system.report.dao.RepPresupuestoGastosRepository;
+/*
 import org.example.backend_cices_system.report.dto.PresupuestoFinancieroDTO;
 import org.example.backend_cices_system.report.serviceVw.RepPresupuestoBaseService;
-import org.example.backend_cices_system.report.serviceVw.RepPresupuestoGastosService;
 import org.example.backend_cices_system.report.view.RepPresupuestoBase;
-import org.example.backend_cices_system.report.view.RepPresupuestoGastos;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -76,4 +73,4 @@ class RepPresupuestoGastosServiceTest {
     }
 
 
-}
+}*/

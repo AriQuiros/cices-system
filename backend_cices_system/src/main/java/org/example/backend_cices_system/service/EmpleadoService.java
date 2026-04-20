@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.EmpleadoRepository;
 import org.example.backend_cices_system.dto.EmpleadoDTO;
 import org.example.backend_cices_system.logic.Empleado;
@@ -8,21 +9,16 @@ import org.example.backend_cices_system.logic.Usuario;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
     private final UsuarioService usuarioService;
     private final CatalogoService catalogoService;
 
-    public EmpleadoService(EmpleadoRepository empleadoRepository, UsuarioService usuarioService, CatalogoService catalogoService) {
-        this.empleadoRepository = empleadoRepository;
-        this.usuarioService = usuarioService;
-        this.catalogoService = catalogoService;
-    }
-
     private void validarUnicos(EmpleadoDTO dto, Empleado existente) {
         if (existente == null || !existente.getIdentificacion().equals(dto.identificacion())) {
-            if (empleadoRepository.existsByIdentificacion(dto.identificacion())) {
+            if (existeIdentificacion(dto.identificacion())) {
                 throw new IllegalStateException("La identificación '" + dto.identificacion() + "' ya se encuentra registrada");
             }
         }

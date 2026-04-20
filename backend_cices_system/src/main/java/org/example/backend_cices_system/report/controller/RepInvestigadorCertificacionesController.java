@@ -1,13 +1,15 @@
 package org.example.backend_cices_system.report.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.logic.Usuario;
 import org.example.backend_cices_system.report.filter.CertificacionFiltroDTO;
 import org.example.backend_cices_system.report.serviceVw.RepInvestigadorCertificacionesService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/reports/certificaciones")
+@RequestMapping("/api/consulta/certificaciones")
 @RequiredArgsConstructor
 public class RepInvestigadorCertificacionesController {
 
@@ -21,11 +23,26 @@ public class RepInvestigadorCertificacionesController {
         return ResponseEntity.ok(service.filtrarCertificacionesPaginado(filtro, page, size));
     }
 
-    @PostMapping("/reporte")
-    public ResponseEntity<byte[]> exportar(
-            @RequestBody CertificacionFiltroDTO filtro,
-            @RequestParam String formato
+    @GetMapping("/investigador")
+    public ResponseEntity<?> misCertificaciones(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication
     ) {
-        return service.generarReporte(filtro, formato);
+        Usuario usuario = (Usuario) authentication.getPrincipal();
+
+        String identificacion = service.obtenerIdentificacionPorUsuario(usuario.getId());
+
+        CertificacionFiltroDTO filtro = new CertificacionFiltroDTO(
+                identificacion,
+                null,
+                null,
+                null,
+                "desc"
+        );
+
+        return ResponseEntity.ok(
+                service.filtrarCertificacionesPaginado(filtro, page, size)
+        );
     }
 }

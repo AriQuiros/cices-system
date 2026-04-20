@@ -17,10 +17,6 @@ public class PermisoProyectoService {
     private final InvestigadorProyectoService  investigadorProyectoService;
     private final NotificacionUsuarioService notificacionUsuarioService;
 
-    public List<PermisoProyecto> getAll() {
-        return permisoProyectoRepository.findAll();
-    }
-
     public PermisoProyecto getById(Integer id) {
         return permisoProyectoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Permiso no encontrado"));
@@ -35,7 +31,7 @@ public class PermisoProyectoService {
 
         var investigadorProyecto =
                 investigadorProyectoService.obtenerInvestigadorProyecto
-                        (permisoDto.investigadorProyectoDTO().id());
+                        (permisoDto.idInvestigadorProyecto());
 
         permisoProyecto.setIdInvestigadorProyecto(investigadorProyecto);
         permisoProyecto.setFechaInicioPermiso(permisoDto.fechaInicio());
@@ -53,18 +49,17 @@ public class PermisoProyectoService {
             permisoProyectoRepository.deleteById(id);
     }
 
-    public boolean existByInvestigadorProyecto(InvestigadorProyecto inv){
-        return permisoProyectoRepository.existsByIdInvestigadorProyecto(inv);
-    }
-
     public boolean existByInvestigadorProyectoId(Integer idInvestigadorProyecto){
         return permisoProyectoRepository.existsByIdInvestigadorProyecto_Id(idInvestigadorProyecto);
     }
 
     public PermisoProyectoDTO obtenerDTO(PermisoProyecto permisoProyecto){
+        var invProyecto = investigadorProyectoService.obtenerDTO(permisoProyecto.getIdInvestigadorProyecto());
         return new PermisoProyectoDTO(
                 permisoProyecto.getId(),
-                investigadorProyectoService.obtenerDTO(permisoProyecto.getIdInvestigadorProyecto()),
+                invProyecto.id(),
+                invProyecto.identificacionInvestigador(),
+                invProyecto.nombreInvestigador(),
                 permisoProyecto.getFechaInicioPermiso(),
                 permisoProyecto.getFechaFinPermiso()
         );
@@ -78,4 +73,6 @@ public class PermisoProyectoService {
         return obtenerPorCodigoProyecto(codigoProyecto).stream()
                 .map(this::obtenerDTO).toList();
     }
+
+
 }

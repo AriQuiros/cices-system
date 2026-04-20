@@ -26,69 +26,50 @@ public class RepPersonaUsuariaService {
                 new RuntimeException("No existe persona con el id " + idUsuario));
     }
 
-    public Page<PersonaUsuariaDTO> obtenerTodos(Pageable pageable){
-        Page<RepPersonaUsuaria> page = filtrar(new PersonaFiltroDTO(null, null, null), pageable);
-        return construirPersonaDTO(page);
-    }
 
-    public Page<UsuarioPersonaDTO> todosUsuarios(PersonaFiltroDTO filtro, Pageable pageable){
+    public Page<UsuarioPersonaDTO> todosUsuarios(PersonaFiltroDTO filtro, Pageable pageable) {
 
         Page<RepPersonaUsuaria> page = filtrar(filtro, pageable);
 
-        Map<String, UsuarioPersonaDTO> mapa = new LinkedHashMap<>();
+        List<Integer> ids = page.getContent()
+                .stream()
+                .map(RepPersonaUsuaria::getIdUsuario)
+                .toList();
 
-        for (RepPersonaUsuaria rep : page.getContent()) {
+        Map<Integer, List<String>> rolesMap = obtenerRolesMap(ids);
 
-            String id = rep.getIdentificacion();
-
-            mapa.computeIfAbsent(id, k ->
-                    new UsuarioPersonaDTO(
-                            rep.getIdUsuario(),
-                            rep.getNombreCompleto(),
-                            rep.getNombreUsuario(),
-                            rep.getActivo(),
-                            new ArrayList<>()
-                    )
-            );
-
-            if(rep.getNombreRol() != null){
-                mapa.get(id).roles().add(rep.getNombreRol());
-            }
-        }
-
-        return new PageImpl<>(
-                new ArrayList<>(mapa.values()),
-                pageable,
-                page.getTotalElements()
-        );
+        return page.map(rep -> new UsuarioPersonaDTO(
+                rep.getIdUsuario(),
+                rep.getNombreCompleto(),
+                rep.getNombreUsuario(),
+                rep.getActivo(),
+                rolesMap.getOrDefault(rep.getIdUsuario(), List.of())
+        ));
     }
 
     public Page<PersonaUsuariaDTO> obtenerPersonaPorRoles(
             PersonaFiltroDTO filtro,
-            Pageable pageable,
-            List<String> rolesBase
-    ){
+            Pageable pageable
+    ) {
 
-        List<String> rolesFinal;
+        Page<RepPersonaUsuaria> page = filtrar(filtro, pageable);
 
-        if (filtro.roles() == null || filtro.roles().isEmpty()) {
-            rolesFinal = rolesBase;
-        } else {
-            // intersección
-            rolesFinal = filtro.roles().stream()
-                    .filter(rolesBase::contains)
-                    .toList();
-        }
+        List<Integer> ids = page.getContent()
+                .stream()
+                .map(RepPersonaUsuaria::getIdUsuario)
+                .toList();
 
-        PersonaFiltroDTO nuevoFiltro = new PersonaFiltroDTO(
-                filtro.nombre(),
-                rolesFinal,
-                filtro.gradosAcademicos()
-        );
+        Map<Integer, List<String>> rolesMap = obtenerRolesMap(ids);
 
-        Page<RepPersonaUsuaria> page = filtrar(nuevoFiltro, pageable);
-
-        return construirPersonaDTO(page);
+        return page.map(rep -> new PersonaUsuariaDTO(
+                rep.getNombreCompleto(),
+                rep.getIdentificacion(),
+                rep.getPais(),
+                rep.getCorreo(),
+                rep.getNumeroTelefono(),
+                rep.getGradoAcademico(),
+                rolesMap.getOrDefault(rep.getIdUsuario(), List.of())
+        ));
     }
 
     public Page<RepPersonaUsuaria> filtrar(PersonaFiltroDTO filtro, Pageable pageable){
@@ -98,35 +79,33 @@ public class RepPersonaUsuariaService {
         return personaRepo.findAll(spec, pageable);
     }
 
-    public Page<PersonaUsuariaDTO> construirPersonaDTO(Page<RepPersonaUsuaria> page){
+    public Page<PersonaUsuariaDTO> construirPersonaDTO(Page<RepPersonaUsuaria> page) {
 
-        Map<String, PersonaUsuariaDTO> mapa = new LinkedHashMap<>();
+        return page.map(rep -> new PersonaUsuariaDTO(
+                rep.getNombreCompleto(),
+                rep.getIdentificacion(),
+                rep.getPais(),
+                rep.getCorreo(),
+                rep.getNumeroTelefono(),
+                rep.getGradoAcademico(),
+                List.of()
+        ));
+    }
 
-        for (RepPersonaUsuaria rep : page.getContent()) {
+    private Map<Integer, List<String>> obtenerRolesMap(List<Integer> ids) {
 
-            String id = rep.getIdentificacion();
+        List<Object[]> rolesData = personaRepo.findRolesByUsuarios(ids);
 
-            mapa.computeIfAbsent(id, k ->
-                    new PersonaUsuariaDTO(
-                            rep.getNombreCompleto(),
-                            rep.getIdentificacion(),
-                            rep.getPais(),
-                            rep.getCorreo(),
-                            rep.getNumeroTelefono(),
-                            rep.getGradoAcademico(),
-                            new ArrayList<>()
-                    )
-            );
+        Map<Integer, List<String>> rolesMap = new HashMap<>();
 
-            if(rep.getNombreRol() != null){
-                mapa.get(id).roles().add(rep.getNombreRol());
-            }
+        for (Object[] row : rolesData) {
+            Integer idUsuario = (Integer) row[0];
+            String rol = (String) row[1];
+
+            rolesMap.computeIfAbsent(idUsuario, k -> new ArrayList<>())
+                    .add(rol);
         }
 
-        return new PageImpl<>(
-                new ArrayList<>(mapa.values()),
-                page.getPageable(),
-                page.getTotalElements()
-        );
+        return rolesMap;
     }
 }

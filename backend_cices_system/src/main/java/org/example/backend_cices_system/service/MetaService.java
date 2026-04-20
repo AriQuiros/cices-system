@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.MetaRepository;
 import org.example.backend_cices_system.dto.MetaDTO;
 import org.example.backend_cices_system.logic.Meta;
@@ -10,17 +11,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MetaService {
 
     private final MetaRepository metaRepository;
     private final CatalogoService catalogoService;
     private final IndicadorService indicadorService;
-
-    public MetaService(MetaRepository metaRepository, CatalogoService catalogoService, IndicadorService indicadorService) {
-        this.metaRepository = metaRepository;
-        this.catalogoService = catalogoService;
-        this.indicadorService = indicadorService;
-    }
 
     @Transactional
     public Meta guardarMeta(MetaDTO metaDTO, ObjetivoEspecifico objetivoEspecifico) {

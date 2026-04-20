@@ -13,4 +13,5 @@ public interface RepProyectoResultadosRepository extends JpaRepository<RepProyec
 
     List<RepProyectoResultados> findByCodigoProyecto(String codigoProyecto);
 
+    List<RepProyectoResultados> findByIdProyectoIn(List<Integer> ids);
 }

@@ -6,10 +6,7 @@ import org.example.backend_cices_system.report.filter.CertificacionFiltroDTO;
 import org.example.backend_cices_system.report.dto.FormacionDTO;
 import org.example.backend_cices_system.report.specification.CertificacionSpecification;
 import org.example.backend_cices_system.report.view.RepInvestigadorCertificaciones;
-import org.example.backend_cices_system.reportes.builder.CertificacionesReportBuilder;
-import org.example.backend_cices_system.reportes.service.DocumentService;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,20 +16,18 @@ import java.util.List;
 public class RepInvestigadorCertificacionesService {
 
     private final RepInvestigadorCertificacionesRepository repo;
-    private final DocumentService documentService;
-    private final CertificacionesReportBuilder certificacionesReportBuilder;
-
+    private final RepPersonaUsuariaService repPersonaUsuariaService;
 
     // ------------------------------------------------------------------
     // Consultas
     // ------------------------------------------------------------------
 
-    public List<RepInvestigadorCertificaciones> obtenerTodos() {
-        return repo.findAll();
+    public List<RepInvestigadorCertificaciones> obtenerPorIdentificacion(String idetificacion){
+        return repo.findByIdentificacion(idetificacion);
     }
 
-    public List<RepInvestigadorCertificaciones> buscarPorIdentificacion(String identificacion) {
-        return repo.findByIdentificacion(identificacion);
+    public String obtenerIdentificacionPorUsuario(Integer idUsuario){
+        return repPersonaUsuariaService.obtenerPorIdUsuario(idUsuario).getIdentificacion();
     }
 
     public Page<FormacionDTO> filtrarCertificacionesPaginado(
@@ -44,10 +39,7 @@ public class RepInvestigadorCertificacionesService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         var spec = CertificacionSpecification.filtrar(
-                filtro.nombre(),
-                filtro.tipos(),
-                filtro.estados(),
-                filtro.ordenFecha()
+                filtro
         );
 
         return repo.findAll(spec, pageable)
@@ -56,34 +48,13 @@ public class RepInvestigadorCertificacionesService {
 
     public List<FormacionDTO> filtrarCertificaciones(CertificacionFiltroDTO filtro) {
         var spec = CertificacionSpecification.filtrar(
-                filtro.nombre(),
-                filtro.tipos(),
-                filtro.estados(),
-                filtro.ordenFecha()
+                filtro
         );
 
         return repo.findAll(spec, sort(filtro.ordenFecha()))
                 .stream()
                 .map(this::toDTO)
                 .toList();
-    }
-
-    // ------------------------------------------------------------------
-    // Exportación
-    // ------------------------------------------------------------------
-
-    public ResponseEntity<byte[]> generarReporte(
-            CertificacionFiltroDTO filtro,
-            String formato
-    ) {
-        List<FormacionDTO> data = filtrarCertificaciones(filtro);
-
-        return documentService.generarResponse(
-                certificacionesReportBuilder,
-                data,
-                formato,
-                "reporte_certificaciones"
-                );
     }
 
     // ------------------------------------------------------------------

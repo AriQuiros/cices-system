@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reportes/investigadores-participantes")
+@RequestMapping("/api/consulta/investigadores-participantes")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RepInvestigadoresParticipantesController {
 

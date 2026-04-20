@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.presentation;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.PresupuestoDTO;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.logic.Usuario;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/presupuestos")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class PresupuestoController {
@@ -20,16 +22,11 @@ public class PresupuestoController {
     private final PresupuestoService presupuestoService;
     private final ProyectoService proyectoService;
 
-    public PresupuestoController(PresupuestoService presupuestoService, ProyectoService proyectoService) {
-        this.presupuestoService = presupuestoService;
-        this.proyectoService = proyectoService;
-    }
-
     @PostMapping("/{codigoProyecto}/registrar")
     public ResponseEntity<Integer> registrarPresupuesto(
             @PathVariable String codigoProyecto,
             @RequestBody @Valid List<PresupuestoDTO> listDto) {
-        Proyecto proyecto = proyectoService.buscarProyectoPorCodigo(codigoProyecto);
+        Proyecto proyecto = proyectoService.obtenerProyectoPorCodigo(codigoProyecto);
         var cant = presupuestoService.guardarPresupuesto(listDto, proyecto);
         return ResponseEntity.ok(cant);
     }
@@ -44,10 +41,18 @@ public class PresupuestoController {
     }
 
     @GetMapping("/{codigoProyecto}")
-    public ResponseEntity<?> obtenerPresupuesto(@PathVariable String codigoProyecto) {
-        Proyecto proyecto = proyectoService.buscarProyectoPorCodigo(codigoProyecto);
+    public ResponseEntity<?> obtenerPresupuestosProyecto(@PathVariable String codigoProyecto) {
+        Proyecto proyecto = proyectoService.obtenerProyectoPorCodigo(codigoProyecto);
         var presupuestos = presupuestoService.obtenerPresupuestosPorProyecto(proyecto);
         return ResponseEntity.ok(presupuestos);
     }
+
+    @GetMapping("/obtener/{id}")
+    public ResponseEntity<?> obtenerPresupuesto(@PathVariable Integer id){
+        var presupuesto = presupuestoService.obtenerPresupuesto(id);
+        var dto = presupuestoService.obtenerDTO(presupuesto);
+        return ResponseEntity.ok(dto);
+    }
+
 
 }

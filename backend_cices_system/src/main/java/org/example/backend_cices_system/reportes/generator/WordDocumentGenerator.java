@@ -1,16 +1,13 @@
 package org.example.backend_cices_system.reportes.generator;
 
 import lombok.RequiredArgsConstructor;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.openpackaging.parts.WordprocessingML.HeaderPart;
-import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.docx4j.relationships.Relationship;
-import org.docx4j.wml.*;
+import org.apache.poi.xwpf.usermodel.*;
 import org.example.backend_cices_system.reportes.builder.WordHeaderBuilder;
 import org.example.backend_cices_system.reportes.model.*;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 @Component
@@ -27,163 +24,112 @@ public class WordDocumentGenerator implements DocumentGenerator {
     @Override
     public byte[] generate(ReportDocument doc) {
 
-        try {
-            WordprocessingMLPackage word = WordprocessingMLPackage.createPackage();
-            MainDocumentPart main = word.getMainDocumentPart();
+        try (
+                InputStream is = getClass()
+                        .getClassLoader()
+                        .getResourceAsStream("templates/plantilla_word.docx")
+        ) {
+            assert is != null;
+            try (XWPFDocument document = new XWPFDocument(is);
 
-            // =========================
-            // HEADER DOCUMENTO
-            // =========================
-            addHeader(word, doc);
+                 ByteArrayOutputStream out = new ByteArrayOutputStream()
+            ) {
 
-            // =========================
-            // CONTENIDO
-            // =========================
-            for (ReportSection section : doc.sections()) {
+                // =========================
+                // HEADER
+                // =========================
+                headerBuilder.buildHeader(document, doc);
 
-                main.addStyledParagraphOfText(
-                        "Heading" + section.level(),
-                        section.heading()
-                );
+                // =========================
+                // CONTENIDO
+                // =========================
+                for (ReportSection section : doc.sections()) {
 
-                for (ReportElement element : section.elements()) {
+                    // Heading
+                    XWPFParagraph heading = document.createParagraph();
+                    heading.setStyle("Heading" + section.level());
 
-                    if (element instanceof ReportParagraph(String text)) {
-                        main.addParagraphOfText(text);
-                    }
+                    heading.createRun().setText(section.heading());
 
-                    if (element instanceof ReportTable t) {
-                        main.addObject(buildTable(t));
+                    for (ReportElement element : section.elements()) {
+
+                        if (element instanceof ReportParagraph(String text)) {
+                            XWPFParagraph p = document.createParagraph();
+                            p.createRun().setText(text);
+                        }
+
+                        if (element instanceof ReportTable table) {
+                            createTable(document, table);
+                        }
                     }
                 }
+
+                document.write(out);
+                return out.toByteArray();
+
             }
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            word.save(out);
-            return out.toByteArray();
-
         } catch (Exception e) {
             throw new RuntimeException("Error generando Word", e);
         }
     }
 
     // =========================
-    // HEADER DOCUMENTO
-    // =========================
-    private void addHeader(WordprocessingMLPackage word, ReportDocument doc) throws Exception {
-
-        var factory = org.docx4j.jaxb.Context.getWmlObjectFactory();
-
-        HeaderPart headerPart = new HeaderPart();
-        headerPart.setPackage(word);
-
-        Hdr hdr = factory.createHdr();
-
-        Tbl table = headerBuilder.buildHeader(doc);
-
-        hdr.getContent().add(table);
-        headerPart.setJaxbElement(hdr);
-
-        Relationship rel = word.getMainDocumentPart().addTargetPart(headerPart);
-
-        SectPr sectPr = word.getMainDocumentPart()
-                .getJaxbElement()
-                .getBody()
-                .getSectPr();
-
-        if (sectPr == null) {
-            sectPr = factory.createSectPr();
-            word.getMainDocumentPart()
-                    .getJaxbElement()
-                    .getBody()
-                    .setSectPr(sectPr);
-        }
-
-        HeaderReference headerRef = factory.createHeaderReference();
-        headerRef.setId(rel.getId());
-        headerRef.setType(HdrFtrRef.DEFAULT);
-
-        sectPr.getEGHdrFtrReferences().add(headerRef);
-    }
-
-    // =========================
     // TABLA
     // =========================
-    private Tbl buildTable(ReportTable tableData) {
+    private void createTable(XWPFDocument document, ReportTable tableData) {
 
-        var factory = org.docx4j.jaxb.Context.getWmlObjectFactory();
-        Tbl tbl = factory.createTbl();
+        int rows = (tableData.rows() != null ? tableData.rows().size() : 0)
+                + (tableData.headers() != null ? 1 : 0);
 
-        TblPr tblPr = factory.createTblPr();
+        int cols = tableData.headers() != null
+                ? tableData.headers().size()
+                : (tableData.rows() != null && !tableData.rows().isEmpty()
+                ? tableData.rows().get(0).size()
+                : 1);
 
-        // estilo básico Word (importante para estabilidad)
-        CTTblPrBase.TblStyle tblStyle = factory.createCTTblPrBaseTblStyle();
-        tblStyle.setVal("TableGrid");
-        tblPr.setTblStyle(tblStyle);
+        XWPFTable table = document.createTable(rows, cols);
 
-        tbl.setTblPr(tblPr);
+        int rowIndex = 0;
 
-        boolean hasHeader = tableData.headers() != null && !tableData.headers().isEmpty();
+        // HEADER
+        if (tableData.headers() != null) {
+            XWPFTableRow headerRow = table.getRow(rowIndex++);
 
-        // =========================
-        // HEADER ROW
-        // =========================
-        if (hasHeader) {
-
-            Tr headerRow = factory.createTr();
-
-            for (String h : tableData.headers()) {
-                headerRow.getContent().add(createCell(h, true));
+            for (int i = 0; i < tableData.headers().size(); i++) {
+                XWPFTableCell cell = headerRow.getCell(i);
+                setCellText(cell, tableData.headers().get(i), true);
             }
-
-            tbl.getContent().add(headerRow);
         }
 
-        // =========================
-        // DATA ROWS
-        // =========================
+        // ROWS
         if (tableData.rows() != null) {
-
             for (List<String> row : tableData.rows()) {
 
-                Tr tr = factory.createTr();
+                XWPFTableRow tableRow = table.getRow(rowIndex++);
 
-                for (String cell : row) {
-                    tr.getContent().add(createCell(cell, false));
+                for (int i = 0; i < row.size(); i++) {
+                    setCellText(tableRow.getCell(i), row.get(i), false);
                 }
-
-                tbl.getContent().add(tr);
             }
         }
-
-        return tbl;
     }
 
     // =========================
     // CELL
     // =========================
-    private Tc createCell(String text, boolean bold) {
+    private void setCellText(XWPFTableCell cell, String text, boolean bold) {
 
-        var factory = org.docx4j.jaxb.Context.getWmlObjectFactory();
-        Tc tc = factory.createTc();
+        XWPFParagraph p = clearParagraph(cell);
 
-        P p = factory.createP();
-        R r = factory.createR();
-        Text t = factory.createText();
+        XWPFRun run = p.createRun();
+        run.setText(text != null ? text : "");
+        run.setBold(bold);
+    }
 
-        t.setValue(text != null ? text : "");
-
-        if (bold) {
-            RPr rpr = factory.createRPr();
-            BooleanDefaultTrue b = new BooleanDefaultTrue();
-            rpr.setB(b);
-            r.setRPr(rpr);
+    private XWPFParagraph clearParagraph(XWPFTableCell cell) {
+        while (cell.getParagraphs().size() > 0) {
+            cell.removeParagraph(0);
         }
-
-        r.getContent().add(t);
-        p.getContent().add(r);
-        tc.getContent().add(p);
-
-        return tc;
+        return cell.addParagraph();
     }
 }

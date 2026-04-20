@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.DocumentoRepository;
 import org.example.backend_cices_system.dto.DocumentoDTO;
 import org.example.backend_cices_system.logic.Documento;
@@ -17,9 +18,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DocumentoService {
-    @Autowired
-    private DocumentoRepository documentoRepo;
+    private final DocumentoRepository documentoRepo;
     private final String basePath = "proyectos";
 
     public void guardarDocumentos(Proyecto proyecto, List<MultipartFile> documentos) {

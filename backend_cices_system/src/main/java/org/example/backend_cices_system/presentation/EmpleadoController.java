@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.presentation;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.EmpleadoDTO;
 import org.example.backend_cices_system.logic.Empleado;
 import org.example.backend_cices_system.logic.Usuario;
@@ -10,15 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/empleados")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class EmpleadoController {
 
     private final EmpleadoService empleadoService;
-
-    public EmpleadoController(EmpleadoService empleadoService) {
-        this.empleadoService = empleadoService;
-    }
 
     @PostMapping("/registro")
     public ResponseEntity<?> crearEmpleado(@RequestBody @Valid EmpleadoDTO dto) {

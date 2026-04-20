@@ -11,4 +11,6 @@ public interface RepProyectoPresentacionInformeRepository extends JpaRepository<
 
     List<RepProyectoPresentacionInforme> findByIdProyecto(Integer idProyecto);
 
+    List<RepProyectoPresentacionInforme> findByIdProyectoIn(List<Integer> ids);
+
 }

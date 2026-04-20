@@ -60,5 +60,4 @@ public class Empleado {
     @Column(name = "ID_CODIGO_TIPO_GRADO_ACADEMICO", nullable = false)
     private Short idCodigoTipoGradoAcademico;
 
-
 }

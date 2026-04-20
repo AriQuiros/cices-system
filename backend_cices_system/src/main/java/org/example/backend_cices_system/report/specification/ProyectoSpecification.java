@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.report.specification;
 
+import org.example.backend_cices_system.report.filter.ProyectoFiltroDTO;
 import org.example.backend_cices_system.report.view.RepProyectoBase;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -11,18 +12,15 @@ import java.util.List;
 public class ProyectoSpecification {
 
     public static Specification<RepProyectoBase> filtrar(
-            String texto,
-            String estado,
-            List<String> tipos,
-            List<String> lineas
+            ProyectoFiltroDTO filtro
     ) {
         return (root, query, cb) -> {
 
             List<Predicate> predicates = new ArrayList<>();
 
             // TEXTO
-            if (texto != null && !texto.isBlank()) {
-                String like = "%" + texto.toLowerCase() + "%";
+            if (filtro.texto() != null && !filtro.texto().isBlank()) {
+                String like = "%" + filtro.texto().toLowerCase() + "%";
 
                 predicates.add(
                         cb.or(
@@ -33,18 +31,18 @@ public class ProyectoSpecification {
             }
 
             // TIPOS
-            if (tipos != null && !tipos.isEmpty()) {
-                predicates.add(root.get("tipoProyecto").in(tipos));
+            if (filtro.tipos() != null && !filtro.tipos().isEmpty()) {
+                predicates.add(root.get("tipoProyecto").in(filtro.tipos()));
             }
 
             // ESTADO
-            if (estado != null && !estado.isBlank()) {
-                predicates.add(cb.equal(root.get("estadoProyecto"), estado));
+            if (filtro.estado() != null && !filtro.estado().isBlank()) {
+                predicates.add(cb.equal(root.get("estadoProyecto"), filtro.estado()));
             }
 
             // LINEAS
-            if (lineas != null && !lineas.isEmpty()) {
-                predicates.add(root.get("lineaInvestigacion").in(lineas));
+            if (filtro.lineas() != null && !filtro.lineas().isEmpty()) {
+                predicates.add(root.get("lineaInvestigacion").in(filtro.lineas()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

@@ -53,7 +53,7 @@ export  async function obtenerInvestigadoresProyecto (codigoProyecto) {
 }
 
 export const obtenerProyectoPorId = async (codigo, token) => {
-    const res = await fetch(`http://localhost:8080/api/proyectos/${codigo}`, {
+    const res = await fetch(`http://localhost:8080/api/proyectos/obtener/${codigo}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }

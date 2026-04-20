@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.CertificacionRepository;
 import org.example.backend_cices_system.dto.CertificacionDTO;
 import org.example.backend_cices_system.logic.Certificacion;
@@ -12,18 +13,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CertificacionService {
 
     private final CertificacionRepository certificacionRepository;
     private final CatalogoService catalogoService;
     private final EntidadService entidadService;
-
-    public CertificacionService(CertificacionRepository certificacionRepository, CatalogoService catalogoService,
-                                EntidadService entidadService) {
-        this.certificacionRepository = certificacionRepository;
-        this.catalogoService = catalogoService;
-        this.entidadService = entidadService;
-    }
 
     public Certificacion guardarCertificacion(CertificacionDTO certificacionDTO, Investigador investigador) {
         var id = certificacionDTO.id();

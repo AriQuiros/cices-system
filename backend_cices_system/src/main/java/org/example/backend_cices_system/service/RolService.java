@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.RolRepository;
 import org.example.backend_cices_system.dto.RolDTO;
 import org.example.backend_cices_system.logic.Rol;
@@ -9,12 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RolService {
     private final RolRepository rolRepository;
-
-    public RolService(RolRepository rolRepository) {
-        this.rolRepository = rolRepository;
-    }
 
     public List<RolDTO> obtenerRolesDTO() {
         return rolRepository.findAll()

@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
 import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
 import org.example.backend_cices_system.dto.RolProyectoDTO;
@@ -8,17 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
+@RequiredArgsConstructor
 public class InvestigadorProyectoService {
     private final InvestigadorProyectoRepository investigadorProyectoRepository;
     private final RolProyectoService rolProyectoService;
-
-    public InvestigadorProyectoService(InvestigadorProyectoRepository investigadorProyectoRepository,
-                                       RolProyectoService rolProyectoService) {
-        this.investigadorProyectoRepository = investigadorProyectoRepository;
-        this.rolProyectoService = rolProyectoService;
-    }
 
     public InvestigadorProyectoDTO guardarInvestigadorProyecto(InvestigadorProyectoDTO investigadorProyectoDTO,
                                             Investigador investigador, Proyecto proyecto) {
@@ -67,8 +62,10 @@ public class InvestigadorProyectoService {
     }
 
     public InvestigadorProyectoDTO obtenerDTO(InvestigadorProyecto inv){
-        return new InvestigadorProyectoDTO(inv.getId(), inv.getIdInvestigador().getIdEmpleado().getIdentificacion(),
-                inv.getIdInvestigador().getIdEmpleado().getNombreCompleto(),inv.getIdInvestigador().getIdEmpleado().getIdCodigoTipoGradoAcademico().toString(),inv.getIdProyecto().getCodigoProyecto(),
+        return new InvestigadorProyectoDTO(inv.getId(),
+                inv.getIdInvestigador().getIdEmpleado().getIdentificacion(),
+                inv.getIdInvestigador().getIdEmpleado().getNombreCompleto(),
+                inv.getIdProyecto().getCodigoProyecto(),
                 obtenerRolProyectoDTO(inv.getIdRolProyecto()),inv.getActividadProyecto(),inv.getFechaInicioInvestigador(),
                 inv.getFechaFinInvestigador());
     }

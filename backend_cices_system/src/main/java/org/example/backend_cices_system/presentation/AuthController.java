@@ -1,4 +1,6 @@
 package org.example.backend_cices_system.presentation;
+
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.auth.LoginRequest;
 import org.example.backend_cices_system.service.AuthService;
 import org.example.backend_cices_system.service.LoginAttemptService;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class AuthController {
@@ -16,13 +19,6 @@ public class AuthController {
     private final AuthService authService;
     private final LoginAttemptService attemptService;
     private final PasswordResetService passwordResetService;
-
-    public AuthController(AuthService authService, LoginAttemptService attemptService,
-                          PasswordResetService passwordResetService) {
-        this.authService = authService;
-        this.attemptService = attemptService;
-        this.passwordResetService = passwordResetService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {

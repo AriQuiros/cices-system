@@ -2,6 +2,7 @@ package org.example.backend_cices_system.report.dao;
 
 import org.example.backend_cices_system.report.view.RepInvestigadorProyecto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,14 +11,20 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public interface RepInvestigadorProyectoRepository extends JpaRepository<RepInvestigadorProyecto, Integer> {
+public interface RepInvestigadorProyectoRepository extends
+        JpaRepository<RepInvestigadorProyecto, Integer>,
+        JpaSpecificationExecutor<RepInvestigadorProyecto> {
 
     List<RepInvestigadorProyecto> findByIdentificacion(String identificacion);
 
     List<RepInvestigadorProyecto> findByIdProyecto(Integer idProyecto);
 
+    List<RepInvestigadorProyecto> findByIdProyectoIn(List<Integer> ids);
+
     List<RepInvestigadorProyecto> findByIdInvestigador(Integer idInvestigador);
 
+    List<RepInvestigadorProyecto> findByCodigoProyecto(String codigoProyecto);;
+    
     @Query(value = """
         SELECT
             rip.ID_PROYECTO AS idProyecto,

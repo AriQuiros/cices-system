@@ -58,10 +58,33 @@ public class RepPresupuestoBase {
     @Column(name = "CANTIDAD_MESES")
     private Short cantidadMeses;
 
+    @Column(name = "FECHA_ASIGNACION")
+    private LocalDate fechaAsignacion;
+
+    //RESUMEN - GASTOS
     @Column(name = "MONTO_ASIGNADO", precision = 9, scale = 2)
     private BigDecimal montoAsignado;
 
-    @Column(name = "FECHA_ASIGNACION")
-    private LocalDate fechaAsignacion;
+    @Column(name = "TOTAL_GASTADO", precision = 12, scale = 2)
+    private BigDecimal totalGastado;
+
+    @Column(name = "MONTO_DISPONIBLE", precision = 12, scale = 2)
+    private BigDecimal montoDisponible;
+
+    @Column(name = "CANTIDAD_GASTOS")
+    private Long cantidadGastos;
+
+    //RESUMEN - HORAS
+    @Column(name = "HORAS_ASIGNADAS", precision = 12, scale = 2)
+    private BigDecimal horasAsignadas;
+
+    @Column(name = "HORAS_USADAS", precision = 12, scale = 2)
+    private BigDecimal horasUsadas;
+
+    @Column(name = "HORAS_DISPONIBLES", precision = 12, scale = 2)
+    private BigDecimal horasDisponibles;
+
+    @Column(name = "CANTIDAD_REGISTROS_HORAS")
+    private Long cantidadRegistrosHoras;
 
 }

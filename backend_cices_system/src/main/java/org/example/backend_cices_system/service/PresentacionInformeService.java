@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.PresentacionInformeRepository;
 import org.example.backend_cices_system.dto.InformeDTO;
 import org.example.backend_cices_system.logic.PresentacionInforme;
@@ -10,14 +11,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PresentacionInformeService {
+
     private final PresentacionInformeRepository presentacionInformeRepository;
     private final CatalogoService catalogoService;
-
-    public PresentacionInformeService(PresentacionInformeRepository presentacionInformeRepository, CatalogoService catalogoService) {
-        this.catalogoService = catalogoService;
-        this.presentacionInformeRepository = presentacionInformeRepository;
-    }
 
     public void guardarPresentacionInforme(InformeDTO informeDTO, Proyecto proyecto) {
         var id = informeDTO.id();

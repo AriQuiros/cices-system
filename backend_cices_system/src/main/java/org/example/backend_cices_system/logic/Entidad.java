@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -24,5 +27,6 @@ public class Entidad {
 
     @Column(name = "ID_CODIGO_TIPO_ENTIDAD")
     private Short idCodigoTipoEntidad;
+
 
 }

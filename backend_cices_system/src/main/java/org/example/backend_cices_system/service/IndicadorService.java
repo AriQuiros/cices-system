@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.IndicadorRepository;
 import org.example.backend_cices_system.dto.IndicadorDTO;
 import org.example.backend_cices_system.logic.Indicador;
@@ -10,13 +11,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class IndicadorService {
 
     private final IndicadorRepository indicadorRepository;
-
-    public IndicadorService(IndicadorRepository indicadorRepository) {
-        this.indicadorRepository = indicadorRepository;
-    }
 
     @Transactional
     public Indicador guardarIndicador(IndicadorDTO indicadorDTO, Meta meta) {

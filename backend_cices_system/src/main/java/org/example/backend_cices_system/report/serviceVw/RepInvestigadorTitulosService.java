@@ -13,10 +13,6 @@ public class RepInvestigadorTitulosService {
 
     private final RepInvestigadorTitulosRepository repo;
 
-    public List<RepInvestigadorTitulos> obtenerTodos() {
-        return repo.findAll();
-    }
-
     public List<RepInvestigadorTitulos> buscarPorIdentificacion(String identificacion) {
         return repo.findByIdentificacion(identificacion);
     }

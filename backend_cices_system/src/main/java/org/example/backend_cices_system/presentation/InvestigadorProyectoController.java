@@ -22,11 +22,10 @@ public class InvestigadorProyectoController {
     private final ProyectoService proyectoService;
     private final InvestigadorService investigadorService;
 
-
     @PostMapping("/registro")
     public ResponseEntity<?> asignarInvestigador(@RequestBody @Valid List<InvestigadorProyectoDTO> listDto) {
         for(InvestigadorProyectoDTO dto : listDto){
-            Proyecto proyecto = proyectoService.buscarProyectoPorCodigo(dto.codigoProyecto());
+            Proyecto proyecto = proyectoService.obtenerProyectoPorCodigo(dto.codigoProyecto());
             Investigador investigador = investigadorService.buscarPorIdentificacion(dto.identificacionInvestigador());
             investigadorProyectoService.guardarInvestigadorProyecto(dto, investigador, proyecto);
         }
@@ -45,5 +44,12 @@ public class InvestigadorProyectoController {
             throw new IllegalStateException("No se puede eliminar: El investigador tiene horas asignadas");
         var inv = investigadorProyectoService.eliminarInvestigadorProyecto(id);
         return ResponseEntity.ok(inv);
+    }
+
+    @GetMapping("/obtener/{id}")
+    public InvestigadorProyectoDTO obtenerHora (@PathVariable Integer id){
+        var investigadorProyecto = investigadorProyectoService.obtenerInvestigadorProyecto(id);
+        var dto = investigadorProyectoService.obtenerDTO(investigadorProyecto);
+        return dto;
     }
 }

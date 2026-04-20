@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.InvestigadorRepository;
 import org.example.backend_cices_system.dto.*;
 import org.example.backend_cices_system.logic.*;
@@ -10,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Service
+@RequiredArgsConstructor
 public class InvestigadorService {
 
     private final EmpleadoService empleadoService;

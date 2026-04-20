@@ -31,14 +31,8 @@ public class RepNotificacionesUsuarioService {
         return repo.findByIdUsuario(idUsuario);
     }
 
-    public List<RepNotificacionesUsuario> buscarPorNombreUsuario(String nombreUsuario) {
-        return repo.findByNombreUsuarioIgnoreCase(nombreUsuario)
-                .stream()
-                .toList();
-    }
-
-    public List<RepNotificacionDetalladaDTO> buscarDetalladasPorNombreUsuario(String nombreUsuario) {
-        return buscarPorNombreUsuario(nombreUsuario)
+    public List<RepNotificacionDetalladaDTO> buscarDetalladasPorNombreUsuario(Integer idUsuario) {
+        return buscarPorIdUsuario(idUsuario)
                 .stream()
                 .map(this::mapearDetalladaSeguro)
                 .toList();

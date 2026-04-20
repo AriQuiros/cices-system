@@ -1,18 +1,16 @@
 package org.example.backend_cices_system.presentation;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.service.audit.GastoBitService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/gasto-bit")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class GastoBitController {
     private final GastoBitService gastoBitService;
-
-    public GastoBitController(GastoBitService gastoBitService) {
-        this.gastoBitService = gastoBitService;
-    }
 
     @GetMapping("/gasto/{idGasto}")
     public ResponseEntity<?> obtenerBitacoraGasto(@PathVariable Integer idGasto){

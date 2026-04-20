@@ -1,64 +1,89 @@
 package org.example.backend_cices_system.report.serviceVw;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend_cices_system.data.audit.PresupuestoBitRepository;
-import org.example.backend_cices_system.report.dao.*;
-import org.example.backend_cices_system.report.view.RepProyectoBase;
+import org.example.backend_cices_system.report.dto.FormacionDTO;
+import org.example.backend_cices_system.report.filter.CertificacionFiltroDTO;
+import org.example.backend_cices_system.report.filter.ProyectoFiltroDTO;
+import org.example.backend_cices_system.reportes.builder.CertificacionesReportBuilder;
+import org.example.backend_cices_system.reportes.builder.ProyectosReportBuilder;
+import org.example.backend_cices_system.reportes.dto.ProyectoReporteDTO;
+import org.example.backend_cices_system.reportes.service.DocumentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
+/**
+ * ExportService: punto de entrada HTTP → reporte binario (PDF/Word/Excel).
+ *
+ * Responsabilidad única: recibir parámetros del controller,
+ * delegar la obtención de datos al orquestador y la serialización
+ * al DocumentService.
+ *
+ * NO hace queries directas. NO contiene lógica de negocio.
+ */
 @Service
 @RequiredArgsConstructor
 public class ExportService {
 
-    private final RepProyectoBaseRepository proyectoBaseRepo;
-    private final RepEntidadProyectoRepository entidadProyectoRepo;
-    private final RepInvestigadorProyectoRepository investigadorRepo;
-    private final RepProyectoResultadosRepository resultadosRepo;
-    private final RepProyectoDocumentoRepository documentosRepo;
-    private final RepProyectoPresentacionInformeRepository informesRepo;
+    private final DocumentService documentService;
+    private final CertificacionesReportBuilder certificacionesReportBuilder;
+    private final ProyectosReportBuilder proyectosReportBuilder;
 
-    private final RepPresupuestoBaseRepository presupuestoBaseRepo;
-    private final PresupuestoBitRepository presupuestoBitRepository;
-    private final RepPresupuestoGastosRepository gastosRepo;
-    private final RepPresupuestoHorasRepository horasRepo;
+    private final RepInvestigadorCertificacionesService repInvestigadorCertificacionesService;
+    private final ProyectoReporteOrquestador orquestador;
 
-    public Map<String, Object> exportarProyectoAcademico(String codigoProyecto) {
-        return Map.of(
-                "proyecto", proyectoBaseRepo.findByCodigoProyecto(codigoProyecto),
-                "investigadores", investigadorRepo.findByCodigoProyecto(codigoProyecto),
-                "entidades", entidadProyectoRepo.findByCodigoProyecto(codigoProyecto),
-                "resultados", resultadosRepo.findByCodigoProyecto(codigoProyecto),
-                "documentos", documentosRepo.findByCodigoProyecto(codigoProyecto),
-                "informes", informesRepo.findByCodigoProyecto(codigoProyecto)
+    // ════════════════════════════════════════════════════════════════════════
+    // CERTIFICACIONES
+    // ════════════════════════════════════════════════════════════════════════
+
+    public ResponseEntity<byte[]> generarReporteCertificaciones(
+            CertificacionFiltroDTO filtro,
+            String formato
+    ) {
+        List<FormacionDTO> data = repInvestigadorCertificacionesService.filtrarCertificaciones(filtro);
+
+        return documentService.generarResponse(
+                certificacionesReportBuilder,
+                data,
+                formato,
+                "reporte_certificaciones"
         );
     }
 
-    public Map<String, Object> exportarProyectoFinanciero(String codigoProyecto) {
-        RepProyectoBase proyectoBase = this.proyectoBaseRepo.findByCodigoProyecto(codigoProyecto);
-        return Map.of(
-                "proyecto", proyectoBase,
-                "presupuestos", presupuestoBaseRepo.findByCodigoProyecto(codigoProyecto),
-                "historialPresupuestal", presupuestoBitRepository.findByIdProyecto(proyectoBase.getIdProyecto()),
-                "gastos", gastosRepo.findByCodigoProyecto(codigoProyecto),
-                "horas", horasRepo.findByCodigoProyecto(codigoProyecto)
+    // ════════════════════════════════════════════════════════════════════════
+    // PROYECTOS — reporte por filtros (múltiples proyectos)
+    // ════════════════════════════════════════════════════════════════════════
+
+    public ResponseEntity<byte[]> generarReporteProyectos(
+            ProyectoFiltroDTO filtro,
+            String formato
+    ) {
+        List<ProyectoReporteDTO> data = orquestador.ensamblarConFiltros(filtro);
+
+        return documentService.generarResponse(
+                proyectosReportBuilder,
+                data,
+                formato,
+                "reporte_proyectos"
         );
     }
 
-    public Map<String, Object> exportarProyectoCompleto(String codigoProyecto) {
-        RepProyectoBase proyectoBase = this.proyectoBaseRepo.findByCodigoProyecto(codigoProyecto);
-        return Map.of(
-                "proyecto", proyectoBase,
-                "investigadores", investigadorRepo.findByCodigoProyecto(codigoProyecto),
-                "entidades", entidadProyectoRepo.findByCodigoProyecto(codigoProyecto),
-                "resultados", resultadosRepo.findByCodigoProyecto(codigoProyecto),
-                "documentos", documentosRepo.findByCodigoProyecto(codigoProyecto),
-                "informes", informesRepo.findByCodigoProyecto(codigoProyecto),
-                "presupuestos", presupuestoBaseRepo.findByCodigoProyecto(codigoProyecto),
-                "historialPresupuestal", presupuestoBitRepository.findByIdProyecto(proyectoBase.getIdProyecto()),
-                "gastos", gastosRepo.findByCodigoProyecto(codigoProyecto),
-                "horas", horasRepo.findByCodigoProyecto(codigoProyecto)
+    // ════════════════════════════════════════════════════════════════════════
+    // PROYECTOS — reporte por IDs explícitos
+    // ════════════════════════════════════════════════════════════════════════
+
+    public ResponseEntity<byte[]> generarReporteProyectosPorIds(
+            List<Integer> ids,
+            String formato
+    ) {
+        List<ProyectoReporteDTO> data = orquestador.ensamblar(ids);
+
+        return documentService.generarResponse(
+                proyectosReportBuilder,
+                data,
+                formato,
+                "reporte_proyectos"
         );
     }
 

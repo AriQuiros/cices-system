@@ -18,7 +18,7 @@ export async function registrarProyecto(proyecto, token) {
     const proyectoBlob = new Blob([JSON.stringify(proyecto)], { type: "application/json" });
     formData.append("proyecto", proyectoBlob);
 
-    const res = await fetch(`${API}/api/proyectos/registro`, {
+    const res = await fetch(`${API}/api/proyectos/guardar`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}` // NO poner Content-Type

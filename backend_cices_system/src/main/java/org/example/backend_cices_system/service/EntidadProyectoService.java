@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.EntidadProyectoRepository;
 import org.example.backend_cices_system.dto.EntidadDTO;
 import org.example.backend_cices_system.logic.Entidad;
@@ -11,27 +12,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EntidadProyectoService {
 
     private final EntidadProyectoRepository entidadProyectoRepository;
     private final EntidadService entidadService;
 
-    public EntidadProyectoService(EntidadProyectoRepository entidadProyectoRepository, EntidadService entidadService) {
-        this.entidadProyectoRepository = entidadProyectoRepository;
-        this.entidadService = entidadService;
-    }
-
     @Transactional
-    public EntidadProyecto guardarEntidadProyecto(Proyecto proyecto, Entidad entidad) {
+    public void guardarEntidadProyecto(Proyecto proyecto, Entidad entidad) {
         if (existeEntidadProyecto(proyecto.getId(), entidad.getId())) {
-            return null;
+            return;
         }
 
         var entidadProyecto = new EntidadProyecto();
         entidadProyecto.setIdProyecto(proyecto);
         entidadProyecto.setIdEntidad(entidad);
 
-        return entidadProyectoRepository.save(entidadProyecto);
+        entidadProyectoRepository.save(entidadProyecto);
     }
 
     public boolean existeEntidadProyecto(Integer idProyecto, Integer idEntidad) {

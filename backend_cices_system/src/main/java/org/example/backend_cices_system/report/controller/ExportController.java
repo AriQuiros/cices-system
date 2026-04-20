@@ -1,36 +1,43 @@
 package org.example.backend_cices_system.report.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.report.filter.CertificacionFiltroDTO;
+import org.example.backend_cices_system.report.filter.ProyectoFiltroDTO;
 import org.example.backend_cices_system.report.serviceVw.ExportService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/export")
+@RequestMapping("/api/exportar")
 public class ExportController {
 
     private final ExportService exportService;
 
-    @GetMapping("/{codigo}/academico")
-    public Map<String, Object> exportarAcademico(@PathVariable String codigo) {
-        return exportService.exportarProyectoAcademico(codigo);
+    @PostMapping("/reporte-certificaciones")
+    public ResponseEntity<byte[]> exportar(
+            @RequestBody CertificacionFiltroDTO filtro,
+            @RequestParam String formato
+    ) {
+        return exportService.generarReporteCertificaciones(filtro, formato);
     }
 
-    @GetMapping("/{codigo}/financiero")
-    public Map<String, Object> exportarFinanciero(@PathVariable String codigo) {
-        return exportService.exportarProyectoFinanciero(codigo);
+
+    @PostMapping("/reporte-proyectos")
+    public ResponseEntity<byte[]> exportar(
+            @RequestBody ProyectoFiltroDTO filtro,
+            @RequestParam String formato
+    ) {
+        return exportService.generarReporteProyectos(filtro, formato);
     }
 
-    @GetMapping("/{codigo}/completo")
-    public Map<String, Object> exportarCompleto(@PathVariable String codigo) {
-        return exportService.exportarProyectoCompleto(codigo);
+    @GetMapping("/test-word")
+    public ResponseEntity<byte[]> testWord() {
+
+        ProyectoFiltroDTO filtro = new ProyectoFiltroDTO(null, null, null, null, "desc");
+
+        return exportService.generarReporteProyectos(filtro, "docx");
     }
 
 }

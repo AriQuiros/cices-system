@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.CatalogoRepository;
 import org.example.backend_cices_system.dto.CodigoDTO;
 import org.example.backend_cices_system.logic.Codigo;
@@ -10,12 +11,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CatalogoService {
     private final CatalogoRepository catalogoRepository;
-
-    public CatalogoService(CatalogoRepository catalogoRepository) {
-        this.catalogoRepository = catalogoRepository;
-    }
 
     public Short codigoXNombreValor(String nombre, String valor) {
         return catalogoRepository.findByIdTipoNombreIgnoreCaseAndValorIgnoreCase(nombre, valor)

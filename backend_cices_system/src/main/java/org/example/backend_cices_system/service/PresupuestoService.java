@@ -2,14 +2,17 @@ package org.example.backend_cices_system.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.PresupuestoRepository;
+import org.example.backend_cices_system.dto.GastoDTO;
 import org.example.backend_cices_system.dto.PresupuestoDTO;
 import org.example.backend_cices_system.logic.Presupuesto;
 import org.example.backend_cices_system.logic.Proyecto;
 import org.example.backend_cices_system.logic.Usuario;
+import org.example.backend_cices_system.reportes.dto.PresupuestoReporteDTO;
 import org.example.backend_cices_system.service.audit.PresupuestoBitService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -18,10 +21,9 @@ public class PresupuestoService {
     private final PresupuestoBitService presupuestoBitService;
     private final CatalogoService catalogoService;
 
-
     public Integer guardarPresupuesto(List<PresupuestoDTO> listDTO, Proyecto proyecto) {
         for(PresupuestoDTO presupuestoDTO:listDTO) {
-            System.out.println(presupuestoDTO.id());
+
             var presupuesto = new Presupuesto();
             presupuesto.setIdProyecto(proyecto);
             presupuesto.setDescripcion(presupuestoDTO.descripcion());

@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.TituloRepository;
 import org.example.backend_cices_system.dto.TituloDTO;
 import org.example.backend_cices_system.logic.Entidad;
@@ -10,17 +11,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TituloService {
 
     private final TituloRepository tituloRepository;
     private final CatalogoService catalogoService;
     private final EntidadService entidadService;
-
-    public TituloService(TituloRepository tituloRepository, CatalogoService catalogoService, EntidadService entidadService) {
-        this.entidadService = entidadService;
-        this.catalogoService = catalogoService;
-        this.tituloRepository = tituloRepository;
-    }
 
     public Titulo guardarTitulo(TituloDTO tituloDTO, Investigador investigador){
         var id = tituloDTO.id();

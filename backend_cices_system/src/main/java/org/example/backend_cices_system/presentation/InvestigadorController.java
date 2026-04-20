@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.presentation;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.dto.InvestigadorDTO;
 import org.example.backend_cices_system.logic.Investigador;
 import org.example.backend_cices_system.logic.Usuario;
@@ -13,15 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/investigadores")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class InvestigadorController {
 
     private final InvestigadorService investigadorService;
-
-    public InvestigadorController(InvestigadorService investigadorService) {
-        this.investigadorService = investigadorService;
-    }
 
     @PostMapping("/registro")
     public ResponseEntity<?> crearInvestigador(@RequestBody @Valid InvestigadorDTO dto) {

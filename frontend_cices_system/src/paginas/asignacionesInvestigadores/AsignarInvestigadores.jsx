@@ -33,6 +33,7 @@ const AsignarInvestigadores = () => {
     const [investigadoresRegistrados, setInvestigadoresRegistrados] = useState([]);
     const [investigadoresForm, setInvestigadoresForm] = useState([{ ...formularioVacio }]);
     const [investigadorEditando, setInvestigadorEditando] = useState(null);
+    const [loadingInvestigador, setLoadingInvestigador] = useState(false);
 
     useEffect(() => {
         if (filaBuscando === null) return;
@@ -97,21 +98,32 @@ const AsignarInvestigadores = () => {
         setInvestigadoresForm(prev => prev.filter((_, i) => i !== index));
     };
 
-    const editarInvestigadorRegistrado = (inv) => {
-        setInvestigadorEditando(inv);
+    const editarInvestigadorRegistrado = async (inv) => {
+        setLoadingInvestigador(true);
+        setInvestigadoresForm([{ ...formularioVacio }]);
 
-        setInvestigadoresForm([{
-            id: inv.id,
-            investigador: {
-                identificacion: inv.identificacionInvestigador,
-                nombreCompleto: inv.nombreInvestigador
-            },
-            rolProyecto: inv.rolProyecto,
-            actividadProyecto: inv.actividadProyecto || "",
-            fechaInicio: inv.fechaInicio || "",
-            fechaFin: inv.fechaFin || "",
-            search: inv.nombreInvestigador
-        }]);
+        try {
+            const dto = await InvestigadorProyectoService.obtenerPorId(inv.id, token);
+
+            setInvestigadorEditando(dto);
+
+            setInvestigadoresForm([{
+                id: dto.id,
+                investigador: {
+                    identificacion: dto.identificacionInvestigador,
+                    nombreCompleto: dto.nombreInvestigador
+                },
+                rolProyecto: dto.rolProyecto || null,
+                actividadProyecto: dto.actividadProyecto || "",
+                fechaInicio: dto.fechaInicio || "",
+                fechaFin: dto.fechaFin || "",
+                search: dto.nombreInvestigador
+            }]);
+        } catch (error) {
+            notify.error(error.message || "Error cargando investigador");
+        } finally {
+            setLoadingInvestigador(false);
+        }
     };
 
     const limpiar = () => {
@@ -260,7 +272,7 @@ const AsignarInvestigadores = () => {
                                         isClearable
                                         noOptionsMessage={() => "No hay coincidencias"}
                                         isSearchable
-                                        isDisabled={investigadorEditando}
+                                        isDisabled={investigadorEditando || loadingInvestigador}
                                     />
                                 </div>
 

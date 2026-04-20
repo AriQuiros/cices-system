@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.PasswordResetTokenRepository;
 import org.example.backend_cices_system.logic.PasswordResetToken;
 import org.example.backend_cices_system.logic.Usuario;
@@ -13,14 +14,12 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 
 @Service
+@RequiredArgsConstructor
 public class PasswordResetService {
 
-    @Autowired
-    private PasswordResetTokenRepository tokenRepository;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private UsuarioService usuarioService;
+    private final PasswordResetTokenRepository tokenRepository;
+    private final EmailService emailService;
+    private final UsuarioService usuarioService;
 
     public void solicitarReset(String correo) {
         System.out.println("buscando correo... " + correo);

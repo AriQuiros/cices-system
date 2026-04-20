@@ -55,4 +55,21 @@ export const InvestigadorProyectoService = {
         return await res.json();
     }
 
+    ,
+    async obtenerPorId(id, token) {
+        const res = await fetch(`${API}/investigador-proyecto/obtener/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || "Error al obtener investigador");
+        }
+
+        return await res.json();
+    }
+
 };

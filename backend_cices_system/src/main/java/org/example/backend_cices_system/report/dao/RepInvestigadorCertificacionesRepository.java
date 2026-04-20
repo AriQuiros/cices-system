@@ -11,6 +11,7 @@ import java.util.List;
 public interface RepInvestigadorCertificacionesRepository
         extends JpaRepository<RepInvestigadorCertificaciones, Integer>,
         JpaSpecificationExecutor<RepInvestigadorCertificaciones> {
-    List<RepInvestigadorCertificaciones> findByIdentificacion(String identificacion);
 
+    List<RepInvestigadorCertificaciones> findByIdInvestigador(Integer idInvestigador);
+    List<RepInvestigadorCertificaciones> findByIdentificacion(String identificacion);
 }

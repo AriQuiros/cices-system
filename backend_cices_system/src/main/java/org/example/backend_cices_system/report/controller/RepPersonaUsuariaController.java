@@ -11,35 +11,50 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reports/personas")
+@RequestMapping("/api/consulta/personas")
 public class RepPersonaUsuariaController {
 
     private final RepPersonaUsuariaService personaService;
 
     @GetMapping("/empleados")
     public Page<PersonaUsuariaDTO> obtenerEmpleados(
-            PersonaFiltroDTO filtro,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) List<String> gradosAcademicos,
             @PageableDefault(size = 10) Pageable pageable
     ) {
+        var filtro = new PersonaFiltroDTO(
+                nombre,
+                List.of("ASISTENTE", "ADMINISTRATIVO"),
+                gradosAcademicos
+        );
         return personaService.obtenerPersonaPorRoles(
                 filtro,
-                pageable,
-                List.of("ASISTENTE", "ADMINISTRATIVO")
+                pageable
         );
     }
 
     @GetMapping("/investigadores")
     public Page<PersonaUsuariaDTO> obtenerInvestigadores(
-            PersonaFiltroDTO filtro,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) List<String> gradosAcademicos,
             @PageableDefault(size = 10) Pageable pageable
     ) {
-        return personaService.obtenerPersonaPorRoles(filtro, pageable, List.of("INVESTIGADOR"));
+        var filtro = new PersonaFiltroDTO(
+                nombre,
+                List.of("INVESTIGADOR"),
+                gradosAcademicos
+        );
+        return personaService.obtenerPersonaPorRoles(
+                filtro,
+                pageable
+        );
     }
 
     @GetMapping("/usuarios")

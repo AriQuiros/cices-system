@@ -1,4 +1,5 @@
 package org.example.backend_cices_system.service;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.*;
 import org.example.backend_cices_system.dto.RolDTO;
 import org.example.backend_cices_system.dto.auth.LoginResponse;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
     private final PasswordEncoder encoder;
@@ -23,16 +25,6 @@ public class AuthService {
     private final LoginAttemptService attemptService;
     private final UsuarioService usuarioService;
     private final RolUsuarioService rolUsuarioService;
-
-    public AuthService(PasswordEncoder encoder, JwtUtil jwt, LoginAttemptService attemptService,
-            UsuarioService usuarioService, RolUsuarioService rolUsuarioService
-    ) {
-        this.encoder = encoder;
-        this.jwt = jwt;
-        this.attemptService = attemptService;
-        this.usuarioService = usuarioService;
-        this.rolUsuarioService = rolUsuarioService;
-    }
 
     public LoginResponse login(String username, String password) {
         if (attemptService.isBlocked(username))

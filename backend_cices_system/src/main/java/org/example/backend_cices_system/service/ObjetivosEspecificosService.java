@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.data.ObjetivoEspecificoRepository;
 import org.example.backend_cices_system.dto.MetaDTO;
 import org.example.backend_cices_system.dto.ObjetivoEspecificoDTO;
@@ -11,14 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ObjetivosEspecificosService {
+
     ObjetivoEspecificoRepository objetivoEspecificoRepository;
     MetaService metaService;
-
-    public ObjetivosEspecificosService(ObjetivoEspecificoRepository objetivoEspecificoRepository, MetaService metaService) {
-        this.metaService = metaService;
-        this.objetivoEspecificoRepository = objetivoEspecificoRepository;
-    }
 
     @Transactional
     public void guardarObjetivoEspecifico(ObjetivoEspecificoDTO objetivoEspecificoDTO, Proyecto proyecto) {

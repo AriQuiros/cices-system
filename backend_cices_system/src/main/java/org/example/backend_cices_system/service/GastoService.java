@@ -19,7 +19,6 @@ public class GastoService {
     private final GastoBitService gastoBitService;
     private final PresupuestoService presupuestoService;
 
-
     public List<Gasto> guardarGasto(List<GastoDTO> listDto) {
         List<Gasto> gastosGuardados = new ArrayList<>();
 
@@ -66,6 +65,7 @@ public class GastoService {
     }
 
     public GastoDTO obtenerDTO(Gasto gasto){
-        return new GastoDTO(gasto.getId(),null, gasto.getMonto(), gasto.getFechaGasto(), gasto.getDescripcion());
+        return new GastoDTO(gasto.getId(), gasto.getId(), gasto.getMonto(), gasto.getFechaGasto(), gasto.getDescripcion());
     }
+
 }

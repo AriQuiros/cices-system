@@ -13,15 +13,25 @@ public class PersonaSpecification {
     public static Specification<RepPersonaUsuaria> filtrar(PersonaFiltroDTO filtro) {
         return (root, query, cb) -> {
 
+            assert query != null;
+            query.distinct(true);
+
             List<Predicate> predicates = new ArrayList<>();
 
             if (filtro.nombre() != null && !filtro.nombre().isBlank()) {
-                predicates.add(
-                        cb.like(
-                                cb.lower(root.get("nombreCompleto")),
-                                "%" + filtro.nombre().toLowerCase() + "%"
-                        )
+                String like = "%" + filtro.nombre().toLowerCase() + "%";
+
+                Predicate porNombre = cb.like(
+                        cb.lower(root.get("nombreCompleto")),
+                        like
                 );
+
+                Predicate porIdentificacion = cb.like(
+                        cb.lower(root.get("identificacion")),
+                        like
+                );
+
+                predicates.add(cb.or(porNombre, porIdentificacion));
             }
 
             if (filtro.roles() != null && !filtro.roles().isEmpty()) {

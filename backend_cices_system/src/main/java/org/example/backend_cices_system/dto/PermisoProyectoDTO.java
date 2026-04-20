@@ -4,7 +4,9 @@ import java.time.LocalDate;
 
 public record PermisoProyectoDTO(
         Integer id,
-        InvestigadorProyectoDTO investigadorProyectoDTO,
+        Integer idInvestigadorProyecto,
+        String identificacionInvestigador,
+        String nombreInvestigador,
         LocalDate fechaInicio,
         LocalDate fechaFin
 ) {

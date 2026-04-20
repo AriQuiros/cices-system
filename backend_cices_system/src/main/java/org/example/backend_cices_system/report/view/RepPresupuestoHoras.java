@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -33,6 +34,10 @@ public class RepPresupuestoHoras {
     @NotNull
     @Column(name = "ID_PRESUPUESTO", nullable = false)
     private Integer idPresupuesto;
+
+    @NotNull
+    @Column(name = "ID_PROYECTO", nullable = false)
+    private Integer idProyecto;
 
     @Size(max = 20)
     @NotNull
@@ -62,9 +67,9 @@ public class RepPresupuestoHoras {
 
     @Column(name = "FECHA_FIN_INVESTIGADOR")
     private LocalDate fechaFinInvestigador;
-    @NotNull
-    @Column(name = "ID_PROYECTO", nullable = false)
-    private Integer idProyecto;
+
+    @Column(name = "TOTAL_HORAS_PLANIFICADAS", precision = 12, scale = 2)
+    private BigDecimal totalHorasPlanificadas;
 
 
 }

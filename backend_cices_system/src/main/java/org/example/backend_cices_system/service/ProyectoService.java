@@ -31,6 +31,23 @@ public class ProyectoService {
     private final InvestigadorProyectoService investigadorProyectoService;
     private final DocumentoService documentoService;
 
+    public List<String> obtenerLineasInvestigacion() {
+        return proyectoRepository.findDistinctLineasInvestigacion();
+    }
+
+    public Proyecto obtenerProyecto(Integer id){
+        return proyectoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+    }
+
+    public Proyecto obtenerProyectoPorCodigo(String codigo){
+        return proyectoRepository.findByCodigoProyecto(codigo)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado para codigo: " + codigo));
+    }
+
+    private boolean existeProyecto(String codigoProyecto){
+        return proyectoRepository.existsByCodigoProyecto(codigoProyecto);
+    }
 
     @Transactional
     public Proyecto guardarProyecto(ProyectoDTO proyectoDTO, List<MultipartFile> documentos) {
@@ -95,32 +112,10 @@ public class ProyectoService {
         }
     }
 
-    public List<Proyecto> obtenerProyectos() {
-        return proyectoRepository.findAll();
-    }
-
-    public List<String> obtenerLineasInvestigacion() {
-        return proyectoRepository.findDistinctLineasInvestigacion();
-    }
-
-    public Proyecto obtenerProyecto(Integer id){
-        return proyectoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
-    }
-
-    public Proyecto obtenerProyectoPorCodigo(String codigo){
-        return proyectoRepository.findByCodigoProyecto(codigo)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado para codigo: " + codigo));
-    }
-
     private Short obtenerEstadoProyecto(LocalDate fechaFinalizacion) {
         LocalDate hoy = LocalDate.now();
         String estado = fechaFinalizacion.isBefore(hoy) ? "FINALIZADO" : "ACTIVO";
         return catalogoService.codigoXNombreValor("ESTADO_PROYECTO", estado);
-    }
-
-    private boolean existeProyecto(String codigoProyecto){
-        return proyectoRepository.existsByCodigoProyecto(codigoProyecto);
     }
 
     private ProyectoDTO obtenerDTO (Proyecto proyecto){
@@ -150,39 +145,4 @@ public class ProyectoService {
         return obtenerDTO(proyecto);
     }
 
-    public ResumenHorasProyectoDTO obtenerResumenHoras(Integer idProyecto) {
-
-        Proyecto proyecto = proyectoRepository.findById(idProyecto)
-                .orElseThrow();
-
-        List<Object[]> filas = horasRepository.obtenerHorasAsignadasProyecto(idProyecto);
-
-        List<InvestigadorHorasDTO> lista = filas.stream()
-                .map(f -> new InvestigadorHorasDTO(
-                        ((Number) f[0]).intValue(),
-                        (String) f[1],
-                        (String) f[2],
-                        ((Number) f[3]).doubleValue(),
-                        ((Number) f[4]).shortValue()
-                ))
-                .toList();
-
-        Double totalAsignadas = horasRepository.totalHorasAsignadas(idProyecto);
-        Double totalPresupuesto = horasRepository.totalHorasPresupuestadas(idProyecto);
-
-        Double disponibles = totalPresupuesto - totalAsignadas;
-
-        return new ResumenHorasProyectoDTO(
-                proyecto.getNombreProyecto(),
-                totalAsignadas,
-                disponibles,
-                lista
-        );
-    }
-
-    public Proyecto buscarProyectoPorCodigo(String codigo) {
-        return proyectoRepository.findByCodigoProyecto(codigo).orElseThrow( () ->
-                new RuntimeException("Proyecto no encontrado para codigo: " + codigo)
-        );
-    }
 }

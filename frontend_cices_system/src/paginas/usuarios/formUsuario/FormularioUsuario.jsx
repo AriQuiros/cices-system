@@ -47,6 +47,7 @@ import countries from "i18n-iso-countries";
 import es from "i18n-iso-countries/langs/es.json";
 
 import RegistroInvestigador from "./RegistroInvestigador.jsx";
+import BotonVolver from "../../../components/BotonVolver";
 
 countries.registerLocale(es);
 
@@ -194,8 +195,9 @@ export default function FormularioUsuario({
 
     return (
         <div className={contenedor}>
-            <form className={form} onSubmit={onSubmit}>
 
+            <form className={form} onSubmit={onSubmit}>
+                <BotonVolver/>
                 <h2 className={titulo}>{modoPerfil ? "Mi Perfil" : "Registro"}</h2>
 
                 {/* ── Fila 1: Nombre · Tipo ID · Número ID ─────────────────── */}
@@ -222,7 +224,7 @@ export default function FormularioUsuario({
                             }))}
                             value={
                                 empleado.tipoId
-                                    ? { value: empleado.tipoId.valor, label: empleado.tipoId.despliegue }
+                                    ? {value: empleado.tipoId.valor, label: empleado.tipoId.despliegue}
                                     : null
                             }
                             onChange={(opt) =>
@@ -233,29 +235,29 @@ export default function FormularioUsuario({
 
                     <div className={grupoInput}>
 
-                    <InputField
-                        label="Número de Identificación"
-                        name="identificacion"
-                        placeholder="Sin guiones"
-                        value={empleado.identificacion}
-                        inputMode={tipoId === "NACIONAL" || tipoId === "DIMEX" ? "numeric" : "text"}
-                        maxLength={idConfig.maxLength}
-                        pattern={idConfig.pattern}
-                        required
-                        disabled={modoPerfil && !authOk}
-                        onChange={handleIdentificacionChange}
-                    />
+                        <InputField
+                            label="Número de Identificación"
+                            name="identificacion"
+                            placeholder="Sin guiones"
+                            value={empleado.identificacion}
+                            inputMode={tipoId === "NACIONAL" || tipoId === "DIMEX" ? "numeric" : "text"}
+                            maxLength={idConfig.maxLength}
+                            pattern={idConfig.pattern}
+                            required
+                            disabled={modoPerfil && !authOk}
+                            onChange={handleIdentificacionChange}
+                        />
 
-                    {modoPerfil && !authOk && (
-                        <button
-                            type="button"
-                            className={btnEditar}
-                            onClick={() => setRequiereAuth(true)}
-                        >
-                            Editar identificación
-                        </button>
-                    )}
-                </div>
+                        {modoPerfil && !authOk && (
+                            <button
+                                type="button"
+                                className={btnEditar}
+                                onClick={() => setRequiereAuth(true)}
+                            >
+                                Editar identificación
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* ── Fila 2: País · Teléfono · Grado Académico ────────────── */}
@@ -301,7 +303,7 @@ export default function FormularioUsuario({
                             }))}
                             value={
                                 empleado.gradoAcademico
-                                    ? { value: empleado.gradoAcademico.valor, label: empleado.gradoAcademico.despliegue }
+                                    ? {value: empleado.gradoAcademico.valor, label: empleado.gradoAcademico.despliegue}
                                     : null
                             }
                             onChange={(opt) =>

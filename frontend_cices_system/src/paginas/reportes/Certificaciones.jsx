@@ -1,9 +1,12 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 import { useTiposCatalogo } from "../../hooks/useTiposCatalogo.js";
 import { useDebounce } from "../../hooks/useDebounce.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import "./Certificaciones.css";
+import { notify } from "../../utils/ui/notify.jsx";
+import BotonVolver from "../../components/BotonVolver.jsx";
 
 // Agrupamiento se mantiene en frontend
 const agruparPorInvestigador = (data, ordenFecha = "desc") => {
@@ -33,6 +36,7 @@ const agruparPorInvestigador = (data, ordenFecha = "desc") => {
 
 export default function CertificacionesPage() {
     const { token } = useContext(AppContext);
+    const navigate = useNavigate();
 
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -64,9 +68,9 @@ export default function CertificacionesPage() {
             },
             body: JSON.stringify({
                 nombre: nombreDebounced,
-                tipos: filtros.tipos.map(t => t.value),
-                estados: filtros.estados.map(e => e.value),
-                ordenFecha: ordenFecha
+                tipos: filtros.tipos.map((t) => t.value),
+                estados: filtros.estados.map((e) => e.value),
+                ordenFecha: ordenFecha,
             }),
         })
             .then((res) => res.json())
@@ -82,7 +86,6 @@ export default function CertificacionesPage() {
         setPage(0);
     }, [nombreDebounced, filtros.tipos, filtros.estados, ordenFecha]);
 
-    // Resumen (sobre datos del backend)
     const resumen = useMemo(() => {
         const porEstado = certificaciones.reduce((acc, cert) => {
             const estado = cert.estado || "SIN ESTADO";
@@ -92,11 +95,10 @@ export default function CertificacionesPage() {
 
         return {
             total: totalElements,
-            porEstado
+            porEstado,
         };
     }, [certificaciones, totalElements]);
 
-    // Agrupamiento opcional
     const agrupadas = agrupado
         ? Object.values(agruparPorInvestigador(certificaciones, ordenFecha))
         : null;
@@ -114,25 +116,32 @@ export default function CertificacionesPage() {
                     },
                     body: JSON.stringify({
                         nombre: nombreDebounced,
-                        tipos: filtros.tipos.map(t => t.value),
-                        estados: filtros.estados.map(e => e.value),
-                        ordenFecha: ordenFecha
+                        tipos: filtros.tipos.map((t) => t.value),
+                        estados: filtros.estados.map((e) => e.value),
+                        ordenFecha: ordenFecha,
                     }),
                 }
             );
+
+            if (!response.ok) {
+                throw new Error("No se pudo exportar el reporte");
+            }
 
             const blob = await response.blob();
 
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-
             a.download = `certificaciones.${formato}`;
+            document.body.appendChild(a);
             a.click();
-
+            a.remove();
             window.URL.revokeObjectURL(url);
+
+            notify.success("Reporte exportado correctamente");
         } catch (err) {
             console.error(err);
+            notify.error("Error al exportar el reporte");
         } finally {
             setExportando(false);
         }
@@ -141,9 +150,12 @@ export default function CertificacionesPage() {
     return (
         <div className="cert-page">
             <div className="cert-card">
-                <h1 className="cert-title">Certificaciones</h1>
+                <div className="cert-header-top">
+                    <BotonVolver/>
+                </div>
 
-                {/* Controles */}
+                <h1 className="cert-title">Reporte de certificaciones</h1>
+
                 <div className="cert-controls">
                     <label className="cert-checkbox-label">
                         <input
@@ -167,12 +179,11 @@ export default function CertificacionesPage() {
                     </div>
                 </div>
 
-                {/* Filtros */}
                 <div className="cert-filters-grid">
                     <div className="cert-field">
                         <label className="cert-label">Nombre Investigador:</label>
                         <input
-                            placeholder={"Nombre..."}
+                            placeholder="Nombre..."
                             className="cert-input"
                             type="text"
                             value={filtros.nombre}
@@ -189,14 +200,14 @@ export default function CertificacionesPage() {
                         <label className="cert-label">Tipo Certificación:</label>
                         <Select
                             isMulti
-                            options={catalogos?.TIPO_CERTIFICACION?.map(({id, despliegue }) => ({
+                            options={catalogos?.TIPO_CERTIFICACION?.map(({ id, despliegue }) => ({
                                 key: id,
                                 value: id,
                                 label: despliegue,
                             }))}
                             value={filtros.tipos}
                             onChange={(selected) =>
-                                setFiltros((prev) => ({ ...prev, tipos: selected }))
+                                setFiltros((prev) => ({ ...prev, tipos: selected || [] }))
                             }
                         />
                     </div>
@@ -212,13 +223,12 @@ export default function CertificacionesPage() {
                             }))}
                             value={filtros.estados}
                             onChange={(selected) =>
-                                setFiltros((prev) => ({ ...prev, estados: selected }))
+                                setFiltros((prev) => ({ ...prev, estados: selected || [] }))
                             }
                         />
                     </div>
                 </div>
 
-                {/* Resumen */}
                 <div className="cert-summary-header">
                     <h3 className="cert-summary-title">Resumen</h3>
 
@@ -258,7 +268,6 @@ export default function CertificacionesPage() {
                     </ul>
                 </div>
 
-                {/* Tabla */}
                 <table className="cert-table">
                     <thead>
                     <tr>
@@ -313,9 +322,10 @@ export default function CertificacionesPage() {
                     )}
                     </tbody>
                 </table>
+
                 <div className="cert-pagination">
                     <button
-                        onClick={() => setPage(prev => Math.max(prev - 1, 0))}
+                        onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
                         disabled={page === 0}
                     >
                         ← Anterior
@@ -326,7 +336,9 @@ export default function CertificacionesPage() {
                     </span>
 
                     <button
-                        onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))}
+                        onClick={() =>
+                            setPage((prev) => Math.min(prev + 1, totalPages - 1))
+                        }
                         disabled={page >= totalPages - 1}
                     >
                         Siguiente →

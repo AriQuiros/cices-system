@@ -125,7 +125,7 @@
     padding: 0 16px;
     border: none;
     border-radius: 10px;
-    background: #1d4ed8;
+    background-color: #0fc3f3;
     color: #fff;
     font-weight: 600;
     font-size: 0.95rem;
@@ -134,7 +134,7 @@
 }
 
 .cert-btn-export:hover:not(:disabled) {
-    background: #1e40af;
+    background-color: #0ea8d1;
     transform: translateY(-1px);
 }
 
@@ -250,6 +250,27 @@
 
 .cert-field .css-1jqq78o-placeholder {
     color: #64748b;
+}
+
+.cert-header-top {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+}
+
+.cert-btn-back {
+    background-color: #0fc3f3;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.cert-btn-back:hover {
+    background-color: #0ea8d1;
 }
 
 @media (max-width: 768px) {

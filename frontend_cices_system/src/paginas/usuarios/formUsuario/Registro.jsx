@@ -1,9 +1,16 @@
-// src/paginas/usuarios/formUsuario/Registro.jsx
-import { useFormularioUsuario } from "../../../modules/usuario/hooks/useFormularioUsuario.js";
-import FormularioUsuario from "./FormularioUsuario.jsx";
+import React, { useState } from "react";
 import "./Registro.css";
 import "../../../estilos/form.css";
 
+import { EmpleadoProvider }    from "../../../context/empleadoCtx/EmpleadoProvider.jsx";
+import { InvestigadorProvider } from "../../../context/investigadorCtx/InvestigadorProvider.jsx";
+
+import { useRegistro }          from "../../../hooks/usuarios/useRegistro";
+import { buildPayloadRegistro } from "../../../services/EmpleadoService.jsx";
+
+import FormularioUsuario from "./FormularioUsuario.jsx";
+
+/** Clases CSS que Registro aplica a cada parte del formulario. */
 const CLASES_REGISTRO = {
     contenedor:        "form-container",
     form:              "form-content",
@@ -16,22 +23,60 @@ const CLASES_REGISTRO = {
     rolLabel:          "round-checkbox",
     roles:             "roles",
     btnSubmit:         "submit-btn",
-    btnEditar:         "",
+    btnEditar:         "",            // no aplica en registro
     btnLogin:          "btn-link-login",
-    authModal:         "",
-    authBox:           "",
-    phoneCss:          "phone-input-control"
+    authModal:         "",            // no aplica en registro
+    authBox:           "",            // no aplica en registro
+    phoneCss:         "phone-input-control",
 };
 
-export default function Registro() {
-    const form = useFormularioUsuario({ modoPerfil: false });
+function RegistroInner() {
+    const {
+        empleado, usuario, investigador,
+        tipos, rolesBD, loading,
+        handleChange, handleCodigoChange,
+        actualizarCampo, actualizarCampoUsuario,
+        handleSubmit,
+    } = useRegistro({ modoPerfil: false });
+
+    const [confirmarContrasena, setConfirmarContrasena] = useState("");
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        const payload = buildPayloadRegistro({ empleado, usuario, investigador });
+        const success = await handleSubmit(payload, null);
+        if (success) {
+            setConfirmarContrasena("");
+        }
+    };
 
     return (
         <FormularioUsuario
-            {...form}
-            onSubmit={form.handleSubmit}
+            empleado={empleado}
+            usuario={usuario}
+            investigador={investigador}
+            tipos={tipos}
+            rolesBD={rolesBD}
+            loading={loading}
+            handleChange={handleChange}
+            handleCodigoChange={handleCodigoChange}
+            actualizarCampo={actualizarCampo}
+            actualizarCampoUsuario={actualizarCampoUsuario}
+            onSubmit={onSubmit}
             modoPerfil={false}
+            confirmarContrasena={confirmarContrasena}
+            setConfirmarContrasena={setConfirmarContrasena}
             clases={CLASES_REGISTRO}
         />
+    );
+}
+
+export default function Registro() {
+    return (
+        <EmpleadoProvider>
+            <InvestigadorProvider>
+                <RegistroInner />
+            </InvestigadorProvider>
+        </EmpleadoProvider>
     );
 }

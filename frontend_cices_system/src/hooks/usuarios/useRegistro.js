@@ -140,24 +140,24 @@ export const useRegistro = ({ modoPerfil }) => {
         // validaciones
         if (rolesSeleccionados.length < 1 || rolesSeleccionados.length > 2) {
             notify.error("Debe seleccionar mínimo 1 rol y máximo 2 roles");
-            return;
+            return false;
         }
 
         const validacionRoles = combinacionRolesValida(rolesSeleccionados);
 
         if (!validacionRoles.valida) {
             notify.error(validacionRoles.mensaje);
-            return;
+            return false;
         }
 
         // 🔸 MODO PERFIL
         if (modoPerfil) {
 
-            if (!(await confirm.update())) return;
+            if (!(await confirm.update())) return false;
 
             await actualizarPerfil(payload, authPassword);
 
-            return;
+            return true;
         }
 
         // 🔸 REGISTRO NORMAL
@@ -174,15 +174,21 @@ export const useRegistro = ({ modoPerfil }) => {
 
                 limpiarInvestigador();
 
+                return true;
+
             } else {
 
                 notify.error(result.message || "Registro falló");
+
+                return false;
 
             }
 
         } catch {
 
             notify.error("Error de conexión");
+
+            return false;
 
         }
     };

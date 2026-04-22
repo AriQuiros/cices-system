@@ -41,10 +41,13 @@ function RegistroInner() {
 
     const [confirmarContrasena, setConfirmarContrasena] = useState("");
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         const payload = buildPayloadRegistro({ empleado, usuario, investigador });
-        handleSubmit(payload, null);
+        const success = await handleSubmit(payload, null);
+        if (success) {
+            setConfirmarContrasena("");
+        }
     };
 
     return (

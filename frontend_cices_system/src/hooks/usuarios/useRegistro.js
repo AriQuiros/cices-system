@@ -171,6 +171,7 @@ export const useRegistro = ({ modoPerfil }) => {
 
                 limpiarEmpleado();
                 limpiarUsuario();
+
                 limpiarInvestigador();
 
             } else {

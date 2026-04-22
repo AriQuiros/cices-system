@@ -146,8 +146,8 @@ function RegistroInvestigadorInner({ nivelAcademico, modoPerfil }) {
             <section className="formacion-card">
                 <div className="formacion-card-header">
                     <div>
-                        <h3 className="formacion-subtitle">Títulos académicos (formal)</h3>
-                        <p className="formacion-note">No es obligatorio ingresar títulos en este momento.</p>
+                        <h3 className="formacion-subtitle">Títulos académicos</h3>
+                        <p hidden={modoPerfil} className="formacion-note">No es obligatorio ingresar títulos en este momento.</p>
                     </div>
                     {(investigador.titulos || []).length === 0 && (
                         <button className="add-item-btn" type="button" onClick={() => handleAdd("titulos", TituloDTO)}>
@@ -238,8 +238,10 @@ function RegistroInvestigadorInner({ nivelAcademico, modoPerfil }) {
             <section className="formacion-card">
                 <div className="formacion-card-header">
                     <div>
-                        <h3 className="formacion-subtitle">Certificaciones (informal)</h3>
-                        <p className="formacion-note">No es obligatorio ingresar certificaciones en este momento.</p>
+                        <h3 className="formacion-subtitle">Certificaciones (capacitaciones, cursos, licencias, etc...)</h3>
+                        <p className="formacion-note">En este apartado se pueden registrar certificaciones, acreditaciones o licencias profesionales
+                            que se requieran para la participación en los proyectos.</p>
+                        <p hidden={modoPerfil} className="formacion-note">No es obligatorio ingresar certificaciones en este momento.</p>
                     </div>
                     {(investigador.certificaciones || []).length === 0 && (
                         <button className="add-item-btn" type="button" onClick={() => handleAdd("certificaciones", CertificacionDTO)}>

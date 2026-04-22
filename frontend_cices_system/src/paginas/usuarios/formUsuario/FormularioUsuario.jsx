@@ -290,9 +290,10 @@ export default function FormularioUsuario({
                         />
                     </div>
 
-                    <div className={grupoInput}>
+                    <div className={`${grupoInput} col2`}>
                         <label className={label}>Grado Académico</label>
                         <Select
+                            className="select-grado"
                             required
                             placeholder="Seleccione grado académico"
                             options={tipos["GRADO_ACADEMICO"]?.map((t) => ({

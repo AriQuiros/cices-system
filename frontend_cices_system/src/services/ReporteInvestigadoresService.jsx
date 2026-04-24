@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/reportes/investigadores-participantes";
+const API_URL = "http://localhost:8080/api/consulta/investigadores-participantes";
 
 export const exportarReporteInvestigadoresParticipantes = async (
     token,

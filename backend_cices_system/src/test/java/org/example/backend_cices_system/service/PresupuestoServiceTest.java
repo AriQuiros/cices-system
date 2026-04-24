@@ -1,10 +1,12 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.data.PresupuestoRepository;
-import org.example.backend_cices_system.dto.CodigoDTO;
-import org.example.backend_cices_system.dto.PresupuestoDTO;
-import org.example.backend_cices_system.logic.Presupuesto;
-import org.example.backend_cices_system.logic.Proyecto;
+import org.example.backend_cices_system.modules.presupuesto.repository.PresupuestoRepository;
+import org.example.backend_cices_system.modules.presupuesto.service.PresupuestoService;
+import org.example.backend_cices_system.shared.catalogo.CodigoDTO;
+import org.example.backend_cices_system.modules.presupuesto.dto.PresupuestoDTO;
+import org.example.backend_cices_system.modules.presupuesto.model.Presupuesto;
+import org.example.backend_cices_system.modules.proyecto.model.Proyecto;
+import org.example.backend_cices_system.shared.catalogo.CatalogoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

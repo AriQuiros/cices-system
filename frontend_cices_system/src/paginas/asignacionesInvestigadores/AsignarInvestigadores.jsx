@@ -11,7 +11,8 @@ import InputField from "../../utils/validaciones/InputField.jsx";
 import { fechaMayorIgualQue, fechaMenorIgualQue, required } from "../../utils/validaciones/Validators.jsx";
 import Select from "react-select";
 import BuscadorProyecto from "../../components/BusquedaProyecto.jsx";
-import "../../styles/paginas.css";
+import "./AsignarInvestigador.css";
+import BotonVolver from "../../components/BotonVolver.jsx";
 
 const formularioVacio = {
     id: null,
@@ -43,13 +44,11 @@ const AsignarInvestigadores = () => {
 
         const timeout = setTimeout(async () => {
             try {
-                obtenerRolesProyecto(token).then(setRoles);
-
                 const res = await obtenerInvestigadoresActivos(token, texto);
 
                 const filtrados = (res || []).filter(inv => {
                     const registrados = investigadoresRegistrados.some(
-                        reg => reg.identificacionInvestigador === inv.identificacion
+                        reg => reg.identificacion === inv.identificacion
                     );
 
                     const agregadosForm = investigadoresForm.some(
@@ -67,6 +66,19 @@ const AsignarInvestigadores = () => {
 
         return () => clearTimeout(timeout);
     }, [investigadoresForm, filaBuscando, token, investigadoresRegistrados]);
+
+    useEffect(() => {
+        const cargarRoles = async () => {
+            try {
+                const res = await obtenerRolesProyecto(token);
+                setRoles(res || []);
+            } catch {
+                notify.error("Error cargando roles");
+            }
+        };
+
+        cargarRoles();
+    }, [token]);
 
     const seleccionarProyecto = async (p) => {
         if (!p) {
@@ -103,7 +115,9 @@ const AsignarInvestigadores = () => {
         setInvestigadoresForm([{ ...formularioVacio }]);
 
         try {
+            // inv es InvestigadorReporteDTO (DTO de lista) → solo usamos el id para llamar al backend
             const dto = await InvestigadorProyectoService.obtenerPorId(inv.id, token);
+            // dto es InvestigadorProyectoDTO (DTO de formulario) → contiene rolProyecto como objeto
 
             setInvestigadorEditando(dto);
 
@@ -203,7 +217,7 @@ const AsignarInvestigadores = () => {
 
     const rolesParaAsignar =
         investigadoresRegistrados.some(
-            inv => inv.rolProyecto?.nombreRolProyecto === "PRINCIPAL"
+            inv => inv.rolProyecto === "PRINCIPAL"
         ) ||
         investigadoresForm.some(
             f => f.rolProyecto?.nombreRolProyecto === "PRINCIPAL"
@@ -229,12 +243,15 @@ const AsignarInvestigadores = () => {
 
     return (
         <div className="asignar-page">
-            {!proyectoSeleccionado && (
-                <BuscadorProyecto token={token} onSelect={seleccionarProyecto} />
-            )}
+            <BotonVolver/>
+            <div className="asignar-header">
+                <h2>Asignación de Investigadores</h2>
+            </div>
+            <BuscadorProyecto token={token} onSelect={seleccionarProyecto} />
 
             {proyectoSeleccionado && (
                 <div className="asignar-contenido">
+
                     <h3>Agregar investigadores</h3>
 
                     <form
@@ -327,7 +344,7 @@ const AsignarInvestigadores = () => {
                                         name={`fechaInicio-${index}`}
                                         value={fila.fechaInicio}
                                         min={proyectoSeleccionado.fechaInicio}
-                                        max={fila.fechaFin || proyectoSeleccionado.fechaFinalizacion}
+                                        max={fila?.fechaFin || proyectoSeleccionado.fechaFinalizacion}
                                         required
                                         onChange={(e) =>
                                             actualizarCampo(index, "fechaInicio", e.target.value)
@@ -335,7 +352,8 @@ const AsignarInvestigadores = () => {
                                         rules={[
                                             required(),
                                             fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
-                                            fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)
+                                            fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion),
+                                            fechaMenorIgualQue(fila?.fechaFin)
                                         ]}
                                     />
                                 </div>
@@ -346,13 +364,14 @@ const AsignarInvestigadores = () => {
                                         type="date"
                                         name={`fechaFin-${index}`}
                                         value={fila.fechaFin}
-                                        min={fila.fechaInicio}
+                                        min={fila?.fechaInicio}
                                         max={proyectoSeleccionado.fechaFinalizacion}
                                         onChange={(e) =>
                                             actualizarCampo(index, "fechaFin", e.target.value)
                                         }
                                         rules={[
                                             fechaMayorIgualQue(proyectoSeleccionado.fechaInicio),
+                                            fechaMayorIgualQue(fila?.fechaInicio),
                                             fechaMenorIgualQue(proyectoSeleccionado.fechaFinalizacion)
                                         ]}
                                     />
@@ -381,8 +400,9 @@ const AsignarInvestigadores = () => {
                         ))}
 
                         <div className="acciones-principales">
-
                             <button
+                                hidden={investigadorEditando}
+                                disabled={investigadorEditando }
                                 type="button"
                                 className="btn-outline-primary"
                                 onClick={agregarFila}
@@ -396,7 +416,6 @@ const AsignarInvestigadores = () => {
                             >
                                 {investigadorEditando ? "Actualizar" : "Guardar"}
                             </button>
-
                         </div>
                     </form>
 
@@ -415,8 +434,8 @@ const AsignarInvestigadores = () => {
                         <tbody>
                         {investigadoresRegistrados.map((inv) => (
                             <tr key={inv.id}>
-                                <td>{inv.nombreInvestigador}</td>
-                                <td>{inv.rolProyecto?.nombreRolProyecto}</td>
+                                <td>{inv.nombreCompleto}</td>
+                                <td>{inv.rolProyecto}</td>
                                 <td>{inv.actividadProyecto}</td>
                                 <td className="acciones">
                                     <button

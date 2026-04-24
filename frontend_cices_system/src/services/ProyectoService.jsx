@@ -41,8 +41,8 @@ export async function registrarProyecto(proyecto, token) {
 export async function cargarProyectos(token, user, principal) {
     const esInvestidor = esSoloInvestigador(user)
     let url = esInvestidor
-        ? `${API}/api/reports/proyectos/investigador`
-        : `${API}/api/reports/proyectos/codigo-nombre-fechas`;
+        ? `${API}/api/consulta/investigador-proyectos/proyectos`
+        : `${API}/api/consulta/proyectos/busqueda`;
 
     if(esInvestidor && principal) url = url + "/principal"
 

@@ -1,12 +1,15 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.data.CertificacionRepository;
-import org.example.backend_cices_system.dto.CertificacionDTO;
-import org.example.backend_cices_system.dto.CodigoDTO;
-import org.example.backend_cices_system.dto.EntidadDTO;
-import org.example.backend_cices_system.logic.Certificacion;
-import org.example.backend_cices_system.logic.Entidad;
-import org.example.backend_cices_system.logic.Investigador;
+import org.example.backend_cices_system.modules.investigador.repository.CertificacionRepository;
+import org.example.backend_cices_system.modules.investigador.dto.CertificacionDTO;
+import org.example.backend_cices_system.shared.catalogo.CodigoDTO;
+import org.example.backend_cices_system.shared.entidad.EntidadDTO;
+import org.example.backend_cices_system.modules.investigador.model.Certificacion;
+import org.example.backend_cices_system.shared.entidad.Entidad;
+import org.example.backend_cices_system.modules.investigador.model.Investigador;
+import org.example.backend_cices_system.modules.investigador.service.CertificacionService;
+import org.example.backend_cices_system.shared.catalogo.CatalogoService;
+import org.example.backend_cices_system.shared.entidad.EntidadService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;

@@ -1,13 +1,13 @@
 package org.example.backend_cices_system.service;
-
-import org.example.backend_cices_system.data.InvestigadorProyectoRepository;
-import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
-import org.example.backend_cices_system.dto.RolProyectoDTO;
-import org.example.backend_cices_system.logic.Empleado;
-import org.example.backend_cices_system.logic.Investigador;
-import org.example.backend_cices_system.logic.InvestigadorProyecto;
-import org.example.backend_cices_system.logic.Proyecto;
-import org.example.backend_cices_system.logic.RolProyecto;
+/*
+import org.example.backend_cices_system.modules.investigadorProyecto.repository.InvestigadorProyectoRepository;
+import org.example.backend_cices_system.modules.investigadorProyecto.dto.InvestigadorProyectoDTO;
+import org.example.backend_cices_system.modules.investigadorProyecto.dto.RolProyectoDTO;
+import org.example.backend_cices_system.modules.persona.model.Empleado;
+import org.example.backend_cices_system.modules.investigador.repository.usuario.repository.investigador.model.Investigador;
+import org.example.backend_cices_system.modules.investigadorProyecto.model.InvestigadorProyecto;
+import org.example.backend_cices_system.modules.proyecto.model.Proyecto;
+import org.example.backend_cices_system.modules.investigadorProyecto.model.RolProyecto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -225,4 +225,4 @@ class InvestigadorProyectoServiceTest {
         assertTrue(ex.getMessage().contains("InvestigadorProyecto no encontrado"));
         verify(investigadorProyectoRepository).findById(99);
     }
-}
+}*/

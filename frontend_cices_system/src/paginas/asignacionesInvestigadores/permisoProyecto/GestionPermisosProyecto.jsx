@@ -124,7 +124,7 @@ export default function GestionPermisosProyecto() {
                         proyectoSeleccionado={proyecto}
                         investigadoresProyecto={
                             investigadores.filter(i =>
-                                !permisos.some(p => p.investigadorProyectoDTO?.id === i.id)
+                                !permisos.some(p => p.idInvestigadorProyecto === i.id)
                                 &&
                                 i.rolProyecto?.nombreRolProyecto?.toUpperCase() !== "PRINCIPAL"
                             )
@@ -156,11 +156,11 @@ export default function GestionPermisosProyecto() {
                                 <tr key={p.id}>
 
                                     <td>
-                                        {p.investigadorProyectoDTO?.nombreInvestigador}
+                                        {p.nombreInvestigador}
                                     </td>
 
                                     <td>
-                                        {p.investigadorProyectoDTO?.identificacionInvestigador}
+                                        {p.identificacionInvestigador}
                                     </td>
 
                                     <td>

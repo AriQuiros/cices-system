@@ -1,8 +1,12 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.dto.auth.LoginResponse;
-import org.example.backend_cices_system.logic.Usuario;
-import org.example.backend_cices_system.security.JwtUtil;
+import org.example.backend_cices_system.modules.usuario.dto.LoginResponse;
+import org.example.backend_cices_system.modules.usuario.model.Usuario;
+import org.example.backend_cices_system.modules.usuario.service.AuthService;
+import org.example.backend_cices_system.modules.usuario.service.LoginAttemptService;
+import org.example.backend_cices_system.modules.usuario.service.RolUsuarioService;
+import org.example.backend_cices_system.modules.usuario.service.UsuarioService;
+import org.example.backend_cices_system.shared.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

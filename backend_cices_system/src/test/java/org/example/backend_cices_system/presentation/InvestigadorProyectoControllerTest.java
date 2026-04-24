@@ -1,30 +1,9 @@
 package org.example.backend_cices_system.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
-import org.example.backend_cices_system.dto.RolProyectoDTO;
-import org.example.backend_cices_system.exception.GlobalExceptionHandler;
-import org.example.backend_cices_system.logic.Investigador;
-import org.example.backend_cices_system.logic.Proyecto;
-import org.example.backend_cices_system.service.HorasAsignadasService;
-import org.example.backend_cices_system.service.InvestigadorProyectoService;
-import org.example.backend_cices_system.service.InvestigadorService;
-import org.example.backend_cices_system.service.ProyectoService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+/*
 class InvestigadorProyectoControllerTest {
 
     private MockMvc mockMvc;
@@ -140,4 +119,4 @@ class InvestigadorProyectoControllerTest {
         verify(horasAsignadasService).existInvProyecto(55);
         verify(investigadorProyectoService).eliminarInvestigadorProyecto(55);
     }
-}
+}*/

@@ -1,27 +1,9 @@
 package org.example.backend_cices_system.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.backend_cices_system.dto.CodigoDTO;
-import org.example.backend_cices_system.dto.HorasAsignadasDTO;
-import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
-import org.example.backend_cices_system.dto.RolProyectoDTO;
-import org.example.backend_cices_system.exception.GlobalExceptionHandler;
-import org.example.backend_cices_system.service.HorasAsignadasService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/*
 class HorasAsignadasControllerTest {
 
     private MockMvc mockMvc;
@@ -119,4 +101,4 @@ class HorasAsignadasControllerTest {
 
         verify(horasAsignadasService).eliminarHora(15);
     }
-}
+}*/

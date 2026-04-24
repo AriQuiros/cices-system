@@ -7,7 +7,7 @@ import notificacionNormalIcon from "../assets/images/notificacion-normal.svg";
 import "../App.css"
 
 export default function NotificationMenu() {
-    const { user, token } = useContext(AppContext);
+  /*  const { user, token } = useContext(AppContext);
 
     const [tieneNoLeidas, setTieneNoLeidas] = useState(false);
     const [notificacionesNoLeidas, setNotificacionesNoLeidas] = useState([]);
@@ -83,7 +83,7 @@ export default function NotificationMenu() {
             }
 
             const res = await fetch(
-                `/api/reports/notificaciones/usuario/${encodeURIComponent(user.username)}/detalladas`,
+                `/api/consulta/notificaciones-usuario/detalladas`,
                 { headers }
             );
 
@@ -136,7 +136,7 @@ export default function NotificationMenu() {
                     }
 
                     const res = await fetch(
-                        `/api/reports/notificaciones/usuario/${encodeURIComponent(user.username)}/esperar-cambios`,
+                        `/api/consulta/notificaciones-usuario/esperar-cambios`,
                         { headers, cache: "no-store" }
                     );
 
@@ -228,5 +228,5 @@ export default function NotificationMenu() {
                 </div>
             )}
         </div>
-    );
+    );*/
 }

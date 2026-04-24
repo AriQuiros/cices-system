@@ -1,5 +1,6 @@
 package org.example.backend_cices_system.service;
 
+import org.example.backend_cices_system.modules.usuario.service.LoginAttemptService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

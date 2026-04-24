@@ -1,10 +1,22 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.data.InvestigadorRepository;
-import org.example.backend_cices_system.dto.*;
-import org.example.backend_cices_system.logic.Empleado;
-import org.example.backend_cices_system.logic.Entidad;
-import org.example.backend_cices_system.logic.Investigador;
+import org.example.backend_cices_system.modules.investigador.dto.CertificacionDTO;
+import org.example.backend_cices_system.modules.investigador.dto.InvestigadorDTO;
+import org.example.backend_cices_system.modules.investigador.dto.TituloDTO;
+import org.example.backend_cices_system.modules.investigador.repository.InvestigadorRepository;
+import org.example.backend_cices_system.modules.persona.dto.EmpleadoDTO;
+import org.example.backend_cices_system.modules.persona.model.Empleado;
+import org.example.backend_cices_system.shared.entidad.Entidad;
+import org.example.backend_cices_system.modules.investigador.model.Investigador;
+import org.example.backend_cices_system.modules.investigador.service.CertificacionService;
+import org.example.backend_cices_system.modules.investigador.service.InvestigadorService;
+import org.example.backend_cices_system.modules.investigador.service.TituloService;
+import org.example.backend_cices_system.modules.persona.service.EmpleadoService;
+import org.example.backend_cices_system.modules.usuario.dto.RolDTO;
+import org.example.backend_cices_system.modules.usuario.dto.UsuarioDTO;
+import org.example.backend_cices_system.shared.catalogo.CodigoDTO;
+import org.example.backend_cices_system.shared.entidad.EntidadDTO;
+import org.example.backend_cices_system.shared.entidad.EntidadService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;

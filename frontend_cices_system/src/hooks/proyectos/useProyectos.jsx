@@ -19,8 +19,7 @@ export function useProyectos() {
         texto: "",
         lineaInvestigacion: [],
         tipoProyecto: [],
-        estado: "",
-        institucion: ""
+        estado: ""
     });
 
     const cargar = async () => {
@@ -58,8 +57,7 @@ export function useProyectos() {
             texto: "",
             lineaInvestigacion: [],
             tipoProyecto: [],
-            estado: "",
-            institucion: ""
+            estado: ""
         });
     };
 

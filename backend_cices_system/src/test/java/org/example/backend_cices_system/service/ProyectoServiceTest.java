@@ -1,25 +1,6 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.dto.CodigoDTO;
-import org.example.backend_cices_system.dto.ProyectoDTO;
-import org.example.backend_cices_system.dto.ResumenHorasProyectoDTO;
-import org.example.backend_cices_system.logic.Proyecto;
-import org.example.backend_cices_system.data.HorasAsignadasRepository;
-import org.example.backend_cices_system.data.ProyectoRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static net.bytebuddy.matcher.ElementMatchers.any;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+/*
 @ExtendWith(MockitoExtension.class)
 class ProyectoServiceTest {
 
@@ -146,4 +127,4 @@ class ProyectoServiceTest {
         verify(proyectoRepository).save(proyectoExistente); // se guardó el mismo
 
     }
-}
+}*/

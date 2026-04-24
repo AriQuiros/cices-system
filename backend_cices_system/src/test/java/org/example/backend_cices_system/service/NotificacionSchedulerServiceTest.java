@@ -1,13 +1,27 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.dto.NotificacionDTO;
-import org.example.backend_cices_system.logic.*;
+import org.example.backend_cices_system.modules.notificacion.dto.NotificacionDTO;
+import org.example.backend_cices_system.modules.investigador.model.Certificacion;
+import org.example.backend_cices_system.modules.investigador.model.Investigador;
+import org.example.backend_cices_system.modules.investigador.service.CertificacionService;
+import org.example.backend_cices_system.modules.investigadorProyecto.model.InvestigadorProyecto;
+import org.example.backend_cices_system.modules.investigadorProyecto.service.InvestigadorProyectoService;
+import org.example.backend_cices_system.modules.notificacion.model.Notificacion;
+import org.example.backend_cices_system.modules.notificacion.service.NotificacionSchedulerService;
+import org.example.backend_cices_system.modules.notificacion.service.NotificacionService;
+import org.example.backend_cices_system.modules.notificacion.service.NotificacionUsuarioService;
+import org.example.backend_cices_system.modules.persona.model.Empleado;
+import org.example.backend_cices_system.modules.proyecto.model.PresentacionInforme;
+import org.example.backend_cices_system.modules.proyecto.model.Proyecto;
+import org.example.backend_cices_system.modules.proyecto.service.PresentacionInformeService;
+import org.example.backend_cices_system.modules.usuario.model.RolUsuario;
+import org.example.backend_cices_system.modules.usuario.model.Usuario;
+import org.example.backend_cices_system.modules.usuario.service.RolUsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 

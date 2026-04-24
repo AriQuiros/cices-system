@@ -1,10 +1,11 @@
 package org.example.backend_cices_system.presentation;
 
-import org.example.backend_cices_system.dto.auth.LoginResponse;
-import org.example.backend_cices_system.dto.auth.UserInfo;
-import org.example.backend_cices_system.service.AuthService;
-import org.example.backend_cices_system.service.LoginAttemptService;
-import org.example.backend_cices_system.service.PasswordResetService;
+import org.example.backend_cices_system.modules.usuario.dto.LoginResponse;
+import org.example.backend_cices_system.modules.usuario.dto.UserInfo;
+import org.example.backend_cices_system.modules.usuario.controller.AuthController;
+import org.example.backend_cices_system.modules.usuario.service.AuthService;
+import org.example.backend_cices_system.modules.usuario.service.LoginAttemptService;
+import org.example.backend_cices_system.modules.usuario.service.PasswordResetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

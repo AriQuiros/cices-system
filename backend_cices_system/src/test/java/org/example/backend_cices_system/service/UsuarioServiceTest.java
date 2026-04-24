@@ -1,12 +1,15 @@
 package org.example.backend_cices_system.service;
 
-import org.example.backend_cices_system.data.RolUsuarioRepository;
-import org.example.backend_cices_system.data.UsuarioRepository;
-import org.example.backend_cices_system.dto.RolDTO;
-import org.example.backend_cices_system.dto.UsuarioDTO;
-import org.example.backend_cices_system.logic.Rol;
-import org.example.backend_cices_system.logic.RolUsuario;
-import org.example.backend_cices_system.logic.Usuario;
+import org.example.backend_cices_system.modules.usuario.repository.RolUsuarioRepository;
+import org.example.backend_cices_system.modules.usuario.repository.UsuarioRepository;
+import org.example.backend_cices_system.modules.usuario.dto.RolDTO;
+import org.example.backend_cices_system.modules.usuario.dto.UsuarioDTO;
+import org.example.backend_cices_system.modules.usuario.model.Rol;
+import org.example.backend_cices_system.modules.usuario.model.RolUsuario;
+import org.example.backend_cices_system.modules.usuario.model.Usuario;
+import org.example.backend_cices_system.modules.usuario.service.RolService;
+import org.example.backend_cices_system.modules.usuario.service.RolUsuarioService;
+import org.example.backend_cices_system.modules.usuario.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

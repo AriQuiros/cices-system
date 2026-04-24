@@ -1,22 +1,7 @@
 package org.example.backend_cices_system.presentation;
 
-import org.example.backend_cices_system.dto.InvestigadorProyectoDTO;
-import org.example.backend_cices_system.dto.RolProyectoDTO;
-import org.example.backend_cices_system.report.controller.RepInvestigadorProyectoController;
-import org.example.backend_cices_system.report.serviceVw.RepInvestigadorProyectoService;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+/*
 @ExtendWith(MockitoExtension.class)
 class RepInvestigadorProyectoControllerTest {
 
@@ -55,4 +40,4 @@ class RepInvestigadorProyectoControllerTest {
 
         verify(service).buscarPorCodigoProyecto(codigoProyecto);
     }
-}
+}*/

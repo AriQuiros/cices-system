@@ -1,7 +1,8 @@
 package org.example.backend_cices_system.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.backend_cices_system.service.UsuarioService;
+import org.example.backend_cices_system.modules.usuario.controller.UsuarioController;
+import org.example.backend_cices_system.modules.usuario.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-import PresupuestoResumen from "../../../components/ui/PresupuestoResumen.jsx";
+import PresupuestoResumen from "../../../components/ui/Presupuesto/PresupuestoResumen.jsx";
 import GastoForm from "../../../modules/gasto/components/GastoForm.jsx";
 import {GastoTable} from "../../../modules/gasto/components/GastoTable.jsx";
 import {useGastoForm} from "../../../modules/gasto/hooks/useGastoForm.js";
@@ -6,7 +6,7 @@ import {useGestionGastos} from "../../../modules/gasto/hooks/useGestionGastos.js
 
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
 import {useFlujoPresupuesto} from "../../../modules/presupuesto/hooks/useFlujoPresupuesto.js";
-import SelectorPresupuesto from "../../../components/ui/SelectorPresupuesto.jsx";
+import SelectorPresupuesto from "../../../components/ui/Presupuesto/SelectorPresupuesto.jsx";
 import {Pagination} from "../../../components/ui/Pagination.jsx";
 
 const GestionGastos = () => {
@@ -26,7 +26,7 @@ const GestionGastos = () => {
 
         presupuesto,
         setBusquedaPresupuesto
-    } = useFlujoPresupuesto();
+    } = useFlujoPresupuesto("Financiero");
 
     // =========================
     // GASTOS

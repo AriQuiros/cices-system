@@ -67,7 +67,7 @@ public class RepInvestigadorProyectoController {
     @GetMapping("/{codigoProyecto}") // investigadores por proyecto se ordena por fechaInicioInvestigador
     public Page<InvestigadorReporteDTO> obtenerLista(
             @PathVariable String codigoProyecto,
-            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            @PageableDefault(size = 5, page = 0) Pageable pageable,
             @RequestParam(required = false) String ordenPor,
             @RequestParam(required = false) String direccion) {
 

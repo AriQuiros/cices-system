@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useBusquedaPresupuestos } from "./queries/useBusquedaPresupuestos.js";
 import { usePresupuestoDetalle } from "./queries/usePresupuestoDetalle.js";
 
-export const useFlujoPresupuesto = () => {
+export const useFlujoPresupuesto = (tipoPresupuesto = null) => {
     const [busqueda, setBusqueda] = useState("");
     const [proyecto, setProyecto] = useState(null);
     const [presupuestoId, setPresupuestoId] = useState(null);
@@ -13,7 +13,7 @@ export const useFlujoPresupuesto = () => {
     const presupuestosQuery = useBusquedaPresupuestos(
         {
             codigoProyecto: proyecto?.codigoProyecto,
-            tipoPresupuesto: "Financiero",
+            tipoPresupuesto: tipoPresupuesto,
             busqueda
         },
         { page: 0, size: 5 }

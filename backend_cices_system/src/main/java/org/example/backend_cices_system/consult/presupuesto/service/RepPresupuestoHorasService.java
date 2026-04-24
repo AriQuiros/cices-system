@@ -48,8 +48,10 @@ public class RepPresupuestoHorasService {
     public HorasAsignadasReporteDTO obtenerHorasAsignadasReporteDTO(RepPresupuestoHoras horasAsignadas) {
         return new HorasAsignadasReporteDTO(
                 horasAsignadas.getIdHorasAsignadas(),
+                horasAsignadas.getIdInvestigadorProyecto(),
                 horasAsignadas.getNombreCompleto(),
                 horasAsignadas.getModalidad(),
+                "TEMPORAL",
                 horasAsignadas.getCantidadHorasMes(),
                 horasAsignadas.getCantidadMeses(),
                 horasAsignadas.getTotalHorasPlanificadas()

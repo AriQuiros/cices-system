@@ -32,7 +32,12 @@ export const obtenerHoraSrv = async (id) => {
 };
 
 // por presupuesto
-export const obtenerHorasPorPresupuestoSrv = async (id, pageable, ordenarPor, direccion) => {
+export const obtenerHorasPorPresupuestoSrv = async ({ id, pageable, ordenarPor, direccion }) => {
     const res = await obtenerHorasPorPresupuesto(id, pageable, ordenarPor, direccion);
-    return res.data;
+    return {
+        lista: res.data?.content || [],
+        total: res.data?.totalElements || 0,
+        totalPages: res.data?.totalPages || 0,
+        page: res.data?.number || 0
+    };
 };

@@ -1,6 +1,6 @@
 import Select from "react-select";
 import {useEffect, useState} from "react";
-import {obtenerAnio} from "../../utils/formatoFecha.js";
+import {obtenerAnio} from "../../../utils/formatoFecha.js";
 
 const SelectorPresupuesto = ({
                                  presupuestos,

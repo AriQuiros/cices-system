@@ -8,7 +8,7 @@ const parseFecha = (fecha) => {
     return new Date(fecha + "T00:00:00"); // evita problemas de zona horaria
 };
 
-export const formatearFecha = (fecha) => {
+export const formatearFechaCR = (fecha) => {
     const f = parseFecha(fecha);
     if (!f) return "";
 

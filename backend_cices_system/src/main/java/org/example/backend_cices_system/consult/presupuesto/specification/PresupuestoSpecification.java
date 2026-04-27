@@ -40,6 +40,34 @@ public class PresupuestoSpecification {
                 predicates.add(root.get("categoriaPresupuesto").in(filtro.categorias()));
             }
 
+            if (filtro.fechaDesde() != null && filtro.fechaHasta() != null) {
+                predicates.add(
+                        cb.between(
+                                root.get("fechaAsignacion"),
+                                filtro.fechaDesde(),
+                                filtro.fechaHasta()
+                        )
+                );
+            }
+
+            if (filtro.fechaDesde() != null) {
+                predicates.add(
+                        cb.greaterThanOrEqualTo(
+                                root.get("fechaAsignacion"),
+                                filtro.fechaDesde()
+                        )
+                );
+            }
+
+            if (filtro.fechaHasta() != null) {
+                predicates.add(
+                        cb.lessThanOrEqualTo(
+                                root.get("fechaAsignacion"),
+                                filtro.fechaHasta()
+                        )
+                );
+            }
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }

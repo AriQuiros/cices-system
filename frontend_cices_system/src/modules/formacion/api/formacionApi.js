@@ -1,3 +1,4 @@
+// src/modules/formacion/api/formacionApi.js
 import httpClient from "../../../core/api/httpClient";
 
 // eliminar certificación
@@ -10,27 +11,24 @@ export const eliminarTitulo = (id) => {
     return httpClient.delete(`/titulos/eliminar/${id}`);
 };
 
-// filtrar certificaciones
-export const filtrarCertificaciones = (filtro, page, size) => {
-    return httpClient.get("/consulta/certificaciones/filtrar",  {
+// filtrar certificaciones — rol admin/director/asistente
+export const filtrarCertificaciones = (filtro, pageable) => {
+    return httpClient.get("/consulta/certificaciones/filtrar", {
         params: {
-            ... filtro,
-            page,
-            size
+            ...filtro,
+            page: pageable.page,
+            size: pageable.size
         }
     });
 };
 
-// mis certificaciones
+// mis certificaciones — rol investigador (el backend saca el id del JWT)
 export const misCertificaciones = (filtro, pageable) => {
-    return httpClient.get(
-        "/consulta/certificaciones/investigador",
-        {
-            params: {
-                ...filtro,
-                page: pageable.page,
-                size: pageable.size
-            }
+    return httpClient.get("/consulta/certificaciones/investigador", {
+        params: {
+            ...filtro,
+            page: pageable.page,
+            size: pageable.size
         }
-    );
+    });
 };

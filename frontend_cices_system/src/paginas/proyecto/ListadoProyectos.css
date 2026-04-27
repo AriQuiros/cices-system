@@ -168,3 +168,82 @@
         width: 100%;
     }
 }
+
+/* ── Switch de vista ── */
+.listado-switch {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 0 auto 24px;
+    width: fit-content;
+    border-radius: 12px;
+    border: 1px solid #dbe3ee;
+    overflow: hidden;
+}
+
+.listado-switch-btn {
+    padding: 10px 24px;
+    border: none;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 0.93rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.listado-switch-btn:hover {
+    background: #e8f0fe;
+    color: #1d4ed8;
+}
+
+.listado-switch-btn.activo {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+/* ── Filtros de participación investigador ── */
+.filtros-inv {
+    border-top: 1px dashed #dbeafe;
+    padding-top: 12px;
+    margin-top: 4px;
+}
+
+.filtro-fecha-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filtro-fecha-grupo label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ── Datos extra en tarjeta (vista investigador) ── */
+.proyecto_card-inv {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.proyecto_card-rol {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.proyecto_card-fechas-inv {
+    font-size: 0.82rem;
+    color: #475569;
+}

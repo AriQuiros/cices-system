@@ -6,6 +6,7 @@ import {
 } from "../api/gastoApi";
 
 import { obtenerGastosPorPresupuesto } from "../api/gastoConsultaApi";
+import {obtenerBitacoraGasto} from "../api/gastoBitacoraApi.js";
 
 // crear gastos
 export const registrarGastoSrv = async (listDto) => {
@@ -40,4 +41,9 @@ export const obtenerGastosPorPresupuestoSrv = async ({ id, pageable, ordenarPor,
         totalPages: res.data?.totalPages || 0,
         page: res.data?.number || 0
     };
+};
+
+export const obtenerBitacoraGastoSrv = async (idGasto) => {
+    const res = await obtenerBitacoraGasto(idGasto);
+    return res.data || [];
 };

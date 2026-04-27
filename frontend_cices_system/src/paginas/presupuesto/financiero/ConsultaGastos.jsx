@@ -1,325 +1,245 @@
-import React, { useContext, useMemo, useState } from "react";
-import { notify } from "../../../utils/ui/notify.jsx";
-import { AppContext } from "../../../context/AppContext.jsx";
-import { DetalleGastos } from "../../../services/ReportesService.jsx";
-import Select from "react-select";
+// src/paginas/presupuesto/financiero/ConsultaGastos.jsx
+import React, { useMemo, useState } from "react";
 import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import Select from "react-select";
+import PresupuestoItem from "../../../components/ui/Presupuesto/PresupuestoItem.jsx";
+import { Pagination } from "../../../components/ui/Pagination.jsx";
 import "./GestionGastos.css";
 import BotonVolver from "../../../components/BotonVolver.jsx";
-import ModalBitacora from "./ModalBitacora.jsx";
+import { useConsultaGastos } from "../../../modules/presupuesto/hooks/useConsultaGastos.js";
+import {useCatalogos} from "../../../modules/referenceData/hooks/useCatalogos.js";
 
 const ConsultaGastos = () => {
 
-    const { token, user } = useContext(AppContext);
+    const [proyecto, setProyecto] = useState(null);
+    const { data: catalogos } = useCatalogos(["CATEGORIA_PRESUPUESTO"]);
 
-    const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
-    const [presupuestos, setPresupuestos] = useState([]);
+    const {
+        data,
+        isLoading,
+        isError,
+        filtro,
+        setFiltro,
+        pageable,
+        cambiarPagina,
+        ordenPresupuesto,
+        setOrdenPresupuesto,
+        ordenGasto,
+        setOrdenGasto
+    } = useConsultaGastos();
 
-    const [categoriasFiltro, setCategoriasFiltro] = useState([]);
-
-    const [ordenFechaPresupuesto, setOrdenFechaPresupuesto] = useState("desc");
-    const [ordenMontoPresupuesto, setOrdenMontoPresupuesto] = useState("ninguno");
-
-    const [ordenFechaGasto, setOrdenFechaGasto] = useState("desc");
-    const [ordenMontoGasto, setOrdenMontoGasto] = useState("ninguno");
-
-    const [mostrarModal, setMostrarModal] = useState(false);
-    const [gastoSeleccionado, setGastoSeleccionado] = useState(null);
-
-    const seleccionarProyecto = async (proyecto) => {
-        if (!proyecto) {
-            setProyectoSeleccionado(null);
-            return;
-        }
-
-        setProyectoSeleccionado(proyecto);
-
-        try {
-            const data = await DetalleGastos.obtenerPorProyecto(proyecto.codigoProyecto);
-            setPresupuestos(data || []);
-        } catch {
-            notify.error("Error cargando presupuestos");
-        }
+    const seleccionarProyecto = (p) => {
+        setProyecto(p);
+        setFiltro(prev => ({
+            ...prev,
+            codigoProyecto: p?.codigoProyecto || null
+        }));
     };
 
-    const categoriasDisponibles = useMemo(() =>
-            [...new Set(presupuestos.map(p => p.categoria))]
-        , [presupuestos]);
+    const presupuestos = data?.content || [];
 
-    const presupuestosFiltrados = useMemo(() => {
+    const opcionesCategorias = useMemo(() => {
+        const lista = catalogos?.data?.["CATEGORIA_PRESUPUESTO"] || [];
 
-        let lista = [...presupuestos];
+        return lista.map(cat => ({
+            value: cat.despliegue || cat,
+            label: cat.despliegue || cat
+        }));
+    }, [catalogos]);
 
-        if (categoriasFiltro.length > 0) {
-            lista = lista.filter(p => categoriasFiltro.includes(p.categoria));
-        }
-
-        if (ordenFechaPresupuesto === "desc") {
-            lista.sort((a,b)=> new Date(b.fechaAsignacion) - new Date(a.fechaAsignacion));
-        }
-
-        if (ordenFechaPresupuesto === "asc") {
-            lista.sort((a,b)=> new Date(a.fechaAsignacion) - new Date(b.fechaAsignacion));
-        }
-
-        if (ordenMontoPresupuesto === "desc") {
-            lista.sort((a,b)=> b.monto - a.monto);
-        }
-
-        if (ordenMontoPresupuesto === "asc") {
-            lista.sort((a,b)=> a.monto - b.monto);
-        }
-
-        return lista;
-
-    }, [presupuestos, categoriasFiltro, ordenFechaPresupuesto, ordenMontoPresupuesto]);
-
-    const resumenGeneral = useMemo(() => {
-
-        const montoAsignado = presupuestos.reduce(
-            (acc,p)=> acc + (p.monto || 0),0
-        );
-
-        const totalGastos = presupuestos.reduce((acc,p)=>
-                acc + (p.gastos || []).reduce((a,g)=> a + (g.monto || 0),0)
-            ,0);
-
-        const cantidadGastos = presupuestos.reduce(
-            (acc,p)=> acc + (p.gastos || []).length
-            ,0);
-
-        return {
-            montoAsignado,
-            totalGastos,
-            cantidadGastos,
-            restante: montoAsignado - totalGastos
-        };
-
-    }, [presupuestos]);
-
-    const opcionesCategorias = categoriasDisponibles.map(cat => ({
-        value: cat,
-        label: cat
-    }));
-
-    const manejarCategoriasSelect = (selectedOptions) => {
-        setCategoriasFiltro(selectedOptions ? selectedOptions.map(o => o.value) : []);
-    };
-
-    const abrirBitacora = (gasto) => {
-        setGastoSeleccionado(gasto);
-        setMostrarModal(true);
+    const manejarCategorias = (values) => {
+        setFiltro(prev => ({
+            ...prev,
+            categorias: values?.map(v => v.value) || []
+        }));
     };
 
     return (
-
         <div className="gestion-gastos-page">
-
             <div className="gestion-gastos-card">
-                <BotonVolver/>
+
+                <BotonVolver />
 
                 <h2 className="gestion-gastos-title">Consulta de gastos</h2>
 
-                <BuscadorProyecto
-                    token={token}
-                    user={user}
-                    onSelect={seleccionarProyecto}
-                />
+                <BuscadorProyecto onSelect={seleccionarProyecto} />
 
-                {proyectoSeleccionado && (
-
+                {proyecto && (
                     <div className="gestion-gastos-content">
 
-                        <h3 className="gestion-gastos-subtitle">Resumen del proyecto</h3>
-
-                        <div className="gestion-gastos-resumen">
-                            <p>Total presupuestos: {presupuestos.length}</p>
-                            <p>Total gastos registrados: {resumenGeneral.cantidadGastos}</p>
-                            <p>Monto total asignado: {resumenGeneral.montoAsignado}</p>
-                            <p>Total gastado: {resumenGeneral.totalGastos}</p>
-                            <p className={resumenGeneral.restante < 0 ? "presupuesto-restante negativo" : "presupuesto-restante"}>
-                                Presupuesto restante: {resumenGeneral.restante}
-                            </p>
-                        </div>
-
+                        {/* ── FILTROS ── */}
                         <h3 className="gestion-gastos-subtitle">Filtros</h3>
 
                         <div className="consulta-grid-filtros">
-
                             <div className="gasto-form-item">
                                 <label>Categorías</label>
                                 <Select
                                     options={opcionesCategorias}
                                     isMulti
-                                    value={opcionesCategorias.filter(c => categoriasFiltro.includes(c.value))}
-                                    onChange={manejarCategoriasSelect}
-                                    placeholder="Seleccione categoría(s)"
+                                    isClearable
+                                    placeholder="Todas las categorías"
+                                    value={opcionesCategorias.filter(c => filtro.categorias.includes(c.value))}
+                                    onChange={manejarCategorias}
                                     closeMenuOnSelect={false}
                                 />
                             </div>
 
+                            <div className="gasto-form-item">
+                                <label>Fecha desde</label>
+                                <input
+                                    type="date"
+                                    className="gestion-gastos-select"
+                                    value={filtro.fechaDesde || ""}
+                                    onChange={e =>
+                                        setFiltro(prev => ({
+                                            ...prev,
+                                            fechaDesde: e.target.value || null
+                                        }))
+                                    }
+                                />
+                            </div>
+
+                            <div className="gasto-form-item">
+                                <label>Fecha hasta</label>
+                                <input
+                                    type="date"
+                                    className="gestion-gastos-select"
+                                    value={filtro.fechaHasta || ""}
+                                    onChange={e =>
+                                        setFiltro(prev => ({
+                                            ...prev,
+                                            fechaHasta: e.target.value || null
+                                        }))
+                                    }
+                                />
+                            </div>
                         </div>
 
+                        {/* ── ORDEN PRESUPUESTOS ── */}
                         <h3 className="gestion-gastos-subtitle">Ordenar presupuestos</h3>
 
                         <div className="consulta-grid-filtros">
+                            <select
+                                className="gestion-gastos-select"
+                                value={ordenPresupuesto.campo}
+                                onChange={e =>
+                                    setOrdenPresupuesto(prev => ({
+                                        ...prev,
+                                        campo: e.target.value
+                                    }))
+                                }
+                            >
+                                <option value="fecha">Fecha de asignación</option>
+                                <option value="monto">Monto asignado</option>
+                            </select>
 
-                            <div className="gasto-form-item">
-                                <label>Fecha</label>
-                                <select
-                                    className="gestion-gastos-select"
-                                    value={ordenFechaPresupuesto}
-                                    onChange={(e)=> setOrdenFechaPresupuesto(e.target.value)}
-                                >
-                                    <option value="desc">Más recientes</option>
-                                    <option value="asc">Más antiguos</option>
-                                </select>
-                            </div>
-
-                            <div className="gasto-form-item">
-                                <label>Monto</label>
-                                <select
-                                    className="gestion-gastos-select"
-                                    value={ordenMontoPresupuesto}
-                                    onChange={(e)=> setOrdenMontoPresupuesto(e.target.value)}
-                                >
-                                    <option value="ninguno">Sin orden</option>
-                                    <option value="desc">Mayor monto</option>
-                                    <option value="asc">Menor monto</option>
-                                </select>
-                            </div>
-
+                            <select
+                                className="gestion-gastos-select"
+                                value={ordenPresupuesto.direccion}
+                                onChange={e =>
+                                    setOrdenPresupuesto(prev => ({
+                                        ...prev,
+                                        direccion: e.target.value
+                                    }))
+                                }
+                            >
+                                {ordenPresupuesto.campo === "monto" ? (
+                                    <>
+                                        <option value="desc">Mayor a menor</option>
+                                        <option value="asc">Menor a mayor</option>
+                                    </>
+                                ) : (
+                                    <>
+                                        <option value="desc">Más reciente primero</option>
+                                        <option value="asc">Más antiguo primero</option>
+                                    </>
+                                )}
+                            </select>
                         </div>
 
+
+                        {/* ── ORDEN GASTOS ── */}
                         <h3 className="gestion-gastos-subtitle">Ordenar gastos</h3>
 
                         <div className="consulta-grid-filtros">
+                            <select
+                                className="gestion-gastos-select"
+                                value={ordenGasto.campo}
+                                onChange={e =>
+                                    setOrdenGasto(prev => ({
+                                        ...prev,
+                                        campo: e.target.value
+                                    }))
+                                }
+                            >
+                                <option value="fecha">Fecha del gasto</option>
+                                <option value="monto">Monto</option>
+                            </select>
 
-                            <div className="gasto-form-item">
-                                <label>Fecha</label>
-                                <select
-                                    className="gestion-gastos-select"
-                                    value={ordenFechaGasto}
-                                    onChange={(e)=> setOrdenFechaGasto(e.target.value)}
-                                >
-                                    <option value="desc">Más recientes</option>
-                                    <option value="asc">Más antiguos</option>
-                                </select>
-                            </div>
-
-                            <div className="gasto-form-item">
-                                <label>Monto</label>
-                                <select
-                                    className="gestion-gastos-select"
-                                    value={ordenMontoGasto}
-                                    onChange={(e)=> setOrdenMontoGasto(e.target.value)}
-                                >
-                                    <option value="ninguno">Sin orden</option>
-                                    <option value="desc">Mayor monto</option>
-                                    <option value="asc">Menor monto</option>
-                                </select>
-                            </div>
-
+                            <select
+                                className="gestion-gastos-select"
+                                value={ordenGasto.direccion}
+                                onChange={e =>
+                                    setOrdenGasto(prev => ({
+                                        ...prev,
+                                        direccion: e.target.value
+                                    }))
+                                }
+                            >
+                                {ordenGasto.campo === "monto" ? (
+                                    <>
+                                        <option value="desc">Mayor a menor</option>
+                                        <option value="asc">Menor a mayor</option>
+                                    </>
+                                ) : (
+                                    <>
+                                        <option value="desc">Más reciente primero</option>
+                                        <option value="asc">Más antiguo primero</option>
+                                    </>
+                                )}
+                            </select>
                         </div>
+
 
                         <hr />
 
-                        {presupuestosFiltrados.map(presupuesto => {
+                        {/* ── ESTADO ── */}
+                        {isLoading && <p>Cargando presupuestos...</p>}
 
-                            let gastos = [...(presupuesto.gastos || [])];
+                        {isError && (
+                            <p style={{ color: "red" }}>
+                                Ocurrió un error al cargar los presupuestos.
+                            </p>
+                        )}
 
-                            if (ordenFechaGasto === "desc") {
-                                gastos.sort((a,b)=> new Date(b.fechaGasto) - new Date(a.fechaGasto));
-                            }
+                        {!isLoading && !isError && presupuestos.length === 0 && (
+                            <p>Este proyecto no tiene presupuestos financieros registrados.</p>
+                        )}
 
-                            if (ordenFechaGasto === "asc") {
-                                gastos.sort((a,b)=> new Date(a.fechaGasto) - new Date(b.fechaGasto));
-                            }
+                        {/* ── LISTA DE PRESUPUESTOS ── */}
+                        {presupuestos.map(p => (
+                            <PresupuestoItem
+                                key={p.id}
+                                presupuesto={p}
+                                ordenGasto={ordenGasto}
+                            />
 
-                            if (ordenMontoGasto === "desc") {
-                                gastos.sort((a,b)=> b.monto - a.monto);
-                            }
+                        ))}
 
-                            if (ordenMontoGasto === "asc") {
-                                gastos.sort((a,b)=> a.monto - b.monto);
-                            }
-
-                            const totalGastos = gastos.reduce((acc,g)=> acc + g.monto,0);
-                            const restante = presupuesto.monto - totalGastos;
-
-                            return (
-
-                                <div key={presupuesto.id}>
-
-                                    <h4 className="gestion-gastos-subtitle">
-                                        {presupuesto.categoria} - {presupuesto.descripcion}
-                                    </h4>
-
-                                    <div className="gestion-gastos-resumen">
-                                        <p>Fecha de asignacion: {presupuesto.fechaAsignacion}</p>
-                                        <p>Monto asignado: {presupuesto.monto}</p>
-                                        <p>Total gastos: {totalGastos}</p>
-                                        <p className={restante < 0 ? "presupuesto-restante negativo" : "presupuesto-restante"}>
-                                            Restante: {restante}
-                                        </p>
-                                        <p>Cantidad de gastos: {gastos.length}</p>
-                                    </div>
-
-                                    <table className="gestion-gastos-table">
-
-                                        <thead>
-                                        <tr>
-                                            <th>Descripcion</th>
-                                            <th>Fecha</th>
-                                            <th>Monto</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        {gastos.map(g => (
-                                            <tr key={g.id}>
-                                                <td>{g.descripcion}</td>
-                                                <td>{g.fechaGasto}</td>
-                                                <td>{g.monto}</td>
-                                                <td>
-                                                    <button
-                                                        onClick={() => abrirBitacora(g)}
-                                                        className="bg-blue-400 text-white px-2 py-1 rounded"
-                                                    >
-                                                        Ver cambios
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        </tbody>
-
-                                    </table>
-
-                                </div>
-
-                            );
-
-                        })}
+                        {/* ── PAGINACIÓN DE PRESUPUESTOS ── */}
+                        <Pagination
+                            page={pageable.page}
+                            totalPages={data?.totalPages || 0}
+                            totalElements={data?.totalElements || 0}
+                            onPageChange={cambiarPagina}
+                        />
 
                     </div>
-
                 )}
 
             </div>
-
-            {mostrarModal && (
-                <ModalBitacora
-                    gasto={gastoSeleccionado}
-                    token={token}
-                    onClose={() => setMostrarModal(false)}
-                />
-            )}
-
         </div>
-
     );
-
 };
 
 export default ConsultaGastos;

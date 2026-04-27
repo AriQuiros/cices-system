@@ -135,7 +135,7 @@ public class RepInvestigadorProyectoService {
 
     public InvestigadorReporteDTO obtenerInvestigadorReporteDTO(RepInvestigadorProyecto investigadorProyecto){
         return new InvestigadorReporteDTO(
-                investigadorProyecto.getIdInvestigador(),
+                investigadorProyecto.getIdInvestigadorProyecto(),
                 investigadorProyecto.getIdentificacion(),
                 investigadorProyecto.getNombreInvestigador(),
                 investigadorProyecto.getRolProyecto(),

@@ -4,6 +4,9 @@ import { obtenerRolesProyecto } from "../api/referenceApi";
 export const useRolesProyecto = () => {
     return useQuery({
         queryKey: ["roles-proyecto"],
-        queryFn: () => obtenerRolesProyecto()
+        queryFn: async () => {
+            const res = await obtenerRolesProyecto();
+            return res.data;
+        }
     });
 };

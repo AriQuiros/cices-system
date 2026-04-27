@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import {fechaMayorIgualQue, fechaMenorIgualQue, required} from "../../../utils/validaciones/Validators.jsx";
-import "../AsignarInvestigador.css";
+import "../../../paginas/asignacionesInvestigadores/AsignarInvestigador.css";
 
 const hoy = () => {
     return new Date().toISOString().split("T")[0];
@@ -36,14 +36,15 @@ export default function PermisoProyectoForm({   proyectoSeleccionado,
 
         const payload = {
             id: null,
-            investigadorProyectoDTO: form.investigador,
+            idInvestigadorProyecto: form.investigador.id,
+            identificacionInvestigador: form.investigador.identificacion,
+            nombreInvestigador: form.investigador.nombreCompleto,
             fechaInicio: form.fechaInicio,
             fechaFin: form.fechaFin || null
         };
 
         onGuardar(payload);
 
-        // reset
         setForm({
             investigador: null,
             fechaInicio: hoy(),
@@ -65,13 +66,13 @@ export default function PermisoProyectoForm({   proyectoSeleccionado,
                         value={
                             form.investigador
                                 ? {
-                                    label: form.investigador.nombreInvestigador,
+                                    label: form.investigador.nombreCompleto,
                                     value: form.investigador.id
                                 }
                                 : null
                         }
                         options={investigadoresProyecto.map(i => ({
-                            label: i.nombreInvestigador,
+                            label: i.nombreCompleto,
                             value: i.id
                         }))}
                         onChange={(option) =>
@@ -126,3 +127,4 @@ export default function PermisoProyectoForm({   proyectoSeleccionado,
         </form>
     );
 }
+

@@ -51,6 +51,8 @@ public class RepPresupuestoHorasService {
                 horasAsignadas.getIdInvestigadorProyecto(),
                 horasAsignadas.getNombreCompleto(),
                 horasAsignadas.getModalidad(),
+                horasAsignadas.getFechaInicioInvestigador(),
+                horasAsignadas.getFechaFinInvestigador(),
                 "TEMPORAL",
                 horasAsignadas.getCantidadHorasMes(),
                 horasAsignadas.getCantidadMeses(),

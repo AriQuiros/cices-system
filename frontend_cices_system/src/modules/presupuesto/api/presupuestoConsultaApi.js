@@ -1,4 +1,5 @@
 import httpClient from "../../../core/api/httpClient";
+import qs from "qs";
 
 // detalle completo
 export const obtenerPresupuestoReporte = (idPresupuesto) => {
@@ -28,7 +29,9 @@ export const presupuestosPorProyectoTipo = (
             ...ordenamiento,
             page: pageable.page,
             size: pageable.size
-        }
+        },
+        paramsSerializer: params =>
+            qs.stringify(params, { arrayFormat: "repeat" })
     });
 };
 

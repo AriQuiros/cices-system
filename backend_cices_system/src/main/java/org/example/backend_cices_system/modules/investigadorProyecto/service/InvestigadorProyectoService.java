@@ -69,7 +69,9 @@ public class InvestigadorProyectoService {
                 inv.getIdInvestigador().getIdEmpleado().getIdentificacion(),
                 inv.getIdInvestigador().getIdEmpleado().getNombreCompleto(),
                 inv.getIdProyecto().getCodigoProyecto(),
-                obtenerRolProyectoDTO(inv.getIdRolProyecto()),inv.getActividadProyecto(),inv.getFechaInicioInvestigador(),
+                obtenerRolProyectoDTO(inv.getIdRolProyecto())
+                ,inv.getActividadProyecto(),
+                inv.getFechaInicioInvestigador(),
                 inv.getFechaFinInvestigador());
     }
 
@@ -83,7 +85,7 @@ public class InvestigadorProyectoService {
     }
     public InvestigadorProyecto obtenerInvestigadorProyecto(Integer id) {
         return investigadorProyectoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("InvestigadorProyecto no encontrado para el investigador y proyecto dados"));
+                .orElseThrow(() -> new RuntimeException("InvestigadorProyecto no encontrado para el investigador y proyecto"));
     }
 
     public List<InvestigadorProyecto> obtenerPorProyecto(Proyecto proyecto) {

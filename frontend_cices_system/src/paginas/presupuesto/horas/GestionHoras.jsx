@@ -21,7 +21,7 @@ const formularioVacio = {
     cantidadMeses: ""
 };
 
-const GestionHoras = () => {
+const GestionHoras = ({ onEdit } = {}) => {
 
     const { token } = useContext(AppContext);
 
@@ -107,6 +107,7 @@ const GestionHoras = () => {
     };
 
     const editarHoraRegistrada = (hora) => {
+        console.log("GestionHoras: editarHoraRegistrada llamado", hora && hora.id);
         const investigador = investigadoresProyecto.find(
             i => i.id === hora.investigador?.id
         );
@@ -121,6 +122,24 @@ const GestionHoras = () => {
             cantidadMeses: hora.cantidadMeses
         }]);
 
+        // Esperar un tick para que React aplique el estado y renderice el formulario,
+        // luego ejecutar el scroll local directamente hacia el formulario dentro de este componente.
+        requestAnimationFrame(() => setTimeout(() => {
+            const header = document.querySelector("header");
+            const headerHeight = header ? header.offsetHeight : 0;
+            const formEl = document.getElementById("gestion-horas-form");
+            if (formEl) {
+                const y = formEl.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+                const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
+                if (currentY > y + 5) {
+                    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+                }
+            }
+
+            if (onEdit) {
+                try { onEdit(); } catch (e) { /* noop */ }
+            }
+        }, 20));
     };
 
     function limpiar(actualizado){
@@ -344,7 +363,7 @@ const GestionHoras = () => {
                     <p>
                         <strong>Nuevas horas:</strong> {totalFormulario}
                     </p>
-                    <form onSubmit={(e) => { e.preventDefault(); guardarHoras(); }}>
+                    <form id="gestion-horas-form" onSubmit={(e) => { e.preventDefault(); guardarHoras(); }}>
                     {horasForm.map((h, index) => (
 
                         <div key={index} className="fila-horas">

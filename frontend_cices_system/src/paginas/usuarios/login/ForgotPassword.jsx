@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InputField from "../../../utils/validaciones/InputField.jsx";
-import { required, correoUCR, maxLength } from "../../../utils/validaciones/Validators.jsx";
+import { required, pattern, maxLength } from "../../../utils/validaciones/Validators.jsx";
 
 export default function ForgotPassword() {
     const [correo, setCorreo] = useState("");
@@ -35,10 +35,10 @@ export default function ForgotPassword() {
                     label="Correo electrónico"
                     type="email"
                     name="correo"
-                    placeholder="ejemplo@ucr.ac.cr"
+                    placeholder="ejemplo@correo.com"
                     value={correo}
                     onChange={(e) => setCorreo(e.target.value)}
-                    rules={[required(), correoUCR(), maxLength(254)]}
+                    rules={[required(), pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Formato de email inválido"), maxLength(254)]}
                     maxLength={254}
                     required
                 />

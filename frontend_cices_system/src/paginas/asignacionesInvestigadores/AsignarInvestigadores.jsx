@@ -24,7 +24,7 @@ const formularioVacio = {
     search: ""
 };
 
-const AsignarInvestigadores = () => {
+const AsignarInvestigadores = ({ onEdit } = {}) => {
     const { token } = useContext(AppContext);
 
     const [roles, setRoles] = useState([]);
@@ -122,6 +122,13 @@ const AsignarInvestigadores = () => {
             fechaFin: inv.fechaFin || "",
             search: inv.nombreInvestigador
         }]);
+
+        // esperar a que React renderice el formulario, luego desplazar hacia arriba
+        if (onEdit) {
+            requestAnimationFrame(() => setTimeout(() => {
+                try { onEdit(); } catch (e) { /* noop */ }
+            }, 20));
+        }
     };
 
     const limpiar = () => {

@@ -19,7 +19,8 @@
 
 .gestion-horas-card {
     width: 100%;
-    max-width: 1100px;
+    /* Aumentado para adaptarse a tablas anchas en la vista de asignación */
+    max-width: 1400px;
     background: white;
     border-radius: 18px;
     padding: 30px;
@@ -459,6 +460,11 @@ tbody tr:hover {
 .tabla-container {
     width: 100%;
     display: block;
+    /* Aumentar espacio para que la tabla no se salga del div */
+    min-height: 360px;
+    padding-bottom: 24px;
+    box-sizing: border-box;
+    overflow: auto;
 }
 
 .gestion-horas-filtros {

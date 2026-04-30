@@ -162,6 +162,7 @@ header {
 main {
   flex: 1;
   background: #fff;
+  padding-top: 65px;
 }
 
 /* --- FOOTER --- */

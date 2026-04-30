@@ -1,6 +1,6 @@
-import { BrowserRouter } from "react-router-dom";
-import Sidebar from "./components/menu/Sidebar.jsx";
-import NotificationMenu from "./components/menu/NotificationMenu.jsx";
+import { BrowserRouter, useLocation } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import NotificationMenu from "./components/NotificationMenu";
 import AppRoutes from "./utils/routes/AppRoutes";
 import { Toaster } from "sonner";
 
@@ -52,11 +52,16 @@ function Main({ menuAbierto, setMenuAbierto }) {
 
 function Header({ menuAbierto, setMenuAbierto }) {
     const { user } = useContext(AppContext);
+    const location = useLocation();
+
+    // Detectar si está en páginas de autenticación
+    const isAuthPage = location.pathname === "/reset-password" || location.pathname === "/forgot-password";
+    const linkDestination = isAuthPage ? "/" : "/dashboard";
 
     return (
         <header>
             <div className="header-content">
-                <Link to="/dashboard" className="page-name">
+                <Link to={linkDestination} className="page-name">
                     Sistema de Información del CICES
                 </Link>
 

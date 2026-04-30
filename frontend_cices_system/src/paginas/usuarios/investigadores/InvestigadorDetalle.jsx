@@ -1,144 +1,137 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+// src/paginas/usuarios/investigadores/InvestigadorDetalle.jsx
+import { useInvestigadorDetalle } from "../../../modules/persona/hooks/queries/useInvestigadorDetalle.js";
+import { RolChips } from "../../../modules/persona/components/RolChips.jsx";
+import { colorPorEstado } from "../../../modules/formacion/hooks/useConsultaCertificaciones.js";
+import { formatearFechaCR } from "../../../utils/formatoFecha.js";
 import "./InvestigadorDetalle.css";
 
-export default function InvestigadorDetalle({ investigador, onClose }) {
+export default function InvestigadorDetalle({ identificacion, onClose }) {
 
-    const [detalle, setDetalle] = useState(null);
+    const { data: raw, isLoading, isError } = useInvestigadorDetalle(identificacion);
+    const detalle = raw?.data ?? raw;
 
-    useEffect(() => {
-        cargarDetalle();
-    }, []);
-
-    const cargarDetalle = async () => {
-        const res = await axios.get(
-            `/api/reports/investigadores/${investigador.identificacion}`
+    if (isLoading) {
+        return (
+            <div className="id-modal-overlay">
+                <div className="id-modal-card">
+                    <p>Cargando...</p>
+                </div>
+            </div>
         );
+    }
 
-        setDetalle(res.data);
-    };
+    if (isError || !detalle) {
+        return (
+            <div className="id-modal-overlay">
+                <div className="id-modal-card">
+                    <p style={{ color: "red" }}>Error al cargar el detalle.</p>
+                    <button className="id-btn-cerrar" onClick={onClose}>Cerrar</button>
+                </div>
+            </div>
+        );
+    }
 
-    if (!detalle) return null;
+    const persona = detalle.investigador?.persona ?? {};
+    const inv     = detalle.investigador ?? {};
 
     return (
-        <div className="id-modal-overlay">
+        <div className="id-modal-overlay" onClick={onClose}>
+            <div className="id-modal-card" onClick={e => e.stopPropagation()}>
 
-            <div className="id-modal-card">
+                <h2 className="id-modal-title">{persona.nombreCompleto}</h2>
 
-                <h2 className="id-modal-title">
-                    {investigador.nombreCompleto}
-                </h2>
-
-                {/* FILA SUPERIOR */}
                 <div className="id-top-grid">
 
-                    {/* INFORMACION BASE */}
+                    {/* Información básica */}
                     <section className="id-section-card">
-                        <h3 className="id-section-title">
-                            Información básica
-                        </h3>
-
+                        <h3 className="id-section-title">Información básica</h3>
                         <div className="id-basic-grid">
-                            <p><b>Identificación:</b> {investigador.identificacion}</p>
-                            <p><b>País:</b> {investigador.pais}</p>
-                            <p><b>Correo:</b> {investigador.correo}</p>
-                            <p><b>Teléfono:</b> {investigador.numeroTelefono}</p>
-                            <p><b>Grado:</b> {investigador.gradoAcademico}</p>
-                            <p><b>Institución:</b> {investigador.institucionOrigen}</p>
-                            <p><b>Unidad:</b> {investigador.unidadAcademica}</p>
-                            <p><b>Tema interés:</b> {investigador.temaInteres}</p>
+                            <p><b>Identificación:</b> {persona.identificacion}</p>
+                            <p><b>País:</b> {persona.pais}</p>
+                            <p><b>Correo:</b> {persona.correo}</p>
+                            <p><b>Teléfono:</b> {persona.numeroTelefono}</p>
+                            <p><b>Grado:</b> {persona.gradoAcademico}</p>
+                            <p><b>Institución:</b> {inv.institucionOrigen}</p>
+                            <p><b>Unidad:</b> {inv.unidadAcademica}</p>
+                            <p><b>Tema interés:</b> {inv.temaInteres}</p>
+                        </div>
+                        <div style={{ marginTop: 10 }}>
+                            <RolChips roles={persona.roles} />
                         </div>
                     </section>
 
-                    {/* PROYECTOS */}
+                    {/* Proyectos */}
                     <section className="id-section-card">
-                        <h3 className="id-section-title">
-                            Proyectos
-                        </h3>
-
-                        <ul className="id-list">
-                            {(detalle.proyectos || []).map(p => (
-                                <li key={p.codigoProyecto}>
-                                    {p.codigoProyecto} - {p.nombreProyecto}
-                                </li>
-                            ))}
-                        </ul>
+                        <h3 className="id-section-title">Proyectos</h3>
+                        {(detalle.proyectos || []).length === 0
+                            ? <p className="id-vacio">Sin proyectos registrados.</p>
+                            : (
+                                <ul className="id-list">
+                                    {detalle.proyectos.map((p, i) => (
+                                        <li key={i}>{p}</li>
+                                    ))}
+                                </ul>
+                            )
+                        }
                     </section>
 
                 </div>
 
-                {/* CERTIFICACIONES */}
+                {/* Certificaciones */}
                 <section className="id-section-card id-certificaciones-section">
-                    <h3 className="id-section-title">
-                        Certificaciones
-                    </h3>
+                    <h3 className="id-section-title">Certificaciones</h3>
 
-                    {/* encabezado */}
                     <div className="id-cert-row id-cert-header">
-                        <span>Información</span>
+                        <span>Nombre / Institución</span>
                         <span>Tipo</span>
                         <span>Estado</span>
+                        <span>Fecha vencimiento</span>
                     </div>
 
-                    {(detalle.certificaciones || []).map((c, i) => {
-
-                        const estado = c.estado?.toUpperCase();
-
-                        let estadoClass = "id-estado-neutro";
-
-                        if (estado === "VIGENTE") estadoClass = "id-estado-vigente";
-                        if (estado === "PROXIMA A VENCER") estadoClass = "id-estado-proxima";
-                        if (estado === "VENCIDA") estadoClass = "id-estado-vencida";
-
-                        return (
-                            <div key={i} className="id-cert-row">
-
-                                {/* INFORMACION */}
-                                <div>
-                                    {c.nombre} - {c.institucion} ({c.fecha})
+                    {(detalle.certificaciones || []).length === 0
+                        ? <p className="id-vacio">Sin certificaciones.</p>
+                        : detalle.certificaciones.map((c, i) => {
+                            const estilos = colorPorEstado(c.estado);
+                            return (
+                                <div key={i} className="id-cert-row">
+                                    <div>{c.nombre} — {c.institucion}</div>
+                                    <div>{c.tipo}</div>
+                                    <div className="id-estado-cell">
+                                        <span
+                                            className="id-estado-dot"
+                                            style={{ backgroundColor: estilos.color }}
+                                        />
+                                        <span style={{ color: estilos.color }}>{c.estado}</span>
+                                    </div>
+                                    <div>{formatearFechaCR(c.fecha)}</div>
                                 </div>
-
-                                {/* TIPO */}
-                                <div className="id-tipo-cell">
-                                    <span>{c.tipo}</span>
-                                </div>
-                                {/* ESTADO */}
-                                <div className="id-estado-cell">
-                                    <span className={`id-estado-dot ${estadoClass}`}></span>
-                                    <span>{c.estado}</span>
-                                </div>
-
-                            </div>
-                        );
-                    })}
+                            );
+                        })
+                    }
                 </section>
 
-                {/* TITULOS */}
+                {/* Títulos */}
                 <section className="id-section-card id-titulos-section">
-                    <h3 className="id-section-title">
-                        Títulos
-                    </h3>
-
-                    <ul className="id-list">
-                        {(detalle.titulos || []).map((t, i) => (
-                            <li key={i}>
-                                {t.nombre} - {t.institucion} ({t.fecha})
-                            </li>
-                        ))}
-                    </ul>
+                    <h3 className="id-section-title">Títulos</h3>
+                    {(detalle.titulos || []).length === 0
+                        ? <p className="id-vacio">Sin títulos registrados.</p>
+                        : (
+                            <ul className="id-list">
+                                {detalle.titulos.map((t, i) => (
+                                    <li key={i}>
+                                        {t.nombre} — {t.institucion} ({formatearFechaCR(t.fecha)})
+                                    </li>
+                                ))}
+                            </ul>
+                        )
+                    }
                 </section>
 
                 <div className="id-modal-actions">
-                    <button
-                        className="id-btn-cerrar"
-                        onClick={onClose}
-                    >
-                        Cerrar
-                    </button>
+                    <button className="id-btn-cerrar" onClick={onClose}>Cerrar</button>
                 </div>
 
             </div>
-
         </div>
     );
 }

@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { obtenerProyectos } from "../../services/proyectoConsultaService";
 
-export const useProyectos = (filtro, pageable) => {
+export const useProyectos = (filtro, pageable, options = {}) => {
     return useQuery({
         queryKey: ["proyectos", filtro, pageable],
         queryFn: () => obtenerProyectos(filtro, pageable),
-        keepPreviousData: true
+        placeholderData: (prev) => prev,
+        ...options
     });
 };

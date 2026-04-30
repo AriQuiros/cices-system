@@ -87,7 +87,7 @@ public class RepInvestigadorProyectoService {
         if (soloPrincipalOPermiso) {
             spec = spec.and((root, query, cb) ->
                     cb.or(
-                            cb.equal(cb.lower(root.get("rolProyecto")), "PRINCIPAL"),
+                            cb.equal((root.get("rolProyecto")), "PRINCIPAL"),
                             cb.isNotNull(root.get("idPermisoProyecto"))
                     )
             );

@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AppContext } from "../context/AppContext.jsx";
-import { menuConfig } from "../utils/menu/menuConfig.js";
+import { AppContext } from "../../context/AppContext.jsx";
+import { menuConfig } from "../../utils/menu/menuConfig.js";
 
 function Sidebar({ abierto, setMenuAbierto }) {
     const navigate = useNavigate();

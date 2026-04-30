@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
-import BuscadorProyecto from "../../components/BusquedaProyecto.jsx";
+import BuscadorProyecto from "../../components/ui/busqueda/BusquedaProyecto.jsx";
 import BotonVolver from "../../components/BotonVolver.jsx";
 import "./AsignarInvestigador.css";
 
@@ -72,7 +72,7 @@ const AsignarInvestigadores = () => {
                 <h2>Asignación de Investigadores</h2>
             </div>
 
-            <BuscadorProyecto token={token} onSelect={seleccionarProyecto} />
+            <BuscadorProyecto onSelect={setProyecto} />
 
             {proyecto && (
                 <>

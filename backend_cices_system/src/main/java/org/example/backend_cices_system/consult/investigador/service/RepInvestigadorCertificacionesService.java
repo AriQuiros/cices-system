@@ -42,7 +42,7 @@ public class RepInvestigadorCertificacionesService {
                 filtro
         );
 
-        return repo.findAll(spec, pageable)
+        return repo.findAll(spec, pageableFinal)
                 .map(this::toDTO);
     }
 

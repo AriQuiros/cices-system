@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext.jsx";
 import { notify } from "../../../utils/ui/notify.jsx";
 
-import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import BuscadorProyecto from "../../../components/ui/busqueda/BusquedaProyecto.jsx";
 
 import { fetchTiposCatalogo } from "../../../services/CatalogoService.js";
 import { obtenerPresupuestosProyecto, registrarPresupuestos, actualizarPresupuesto } from "../../../services/PresupuestoService.jsx";
@@ -142,10 +142,7 @@ function GestionPresupuestos({modoRegistro = false, proyecto: proyectoProp, onCl
 
             {!modoRegistro && (
                 <div className="registro-presupuesto-search">
-                    <BuscadorProyecto
-                        token={token}
-                        onSelect={seleccionarProyecto}
-                    />
+                    <BuscadorProyecto onSelect={setProyecto} />
                 </div>
             )}
 

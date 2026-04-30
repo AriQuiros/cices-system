@@ -3,7 +3,7 @@ import HoraForm from "../../../modules/horas/components/HoraForm.jsx";
 import { HoraTable } from "../../../modules/horas/components/HoraTable.jsx";
 import { useHoraForm } from "../../../modules/horas/hooks/useHoraForm.js";
 import { useGestionHoras } from "../../../modules/horas/hooks/useGestionHoras.js";
-import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import BuscadorProyecto from "../../../components/ui/busqueda/BusquedaProyecto.jsx";
 import { useFlujoPresupuesto } from "../../../modules/presupuesto/hooks/useFlujoPresupuesto.js";
 import SelectorPresupuesto from "../../../components/ui/Presupuesto/SelectorPresupuesto.jsx";
 import { Pagination } from "../../../components/ui/Pagination.jsx";
@@ -84,7 +84,7 @@ const GestionHoras = () => {
     return (
         <div className="gestion-horas-page">
 
-            <BuscadorProyecto principal={true} onSelect={seleccionarProyecto} />
+            <BuscadorProyecto onSelect={seleccionarProyecto} />
 
             {proyecto && (
                 <SelectorPresupuesto

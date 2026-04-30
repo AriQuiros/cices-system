@@ -42,6 +42,10 @@ public class PersonaSpecification {
                 predicates.add(root.get("gradoAcademico").in(filtro.gradosAcademicos()));
             }
 
+            if (filtro.activo() != null) {
+                predicates.add(cb.equal(root.get("activo"), filtro.activo()));
+            }
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }

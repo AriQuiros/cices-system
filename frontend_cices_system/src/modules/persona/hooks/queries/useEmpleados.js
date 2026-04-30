@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { obtenerEmpleados } from "../api/personaApi";
+import { obtenerEmpleados } from "../../api/personaApi.js";
 
 export const useEmpleados = (filtro, pageable) => {
     return useQuery({

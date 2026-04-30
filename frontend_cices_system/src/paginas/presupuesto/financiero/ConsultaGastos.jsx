@@ -1,6 +1,6 @@
 // src/paginas/presupuesto/financiero/ConsultaGastos.jsx
 import React, { useMemo, useState } from "react";
-import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import BuscadorProyecto from "../../../components/ui/busqueda/BusquedaProyecto.jsx";
 import Select from "react-select";
 import PresupuestoItem from "../../../components/ui/Presupuesto/PresupuestoItem.jsx";
 import { Pagination } from "../../../components/ui/Pagination.jsx";
@@ -62,7 +62,7 @@ const ConsultaGastos = () => {
 
                 <h2 className="gestion-gastos-title">Consulta de gastos</h2>
 
-                <BuscadorProyecto onSelect={seleccionarProyecto} />
+                <BuscadorProyecto onSelect={setProyecto} />
 
                 {proyecto && (
                     <div className="gestion-gastos-content">

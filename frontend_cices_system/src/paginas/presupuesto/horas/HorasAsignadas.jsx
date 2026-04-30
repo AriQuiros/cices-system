@@ -1,6 +1,6 @@
 // src/paginas/presupuesto/horas/ConsultaHoras.jsx
 import React, { useState } from "react";
-import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import BuscadorProyecto from "../../../components/ui/busqueda/BusquedaProyecto.jsx";
 import PresupuestoItemHoras from "../../../components/ui/Presupuesto/PresupuestoItemHoras.jsx";
 import { Pagination } from "../../../components/ui/Pagination.jsx";
 import "./GestionHoras.css";

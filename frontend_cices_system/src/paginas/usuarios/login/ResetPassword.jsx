@@ -1,57 +1,37 @@
-import { useState } from "react";
 import InputField from "../../../utils/validaciones/InputField.jsx";
 import { required, minLength, maxLength, match } from "../../../utils/validaciones/Validators.jsx";
+import { useResetPasswordForm } from "../../../modules/auth/hooks/useResetPasswordForm";
 
+/**
+ * Página de nueva contraseña (reset).
+ *
+ * Solo contiene la estructura visual (HTML + CSS).
+ * Toda la lógica vive en useResetPasswordForm.
+ */
 export default function ResetPassword() {
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [mensaje, setMensaje] = useState("");
-
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!token) {
-            setMensaje("Token inválido");
-            return;
-        }
-
-        try {
-            const res = await fetch("http://localhost:8080/auth/reset-password", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    token: token,
-                    nuevaPassword: password,
-                }),
-            });
-
-            const data = await res.text();
-
-            setMensaje(data || (res.ok ? "Contraseña actualizada" : "Error"));
-
-        } catch {
-            setMensaje("Error o enlace expirado");
-        }
-    };
+    const {
+        password,
+        confirmPassword,
+        handlePasswordChange,
+        handleConfirmChange,
+        handleSubmit,
+        isPending,
+        mensaje,
+        isError,
+    } = useResetPasswordForm();
 
     return (
         <div>
             <h2>Nueva contraseña</h2>
 
             <form onSubmit={handleSubmit}>
-
                 <InputField
                     label="Nueva contraseña"
                     type="password"
                     name="password"
                     placeholder="Mínimo 8 caracteres"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     rules={[required(), minLength(8), maxLength(254)]}
                     maxLength={32}
                     required
@@ -63,7 +43,7 @@ export default function ResetPassword() {
                     name="confirmPassword"
                     placeholder="Repetir contraseña"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={handleConfirmChange}
                     rules={[
                         required(),
                         match(() => password, "Las contraseñas no coinciden"),
@@ -73,10 +53,16 @@ export default function ResetPassword() {
                     required
                 />
 
-                <button type="submit">Actualizar</button>
+                <button type="submit" disabled={isPending}>
+                    {isPending ? "Actualizando…" : "Actualizar"}
+                </button>
             </form>
 
-            {mensaje && <p>{mensaje}</p>}
+            {mensaje && (
+                <p className={isError ? "error" : "success"} role="alert" aria-live="polite">
+                    {mensaje}
+                </p>
+            )}
         </div>
     );
 }

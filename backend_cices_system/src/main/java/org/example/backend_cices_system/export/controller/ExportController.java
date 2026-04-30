@@ -32,13 +32,5 @@ public class ExportController {
         return exportService.generarReporteProyectos(filtro, formato);
     }
 
-    @GetMapping("/test-word")
-    public ResponseEntity<byte[]> testWord() {
-
-        ProyectoFiltroDTO filtro = new ProyectoFiltroDTO(null, null, null, null, "desc");
-
-        return exportService.generarReporteProyectos(filtro, "docx");
-    }
-
 }
 

@@ -84,7 +84,7 @@ public class WordDocumentGenerator implements DocumentGenerator {
         int cols = tableData.headers() != null
                 ? tableData.headers().size()
                 : (tableData.rows() != null && !tableData.rows().isEmpty()
-                ? tableData.rows().get(0).size()
+                ? tableData.rows().getFirst().size()
                 : 1);
 
         XWPFTable table = document.createTable(rows, cols);
@@ -127,7 +127,7 @@ public class WordDocumentGenerator implements DocumentGenerator {
     }
 
     private XWPFParagraph clearParagraph(XWPFTableCell cell) {
-        while (cell.getParagraphs().size() > 0) {
+        while (!cell.getParagraphs().isEmpty()) {
             cell.removeParagraph(0);
         }
         return cell.addParagraph();

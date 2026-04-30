@@ -13,6 +13,8 @@ public interface RepPersonaUsuariaRepository extends
         JpaSpecificationExecutor<RepPersonaUsuaria> {
 
      Optional<RepPersonaUsuaria> findFirstByIdUsuario(Integer idUsuario);
+     Optional<RepPersonaUsuaria> findFirstByIdentificacion(String identificacion);
+
      @Query("""
          SELECT r.idUsuario, r.nombreRol
          FROM RepPersonaUsuaria r

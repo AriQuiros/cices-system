@@ -1,116 +1,22 @@
-import { useAuth } from "../../context/useAuth.js";
-import "../../styles/paginas.css";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, useNavigationType } from "react-router-dom";
-import { loginRequest } from "../../services/AuthService.jsx";
+import "./Login.css";
+import { Link } from "react-router-dom";
+import { useLoginForm } from "../../../modules/auth/hooks/useLoginForm";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
-
+/**
+ * Página de inicio de sesión.
+ *
+ * Solo contiene la estructura visual (HTML + CSS).
+ * Toda la lógica vive en useLoginForm.
+ */
 function Login() {
-    const { login, logout } = useAuth();
-    const [form, setForm] = useState({ username: "", password: "" });
-    const [localError, setLocalError] = useState("");
-    const [submitting, setSubmitting] = useState(false);
-    const [secondsLeft, setSecondsLeft] = useState(0);
-    const timerRef = useRef(null);
-    const navigate = useNavigate();
-    const navType = useNavigationType();
-
-    useEffect(() => {
-        if (navType === "POP") {
-            logout();
-            navigate("/", { replace: true });
-        }
-    }, [navType, logout, navigate]);
-
-    const clearTimer = () => {
-        if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-    };
-
-    useEffect(() => () => clearTimer(), []);
-
-    const formatMMSS = (s) => {
-        const m = Math.floor(s / 60);
-        const ss = String(s % 60).padStart(2, "0");
-        return `${m}:${ss}`;
-    };
-
-    const startCountdown = (mins) => {
-        clearTimer();
-        const total = Math.max(0, Math.floor(mins * 60));
-        setSecondsLeft(total);
-        if (total === 0) return;
-        timerRef.current = setInterval(() => {
-            setSecondsLeft((prev) => (prev <= 1 ? (clearTimer(), 0) : prev - 1));
-        }, 1000);
-    };
-
-    const handleChange = (e) => {
-        setLocalError("");
-        setSecondsLeft(0);
-        clearTimer();
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (submitting) return;
-
-        setSubmitting(true);
-        setLocalError("");
-        setSecondsLeft(0);
-        clearTimer();
-
-        try {
-            const res = await loginRequest(form.username, form.password);
-
-            if (!res.ok) {
-                let msg = "Error en servidor";
-
-                if (res.status === 401) {
-                    const remaining = res.headers.get("X-Login-Attempts-Remaining");
-                    msg = `Credenciales inválidas${remaining ? ` · Intentos restantes: ${remaining}` : ""}`;
-                }
-                else if (res.status === 423) {
-                    let mins = 0;
-                    try {
-                        const j = await res.json();
-                        mins = Number(j?.remainingMinutes ?? 0);
-                    } catch {}
-
-                    msg = mins > 0
-                        ? `Cuenta bloqueada. Intenta en ${formatMMSS(mins * 60)}`
-                        : "Cuenta bloqueada temporalmente.";
-
-                    if (mins > 0) startCountdown(mins);
-                }
-                else {
-                    try {
-                        const j = await res.json();
-                        if (j?.error) msg = j.error;
-                    } catch {}
-                }
-
-                setLocalError(msg);
-                return;
-            }
-
-            const data = await res.json();
-            login(data.user, data.token);
-
-            const r = data.user.roles || [];
-            const dest =
-                r.includes("DIRECCION") ? "/dashboard" : "/listado-proyectos";
-
-            const welcomeMsg = `Bienvenid@, ${data.user?.nombreCompleto || data.user?.username || ""}`;
-            navigate(dest, { state: { toast: welcomeMsg } });
-
-        } catch {
-            setLocalError("No se pudo conectar con el servidor");
-        } finally {
-            setSubmitting(false);
-        }
-    };
+    const {
+        form,
+        handleChange,
+        handleSubmit,
+        isPending,
+        errorDisplay,
+        hasError,
+    } = useLoginForm();
 
     return (
         <section className="login-container">
@@ -121,31 +27,54 @@ function Login() {
                 <form onSubmit={handleSubmit} className="login-form">
                     <label>
                         Usuario
-                        <input type="text" id="login-username" name="username" placeholder="usuario@ucr.ac.cr"
-                               value={form.username} onChange={handleChange} required />
+                        <input
+                            type="text"
+                            id="login-username"
+                            name="username"
+                            placeholder="usuario@ucr.ac.cr"
+                            value={form.username}
+                            onChange={handleChange}
+                            required
+                        />
                     </label>
 
                     <label>
                         Contraseña
-                        <input type="password" id="login-password" name="password" placeholder="••••••••"
-                               value={form.password} onChange={handleChange} required />
+                        <input
+                            type="password"
+                            id="login-password"
+                            name="password"
+                            placeholder="••••••••"
+                            value={form.password}
+                            onChange={handleChange}
+                            required
+                        />
                     </label>
 
                     <div className="login-actions">
-                        <button type="submit" id="login-submit" className="btn-login" disabled={submitting}>
-                            {submitting ? "Ingresando" : "Login"}
+                        <button
+                            type="submit"
+                            id="login-submit"
+                            className="btn-login"
+                            disabled={isPending}
+                        >
+                            {isPending ? "Ingresando…" : "Login"}
                         </button>
                     </div>
 
                     <div className="login-links">
-                        <label>¿No tienes una cuenta?
-                            <a href="/Registro"> Click aquí</a>
+                        <label>
+                            ¿No tienes una cuenta?
+                            <Link to="/registro"> Click aquí</Link>
                         </label>
+                        <div>
+                            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
+                        </div>
                     </div>
 
-                    {(localError || secondsLeft > 0) && (
+                    {hasError && (
                         <p className="error" role="alert" aria-live="polite">
-                            {secondsLeft > 0 ? `Cuenta bloqueada. Intenta en ${formatMMSS(secondsLeft)}` : localError}
+                            {errorDisplay}
                         </p>
                     )}
                 </form>
@@ -155,4 +84,3 @@ function Login() {
 }
 
 export default Login;
-

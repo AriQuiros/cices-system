@@ -1,7 +1,5 @@
-package org.example.backend_cices_system.consult.investigador.dto;
+package org.example.backend_cices_system.consult.persona.dto;
 
-
-import org.example.backend_cices_system.consult.persona.dto.PersonaUsuariaDTO;
 
 public record InvestigadorConsultaDTO(
         PersonaUsuariaDTO persona,

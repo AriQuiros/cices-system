@@ -1,10 +1,8 @@
 package org.example.backend_cices_system.consult.persona.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.consult.persona.dto.*;
 import org.example.backend_cices_system.consult.persona.repository.RepPersonaUsuariaRepository;
-import org.example.backend_cices_system.consult.persona.dto.PersonaUsuariaDTO;
-import org.example.backend_cices_system.consult.persona.dto.UsuarioPersonaDTO;
-import org.example.backend_cices_system.consult.persona.dto.PersonaFiltroDTO;
 import org.example.backend_cices_system.consult.persona.specification.PersonaSpecification;
 import org.example.backend_cices_system.consult.persona.view.RepPersonaUsuaria;
 import org.springframework.data.domain.Page;
@@ -25,6 +23,10 @@ public class RepPersonaUsuariaService {
                 new RuntimeException("No existe persona con el id " + idUsuario));
     }
 
+    public RepPersonaUsuaria obtenerPorIdentificacion(String identificacion){
+        return personaRepo.findFirstByIdentificacion(identificacion).orElseThrow(() ->
+                new RuntimeException("No existe persona con la identificacion " + identificacion));
+    }
 
     public Page<UsuarioPersonaDTO> todosUsuarios(PersonaFiltroDTO filtro, Pageable pageable) {
 
@@ -52,23 +54,28 @@ public class RepPersonaUsuariaService {
     ) {
 
         Page<RepPersonaUsuaria> page = filtrar(filtro, pageable);
-
         List<Integer> ids = page.getContent()
                 .stream()
                 .map(RepPersonaUsuaria::getIdUsuario)
                 .toList();
-
         Map<Integer, List<String>> rolesMap = obtenerRolesMap(ids);
 
-        return page.map(rep -> new PersonaUsuariaDTO(
-                rep.getNombreCompleto(),
-                rep.getIdentificacion(),
-                rep.getPais(),
-                rep.getCorreo(),
-                rep.getNumeroTelefono(),
-                rep.getGradoAcademico(),
-                rolesMap.getOrDefault(rep.getIdUsuario(), List.of())
-        ));
+        return page.map( rep -> construirPersonaDTO(rep, rolesMap));
+    }
+
+    public Page<InvestigadorConsultaDTO> obtenerInvestigadoresPorRoles(
+            PersonaFiltroDTO filtro,
+            Pageable pageable
+    ) {
+
+        Page<RepPersonaUsuaria> page = filtrar(filtro, pageable);
+        List<Integer> ids = page.getContent()
+                .stream()
+                .map(RepPersonaUsuaria::getIdUsuario)
+                .toList();
+        Map<Integer, List<String>> rolesMap = obtenerRolesMap(ids);
+
+        return page.map( rep -> construirInvestigadorConsultaDTO(rep, rolesMap));
     }
 
     public Page<RepPersonaUsuaria> filtrar(PersonaFiltroDTO filtro, Pageable pageable){
@@ -78,17 +85,24 @@ public class RepPersonaUsuariaService {
         return personaRepo.findAll(spec, pageable);
     }
 
-    public Page<PersonaUsuariaDTO> construirPersonaDTO(Page<RepPersonaUsuaria> page) {
-
-        return page.map(rep -> new PersonaUsuariaDTO(
+    public PersonaUsuariaDTO construirPersonaDTO(RepPersonaUsuaria rep, Map<Integer, List<String>> rolesMap){
+        return new PersonaUsuariaDTO(
                 rep.getNombreCompleto(),
                 rep.getIdentificacion(),
                 rep.getPais(),
                 rep.getCorreo(),
                 rep.getNumeroTelefono(),
                 rep.getGradoAcademico(),
-                List.of()
-        ));
+                rolesMap.getOrDefault(rep.getIdUsuario(), List.of())
+        );
+    }
+
+    public InvestigadorConsultaDTO construirInvestigadorConsultaDTO(RepPersonaUsuaria rep, Map<Integer, List<String>> rolesMap){
+        return new InvestigadorConsultaDTO(
+                construirPersonaDTO(rep, rolesMap),
+                rep.getInstitucionOrigen(),
+                rep.getUnidadAcademica(),
+                rep.getTemaInteres());
     }
 
     private Map<Integer, List<String>> obtenerRolesMap(List<Integer> ids) {

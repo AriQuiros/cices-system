@@ -5,5 +5,6 @@ import java.util.List;
 public record PersonaFiltroDTO(
         String nombre,
         List<String> roles,
-        List<String> gradosAcademicos
+        List<String> gradosAcademicos,
+        Boolean activo
 ) {}

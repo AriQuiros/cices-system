@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import { loginSrv } from "../services/authService";
+import { loginSrv } from "../../services/authService.js";
 import { useContext } from "react";
-import { AppContext } from "../../../context/AppContext";
+import { AppContext } from "../../../../context/AppContext.jsx";
 
 export const useLogin = () => {
     const { login } = useContext(AppContext);

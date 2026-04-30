@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { resetPasswordSrv } from "../services/authService";
+import { resetPasswordSrv } from "../../services/authService.js";
 
 export const useResetPassword = () => {
     return useMutation({

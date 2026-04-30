@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { registrarEmpleado } from "../services/empleadoService";
+import { registrarEmpleado } from "../../services/empleadoService";
 
 export const useCrearEmpleado = () => {
     const queryClient = useQueryClient();

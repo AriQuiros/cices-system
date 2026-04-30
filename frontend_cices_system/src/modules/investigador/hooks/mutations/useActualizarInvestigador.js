@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { actualizarInvestigadorSrv } from "../services/investigadorService";
+import { actualizarInvestigadorSrv } from "../../services/investigadorService";
 
 export const useActualizarInvestigador = () => {
     const queryClient = useQueryClient();

@@ -1,10 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../context/AppContext.jsx";
+import { AppContext } from "../../context/AppContext.jsx";
 
 /* IMÁGENES */
-import notificacionAlertaIcon from "../assets/images/notificacion-alerta.svg";
-import notificacionNormalIcon from "../assets/images/notificacion-normal.svg";
-import "../App.css"
+import notificacionAlertaIcon from "../../assets/images/notificacion-alerta.svg";
+import notificacionNormalIcon from "../../assets/images/notificacion-normal.svg";
+import "../../App.css"
 
 export default function NotificationMenu() {
   /*  const { user, token } = useContext(AppContext);

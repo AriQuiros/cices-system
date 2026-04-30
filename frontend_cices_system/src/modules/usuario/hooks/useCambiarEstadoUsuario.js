@@ -9,7 +9,7 @@ export const useCambiarEstadoUsuario = () => {
             cambiarEstadoUsuario(id, activo),
 
         onSuccess: () => {
-            queryClient.invalidateQueries(["usuarios"]);
+            queryClient.invalidateQueries(["personas-usuarios"]);
         }
     });
 };

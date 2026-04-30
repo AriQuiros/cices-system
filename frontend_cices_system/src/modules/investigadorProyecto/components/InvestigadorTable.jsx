@@ -19,7 +19,7 @@ export const InvestigadorTable = ({ investigadores, onEdit, onDelete }) => {
                 <tbody>
                     {investigadores.map(inv => (
                         <tr key={inv.id}>
-                            <td>{inv.nombreCompleto} - {inv.id}</td>
+                            <td>{inv.nombreCompleto}</td>
                             <td>{inv.rolProyecto}</td>
                             <td>{formatearFechaCR(inv.fechaInicio)} - {formatearFechaCR(inv.fechaFin)}</td>
                             <td>{inv.actividadProyecto}</td>

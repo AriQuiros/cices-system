@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import NotificationMenu from "./components/NotificationMenu";
+import Sidebar from "./components/menu/Sidebar.jsx";
+import NotificationMenu from "./components/menu/NotificationMenu.jsx";
 import AppRoutes from "./utils/routes/AppRoutes";
 import { Toaster } from "sonner";
 

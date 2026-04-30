@@ -1,93 +1,52 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
-import axios from "axios";
+// src/paginas/usuarios/investigadores/ConsultaInvestigadores.jsx
+import { useState } from "react";
+import { Pagination } from "../../../components/ui/Pagination.jsx";
+import { useConsultaPersonas } from "../../../modules/persona/hooks/useConsultaPersonas.js";
+import { PersonaFiltros } from "../../../modules/persona/components/PersonaFiltros.jsx";
+import { RolChips } from "../../../modules/persona/components/RolChips.jsx";
 import InvestigadorDetalle from "./InvestigadorDetalle.jsx";
 import "../../../styles/paginas.css";
 
 export default function ListaInvestigadores() {
-    const [investigadorSeleccionado, setInvestigadorSeleccionado] = useState(null);
-    const [mostrarDetalle, setMostrarDetalle] = useState(false);
 
-    const [personas, setPersonas] = useState([]);
-    const [personasFiltradas, setPersonasFiltradas] = useState([]);
-    const [grados, setGrados] = useState([]);
+    const [identificacionSeleccionada, setIdentificacionSeleccionada] = useState(null);
 
-    const [nombreFiltro, setNombreFiltro] = useState("");
-    const [gradosSeleccionados, setGradosSeleccionados] = useState([]);
-
-    useEffect(() => {
-        cargarPersonas();
-        cargarGrados();
-    }, []);
-
-    useEffect(() => {
-        aplicarFiltros();
-    }, [nombreFiltro, gradosSeleccionados, personas]);
-
-    const cargarPersonas = async () => {
-        const res = await axios.get("/api/reports/personas/investigadores");
-        setPersonas(res.data);
-        console.log(res.data)
-    };
-
-    const cargarGrados = async () => {
-        const res = await axios.get("/api/catalogos/grados_academicos");
-        setGrados(res.data);
-    };
-
-    const manejarGradosSelect = (selectedOptions) => {
-        setGradosSeleccionados(selectedOptions ? selectedOptions.map(o => o.value) : []);
-    };
-
-    const aplicarFiltros = () => {
-        let resultado = [...personas];
-
-        if (nombreFiltro) {
-            resultado = resultado.filter(p =>
-                p.nombreCompleto.toLowerCase().includes(nombreFiltro.toLowerCase())
-            );
-        }
-
-        if (gradosSeleccionados.length > 0) {
-            resultado = resultado.filter(p =>
-                gradosSeleccionados.includes(p.gradoAcademico)
-            );
-        }
-
-        setPersonasFiltradas(resultado);
-    };
+    const {
+        personas,
+        totalElements,
+        totalPages,
+        isLoading,
+        filtro,
+        cambiarFiltro,
+        limpiarFiltros,
+        pageable,
+        cambiarPagina,
+        opcionesGrados,
+        opcionesRoles
+    } = useConsultaPersonas("investigadores");
 
     return (
         <div className="ci-wrapper">
             <div className="ci-content">
-                <h2 className="ci-title">Lista de Investigadores</h2>
 
-                <div className="ci-toolbar">
-                    <input
-                        className="ci-search-input"
-                        type="text"
-                        placeholder="Buscar por nombre..."
-                        value={nombreFiltro}
-                        onChange={(e) => setNombreFiltro(e.target.value)}
-                    />
+                <h2 className="ci-title">Lista de investigadores</h2>
 
-                    <div className="ci-extra-filters">
-                        <div className="ci-field">
-                            <label className="ci-field-label">Grado académico</label>
-                            <Select
-                                classNamePrefix="ci-select"
-                                options={grados.map(g => ({ value: g, label: g }))}
-                                isMulti
-                                value={grados
-                                    .map(g => ({ value: g, label: g }))
-                                    .filter(g => gradosSeleccionados.includes(g.value))
-                                }
-                                onChange={manejarGradosSelect}
-                                placeholder="Seleccione grado(s)"
-                            />
-                        </div>
-                    </div>
-                </div>
+                <PersonaFiltros
+                    filtro={filtro}
+                    onChange={cambiarFiltro}
+                    onLimpiar={limpiarFiltros}
+                    opcionesGrados={opcionesGrados}
+                    opcionesRoles={opcionesRoles}
+                    mostrarRoles={false}
+                    mostrarEstado={false}
+                />
+
+                <p className="ci-total">Total: {totalElements}</p>
+
+                {isLoading && <p className="ci-cargando">Cargando...</p>}
+                {!isLoading && personas.length === 0 && (
+                    <p className="ci-empty-msg">No se encontraron resultados.</p>
+                )}
 
                 <div className="ci-table-card">
                     <table className="ci-table">
@@ -98,55 +57,57 @@ export default function ListaInvestigadores() {
                             <th>País</th>
                             <th>Correo</th>
                             <th>Teléfono</th>
-                            <th>Grado Académico</th>
+                            <th>Grado académico</th>
+                            <th>Roles</th>
                             <th>Institución</th>
                             <th>Unidad</th>
                             <th>Ver</th>
                         </tr>
                         </thead>
-
                         <tbody>
-                        {personasFiltradas.length === 0 ? (
-                            <tr>
-                                <td colSpan="9" className="ci-empty">
-                                    No se encontraron resultados
-                                </td>
-                            </tr>
-                        ) : (
-                            personasFiltradas.map((p, index) => (
-                                <tr key={index}>
+                        {personas.map((item, i) => {
+                            // InvestigadorConsultaDTO: { persona, institucionOrigen, unidadAcademica, temaInteres }
+                            const p = item.persona ?? item;
+                            return (
+                                <tr key={p.identificacion ?? i}>
                                     <td>{p.nombreCompleto}</td>
                                     <td>{p.identificacion}</td>
                                     <td>{p.pais}</td>
                                     <td className="ci-email">{p.correo}</td>
                                     <td>{p.numeroTelefono}</td>
                                     <td>{p.gradoAcademico}</td>
-                                    <td>{p.institucionOrigen}</td>
-                                    <td>{p.unidadAcademica}</td>
+                                    <td><RolChips roles={p.roles} /></td>
+                                    <td>{item.institucionOrigen ?? "—"}</td>
+                                    <td>{item.unidadAcademica ?? "—"}</td>
                                     <td>
                                         <button
                                             className="ci-action-btn"
-                                            onClick={() => {
-                                                setInvestigadorSeleccionado(p);
-                                                setMostrarDetalle(true);
-                                            }}
+                                            onClick={() => setIdentificacionSeleccionada(p.identificacion)}
                                         >
                                             Ver
                                         </button>
                                     </td>
                                 </tr>
-                            ))
-                        )}
+                            );
+                        })}
                         </tbody>
                     </table>
                 </div>
 
-                {mostrarDetalle && (
+                <Pagination
+                    page={pageable.page}
+                    totalPages={totalPages}
+                    totalElements={totalElements}
+                    onPageChange={cambiarPagina}
+                />
+
+                {identificacionSeleccionada && (
                     <InvestigadorDetalle
-                        investigador={investigadorSeleccionado}
-                        onClose={() => setMostrarDetalle(false)}
+                        identificacion={identificacionSeleccionada}
+                        onClose={() => setIdentificacionSeleccionada(null)}
                     />
                 )}
+
             </div>
         </div>
     );

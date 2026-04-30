@@ -1,4 +1,5 @@
 import httpClient from "../../../core/api/httpClient";
+import qs from "qs";
 
 export const obtenerEmpleados = (filtro, pageable) => {
     return httpClient.get("/consulta/personas/empleados", {
@@ -6,7 +7,9 @@ export const obtenerEmpleados = (filtro, pageable) => {
             ...filtro,
             page: pageable.page,
             size: pageable.size
-        }
+        },
+        paramsSerializer: params =>
+            qs.stringify(params, { arrayFormat: "repeat" })
     });
 };
 
@@ -16,7 +19,9 @@ export const obtenerInvestigadores = (filtro, pageable) => {
             ...filtro,
             page: pageable.page,
             size: pageable.size
-        }
+        },
+        paramsSerializer: params =>
+            qs.stringify(params, { arrayFormat: "repeat" })
     });
 };
 
@@ -28,4 +33,8 @@ export const obtenerUsuarios = (filtro, pageable) => {
             size: pageable.size
         }
     });
+};
+
+export const obtenerInvestigadorDetalle = (identificacion) => {
+    return httpClient.get(`/consulta/personas/investigador/${identificacion}`);
 };

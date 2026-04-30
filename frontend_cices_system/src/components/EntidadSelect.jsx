@@ -1,6 +1,8 @@
+// src/components/EntidadSelect.jsx
+import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import { useEntidades } from "../hooks/proyectos/useEntidades";
-import {useState} from "react";
+import { useEntidades } from "../modules/referenceData/hooks/useEntidades.js";
+import { useDebounce } from "../hooks/useDebounce.js";
 
 export default function EntidadSelect({
                                           tipo,
@@ -9,55 +11,76 @@ export default function EntidadSelect({
                                           placeholder,
                                           disabled,
                                           maxLength = 252,
-                                            required
+                                          required
                                       }) {
     const [inputValue, setInputValue] = useState("");
-    const { getOptionsByTipo } = useEntidades();
+    const textoBuscado = useDebounce(inputValue, 350);
 
-    const options = getOptionsByTipo(tipo);
+    const { data: raw, isLoading } = useEntidades(textoBuscado, tipo);
+
+    // El nuevo hook devuelve Page o lista directa — normalizamos
+    const lista = raw?.data?.content ?? raw?.data ?? raw?.content ?? raw ?? [];
+
+    const options = (Array.isArray(lista) ? lista : []).map(e => ({
+        value: e.id,
+        label: e.nombre,
+        tipo:  e.tipo
+    }));
+
+    const selectedOption = options.find(opt => opt.value === value?.id)
+        || (value?.nombre
+            ? { value: value.id || value.nombre, label: value.nombre }
+            : null);
 
     const manejarEntidad = (option) => {
         if (!option) return { nombre: "" };
 
-        // Si option tiene tipo (seleccionada de la lista)
+        // Opción existente seleccionada de la lista
         if (option.tipo) {
             return {
-                id: option.value,
+                id:     option.value,
                 nombre: option.label,
-                tipo: option.tipo
+                tipo:   option.tipo
             };
         }
 
-        const entidadBase = options[0]; // toma la primera entidad del mismo tipo
+        // Opción nueva creada por el usuario (CreatableSelect)
         return {
-            id: null,
+            id:     null,
             nombre: option.label,
-            tipo: entidadBase?.tipo || { valor: tipo } // si no hay, asigna tipo default
+            tipo:   { valor: tipo }
         };
     };
 
     return (
         <CreatableSelect
             required={required}
+            isDisabled={disabled}
+            isLoading={isLoading}
+            isClearable
             options={options}
-            value={
-                value?.nombre
-                    ? {
-                        value: value.id || value.nombre,
-                        label: value.nombre
-                    }
-                    : null
-            }
-            onChange={(option) => onChange(manejarEntidad(option))}
-            placeholder={placeholder}
+            value={selectedOption}
             inputValue={inputValue}
-            onInputChange={(val) => {
-                if (val.length <= maxLength) {
+            onInputChange={(val, { action }) => {
+                if (action === "input-change" && val.length <= maxLength) {
                     setInputValue(val);
                 }
+
+                if (action === "menu-close") {
+                    setInputValue("");
+                }
             }}
-            isClearable
-            isDisabled={disabled}
+            onChange={opt => {
+                setInputValue("");
+                onChange(manejarEntidad(opt));
+            }}
+            placeholder={placeholder}
+            filterOption={() => true}  // el filtrado lo hace el backend
+            noOptionsMessage={() =>
+                textoBuscado.length === 0 ? "Buscar" : "Sin resultados"
+            }
+            loadingMessage={() => "Buscando..."}
+            formatCreateLabel={val => `Usar "${val}"`}
         />
     );
 }

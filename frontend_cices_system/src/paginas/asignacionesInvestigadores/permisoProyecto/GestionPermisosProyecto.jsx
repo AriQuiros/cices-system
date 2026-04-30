@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../../../context/AppContext.jsx";
-import BuscadorProyecto from "../../../components/BusquedaProyecto.jsx";
+import BuscadorProyecto from "../../../components/ui/busqueda/BusquedaProyecto.jsx";
 import PermisoProyectoForm from "../../../modules/permisoProyecto/components/PermisoProyectoForm.jsx";
 import { notify } from "../../../utils/ui/notify.jsx";
 import { useGestionPermisos } from "../../../modules/permisoProyecto/hooks/useGestionPermisos";
@@ -41,12 +41,7 @@ export default function GestionPermisosProyecto() {
 
             <h2>Gestión de Permisos de Proyecto</h2>
 
-            <BuscadorProyecto
-                token={token}
-                user={user}
-                principal={true}
-                onSelect={seleccionarProyecto}
-            />
+            <BuscadorProyecto onSelect={setProyecto} soloPrincipalOPermiso={true} />
 
             {proyecto && (
 

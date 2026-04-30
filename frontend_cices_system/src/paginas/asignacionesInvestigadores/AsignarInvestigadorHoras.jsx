@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AsignarInvestigadores from "./AsignarInvestigadores.jsx";
 import GestionHoras from "../presupuesto/horas/GestionHoras.jsx";
-import BuscadorProyecto from "../../components/BusquedaProyecto.jsx"; // <- import
+import BuscadorProyecto from "../../components/ui/busqueda/BusquedaProyecto.jsx"; // <- import
 
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -57,7 +57,7 @@ export default function WizardAsignacion() {
                         <h3 className="font-semibold mb-4">Paso 1: Seleccionar proyecto</h3>
 
                         {/* Buscador real de proyectos */}
-                        <BuscadorProyecto token={token} onSelect={setProyectoSeleccionado} />
+                        <BuscadorProyecto onSelect={setProyectoSeleccionado} />
 
                         {proyectoSeleccionado && (
                             <div className="mt-4 p-2 bg-gray-100 rounded border">

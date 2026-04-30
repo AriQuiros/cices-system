@@ -48,7 +48,7 @@ export function CertificacionTabla({
                     <th>Institución</th>
                     <th>Tipo</th>
                     <th>Estado</th>
-                    <th>Fecha</th>
+                    <th>Fecha expira</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -88,7 +88,7 @@ export function CertificacionTabla({
                 <th>Institución</th>
                 <th>Tipo</th>
                 <th>Estado</th>
-                <th>Fecha</th>
+                <th>Fecha expira</th>
             </tr>
             </thead>
             <tbody>

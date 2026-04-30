@@ -1,17 +1,18 @@
 // src/paginas/reportes/Certificaciones.jsx
 import { useState } from "react";
-import { Pagination } from "../../components/ui/Pagination.jsx";
 import { useConsultaCertificaciones } from "../../modules/formacion/hooks/useConsultaCertificaciones.js";
 import { CertificacionFiltros } from "../../modules/formacion/components/CertificacionFiltros.jsx";
 import { CertificacionResumen } from "../../modules/formacion/components/CertificacionResumen.jsx";
 import { CertificacionTabla } from "../../modules/formacion/components/CertificacionTabla.jsx";
 import "./Certificaciones.css";
+import {descargarArchivo} from "../../modules/export/services/exportService.js";
+import {useExportarCertificaciones} from "../../modules/export/hook/useExport.js";
 
 export default function CertificacionesPage() {
 
     const [agrupado, setAgrupado] = useState(false);
     const [formato, setFormato] = useState("pdf");
-    const [exportando, setExportando] = useState(false);
+    const { mutateAsync: exportarCertificaciones, isPending } = useExportarCertificaciones();
 
     const {
         certificaciones,
@@ -29,34 +30,24 @@ export default function CertificacionesPage() {
         agruparPorInvestigador
     } = useConsultaCertificaciones("todas");
 
+
     const handleExportar = async () => {
         try {
-            setExportando(true);
-            const response = await fetch(
-                `/api/reports/certificaciones/reporte?formato=${formato}`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        investigador:        filtro.investigador,
-                        nombreCertificacion: filtro.nombreCertificacion,
-                        tipos:               filtro.tipos,
-                        estados:             filtro.estados,
-                        ordenFecha:          filtro.ordenFecha
-                    })
-                }
-            );
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `certificaciones.${formato}`;
-            a.click();
-            window.URL.revokeObjectURL(url);
+            const blob = await exportarCertificaciones({
+                filtro: {
+                    investigador: filtro.investigador,
+                    nombreCertificacion: filtro.nombreCertificacion,
+                    tipos: filtro.tipos,
+                    estados: filtro.estados,
+                    ordenFecha: filtro.ordenFecha
+                },
+                formato
+            });
+
+            descargarArchivo(blob, `certificaciones.${formato}`);
+
         } catch (err) {
             console.error(err);
-        } finally {
-            setExportando(false);
         }
     };
 
@@ -65,6 +56,16 @@ export default function CertificacionesPage() {
             <div className="cert-card">
 
                 <h1 className="cert-title">Certificaciones</h1>
+
+                {/* Filtros */}
+                <CertificacionFiltros
+                    filtro={filtro}
+                    onChange={cambiarFiltro}
+                    onLimpiar={limpiarFiltros}
+                    opcionesTipos={opcionesTipos}
+                    opcionesEstados={opcionesEstados}
+                    mostrarInvestigador={true}
+                />
 
                 {/* Controles generales */}
                 <div className="cert-controls">
@@ -90,22 +91,12 @@ export default function CertificacionesPage() {
                         <button
                             className="cert-btn-export"
                             onClick={handleExportar}
-                            disabled={exportando}
+                            disabled={isPending}
                         >
-                            {exportando ? "Exportando..." : "Exportar"}
+                            {isPending ? "Exportando..." : "Exportar"}
                         </button>
                     </div>
                 </div>
-
-                {/* Filtros */}
-                <CertificacionFiltros
-                    filtro={filtro}
-                    onChange={cambiarFiltro}
-                    onLimpiar={limpiarFiltros}
-                    opcionesTipos={opcionesTipos}
-                    opcionesEstados={opcionesEstados}
-                    mostrarInvestigador={true}
-                />
 
                 {/* Resumen */}
                 <CertificacionResumen

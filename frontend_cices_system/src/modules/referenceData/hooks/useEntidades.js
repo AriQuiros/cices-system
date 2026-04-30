@@ -5,6 +5,7 @@ export const useEntidades = (nombre, tipo) => {
     return useQuery({
         queryKey: ["entidades", nombre, tipo],
         queryFn: () => buscarEntidades(nombre, tipo),
-        keepPreviousData: true
+        keepPreviousData: true,
+        enabled: !!nombre
     });
 };

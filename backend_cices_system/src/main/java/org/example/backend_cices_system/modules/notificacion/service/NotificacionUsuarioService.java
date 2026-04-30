@@ -27,7 +27,11 @@ public class NotificacionUsuarioService {
 
         notificacionUsuario.setIdUsuario(usuario);
 
-        var guardada = notificacionUsuarioRepository.save(notificacionUsuario);
+                // Asegurar estado inicial: no leída y no eliminada
+                notificacionUsuario.setLeido(Boolean.FALSE);
+                notificacionUsuario.setEliminado(Boolean.FALSE);
+
+                var guardada = notificacionUsuarioRepository.save(notificacionUsuario);
         notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
         return guardada;
     }

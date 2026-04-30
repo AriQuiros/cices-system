@@ -54,16 +54,23 @@ function Header({ menuAbierto, setMenuAbierto }) {
     const { user } = useContext(AppContext);
     const location = useLocation();
 
-    // Detectar si está en páginas de autenticación
+    // Detectar si está en login o páginas de autenticación
+    const isLoginPage = location.pathname === "/";
     const isAuthPage = location.pathname === "/reset-password" || location.pathname === "/forgot-password";
     const linkDestination = isAuthPage ? "/" : "/dashboard";
 
     return (
         <header>
             <div className="header-content">
-                <Link to={linkDestination} className="page-name">
-                    Sistema de Información del CICES
-                </Link>
+                    {isLoginPage ? (
+                        <span className="page-name page-name-static">
+                            Sistema de Información del CICES
+                        </span>
+                    ) : (
+                        <Link to={linkDestination} className="page-name">
+                            Sistema de Información del CICES
+                        </Link>
+                    )}
 
                 <div className="logos">
                     <img src={logoUCR} alt="Logo UCR" />

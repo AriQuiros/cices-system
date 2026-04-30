@@ -24,10 +24,8 @@ public class PasswordResetService {
         System.out.println("buscando correo... " + correo);
         var usuarioOpt = usuarioService.obtenerUsuarioActivo(correo);
 
-        // 🔒 No revelar si existe o no
         if (usuarioOpt.isEmpty()) {
-            System.out.println("Correo no encontrado");
-            return;
+            throw new IllegalArgumentException("No existe un usuario activo asociado a este correo");
         }
 
         var usuario = usuarioOpt.get();

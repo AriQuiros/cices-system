@@ -2,6 +2,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 import {Link} from "react-router-dom";
+import { filtrarProyectosInvestigador, paginarProyectosInvestigador } from "../../utils/proyectosInvestigador.js";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -65,42 +66,7 @@ export default function ProyectoInvestigador() {
 
     // aplicar filtros en memoria
     useEffect(() => {
-        let resultados = proyectos;
-
-        const q = (valorBusqueda || "").toLowerCase().trim();
-        const toText = (v) => (v == null ? "" : String(v)).toLowerCase();
-
-        if (q) {
-            resultados = proyectos.filter((p) => {
-                const nombre = toText(p.nombreProyecto);
-                const codigo = toText(p.codigoProyecto);
-                const linea = toText(p.lineaInvestigacion);
-                const fIni = toText(p.fechaInicio);
-                const fFin = toText(p.fechaFinalizacion);
-
-                switch (campoFiltro) {
-                    case "nombre":
-                        return nombre.includes(q);
-                    case "codigo":
-                        return codigo.includes(q);
-                    case "lineaInvestigacion":
-                        return linea.includes(q);
-                    case "fechaInicio":
-                        return fIni.includes(q);
-                    case "fechaFinalizacion":
-                        return fFin.includes(q);
-                    case "varios":
-                    default:
-                        return (
-                            nombre.includes(q) ||
-                            codigo.includes(q) ||
-                            linea.includes(q) ||
-                            fIni.includes(q) ||
-                            fFin.includes(q)
-                        );
-                }
-            });
-        }
+        const resultados = filtrarProyectosInvestigador(proyectos, campoFiltro, valorBusqueda);
 
         setProyectosFiltrados(resultados);
         setPaginaActual(1);
@@ -108,13 +74,13 @@ export default function ProyectoInvestigador() {
 
     // paginación calculada
     const { pagina, totalPaginas } = useMemo(() => {
-        const total = proyectosFiltrados.length;
-        const tp = Math.max(1, Math.ceil(total / proyectosPorPagina));
-        const pa = Math.min(paginaActual, tp);
-        const i2 = pa * proyectosPorPagina;
-        const i1 = i2 - proyectosPorPagina;
+        const { pagina: pa, totalPaginas: tp, proyectosPagina } = paginarProyectosInvestigador(
+            proyectosFiltrados,
+            paginaActual,
+            proyectosPorPagina
+        );
         return {
-            pagina: proyectosFiltrados.slice(i1, i2),
+            pagina: proyectosPagina,
             totalPaginas: tp,
         };
     }, [proyectosFiltrados, paginaActual, proyectosPorPagina]);

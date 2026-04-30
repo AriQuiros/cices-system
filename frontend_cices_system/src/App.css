@@ -23,6 +23,11 @@ header {
   flex: 1;
 }
 
+.page-name-static {
+  cursor: default;
+  text-decoration: none;
+}
+
 /* bloque de logos */
 .logos {
   position: relative;

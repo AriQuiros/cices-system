@@ -1,5 +1,7 @@
 package org.example.backend_cices_system.export.dto;
 
+import org.example.backend_cices_system.modules.proyecto.dto.DocumentoDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,7 +39,7 @@ public record ProyectoReporteDTO(
         // =====================
         // 📄 DOCUMENTOS E INFORMES
         // =====================
-        List<DocumentoReporteDTO> documentos,
+        List<DocumentoDTO> documentos,
         List<InformeReporteDTO> informes
 
 ) {}

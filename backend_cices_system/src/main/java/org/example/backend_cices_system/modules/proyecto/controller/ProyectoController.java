@@ -31,4 +31,10 @@ public class ProyectoController {
         return ResponseEntity.ok(id);
     }
 
+    @GetMapping("/obtener/{codigoProyecto}")
+    public ResponseEntity<?> informacionProyecto(@PathVariable String codigoProyecto) {
+        var proyecto = proyectoService.obtenerProyectoCompleto(codigoProyecto);
+        return ResponseEntity.ok(proyecto);
+    }
+
 }

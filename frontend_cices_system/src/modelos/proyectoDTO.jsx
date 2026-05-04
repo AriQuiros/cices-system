@@ -54,6 +54,6 @@ export const ProyectoDTO = {
         unidades: [{ nombre: "" }],
         sitios: [{ nombre: "" }]
     },
-    presentacionesInformes: [],
+    presentacionesInformes: [{ ...InformeDTO }],
     investigadoresVinculados: []
 };

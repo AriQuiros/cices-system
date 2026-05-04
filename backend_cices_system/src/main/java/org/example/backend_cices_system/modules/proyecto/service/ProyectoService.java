@@ -131,4 +131,9 @@ public class ProyectoService {
         );
     }
 
+    public ProyectoDTO obtenerProyectoCompleto(String codigo){
+        var proyecto = obtenerProyectoPorCodigo(codigo);
+        return obtenerDTO(proyecto);
+    }
+
 }

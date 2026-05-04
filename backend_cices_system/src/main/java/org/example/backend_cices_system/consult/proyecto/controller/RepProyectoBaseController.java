@@ -40,9 +40,9 @@ public class RepProyectoBaseController {
         );
     }
 
-    @GetMapping("/{idProyecto}")
-    public ProyectoReporteDTO obtenerProyecto(@PathVariable Integer idProyecto) {
-        return orquestador.ensamblarUnoOptimizado(idProyecto);
+    @GetMapping("/{codigoProyecto}")
+    public ProyectoReporteDTO obtenerProyecto(@PathVariable String codigoProyecto) {
+        return orquestador.ensamblarUnoOptimizado(codigoProyecto);
     }
 
 }

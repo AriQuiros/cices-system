@@ -1,7 +1,7 @@
 import { BrowserRouter, useLocation } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import NotificationMenu from "./components/NotificationMenu";
-import AppRoutes from "./utils/routes/AppRoutes";
+import Sidebar from "./components/menu/Sidebar";
+import NotificationMenu from "./components/menu/NotificationMenu";
+import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "sonner";
 
 import "./App.css";
@@ -15,19 +15,28 @@ import { Link } from "react-router-dom";
 
 /* CONTEXTO */
 import AppProvider from "./context/AppProvider.jsx";
-import {useContext, useState} from "react";
+import {useContext, useRef, useState} from "react";
 import {AppContext} from "./context/AppContext.jsx";
 
 function App() {
     const [menuAbierto, setMenuAbierto] = useState(false);
+    const toggleRef = useRef(null);
 
     return (
         <AppProvider>
             <Toaster richColors position="top-center"/>
             <div className="app-container flex flex-col min-h-screen">
                 <BrowserRouter>
-                    <Header menuAbierto={menuAbierto} setMenuAbierto={setMenuAbierto} />
-                    <Main menuAbierto={menuAbierto}  setMenuAbierto={setMenuAbierto} />
+                    <Header
+                        menuAbierto={menuAbierto}
+                        setMenuAbierto={setMenuAbierto}
+                        toggleRef={toggleRef}
+                    />
+                    <Main
+                        menuAbierto={menuAbierto}
+                        setMenuAbierto={setMenuAbierto}
+                        toggleRef={toggleRef}
+                    />
                     <Footer />
                 </BrowserRouter>
             </div>
@@ -35,13 +44,14 @@ function App() {
     );
 }
 
-function Main({ menuAbierto, setMenuAbierto }) {
+function Main({ menuAbierto, setMenuAbierto, toggleRef }) {
     return (
         <main className="flex flex-1 min-h-0 pt-22.75">
             <Sidebar
                 abierto={menuAbierto}
                 setMenuAbierto={setMenuAbierto}
                 className="h-full overflow-y-auto"
+                toggleRef={toggleRef}
             />
             <div className="flex-1 min-h-0">
                 <AppRoutes />
@@ -50,7 +60,7 @@ function Main({ menuAbierto, setMenuAbierto }) {
     );
 }
 
-function Header({ menuAbierto, setMenuAbierto }) {
+function Header({ setMenuAbierto, toggleRef }) {
     const { user } = useContext(AppContext);
     const location = useLocation();
 
@@ -82,7 +92,8 @@ function Header({ menuAbierto, setMenuAbierto }) {
                 {user && (
                     <div className="topbar-actions">
                         <button
-                            onClick={() => setMenuAbierto(!menuAbierto)}
+                            ref={toggleRef}
+                            onClick={() => setMenuAbierto(prev => !prev)}
                             className="p-1 text-2 menu-toggle-btn"
                         >
                             ☰

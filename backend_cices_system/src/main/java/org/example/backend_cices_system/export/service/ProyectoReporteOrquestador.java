@@ -12,6 +12,8 @@ import org.example.backend_cices_system.export.dto.*;
 import org.example.backend_cices_system.consult.proyecto.dto.ProyectoFiltroDTO;
 import org.example.backend_cices_system.consult.presupuesto.view.RepPresupuestoBase;
 import org.example.backend_cices_system.consult.proyecto.view.RepProyectoBase;
+import org.example.backend_cices_system.modules.proyecto.dto.DocumentoDTO;
+import org.example.backend_cices_system.modules.proyecto.service.DocumentoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +50,7 @@ public class ProyectoReporteOrquestador {
     private final RepPresupuestoBaseService presupuestoService;
     private final RepPresupuestoGastosService gastosService;
     private final RepPresupuestoHorasService horasService;
+    private final DocumentoService documentoService;
 
     // ════════════════════════════════════════════════════════════════════════
     // PUNTO DE ENTRADA — múltiples proyectos por IDs
@@ -94,6 +97,9 @@ public class ProyectoReporteOrquestador {
         Map<Integer, List<HorasAsignadasReporteDTO>> horasPorPresupuesto =
                 horasService.obtenerPorProyectos(idsReales);                       // Query 7
 
+        Map<Integer, List<DocumentoDTO>> documentosPorProyecto =
+                documentoService.obtenerPorProyectos(idsReales); // Query 8
+
         // ── Ensamblaje en memoria (0 queries adicionales) ───────────────────
         return proyectos.stream()
                 .map(p -> ensamblarProyecto(
@@ -103,7 +109,8 @@ public class ProyectoReporteOrquestador {
                         informesPorProyecto,
                         presupuestosPorProyecto,
                         gastosPorPresupuesto,
-                        horasPorPresupuesto
+                        horasPorPresupuesto,
+                        documentosPorProyecto
                 ))
                 .toList();
     }
@@ -112,9 +119,11 @@ public class ProyectoReporteOrquestador {
     // PUNTO DE ENTRADA — un solo proyecto
     // ════════════════════════════════════════════════════════════════════════
 
-    public ProyectoReporteDTO ensamblarUnoOptimizado(Integer idProyecto) {
+    public ProyectoReporteDTO ensamblarUnoOptimizado(String codigoProyecto) {
 
-        RepProyectoBase proyecto = proyectoService.buscarPorId(idProyecto);
+        RepProyectoBase proyecto = proyectoService.buscarPorCodigo(codigoProyecto);
+
+        var idProyecto = proyecto.getIdProyecto();
 
         List<InvestigadorReporteDTO> investigadores =
                 investigadorService.obtenerPorProyecto(idProyecto);
@@ -128,7 +137,7 @@ public class ProyectoReporteOrquestador {
         List<RepPresupuestoBase> presupuestos =
                 presupuestoService.obtenerPorProyecto(idProyecto);
 
-        // aquí ya no necesitas Map
+        // CORREGIR!!!
         List<PresupuestoReporteDTO> presupuestosDTO = presupuestos.stream()
                 .map(pb -> presupuestoService.obtenerPresupuestoReporteDTO(
                         pb,
@@ -137,13 +146,14 @@ public class ProyectoReporteOrquestador {
                 ))
                 .toList();
 
+        List<DocumentoDTO> documentos = documentoService.documentosPorIdProyecto(idProyecto);
         return proyectoService.obtenerProyectoReporteDTO(
                 proyecto,
                 investigadores,
                 List.of(),
                 presupuestosDTO,
                 objetivos,
-                List.of(),
+                documentos,
                 informes
         );
     }
@@ -182,7 +192,8 @@ public class ProyectoReporteOrquestador {
             Map<Integer, List<InformeReporteDTO>>        informesPorProyecto,
             Map<Integer, List<RepPresupuestoBase>>       presupuestosPorProyecto,
             Map<Integer, List<GastoReporteDTO>>          gastosPorPresupuesto,
-            Map<Integer, List<HorasAsignadasReporteDTO>> horasPorPresupuesto
+            Map<Integer, List<HorasAsignadasReporteDTO>> horasPorPresupuesto,
+            Map<Integer, List<DocumentoDTO>> documentosPorProyecto
     ) {
         Integer idP = p.getIdProyecto();
 
@@ -198,7 +209,7 @@ public class ProyectoReporteOrquestador {
                 List.of(),          // TODO: entidades — agregar RepEntidadService cuando esté listo
                 presupuestosDTO,
                 objetivosPorProyecto.getOrDefault(idP, List.of()),
-                List.of(),          // TODO: documentos — agregar RepDocumentoService cuando esté listo
+                documentosPorProyecto.getOrDefault(idP, List.of()),
                 informesPorProyecto.getOrDefault(idP, List.of())
         );
     }

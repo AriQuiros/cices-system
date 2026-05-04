@@ -15,8 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ObjetivosEspecificosService {
 
-    ObjetivoEspecificoRepository objetivoEspecificoRepository;
-    MetaService metaService;
+    private final ObjetivoEspecificoRepository objetivoEspecificoRepository;
+    private final MetaService metaService;
 
     @Transactional
     public void guardarObjetivoEspecifico(ObjetivoEspecificoDTO objetivoEspecificoDTO, Proyecto proyecto) {

@@ -1,0 +1,347 @@
+/* Estilo de pagina para actualizar proyecto, alineado con GestionGastos */
+.actualizar-proyecto-page,
+.registro-proyecto-page {
+    padding: 20px;
+    align-items: flex-start;
+}
+
+.actualizar-proyecto-card,
+.registro-proyecto-card {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.actualizar-proyecto-search {
+    margin-bottom: 14px;
+}
+
+.actualizar-proyecto-page .form-content,
+.registro-proyecto-page .form-content {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    max-width: 100%;
+}
+
+.actualizar-proyecto-form,
+.registro-proyecto-form {
+    border-radius: 10px;
+    padding: 16px;
+    background: #fcfeff;
+}
+
+.actualizar-proyecto-title,
+.registro-proyecto-title {
+    margin: 0 0 10px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.actualizar-proyecto-page .btn-secondary,
+.registro-proyecto-page .btn-secondary {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #e6edf2;
+    color: #2f3f4a;
+    width: fit-content;
+}
+
+.actualizar-proyecto-page .submit-btn,
+.registro-proyecto-page .submit-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #0fc3f3;
+    color: white;
+    width: 100%;
+    transition: filter 0.2s ease;
+}
+
+.actualizar-proyecto-page input[type="file"].input-field,
+.registro-proyecto-page input[type="file"].input-field {
+    width: 100%;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.actualizar-proyecto-page input[type="file"].input-field::file-selector-button,
+.registro-proyecto-page input[type="file"].input-field::file-selector-button {
+    border: none;
+    border-radius: 8px;
+    padding: 2px 5px;
+    cursor: pointer;
+    background: #ddeff8;
+    color: #114866;
+    transition: filter 0.2s ease;
+}
+
+.actualizar-proyecto-page .btn-secondary:hover,
+.actualizar-proyecto-page .submit-btn:hover,
+.actualizar-proyecto-page input[type="file"].input-field::file-selector-button:hover,
+.actualizar-proyecto-page input[type="file"].input-field::-webkit-file-upload-button:hover,
+.registro-proyecto-page .btn-secondary:hover,
+.registro-proyecto-page .submit-btn:hover,
+.registro-proyecto-page input[type="file"].input-field::file-selector-button:hover,
+.registro-proyecto-page input[type="file"].input-field::-webkit-file-upload-button:hover {
+    filter: brightness(0.97);
+}
+
+.actualizar-proyecto-page .objetivo-especifico-block,
+.registro-proyecto-page .objetivo-especifico-block {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    padding: 12px;
+    background: #ffffff;
+}
+
+.actualizar-proyecto-page .meta-objetivo-block,
+.registro-proyecto-page .meta-objetivo-block {
+    margin-top: 8px;
+    margin-left: 16px;
+    padding: 10px 10px 10px 14px;
+    border: 1px solid #e1ebf2;
+    border-left: 4px solid #b9d8e8;
+    border-radius: 8px;
+    background: #f8fcff;
+}
+
+.actualizar-proyecto-page .meta-objetivo-block > legend,
+.registro-proyecto-page .meta-objetivo-block > legend {
+    padding-left: 4px;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .actualizar-proyecto-page,
+    .registro-proyecto-page {
+        padding: 12px;
+    }
+
+    .actualizar-proyecto-card,
+    .registro-proyecto-card {
+        padding: 14px;
+    }
+
+    .actualizar-proyecto-form,
+    .registro-proyecto-form {
+        padding: 12px;
+    }
+
+    .actualizar-proyecto-page .btn-secondary,
+    .actualizar-proyecto-page .submit-btn,
+    .registro-proyecto-page .btn-secondary,
+    .registro-proyecto-page .submit-btn {
+        width: 100%;
+    }
+}
+
+/* =========================
+   VARIABLES
+========================= */
+:root {
+    --gap: 16px;
+    --radius: 10px;
+    --border: #e0e0e0;
+    --primary: #4a90e2;
+    --bg-soft: #f9fafb;
+}
+
+/* =========================
+   CONTENEDOR GENERAL
+========================= */
+.form-container {
+    display: flex;
+    justify-content: center;
+}
+
+.form-content {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* =========================
+   FILAS Y COLUMNAS
+========================= */
+.form-row {
+    display: flex;
+    gap: var(--gap);
+}
+
+.form-row > * {
+    flex: 1;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+}
+
+/* =========================
+   INPUT GROUP
+========================= */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* inputs */
+.input-field {
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    width: 100%;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(74,144,226,0.2);
+}
+
+/* =========================
+   FIELDSET
+========================= */
+fieldset {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 15px;
+    background: var(--bg-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* título de sección */
+legend {
+    font-weight: bold;
+    padding: 0 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =========================
+   BOTONES (+ / -)
+========================= */
+.icon-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-buttons button {
+    border: none;
+    border-radius: 6px;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+
+.icon-buttons button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.icon-buttons .btn-add {
+    background: #71d3c4;
+    color: white;
+}
+
+
+/* eliminar */
+.icon-buttons .btn-delete {
+    background: #e4796e;
+    color: white;
+}
+
+/* =========================
+   FILAS INTERNAS (meta, indicadores, etc)
+========================= */
+.row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.row > * {
+    flex: 1;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* =========================
+   INDICADORES
+========================= */
+.inline-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 0.5em;
+}
+
+/* =========================
+   TEXTAREAS
+========================= */
+
+input[type="file"].input-field
+{
+    width: auto;
+}
+
+meter{
+    width: 100%;
+    height: 1rem;
+}
+
+/* Altura uniforme para todos */
+.input-field {
+    height: 42px;
+}
+
+textarea.input-field {
+    height: auto;
+    min-height: 80px;
+}
+
+/* INPUT ocupa todo */
+.row .input-field {
+    flex: 1;
+}
+
+/* BOTONES tamaño natural */
+.row .icon-buttons {
+    flex: 0;
+    display: flex;
+    gap: 6px;
+}
+
+meter{
+    width: 100%;
+    height: 1rem;
+}

@@ -10,4 +10,5 @@ import java.util.List;
 public interface PresupuestoBitRepository extends JpaRepository<PresupuestoBit, Long> {
     List<PresupuestoBit> findByIdPresupuesto(Integer idPresupuesto);
     List<PresupuestoBit> findByIdProyecto(Integer idProyecto);
+    List<PresupuestoBit> findByIdPresupuestoAndAccBit(Integer idPresupuesto, Character accBit);
 }

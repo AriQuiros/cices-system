@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RepProyectoBaseRepository extends
@@ -13,7 +14,6 @@ public interface RepProyectoBaseRepository extends
         JpaSpecificationExecutor<RepProyectoBase> {
 
     List<RepProyectoBase> findByIdProyectoIn(List<Integer> ids);
-
-    List<RepProyectoBase> findByIdProyecto(Integer idProyecto);
+    Optional<RepProyectoBase> findByCodigoProyecto(String codigoProyecto);
 
 }

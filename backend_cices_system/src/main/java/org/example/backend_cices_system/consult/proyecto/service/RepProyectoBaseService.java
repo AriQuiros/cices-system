@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.consult.proyecto.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.modules.proyecto.dto.DocumentoDTO;
 import org.example.backend_cices_system.modules.proyecto.dto.ProyectoDatosDTO;
 import org.example.backend_cices_system.modules.proyecto.dto.ProyectoFechasDTO;
 import org.example.backend_cices_system.export.dto.*;
@@ -8,8 +9,7 @@ import org.example.backend_cices_system.consult.proyecto.repository.RepProyectoB
 import org.example.backend_cices_system.consult.proyecto.dto.ProyectoFiltroDTO;
 import org.example.backend_cices_system.consult.proyecto.specification.ProyectoSpecification;
 import org.example.backend_cices_system.consult.proyecto.view.RepProyectoBase;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -21,58 +21,77 @@ public class RepProyectoBaseService {
 
     private final RepProyectoBaseRepository repo;
 
-    // ── Lecturas generales ───────────────────────────────────────────────────
     public RepProyectoBase buscarPorId(Integer idProyecto) {
         return repo.findById(idProyecto)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con ID: " + idProyecto));
     }
 
-    public Page<RepProyectoBase> obtenerTodos(Specification<RepProyectoBase> spec, Pageable pageable) {
-        return repo.findAll(spec, pageable);
+    public RepProyectoBase buscarPorCodigo(String codigoProyecto) {
+        return repo.findByCodigoProyecto(codigoProyecto)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con código: " + codigoProyecto));
     }
 
-    public List<ProyectoFechasDTO> obtenerProyectosFechasDTOs(ProyectoFiltroDTO filtroDTO, Pageable pageable) {
-        return obtenerTodos(ProyectoSpecification.filtrar(filtroDTO), pageable)
-                .map(this::obtenerProyectoFechasDTO).stream().toList();
+    public List<RepProyectoBase> buscarPorIds(List<Integer> idsProyectos) {
+        return repo.findByIdProyectoIn(idsProyectos);
     }
 
-    public Page<ProyectoDatosDTO> buscarConFiltros(ProyectoFiltroDTO filtroDTO, Pageable pageable) {
-
-        return repo.findAll(ProyectoSpecification.filtrar(filtroDTO), pageable)
-                .map(p -> new ProyectoDatosDTO(
-                        p.getIdProyecto(),
-                        p.getCodigoProyecto(),
-                        p.getNombreProyecto(),
-                        p.getLineaInvestigacion(),
-                        p.getTipoProyecto(),
-                        p.getEstadoProyecto(),
-                        p.getFechaInicio(),
-                        p.getFechaFinalizacion()
-                ));
+    public Page<RepProyectoBase> obtenerPaginaFiltrada(ProyectoFiltroDTO filtroDTO, Pageable pageable) {
+        Specification<RepProyectoBase> spec = ProyectoSpecification.filtrar(filtroDTO);
+        Pageable pageableConOrden = construirPageableConOrden(filtroDTO, pageable);
+        return repo.findAll(spec, pageableConOrden);
     }
 
-    /**
-     * Devuelve TODOS los IDs que cumplen los filtros, sin paginación.
-     * Usado exclusivamente para exportación.
-     * El límite de volumen lo valida el orquestador, no este método.
-     */
+    // sin paginación
     public List<Integer> buscarIdsPorFiltros(ProyectoFiltroDTO filtroDTO) {
-
         return repo.findAll(ProyectoSpecification.filtrar(filtroDTO))
                 .stream()
                 .map(RepProyectoBase::getIdProyecto)
                 .toList();
     }
 
-    // ── Búsqueda por IDs (para orquestador y uso interno) ───────────────────
-
-    public List<RepProyectoBase> buscarPorIds(List<Integer> idsProyectos) {
-        return repo.findByIdProyectoIn(idsProyectos);
+    public Page<ProyectoDatosDTO> buscarConFiltros(ProyectoFiltroDTO filtroDTO, Pageable pageable) {
+        return obtenerPaginaFiltrada(filtroDTO, pageable)
+                .map(this::mapToProyectoDatosDTO);
     }
 
-    // ── Mapeos a DTO ─────────────────────────────────────────────────────────
+    public List<ProyectoFechasDTO> obtenerProyectosFechasDTOs(ProyectoFiltroDTO filtroDTO, Pageable pageable) {
+        return obtenerPaginaFiltrada(filtroDTO, pageable)
+                .map(this::mapToProyectoFechasDTO)
+                .stream()
+                .toList();
+    }
 
-    public ProyectoFechasDTO obtenerProyectoFechasDTO(RepProyectoBase p) {
+    private Pageable construirPageableConOrden(ProyectoFiltroDTO filtroDTO, Pageable pageable) {
+
+        Sort sort = Sort.unsorted();
+
+        if (filtroDTO.ordenFecha() != null) {
+            sort = filtroDTO.ordenFecha().equalsIgnoreCase("asc")
+                    ? Sort.by("fechaInicio").ascending()
+                    : Sort.by("fechaInicio").descending();
+        }
+
+        return PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+    }
+
+    private ProyectoDatosDTO mapToProyectoDatosDTO(RepProyectoBase p) {
+        return new ProyectoDatosDTO(
+                p.getIdProyecto(),
+                p.getCodigoProyecto(),
+                p.getNombreProyecto(),
+                p.getLineaInvestigacion(),
+                p.getTipoProyecto(),
+                p.getEstadoProyecto(),
+                p.getFechaInicio(),
+                p.getFechaFinalizacion()
+        );
+    }
+
+    private ProyectoFechasDTO mapToProyectoFechasDTO(RepProyectoBase p) {
         return new ProyectoFechasDTO(
                 p.getCodigoProyecto(),
                 p.getNombreProyecto(),
@@ -81,18 +100,13 @@ public class RepProyectoBaseService {
         );
     }
 
-    /**
-     * Ensambla el DTO de reporte completo de un proyecto.
-     * Este método es puro (sin queries): solo mapea campos y listas ya cargadas.
-     * Llamarlo desde el orquestador, nunca en loop con queries adentro.
-     */
     public ProyectoReporteDTO obtenerProyectoReporteDTO(
             RepProyectoBase proyecto,
             List<InvestigadorReporteDTO> investigadores,
             List<EntidadReporteDTO> entidades,
             List<PresupuestoReporteDTO> presupuestos,
             List<ObjetivoReporteDTO> objetivos,
-            List<DocumentoReporteDTO> documentos,
+            List<DocumentoDTO> documentos,
             List<InformeReporteDTO> informes
     ) {
         return new ProyectoReporteDTO(

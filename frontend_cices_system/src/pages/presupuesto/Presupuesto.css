@@ -1,0 +1,265 @@
+.inline-group{justify-content: center}
+
+.actions{justify-content: flex-end}
+
+.btn-cancel, .btn-confirm, .btn{flex:none; width: auto;}
+
+.form-row{
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        flex-direction: column;
+    }
+}
+
+/*---------------------------------------*/
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px; /* o el ancho máximo que quieras */
+    margin: 0 auto; /* centrar en pantallas grandes */
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 0.5em;
+}
+
+.search-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    z-index: 9999;
+    list-style: none;
+    padding: 0;
+}
+
+.search-list-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.search-list-item:hover,
+.search-list-item.active {
+    background-color: #f0f0f0;
+}
+
+/* Responsive: para pantallas pequeñas */
+@media (max-width: 480px) {
+    .search-wrapper {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .search-input {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+
+    .search-list-item {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+
+    .popup{
+        width: 100%;
+    }
+}
+
+
+/* Estilo principal para /registro-presupuesto */
+.registro-presupuesto-page {
+    padding: 20px;
+}
+
+.registro-presupuesto-card {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(11, 47, 70, 0.08);
+    padding: 24px;
+}
+
+.registro-presupuesto-title {
+    margin: 0 0 18px;
+    color: #0b2f46;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.registro-presupuesto-search {
+    margin-bottom: 14px;
+}
+
+.registro-presupuesto-content {
+    border: 1px solid #e6eef3;
+    border-radius: 10px;
+    padding: 12px;
+    background: #fcfeff;
+}
+
+.registro-presupuesto-status {
+    margin: 10px 0;
+    color: #134f6c;
+    font-weight: 600;
+}
+
+.presupuesto-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.presupuesto-form-item {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    background: #f8fcff;
+    padding: 12px;
+}
+
+.presupuesto-form-item h4 {
+    margin: 0 0 10px;
+    color: #123f57;
+}
+
+.presupuesto-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.presupuesto-form .input-field,
+.presupuesto-select {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 0.5em;
+    padding: 10px 12px;
+    height: 45px;
+    border: 1px solid #b6cbd8;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #fff;
+}
+
+.presupuesto-form .input-field:focus,
+.presupuesto-select:focus {
+    border-color: #0fc3f3;
+    box-shadow: 0 0 0 3px rgba(15, 195, 243, 0.2);
+    outline: none;
+}
+
+.registro-presupuesto-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.btn-accion {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #ddeff8;
+    color: #114866;
+}
+
+.btn-accion.primario {
+    background: #0fc3f3;
+    color: #052b3d;
+}
+
+.btn-accion.secundario {
+    background: #e6edf2;
+    color: #2f3f4a;
+}
+
+.btn-accion.peligro {
+    background: #fee4e2;
+    color: #912018;
+}
+
+.btn-accion:hover {
+    filter: brightness(0.97);
+}
+
+.presupuesto-list {
+    margin-top: 12px;
+}
+
+.presupuesto-list-title {
+    margin: 8px 0 10px;
+    color: #134f6c;
+    font-size: 1.05rem;
+}
+
+.presupuesto-empty {
+    margin: 0;
+    color: #2f3f4a;
+}
+
+.presupuesto-list-item {
+    border: 1px solid #d8e4ec;
+    border-radius: 10px;
+    background: #f5fbff;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+}
+
+.presupuesto-list-item-content p {
+    margin: 0 0 6px;
+}
+
+@media (max-width: 768px) {
+    .registro-presupuesto-page {
+        padding: 12px;
+    }
+
+    .registro-presupuesto-card {
+        padding: 14px;
+    }
+
+    .registro-presupuesto-actions {
+        flex-direction: column;
+    }
+
+    .btn-accion {
+        width: 100%;
+    }
+}
+/* Tendencia — solo esta clase es nueva, las demás ya existen */
+.modal-bitacora-tendencia {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    text-decoration: none;
+}
+
+.modal-bitacora-neutro {
+    color: #888;
+}
+
+.modal-bitacora-bajo {
+    color: #e53935;
+}

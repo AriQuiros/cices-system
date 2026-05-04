@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +55,29 @@ public class DocumentoService {
     public List<DocumentoDTO> documentoDTOList(Proyecto proyecto){
         return documentoRepo.findDocumentoByIdProyecto(proyecto).stream()
                 .map(this::obtenerDTO).toList();
+    }
+
+    public List<DocumentoDTO> documentosPorIdProyecto(Integer idProyecto){
+        return documentoRepo.findDocumentoByIdProyecto_Id(idProyecto).stream()
+                .map(this::obtenerDTO).toList();
+    }
+
+    public Documento obtenerPorId(Integer id){
+        return documentoRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Documento no encontrado: " + id));
+    }
+
+    public Map<Integer, List<DocumentoDTO>> obtenerPorProyectos(List<Integer> idsProyectos) {
+
+        List<Documento> documentos = documentoRepo.findByIdProyecto_IdIn(idsProyectos);
+
+        return documentos.stream()
+                .collect(Collectors.groupingBy(
+                        doc -> doc.getIdProyecto().getId(),
+                        Collectors.mapping(
+                                this::obtenerDTO,
+                                Collectors.toList()
+                        )
+                ));
     }
 }

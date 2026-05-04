@@ -410,11 +410,10 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
         }
         return section("Documentos relacionados", H2, List.of(
                 new ReportTable(
-                        List.of("Nombre del documento", "Directorio"),
+                        List.of("Nombre del documento"),
                         p.documentos().stream()
                                 .map(d -> List.of(
-                                        safe(d.nombreDocumento()),
-                                        safe(d.directorio())
+                                        safe(d.nombreDocumento())
                                 ))
                                 .collect(Collectors.toList())
                 )

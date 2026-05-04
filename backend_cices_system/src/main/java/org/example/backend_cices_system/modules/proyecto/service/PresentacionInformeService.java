@@ -24,6 +24,7 @@ public class PresentacionInformeService {
         presentacionInforme.setIdProyecto(proyecto);
         presentacionInforme.setFechaPresentacion(informeDTO.fechaPresentacion());
         presentacionInforme.setIdCodigoTipoInforme(informeDTO.tipoInforme().id());
+
         Short codigoEstadoInforme = obtenerCodigoEstadoInforme(informeDTO.fechaPresentacion());
         presentacionInforme.setIdCodigoTipoEstado(codigoEstadoInforme);
 
@@ -32,11 +33,11 @@ public class PresentacionInformeService {
 
     public Short obtenerCodigoEstadoInforme(LocalDate fechaPresentacion) {
         var fechaActual = LocalDate.now();
-        boolean entregado = fechaPresentacion.isAfter(fechaActual);
-        if (!entregado)
+        if (fechaPresentacion.isAfter(fechaActual)) {
             return catalogoService.codigoXNombreValor("ESTADO_INFORME", "PENDIENTE");
-        else
+        } else {
             return catalogoService.codigoXNombreValor("ESTADO_INFORME", "ENTREGADO");
+        }
     }
 
     public PresentacionInforme obtenerPorId(Integer id){

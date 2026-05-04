@@ -50,7 +50,6 @@ function Main({ menuAbierto, setMenuAbierto, toggleRef }) {
             <Sidebar
                 abierto={menuAbierto}
                 setMenuAbierto={setMenuAbierto}
-                className="h-full overflow-y-auto"
                 toggleRef={toggleRef}
             />
             <div className="flex-1 min-h-0">

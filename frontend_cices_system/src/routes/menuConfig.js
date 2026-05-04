@@ -31,17 +31,17 @@ export const menuConfig = [
         section: "Proyectos",
         items: [
             {
-                label: "Registrar",
+                label: "Registrar proyecto",
                 path: "/registro-proyecto",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },
             {
-                label: "Actualizar",
+                label: "Actualizar proyecto",
                 path: "/actualizar-proyecto",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE", "INVESTIGADOR"]
             },
             {
-                label: "Consultar",
+                label: "Consultar proyectos",
                 path: "/listado-proyectos",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE", "INVESTIGADOR"]
             },
@@ -98,12 +98,12 @@ export const menuConfig = [
         section: "Usuarios",
         items: [
             {
-                label: "Administradores y asistentes",
+                label: " Consulta administradores y asistentes",
                 path: "/consulta-personal",
                 roles: ["DIRECCION"]
             },
             {
-                label: "Investigadores",
+                label: "Consulta investigadores",
                 path: "/consulta-investigadores",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             },

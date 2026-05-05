@@ -6,7 +6,7 @@ import { CertificacionResumen } from "../../components/formacionComponents/Certi
 import { CertificacionTabla } from "../../components/formacionComponents/CertificacionTabla.jsx";
 import "./ReporteCertificaciones.css";
 import {descargarArchivo} from "../../services/exportServices/exportService.js";
-import {useExportarCertificaciones} from "../../hooks/exportHooks/useExport.js";
+import {useExportarCertificaciones} from "../../hooks/exportHooks/mutations/useExport.js";
 
 export default function CertificacionesPage() {
 

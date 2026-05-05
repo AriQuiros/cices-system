@@ -6,5 +6,8 @@ public record BitacoraGastoReporteDTO(
         String usuario,
         String montoAnterior,
         String fechaGastoAnterior,
-        String descripcionAnterior
+        String descripcionAnterior,
+        Integer idPresupuesto,
+        Integer idGasto
+
 ) {}

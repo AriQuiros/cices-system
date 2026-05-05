@@ -8,9 +8,10 @@ public record HorasAsignadasReporteDTO(
         Integer idInvestigadorProyecto,
         String investigador,
         String modalidad,
+        String rolProyecto,
         LocalDate fechaInicio,
         LocalDate fechaFin,
-        String cargaAcademica,
+        String cargaAcademica, // tipo hora??
         Double horasMes,
         Short meses,
         BigDecimal totalHorasAsignadas

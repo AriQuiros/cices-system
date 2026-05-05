@@ -152,15 +152,17 @@ public class RepPresupuestoBaseService {
         );
     }
 
-    PresupuestoResumenReporteDTO obtenerResumenPresupuesto(RepPresupuestoBase presupuestoBase){
-        if(presupuestoBase.getTipoPresupuesto().equalsIgnoreCase("Horas"))
+    // DESPUÉS:
+    PresupuestoResumenReporteDTO obtenerResumenPresupuesto(RepPresupuestoBase presupuestoBase) {
+        String tipo = presupuestoBase.getTipoPresupuesto();
+        if (tipo != null && tipo.equalsIgnoreCase("Horas"))
             return new PresupuestoResumenReporteDTO(
                     presupuestoBase.getHorasAsignadas(),
                     presupuestoBase.getHorasUsadas(),
                     presupuestoBase.getHorasDisponibles(),
                     presupuestoBase.getCantidadRegistrosHoras()
             );
-        else // FINANCIERO
+        else
             return new PresupuestoResumenReporteDTO(
                     presupuestoBase.getMontoAsignado(),
                     presupuestoBase.getTotalGastado(),

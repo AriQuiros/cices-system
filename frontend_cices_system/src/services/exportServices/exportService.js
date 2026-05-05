@@ -1,6 +1,8 @@
 import {
     exportarCertificaciones,
-    exportarProyectos
+    exportarProyectos,
+    exportarParticipantes,
+    exportarPresupuestos
 } from "../../api/exportApi/exportApi.js";
 
 /* =========================
@@ -27,5 +29,15 @@ export const exportarCertificacionesSrv = async (filtro, formato) => {
 
 export const exportarProyectosSrv = async (filtro, formato) => {
     const res = await exportarProyectos(filtro, formato);
+    return res.data;
+};
+
+export const exportarParticipantesSrv = async (filtro, formato) => {
+    const res = await exportarParticipantes(filtro, formato);
+    return res.data;
+};
+
+export const exportarPresupuestosSrv = async (filtro, formato) => {
+    const res = await exportarPresupuestos(filtro, formato);
     return res.data;
 };

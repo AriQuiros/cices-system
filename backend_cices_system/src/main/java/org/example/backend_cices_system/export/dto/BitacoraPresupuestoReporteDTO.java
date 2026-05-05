@@ -6,5 +6,6 @@ public record BitacoraPresupuestoReporteDTO(
         String usuario,
         String montoAnterior,
         String horasMesAnterior,
-        String mesesAnterior
+        String mesesAnterior,
+        Integer idPresupuesto
 ) {}

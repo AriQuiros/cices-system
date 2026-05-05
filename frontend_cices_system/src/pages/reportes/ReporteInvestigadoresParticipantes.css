@@ -205,3 +205,26 @@
         width: 100%;
     }
 }
+
+.badge-rol {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    background: #eee;
+}
+
+.badge-rol.principal {
+    background: #d1e7ff;
+    color: #0b5ed7;
+}
+
+.badge-rol.colaborador {
+    background: #e2f7e2;
+    color: #2e7d32;
+}
+
+.tabla-participantes {
+    width: 100%;
+    border-collapse: collapse;
+}

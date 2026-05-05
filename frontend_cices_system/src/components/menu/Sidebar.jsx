@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
-import { menuConfig } from "../../routes/menuConfig.js";
+import { menuConfig } from "../../utils/menuConfig.js";
 
 import {
     Home,

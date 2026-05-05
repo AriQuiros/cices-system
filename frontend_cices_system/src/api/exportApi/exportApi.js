@@ -19,3 +19,17 @@ export const exportarProyectos = (filtro, formato) => {
         responseType: "blob" 
     });
 };
+
+export const exportarParticipantes = (filtro, formato) => {
+    return httpClient.get("/exportar/reporte-participantes", {
+        params: { ...filtro, formato },
+        responseType: "blob"
+    });
+};
+
+export const exportarPresupuestos = (filtro, formato) => {
+    return httpClient.get("/exportar/reporte-presupuestos", {
+        params: { ...filtro, formato },
+        responseType: "blob"
+    });
+};

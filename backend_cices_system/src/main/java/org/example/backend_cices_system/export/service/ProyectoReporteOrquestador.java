@@ -67,25 +67,30 @@ public class ProyectoReporteOrquestador {
         List<RepProyectoBase> proyectos = proyectoService.buscarPorIds(ids);
 
         if (proyectos.isEmpty()) return List.of();
+        System.out.println("obteniendo ids proyecto");
 
         // ids reales después de filtrar (puede que alguno no exista en la vista)
         List<Integer> idsReales = proyectos.stream()
                 .map(RepProyectoBase::getIdProyecto)
                 .toList();
-
+        System.out.println("obteniendo investigadoresProyecto");
         // ── Queries 2-4: datos directos por idProyecto ─────────────────────
         Map<Integer, List<InvestigadorReporteDTO>> investigadoresPorProyecto =
                 investigadorService.obtenerPorProyectos(idsReales);                // Query 2
+        System.out.println("obteniendo objetivos");
 
         Map<Integer, List<ObjetivoReporteDTO>> objetivosPorProyecto =
                 resultadosService.obtenerPorProyectos(idsReales);                  // Query 3
+        System.out.println("obteniendo informes");
 
         Map<Integer, List<InformeReporteDTO>> informesPorProyecto =
                 informeService.obtenerPorProyectos(idsReales);                     // Query 4
+        System.out.println("obteniendo presupuestos");
 
         // ── Query 5: presupuestos agrupados por idProyecto ──────────────────
         Map<Integer, List<RepPresupuestoBase>> presupuestosPorProyecto =
                 presupuestoService.obtenerPorProyectos(idsReales);                 // Query 5
+        System.out.println("obteniendo gastos");
 
         // ── Queries 6-7: gastos y horas agrupados por idPresupuesto ─────────
         // IMPORTANTE: el parámetro son idsProyectos, pero el Map resultante
@@ -93,9 +98,11 @@ public class ProyectoReporteOrquestador {
         // en ensamblarPresupuestos() usando presupuesto.getIdPresupuesto().
         Map<Integer, List<GastoReporteDTO>> gastosPorPresupuesto =
                 gastosService.obtenerPorProyectos(idsReales);                      // Query 6
+        System.out.println("obteniendo horas");
 
         Map<Integer, List<HorasAsignadasReporteDTO>> horasPorPresupuesto =
-                horasService.obtenerPorProyectos(idsReales);                       // Query 7
+                horasService.obtenerPorProyectosAgrupadoPorPresupuesto(idsReales);                       // Query 7
+        System.out.println("obteniendo documentos");
 
         Map<Integer, List<DocumentoDTO>> documentosPorProyecto =
                 documentoService.obtenerPorProyectos(idsReales); // Query 8
@@ -168,16 +175,9 @@ public class ProyectoReporteOrquestador {
      * en su lugar: filtros en RepProyectoBaseService, joins aquí.
      */
     public List<ProyectoReporteDTO> ensamblarConFiltros(ProyectoFiltroDTO filtro) {
-
-        // Sin paginación — traer todos los IDs que pasen el filtro
-        List<Integer> ids = proyectoService.buscarIdsPorFiltros(
-                filtro
-        );
-
-        // El límite se valida AQUÍ, después del filtro
-        // Si el usuario no filtró nada y hay 5000 proyectos, falla aquí con mensaje claro
+        List<Integer> ids = proyectoService.buscarIdsPorFiltros(filtro);
+        if (ids == null || ids.isEmpty()) return List.of();  // retorna lista vacía, no lanza
         validarTamano(ids);
-
         return ensamblar(ids);
     }
 
@@ -241,13 +241,10 @@ public class ProyectoReporteOrquestador {
     // ════════════════════════════════════════════════════════════════════════
 
     private void validarTamano(List<Integer> ids) {
-        if (ids == null || ids.isEmpty()) {
-            throw new IllegalArgumentException("La lista de IDs no puede estar vacía.");
-        }
         if (ids.size() > MAX_PROYECTOS_POR_REPORTE) {
             throw new IllegalArgumentException(
                     "Se permiten máximo " + MAX_PROYECTOS_POR_REPORTE +
-                    " proyectos por reporte. Recibidos: " + ids.size()
+                            " proyectos por reporte. Recibidos: " + ids.size()
             );
         }
     }

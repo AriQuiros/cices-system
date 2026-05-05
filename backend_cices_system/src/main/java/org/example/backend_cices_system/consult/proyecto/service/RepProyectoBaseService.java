@@ -65,7 +65,7 @@ public class RepProyectoBaseService {
 
         Sort sort = Sort.unsorted();
 
-        if (filtroDTO.ordenFecha() != null) {
+        if (filtroDTO.ordenFecha() != null && !filtroDTO.ordenFecha().isBlank()) {
             sort = filtroDTO.ordenFecha().equalsIgnoreCase("asc")
                     ? Sort.by("fechaInicio").ascending()
                     : Sort.by("fechaInicio").descending();

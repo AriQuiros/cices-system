@@ -3,17 +3,8 @@ import { useState, useEffect, useContext } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useProyectos } from "./queries/useProyectos.js";
 import { useListarInvestigadorProyecto } from "../investigadorProyectoHooks/queries/useListarInvestigadorProyecto.js";
-import { useLineasInvestigacion } from "./queries/useLineasInvestigacion.js";
-import { useCatalogos } from "../referenceDataHooks/useCatalogos.js";
 import { useRolesProyecto } from "../referenceDataHooks/useRolesProyecto.js";
-
-const FILTRO_PROYECTO_INICIAL = {
-    texto: "",
-    estado: "",
-    tipos: [],
-    lineas: [],
-    ordenFecha: "desc"
-};
+import {useProyectosFiltros} from "../shared/useProyectosFiltros.js";
 
 const FILTRO_INV_INICIAL = {
     rol: "",
@@ -24,6 +15,15 @@ const FILTRO_INV_INICIAL = {
 const PAGEABLE_INICIAL = { page: 0, size: 8 };
 
 export const useListadoProyectos = () => {
+    const {
+        filtroProyecto,
+        cambiarFiltroProyecto,
+        limpiarFiltros,
+        opcionesTipos,
+        opcionesEstado,
+        opcionesLineas
+    } = useProyectosFiltros();
+
     const { user } = useContext(AppContext);
 
     // ── Detección de roles ──────────────────────────────────────────────
@@ -42,7 +42,6 @@ export const useListadoProyectos = () => {
     );
 
     // ── Filtros y paginación ────────────────────────────────────────────
-    const [filtroProyecto, setFiltroProyecto] = useState(FILTRO_PROYECTO_INICIAL);
     const [filtroInv, setFiltroInv] = useState(FILTRO_INV_INICIAL);
     const [pageable, setPageable] = useState(PAGEABLE_INICIAL);
 
@@ -51,19 +50,11 @@ export const useListadoProyectos = () => {
         setPageable(prev => ({ ...prev, page: 0 }));
     }, [filtroProyecto, filtroInv, vistaActiva]);
 
-    const cambiarFiltroProyecto = (campo, valor) => {
-        setFiltroProyecto(prev => ({ ...prev, [campo]: valor }));
-    };
 
     const cambiarFiltroInv = (campo, valor) => {
         setFiltroInv(prev => ({ ...prev, [campo]: valor }));
     };
 
-    const limpiarFiltros = () => {
-        setFiltroProyecto(FILTRO_PROYECTO_INICIAL);
-        setFiltroInv(FILTRO_INV_INICIAL);
-        setPageable(PAGEABLE_INICIAL);
-    };
 
     const cambiarPagina = (page) => {
         setPageable(prev => ({ ...prev, page }));
@@ -85,27 +76,8 @@ export const useListadoProyectos = () => {
         pageable
     );
 
-    // ── Selects / catálogos ─────────────────────────────────────────────
-    const catalogosQuery = useCatalogos(["TIPO_PROYECTO", "ESTADO_PROYECTO"]);
-    const catalogos = catalogosQuery.data?.data || catalogosQuery.data || {};
 
-    const lineasQuery = useLineasInvestigacion();
     const rolesProyectoQuery = useRolesProyecto();
-
-    const opcionesTipos = (catalogos["TIPO_PROYECTO"] || []).map(t => ({
-        value: t.despliegue,
-        label: t.despliegue
-    }));
-
-    const opcionesEstado = (catalogos["ESTADO_PROYECTO"] || []).map(t => ({
-        value: t.despliegue,
-        label: t.despliegue
-    }));
-
-    const opcionesLineas = (lineasQuery.data || []).map(l => ({
-        value: l ?? l.nombre,
-        label: l ?? l.nombre
-    }));
 
     const opcionesRolesProyecto = (rolesProyectoQuery.data || []).map(r => ({
         value: r.nombreRolProyecto ?? r,

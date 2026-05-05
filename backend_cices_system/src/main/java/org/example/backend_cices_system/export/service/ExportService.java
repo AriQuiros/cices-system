@@ -6,8 +6,15 @@ import org.example.backend_cices_system.consult.investigador.dto.CertificacionFi
 import org.example.backend_cices_system.consult.proyecto.dto.ProyectoFiltroDTO;
 import org.example.backend_cices_system.consult.investigador.service.RepInvestigadorCertificacionesService;
 import org.example.backend_cices_system.export.builder.CertificacionesReportBuilder;
+import org.example.backend_cices_system.export.builder.ParticipantesReportBuilder;
+import org.example.backend_cices_system.export.builder.PresupuestosReportBuilder;
 import org.example.backend_cices_system.export.builder.ProyectosReportBuilder;
 import org.example.backend_cices_system.export.dto.ProyectoReporteDTO;
+import org.example.backend_cices_system.export.dto.ReporteParticipantesDTO;
+import org.example.backend_cices_system.export.dto.ReportePresupuestosExportDTO;
+import org.example.backend_cices_system.export.dto.ReportePresupuestosListadoDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +34,17 @@ import java.util.List;
 public class ExportService {
 
     private final DocumentService documentService;
+
     private final CertificacionesReportBuilder certificacionesReportBuilder;
     private final ProyectosReportBuilder proyectosReportBuilder;
+    private final ParticipantesReportBuilder participantesReportBuilder;
+    private final PresupuestosReportBuilder presupuestosReportBuilder;
 
     private final RepInvestigadorCertificacionesService repInvestigadorCertificacionesService;
-    private final ProyectoReporteOrquestador orquestador;
+
+    private final ProyectoReporteOrquestador proyectoReporteOrquestador;
+    private final ParticipantesReporteOrquestador participantesReporteOrquestador;
+    private final PresupuestoReporteOrquestador presupuestoReporteOrquestador;
 
     // ════════════════════════════════════════════════════════════════════════
     // CERTIFICACIONES
@@ -59,7 +72,7 @@ public class ExportService {
             ProyectoFiltroDTO filtro,
             String formato
     ) {
-        List<ProyectoReporteDTO> data = orquestador.ensamblarConFiltros(filtro);
+        List<ProyectoReporteDTO> data = proyectoReporteOrquestador.ensamblarConFiltros(filtro);
 
         return documentService.generarResponse(
                 proyectosReportBuilder,
@@ -70,21 +83,41 @@ public class ExportService {
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // PROYECTOS — reporte por IDs explícitos
+    // PARTICIPANTES
     // ════════════════════════════════════════════════════════════════════════
 
-    public ResponseEntity<byte[]> generarReporteProyectosPorIds(
-            List<Integer> ids,
+    public Page<ReporteParticipantesDTO> paginadoParticipantes(ProyectoFiltroDTO filtro, Pageable pageable, int limte){
+        return participantesReporteOrquestador.paginado(filtro,pageable, limte);
+    }
+
+    public ResponseEntity<byte[]> generarReporteParticipantes(
+            ProyectoFiltroDTO filtro,
             String formato
     ) {
-        List<ProyectoReporteDTO> data = orquestador.ensamblar(ids);
-
+        List<ReporteParticipantesDTO> data = participantesReporteOrquestador.generarCompleto(filtro);
         return documentService.generarResponse(
-                proyectosReportBuilder,
+                participantesReportBuilder,
                 data,
                 formato,
-                "reporte_proyectos"
+                "reporte_participantes"
         );
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // PRESUPUESTOS
+    // ════════════════════════════════════════════════════════════════════════
+
+    public Page<ReportePresupuestosListadoDTO> paginadoPresupuestos(
+            ProyectoFiltroDTO filtro, Pageable pageable, int limite) {
+        return presupuestoReporteOrquestador.paginado(filtro, pageable, limite);
+    }
+
+    public ResponseEntity<byte[]> generarReportePresupuestos(
+            ProyectoFiltroDTO filtro, String formato) {
+        List<ReportePresupuestosExportDTO> data =
+                presupuestoReporteOrquestador.generarCompleto(filtro);
+        return documentService.generarResponse(
+                presupuestosReportBuilder, data, formato, "reporte_presupuestos");
     }
 
 }

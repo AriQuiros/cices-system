@@ -3,8 +3,9 @@ import { useState } from "react";
 import { useListadoProyectos } from "../../hooks/proyectoHooks/useListadoProyectos.js";
 import { formatearFechaCR } from "../../utils/formatoFechaCR.js";
 import {descargarArchivo} from "../../services/exportServices/exportService.js";
-import {useExportarProyectos} from "../../hooks/exportHooks/useExport.js";
-import ProyectosFiltros from "../../components/filtrado/ProyectosFiltros.jsx"; // reutiliza estilos
+import {useExportarProyectos} from "../../hooks/exportHooks/mutations/useExport.js";
+import ProyectosFiltros from "../../components/filtrado/ProyectosFiltros.jsx";
+import {Pagination} from "../../components/shared/Pagination.jsx"; // reutiliza estilos
 
 function ReportesProyectos() {
 
@@ -91,11 +92,9 @@ function ReportesProyectos() {
                     </button>
                 </div>
 
-                {/* 🔽 ESTADOS */}
                 {isLoading && <p>Cargando proyectos...</p>}
                 {isError && <p style={{ color: "red" }}>Error al cargar proyectos.</p>}
 
-                {/* 🔽 LISTA */}
                 <section className="todosLosProyectos">
 
                     {!isLoading && !isError && proyectos.length === 0 && (
@@ -125,27 +124,13 @@ function ReportesProyectos() {
 
                 </section>
 
-                {/* 🔽 PAGINACIÓN */}
                 <div className="paginacion">
-
-                    <button
-                        disabled={pageable.page === 0}
-                        onClick={() => cambiarPagina(pageable.page - 1)}
-                    >
-                        Anterior
-                    </button>
-
-                    <span>
-                        Página {pageable.page + 1} de {totalPages || 1}
-                    </span>
-
-                    <button
-                        disabled={pageable.page + 1 >= totalPages}
-                        onClick={() => cambiarPagina(pageable.page + 1)}
-                    >
-                        Siguiente
-                    </button>
-
+                    <Pagination
+                        page={pageable.page}
+                        totalPages={totalPages}
+                        totalElements={totalElements}
+                        onPageChange={cambiarPagina}
+                    />
                 </div>
 
             </div>

@@ -42,9 +42,10 @@ import PanelResumen from "../pages/resumenEjecutivo/PanelResumen.jsx";
 import NotificacionesPage from "../pages/notificaciones/Notificaciones.jsx";
 
 /* REPORTES */
+import ReporteProyectos from "../pages/reportes/ReportesProyectos.jsx"
+import ReportePresupuestos from "../pages/reportes/ReportePresupuestos.jsx";
 import ReporteCertificaciones from "../pages/reportes/ReporteCertificaciones.jsx";
 import ReporteInvestigadoresParticipantes from "../pages/reportes/ReporteInvestigadoresParticipantes.jsx";
-import ReporteProyectos from "../pages/reportes/ReportesProyectos.jsx"
 
 function AppRoutes() {
     return (
@@ -93,10 +94,10 @@ function AppRoutes() {
                 <Route path="/notificaciones" element={<NotificacionesPage />} />
 
                 {/* REPORTES */}
+                <Route path="/reporte-proyectos" element={<ReporteProyectos />} />
+                <Route path="/reporte-presupuestos" element={<ReportePresupuestos />} />
                 <Route path="/reporte-certificaciones" element={<ReporteCertificaciones />} />
                 <Route path="/reporte-participantes" element={<ReporteInvestigadoresParticipantes />} />
-                <Route path="/reporte-proyectos" element={<ReporteProyectos />} />
-
 
                 {/* NOTIFICACIONES */}
                 <Route path="/notificaciones" element={<NotificacionesPage />} />

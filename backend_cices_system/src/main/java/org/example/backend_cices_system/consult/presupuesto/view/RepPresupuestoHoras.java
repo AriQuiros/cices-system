@@ -61,6 +61,11 @@ public class RepPresupuestoHoras {
     @Column(name = "MODALIDAD", length = 30)
     private String modalidad;
 
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "ROL_PROYECTO", nullable = false, length = 50)
+    private String rolProyecto;
+
     @NotNull
     @Column(name = "FECHA_INICIO_INVESTIGADOR", nullable = false)
     private LocalDate fechaInicioInvestigador;

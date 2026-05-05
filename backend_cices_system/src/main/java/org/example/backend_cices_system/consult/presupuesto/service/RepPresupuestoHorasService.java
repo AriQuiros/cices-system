@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +52,7 @@ public class RepPresupuestoHorasService {
                 horasAsignadas.getIdInvestigadorProyecto(),
                 horasAsignadas.getNombreCompleto(),
                 horasAsignadas.getModalidad(),
+                horasAsignadas.getRolProyecto(),
                 horasAsignadas.getFechaInicioInvestigador(),
                 horasAsignadas.getFechaFinInvestigador(),
                 "TEMPORAL",
@@ -73,7 +75,36 @@ public class RepPresupuestoHorasService {
     }
 
     // Metodo principal: obtener horas asignadas por varios proyectos
-    public Map<Integer, List<HorasAsignadasReporteDTO>> obtenerPorProyectos(List<Integer> idsProyectos) {
+    public Map<Integer, List<HorasAsignadasReporteDTO>> obtenerPorProyectosAgrupadoPorPresupuesto(List<Integer> idsProyectos) {
+        if (idsProyectos == null || idsProyectos.isEmpty()) return Map.of();
+
+        List<RepPresupuestoHoras> filas = repo.findByIdProyectoIn(idsProyectos);
+
+        return filas.stream()
+                .filter(Objects::nonNull) // para cuando no haya horas asignadas
+                .collect(Collectors.groupingBy(
+                        RepPresupuestoHoras::getIdPresupuesto,
+                        Collectors.mapping(this::obtenerHorasAsignadasReporteDTO, Collectors.toList())
+                ));
+    }
+
+    public Map<Integer, HorasAsignadasReporteDTO> obtenerHorasPorInvestigador(List<Integer> idsProyectos) {
+
+        if (idsProyectos == null || idsProyectos.isEmpty()) return Map.of();
+
+        List<RepPresupuestoHoras> filas = repo.findByIdProyectoIn(idsProyectos);
+
+        return filas.stream()
+                .filter(Objects::nonNull)
+                .filter(f -> f.getIdInvestigadorProyecto() != null)
+                .collect(Collectors.toMap(
+                        RepPresupuestoHoras::getIdInvestigadorProyecto,
+                        this::obtenerHorasAsignadasReporteDTO,
+                        (h1, h2) -> h1 // por si hay duplicados
+                ));
+    }
+
+    public Map<Integer, List<HorasAsignadasReporteDTO>> obtenerPorProyectosAgrupadoPorProyecto(List<Integer> idsProyectos) {
 
         if (idsProyectos == null || idsProyectos.isEmpty()) return Map.of();
 
@@ -81,7 +112,7 @@ public class RepPresupuestoHorasService {
 
         return filas.stream()
                 .collect(Collectors.groupingBy(
-                        RepPresupuestoHoras::getIdPresupuesto,
+                        RepPresupuestoHoras::getIdProyecto,
                         Collectors.mapping(this::obtenerHorasAsignadasReporteDTO, Collectors.toList())
                 ));
     }

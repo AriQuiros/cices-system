@@ -8,7 +8,9 @@ import java.util.List;
 
 @Repository
 public interface PresupuestoBitRepository extends JpaRepository<PresupuestoBit, Long> {
-    List<PresupuestoBit> findByIdPresupuesto(Integer idPresupuesto);
     List<PresupuestoBit> findByIdProyecto(Integer idProyecto);
     List<PresupuestoBit> findByIdPresupuestoAndAccBit(Integer idPresupuesto, Character accBit);
+
+    // Agregar:
+    List<PresupuestoBit> findByIdPresupuestoIn(List<Integer> ids);
 }

@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.modules.gasto.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.export.dto.BitacoraGastoReporteDTO;
 import org.example.backend_cices_system.modules.gasto.repository.GastoBitRepository;
 import org.example.backend_cices_system.modules.gasto.dto.BitacoraDTO;
 import org.example.backend_cices_system.modules.gasto.dto.GastoBitDTO;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +51,19 @@ public class GastoBitService {
 
     }
 
+    public Map<Integer, List<BitacoraGastoReporteDTO>> obtenerPorPresupuestos(List<Integer> idsPresupuesto) {
+
+        return gastoBitRepository.findByIdPresupuestoIn(idsPresupuesto)
+                .stream()
+                .map(this::toReporteDTO)
+                .peek(dto -> {
+                    if (dto.idPresupuesto() == null) {
+                        System.out.println("💣 GASTO BIT CON ID_PRESUPUESTO NULL: " + dto);
+                    }
+                })
+                .collect(Collectors.groupingBy(BitacoraGastoReporteDTO::idPresupuesto));
+    }
+
     private GastoBitDTO obtenerDTO (GastoBit gastoBit){
         return new GastoBitDTO(
                 new BitacoraDTO(
@@ -61,5 +77,28 @@ public class GastoBitService {
                 gastoBit.getFechaGastoOld(),
                 gastoBit.getDescripcionOld()
         );
+    }
+
+    private BitacoraGastoReporteDTO toReporteDTO(GastoBit bit) {
+        return new BitacoraGastoReporteDTO(
+                bit.getFecBit() != null ? bit.getFecBit().toString() : "—",
+                accionLabel(bit.getAccBit()),
+                usuarioService.obtenerUsuario(bit.getUsuBit()).getNombreUsuario(),
+                bit.getMontoOld() != null ? bit.getMontoOld().toPlainString() : "—",
+                bit.getFechaGastoOld() != null ? bit.getFechaGastoOld().toString() : "—",
+                bit.getDescripcionOld() != null ? bit.getDescripcionOld() : "—",
+                bit.getIdPresupuesto(),
+                bit.getIdGasto()
+        );
+    }
+
+    private String accionLabel(Character acc) {
+        if (acc == null) return "—";
+        return switch (acc) {
+            case 'I' -> "Inserción";
+            case 'U' -> "Actualización";
+            case 'D' -> "Eliminación";
+            default  -> String.valueOf(acc);
+        };
     }
 }

@@ -1,148 +1,176 @@
-import React, { useContext, useState } from "react";
-import { AppContext } from "../../context/AppContext.jsx";
-import { useProyectos } from "../../hooks/proyectos/useProyectos";
-import { useTiposCatalogo } from "../../hooks/useTiposCatalogo.js";
-import { useLineas } from "../../hooks/proyectos/useLineas.jsx";
+import { useState } from "react";
+import { formatearFechaCR } from "../../utils/formatoFechaCR.js";
+import { descargarArchivo } from "../../services/exportServices/exportService.js";
+import { useExportarParticipantes } from "../../hooks/exportHooks/mutations/useExport.js";
 import ProyectosFiltros from "../../components/filtrado/ProyectosFiltros.jsx";
-import { exportarReporteInvestigadoresParticipantes } from "../../services/ReporteInvestigadoresService.jsx";
+import { Pagination } from "../../components/shared/Pagination.jsx";
+import {formatearNumeroCR} from "../../utils/formatoNumeroCR.js";
+import {useListadoParticipantes} from "../../hooks/exportHooks/useListadoParticipantes.js";
+
 import "./ReporteInvestigadoresParticipantes.css";
 
-function ReporteInvestigadoresParticipantes() {
-    const { token } = useContext(AppContext);
+function ReportesParticipantes() {
 
     const {
-        proyectos,
-        total,
+        data,
+        totalElements,
         totalPages,
-        page,
-        setPage,
-        orden,
-        setOrden,
-        cargando,
-        filtros,
-        handleChange,
-        limpiarFiltros
-    } = useProyectos();
+        isLoading,
+        isError,
 
-    const { tipos } = useTiposCatalogo(token, [
-        "ESTADO_PROYECTO",
-        "TIPO_PROYECTO"
-    ]);
+        filtroProyecto,
+        cambiarFiltroProyecto,
+        limpiarFiltros,
 
-    const { opciones: opcionesLineas } = useLineas();
+        pageable,
+        cambiarPagina,
 
-    const opcionesTipos = tipos["TIPO_PROYECTO"]?.map(t => ({
-        value: t.id,
-        label: t.despliegue
-    })) || [];
+        opcionesTipos,
+        opcionesEstado,
+        opcionesLineas
+    } = useListadoParticipantes();
 
     const [formato, setFormato] = useState("pdf");
-    const [exportando, setExportando] = useState(false);
+    const { mutateAsync: exportar, isPending } = useExportarParticipantes();
 
     const handleExportar = async () => {
-        setExportando(true);
-
         try {
-            await exportarReporteInvestigadoresParticipantes(
-                token,
-                filtros,
-                formato,
-                orden
-            );
-        } catch (error) {
-            console.error("Error exportando reporte:", error);
-
-            if (error.response?.data) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    console.error("Respuesta backend:", reader.result);
-                };
-                reader.readAsText(error.response.data);
-            }
-
-            alert("No se pudo exportar el reporte.");
+            const blob = await exportar({ formato, filtro: filtroProyecto });
+            descargarArchivo(blob, `reporte_participantes.${formato}`);
+        } catch (err) {
+            console.error(err);
         }
-
-        setExportando(false);
     };
 
     return (
         <div className="listado-proyectos-page">
             <div className="listado-proyectos-card">
 
-                <h2 className="listado-proyectos-title">
-                    Reporte de investigadores participantes
-                </h2>
+                <h2>Reporte de participantes</h2>
 
+                {/* FILTROS */}
                 <ProyectosFiltros
-                    filtros={filtros}
-                    onChange={handleChange}
+                    filtros={filtroProyecto}
+                    onChange={cambiarFiltroProyecto}
                     onClear={limpiarFiltros}
-                    orden={orden}
-                    setOrden={setOrden}
                     opcionesLineas={opcionesLineas}
                     opcionesTipos={opcionesTipos}
-                    opcionesEstado={tipos["ESTADO_PROYECTO"] || []}
+                    opcionesEstado={opcionesEstado}
                 />
 
-                <div className="exportar-container">
-                    <select
-                        value={formato}
-                        onChange={(e) => setFormato(e.target.value)}
-                        disabled={exportando}
-                    >
+                <p>Total de proyectos: {totalElements}</p>
+
+                {/* EXPORT */}
+                <div className="listado-export">
+                    <select value={formato} onChange={e => setFormato(e.target.value)}>
                         <option value="pdf">PDF</option>
                         <option value="xlsx">Excel</option>
                         <option value="docx">Word</option>
                     </select>
 
-                    <button
-                        type="button"
-                        onClick={handleExportar}
-                        disabled={exportando}
-                    >
-                        {exportando ? "Exportando..." : "Exportar"}
+                    <button onClick={handleExportar} disabled={isPending}>
+                        {isPending ? "Exportando..." : "Exportar"}
                     </button>
                 </div>
 
-                <p>Total de proyectos filtrados: {total}</p>
+                {/* ESTADOS */}
+                {isLoading && <p>Cargando...</p>}
+                {isError && <p style={{ color: "red" }}>Error al cargar.</p>}
 
-                <section className="todosLosProyectos">
-                    {cargando && <p>Cargando proyectos...</p>}
+                {/* LISTA */}
+                <section className="lista-participantes">
 
-                    {!cargando && proyectos.length === 0 && (
-                        <p>No se encontraron proyectos</p>
+                    {!isLoading && data.length === 0 && (
+                        <p>No hay resultados.</p>
                     )}
 
-                    <div className="label">
-                        {proyectos.map(p => (
-                            <div key={p.codigoProyecto} className="proyecto_card">
-                                <h3>{p.codigoProyecto}</h3>
-                                <p><b>Nombre:</b> {p.nombreProyecto}</p>
-                                <p><b>Tipo:</b> {p.tipoProyecto}</p>
-                                <p><b>Línea:</b> {p.lineaInvestigacion}</p>
-                                <p><b>Estado:</b> {p.estado}</p>
-                                <p>{p.fechaInicio} - {p.fechaFinalizacion}</p>
-                            </div>
-                        ))}
-                    </div>
+                    {data.map(item => (
+                        <div key={item.proyecto.codigoProyecto} className="participante-card">
+
+                            {/* ENCABEZADO */}
+                            <h3>{item.proyecto.codigoProyecto}</h3>
+
+                            <p><b>Nombre:</b> {item.proyecto.nombreProyecto}</p>
+
+                            <p>
+                                <b>Periodo:</b>{" "}
+                                {formatearFechaCR(item.proyecto.fechaInicio)} —{" "}
+                                {formatearFechaCR(item.proyecto.fechaFinalizacion)}
+                            </p>
+
+                            {item.participantes.length > 0 ? (
+                                <table className="tabla-participantes">
+                                    <thead>
+                                    <tr>
+                                        <th>Investigador</th>
+                                        <th>Rol</th>
+                                        <th>Participación</th>
+                                        <th>Modalidad</th>
+                                        <th>Carga</th>
+                                        <th>Horas/mes</th>
+                                        <th>Meses</th>
+                                        <th>Total horas</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {item.participantes.map(p => (
+                                        <tr key={p.idInvestigadorProyecto}>
+                                            <td>{p.investigador}</td>
+
+                                            <td>
+                        <span className={`badge-rol ${p.rolProyecto?.toLowerCase()}`}>
+                            {p.rolProyecto}
+                        </span>
+                                            </td>
+
+                                            <td>
+                                                {formatearFechaCR(p.fechaInicio)} -{" "}
+                                                {p.fechaFin ? formatearFechaCR(p.fechaFin) : "—"}
+                                            </td>
+
+                                            <td>{p.modalidad || "N/A"}</td>
+                                            <td>{p.cargaAcademica || "N/A"}</td>
+                                            <td>{p.horasMes || "N/A"}</td>
+                                            <td>{p.meses || "N/A"}</td>
+
+                                            <td>
+                                                <b>{formatearNumeroCR(p.totalHorasAsignadas) || "N/A"}</b>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p className="sin-participantes">
+                                    Este proyecto no tiene participantes.
+                                    <br/>
+                                    <br/>
+                                </p>
+                            )}
+
+                            {/* +N MÁS */}
+                            {item.restantes > 0 && (
+                                <p className="mas-participantes">
+                                    +{item.restantes} más
+                                </p>
+                            )}
+
+                        </div>
+                    ))}
+
                 </section>
 
-                <div className="paginacion">
-                    <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-                        Anterior
-                    </button>
-
-                    <span>Página {page + 1} de {totalPages}</span>
-
-                    <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>
-                        Siguiente
-                    </button>
-                </div>
+                {/* PAGINACIÓN */}
+                <Pagination
+                    page={pageable.page}
+                    totalPages={totalPages}
+                    totalElements={totalElements}
+                    onPageChange={cambiarPagina}
+                />
 
             </div>
         </div>
     );
 }
 
-export default ReporteInvestigadoresParticipantes;
+export default ReportesParticipantes;

@@ -80,7 +80,7 @@ export function usePerfil({ modoPerfil, setEmpleado, setUsuario, setInvestigador
 
             if (!res.ok) throw new Error("Error al actualizar perfil");
 
-            const nuevoCorreo = payload.empleado.correo;
+            const nuevoCorreo = payload.empleado?.correo || payload.correo;
             const correoActual = user?.username;
 
             const cambioUsername = nuevoCorreo !== correoActual;

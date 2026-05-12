@@ -1,11 +1,5 @@
-package org.example.backend_cices_system.presentation;
+package org.example.backend_cices_system.shared.catalogo;
 
-import org.example.backend_cices_system.data.RolProyectoRepository;
-import org.example.backend_cices_system.data.RolRepository;
-import org.example.backend_cices_system.dto.CodigoDTO;
-import org.example.backend_cices_system.logic.Rol;
-
-import org.example.backend_cices_system.service.CatalogoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

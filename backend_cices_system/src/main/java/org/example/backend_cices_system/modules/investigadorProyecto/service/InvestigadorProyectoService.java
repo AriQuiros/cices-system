@@ -69,8 +69,8 @@ public class InvestigadorProyectoService {
                 inv.getIdInvestigador().getIdEmpleado().getIdentificacion(),
                 inv.getIdInvestigador().getIdEmpleado().getNombreCompleto(),
                 inv.getIdProyecto().getCodigoProyecto(),
-                obtenerRolProyectoDTO(inv.getIdRolProyecto())
-                ,inv.getActividadProyecto(),
+                obtenerRolProyectoDTO(inv.getIdRolProyecto()),
+                inv.getActividadProyecto(),
                 inv.getFechaInicioInvestigador(),
                 inv.getFechaFinInvestigador());
     }

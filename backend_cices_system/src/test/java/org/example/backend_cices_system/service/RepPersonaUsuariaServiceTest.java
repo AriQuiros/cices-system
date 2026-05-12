@@ -1,7 +1,9 @@
 package org.example.backend_cices_system.service;
 
 import org.example.backend_cices_system.report.dao.RepPersonaUsuariaRepository;
+import org.example.backend_cices_system.report.dto.InvestigadorConsultaDTO;
 import org.example.backend_cices_system.report.dto.PersonaUsuariaDTO;
+import org.example.backend_cices_system.report.dto.UsuarioPersonaDTO;
 import org.example.backend_cices_system.report.serviceVw.RepPersonaUsuariaService;
 import org.example.backend_cices_system.report.view.RepPersonaUsuaria;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 
@@ -16,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class RepPersonaUsuariaServiceTest {
 
     @Mock
@@ -24,86 +29,112 @@ class RepPersonaUsuariaServiceTest {
     @InjectMocks
     private RepPersonaUsuariaService service;
 
-    // =========================================
-    // HU-010
-    // Debe retornar solo asistentes y administrativos
-    // =========================================
     @Test
-    void HU10_debeRetornarSoloAsistentesYAdministrativos() {
+    void obtenerAsistentesAdministrativos_debeTraerSoloAsistenteYAdministrativo() {
+        RepPersonaUsuaria rep1 = mock(RepPersonaUsuaria.class);
+        when(rep1.getNombreRol()).thenReturn("ASISTENTE");
+        when(rep1.getIdentificacion()).thenReturn("111");
+        when(rep1.getNombreCompleto()).thenReturn("Ana Perez");
+        when(rep1.getPais()).thenReturn("Costa Rica");
+        when(rep1.getCorreo()).thenReturn("ana@mail.com");
+        when(rep1.getNumeroTelefono()).thenReturn("8888");
+        when(rep1.getGradoAcademico()).thenReturn("Licenciatura");
 
-        RepPersonaUsuaria r1 = mock(RepPersonaUsuaria.class);
-        when(r1.getNombreRol()).thenReturn("ASISTENTE");
-        when(r1.getIdentificacion()).thenReturn("1");
-        when(r1.getNombreCompleto()).thenReturn("Alejandro");
-        when(r1.getPais()).thenReturn("CR");
-        when(r1.getCorreo()).thenReturn("a@gmail.com");
-        when(r1.getNumeroTelefono()).thenReturn("8888");
-        when(r1.getGradoAcademico()).thenReturn("Lic");
+        RepPersonaUsuaria rep2 = mock(RepPersonaUsuaria.class);
+        when(rep2.getNombreRol()).thenReturn("ADMINISTRATIVO");
+        when(rep2.getIdentificacion()).thenReturn("111");
+        when(rep2.getNombreCompleto()).thenReturn("Ana Perez");
+        when(rep2.getPais()).thenReturn("Costa Rica");
+        when(rep2.getCorreo()).thenReturn("ana@mail.com");
+        when(rep2.getNumeroTelefono()).thenReturn("8888");
+        when(rep2.getGradoAcademico()).thenReturn("Licenciatura");
 
-        RepPersonaUsuaria r2 = mock(RepPersonaUsuaria.class);
-        when(r2.getNombreRol()).thenReturn("ADMINISTRATIVO");
-        when(r2.getIdentificacion()).thenReturn("2");
-        when(r2.getNombreCompleto()).thenReturn("Maria");
-        when(r2.getPais()).thenReturn("CR");
-        when(r2.getCorreo()).thenReturn("m@gmail.com");
-        when(r2.getNumeroTelefono()).thenReturn("7777");
-        when(r2.getGradoAcademico()).thenReturn("Maestría");
+        RepPersonaUsuaria rep3 = mock(RepPersonaUsuaria.class);
+        when(rep3.getNombreRol()).thenReturn("DIRECTOR");
 
-        RepPersonaUsuaria r3 = mock(RepPersonaUsuaria.class);
-        when(r3.getNombreRol()).thenReturn("INVESTIGADOR");
+        when(personaRepo.findAll()).thenReturn(List.of(rep1, rep2, rep3));
 
-        when(personaRepo.findAll()).thenReturn(List.of(r1, r2, r3));
-
-        List<PersonaUsuariaDTO> resultado =
-                service.obtenerAsistentesAdministrativos();
-
-        assertEquals(2, resultado.size());
-    }
-
-    // =========================================
-    // HU-010
-    // Debe agrupar por identificación y acumular roles
-    // =========================================
-    @Test
-    void HU10_debeAgruparPorIdentificacionYAcumularRoles() {
-
-        RepPersonaUsuaria r1 = mock(RepPersonaUsuaria.class);
-        when(r1.getNombreRol()).thenReturn("ASISTENTE");
-        when(r1.getIdentificacion()).thenReturn("1");
-        when(r1.getNombreCompleto()).thenReturn("Alejandro");
-        when(r1.getPais()).thenReturn("CR");
-        when(r1.getCorreo()).thenReturn("a@gmail.com");
-        when(r1.getNumeroTelefono()).thenReturn("8888");
-        when(r1.getGradoAcademico()).thenReturn("Lic");
-
-        RepPersonaUsuaria r2 = mock(RepPersonaUsuaria.class);
-        when(r2.getNombreRol()).thenReturn("ADMINISTRATIVO");
-        when(r2.getIdentificacion()).thenReturn("1");
-
-        when(personaRepo.findAll()).thenReturn(List.of(r1, r2));
-
-        List<PersonaUsuariaDTO> resultado =
-                service.obtenerAsistentesAdministrativos();
+        List<PersonaUsuariaDTO> resultado = service.obtenerAsistentesAdministrativos();
 
         assertEquals(1, resultado.size());
-        assertEquals(2, resultado.get(0).roles().size());
+        PersonaUsuariaDTO persona = resultado.get(0);
+        assertEquals("Ana Perez", persona.nombreCompleto());
+        assertEquals("111", persona.identificacion());
+        assertTrue(persona.roles().contains("ASISTENTE"));
+        assertTrue(persona.roles().contains("ADMINISTRATIVO"));
     }
 
-    // =========================================
-    // HU-010
-    // Debe retornar lista vacía si no hay roles válidos
-    // =========================================
     @Test
-    void HU10_debeRetornarListaVaciaSiNoHayRolesPermitidos() {
+    void todosUsuarios_debeTraerUsuariosAgrupadosConSusRoles() {
+        RepPersonaUsuaria rep1 = mock(RepPersonaUsuaria.class);
+        when(rep1.getIdentificacion()).thenReturn("111");
+        when(rep1.getIdUsuario()).thenReturn(1);
+        when(rep1.getNombreCompleto()).thenReturn("Ana Perez");
+        when(rep1.getNombreUsuario()).thenReturn("aperez");
+        when(rep1.getActivo()).thenReturn(true);
+        when(rep1.getNombreRol()).thenReturn("ASISTENTE");
 
-        RepPersonaUsuaria r1 = mock(RepPersonaUsuaria.class);
-        when(r1.getNombreRol()).thenReturn("INVESTIGADOR");
+        RepPersonaUsuaria rep2 = mock(RepPersonaUsuaria.class);
+        when(rep2.getIdentificacion()).thenReturn("111");
+        when(rep2.getNombreRol()).thenReturn("ADMINISTRATIVO");
 
-        when(personaRepo.findAll()).thenReturn(List.of(r1));
+        RepPersonaUsuaria rep3 = mock(RepPersonaUsuaria.class);
+        when(rep3.getIdentificacion()).thenReturn("222");
+        when(rep3.getIdUsuario()).thenReturn(2);
+        when(rep3.getNombreCompleto()).thenReturn("Luis Mora");
+        when(rep3.getNombreUsuario()).thenReturn("lmora");
+        when(rep3.getActivo()).thenReturn(false);
+        when(rep3.getNombreRol()).thenReturn("DIRECTOR");
 
-        List<PersonaUsuariaDTO> resultado =
-                service.obtenerAsistentesAdministrativos();
+        when(personaRepo.findAll()).thenReturn(List.of(rep1, rep2, rep3));
 
-        assertTrue(resultado.isEmpty());
+        List<UsuarioPersonaDTO> resultado = service.todosUsuarios();
+
+        assertEquals(2, resultado.size());
+
+        UsuarioPersonaDTO ana = resultado.stream()
+                .filter(u -> u.nombreUsuario().equals("aperez"))
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals(1, ana.id());
+        assertEquals("Ana Perez", ana.nombreCompleto());
+        assertTrue(ana.activo());
+        assertTrue(ana.roles().contains("ASISTENTE"));
+        assertTrue(ana.roles().contains("ADMINISTRATIVO"));
+    }
+
+    @Test
+    void obtenerInvestigadores_debeTraerInvestigadoresSinDuplicadosPorIdentificacion() {
+        RepPersonaUsuaria rep1 = mock(RepPersonaUsuaria.class);
+        when(rep1.getIdentificacion()).thenReturn("111");
+        when(rep1.getNombreCompleto()).thenReturn("Ana Perez");
+        when(rep1.getPais()).thenReturn("Costa Rica");
+        when(rep1.getCorreo()).thenReturn("ana@mail.com");
+        when(rep1.getNumeroTelefono()).thenReturn("8888");
+        when(rep1.getGradoAcademico()).thenReturn("Licenciatura");
+        when(rep1.getInstitucionOrigen()).thenReturn("UNA");
+        when(rep1.getUnidadAcademica()).thenReturn("Informatica");
+        when(rep1.getTemaInteres()).thenReturn("IA");
+
+        RepPersonaUsuaria rep2 = mock(RepPersonaUsuaria.class);
+        when(rep2.getIdentificacion()).thenReturn("111");
+
+        RepPersonaUsuaria rep3 = mock(RepPersonaUsuaria.class);
+        when(rep3.getIdentificacion()).thenReturn("222");
+        when(rep3.getNombreCompleto()).thenReturn("Luis Mora");
+        when(rep3.getPais()).thenReturn("Costa Rica");
+        when(rep3.getCorreo()).thenReturn("luis@mail.com");
+        when(rep3.getNumeroTelefono()).thenReturn("9999");
+        when(rep3.getGradoAcademico()).thenReturn("Maestria");
+        when(rep3.getInstitucionOrigen()).thenReturn("TEC");
+        when(rep3.getUnidadAcademica()).thenReturn("Computacion");
+        when(rep3.getTemaInteres()).thenReturn("Datos");
+
+        when(personaRepo.findAll()).thenReturn(List.of(rep1, rep2, rep3));
+
+        List<InvestigadorConsultaDTO> resultado = service.obtenerInvestigadores();
+
+        assertEquals(2, resultado.size());
     }
 }

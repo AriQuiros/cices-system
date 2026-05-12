@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.backend_cices_system.export.builder.ReportBuilderUtils.fmt;
+
 @Component
 public class CertificacionesReportBuilder implements ReportBuilder<List<FormacionDTO>> {
 
@@ -93,7 +95,7 @@ public class CertificacionesReportBuilder implements ReportBuilder<List<Formacio
                         safe(c.institucion()),
                         safe(c.tipo()),
                         safe(c.estado()),
-                        c.fecha() != null ? c.fecha().toString() : ""
+                        fmt(c.fecha())
                 ))
                 .toList();
 

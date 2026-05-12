@@ -23,7 +23,7 @@ export const useConsultaPersonas = (modo = "empleados") => {
 
     const filtroEfectivo = {
         nombre: nombreDebounced,
-        roles: modo === "investigadores" ? ["INVESTIGADOR"] : filtro.roles,
+        roles:  modo === "investigadores" ? ["INVESTIGADOR"] : ["ADMINISTRATIVO", "ASISTENTE"],
         gradosAcademicos: filtro.gradosAcademicos
     };
 

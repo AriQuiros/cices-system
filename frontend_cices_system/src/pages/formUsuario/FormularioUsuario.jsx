@@ -139,9 +139,10 @@ export default function FormularioUsuario({
                         />
                     </div>
 
-                    <div className={grupoInput}>
+                    <div  className={`${grupoInput} col2`}>
                         <label className={label}>Grado Académico</label>
                         <Select
+                            className="select-grado"
                             required placeholder="Seleccione grado académico"
                             options={(tipos["GRADO_ACADEMICO"] || []).map(t => ({
                                 value: t.valor, label: t.despliegue
@@ -160,7 +161,7 @@ export default function FormularioUsuario({
                     placeholder="ejemplo@ucr.ac.cr" value={empleado.correo}
                     disabled={modoPerfil && !authOk}
                     onChange={e => handleCorreoChange(e, authOk, setRequiereAuth)}
-                    rules={[required(), correoUCR(), maxLength(254)]}
+                    rules={[required(),  maxLength(254)]}
                     maxLength={50} required
                 />
                 {modoPerfil && !authOk && (

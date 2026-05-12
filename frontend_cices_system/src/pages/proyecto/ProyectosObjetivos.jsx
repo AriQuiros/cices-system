@@ -168,33 +168,34 @@ function ProyectoObjetivos({editable, tipoMeta}) {
                             <label>Indicadores</label>
 
                             {meta.indicadores.map((indicador, idxIndicador) => (
-                                <div key={idxIndicador} className="inline-group">
-                                    <div className={"row"}>
-                                    <input
-                                        type="text"
-                                        placeholder={`Descripción indicador ${idxIndicador + 1}  (Meta ${idxMeta + 1} - Objetivo ${idxObjetivo + 1})`}
-                                        maxLength={252}
-                                        className="input-field"
-                                        required
-                                        value={indicador.descripcion}
-                                        onChange={(e) =>
-                                            setByPath(
-                                                [
-                                                    "objetivosEspecificos",
-                                                    idxObjetivo,
-                                                    "metas",
-                                                    idxMeta,
-                                                    "indicadores",
-                                                    idxIndicador,
-                                                    "descripcion"
-                                                ],
-                                                e.target.value
-                                            )
-                                        }
-                                    />
+                                <div key={idxIndicador} className="inline-group col3">
+                                    <div className="indicador-row">
+                                        <input
+                                            type="text"
+                                            placeholder={`Descripción indicador ${idxIndicador + 1}  (Meta ${idxMeta + 1} - Objetivo ${idxObjetivo + 1})`}
+                                            maxLength={252}
+                                            className="input-field indicador-input"
+                                            required
+                                            value={indicador.descripcion}
+                                            onChange={(e) =>
+                                                setByPath(
+                                                    [
+                                                        "objetivosEspecificos",
+                                                        idxObjetivo,
+                                                        "metas",
+                                                        idxMeta,
+                                                        "indicadores",
+                                                        idxIndicador,
+                                                        "descripcion"
+                                                    ],
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
 
                                         <div className="icon-buttons">
-                                            <button className={"btn-add"}
+                                            <button
+                                                className={"btn-add"}
                                                 type="button"
                                                 onClick={() =>
                                                     addByPath(
@@ -215,8 +216,10 @@ function ProyectoObjetivos({editable, tipoMeta}) {
                                             </button>
 
                                             {meta.indicadores.length > 1 && (
-                                                <button hidden={editable && indicador?.id}
-                                                    type="button" className={"btn-delete"}
+                                                <button
+                                                    hidden={editable && indicador?.id}
+                                                    type="button"
+                                                    className={"btn-delete"}
                                                     onClick={() =>
                                                         removeByPath(
                                                             [

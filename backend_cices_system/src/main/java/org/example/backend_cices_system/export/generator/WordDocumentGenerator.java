@@ -53,9 +53,13 @@ public class WordDocumentGenerator implements DocumentGenerator {
 
                     for (ReportElement element : section.elements()) {
 
-                        if (element instanceof ReportParagraph(String text)) {
+                        if (element instanceof ReportParagraph(String text, boolean bold)) {
+
                             XWPFParagraph p = document.createParagraph();
-                            p.createRun().setText(text);
+                            XWPFRun run = p.createRun();
+
+                            run.setText(text != null ? text : "");
+                            run.setBold(bold);
                         }
 
                         if (element instanceof ReportTable table) {

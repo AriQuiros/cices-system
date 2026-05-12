@@ -1,0 +1,130 @@
+.buscar.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    padding: 16px;
+    margin-bottom: 18px;
+
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+}
+
+/* ── Input texto ── */
+.buscador {
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+}
+
+.buscador:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* ── Select nativo ── */
+.filtro {
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #fff;
+    color: #0f172a;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filtro:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* ── react-select base ── */
+.react-select__control {
+    min-height: 42px !important;
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+}
+
+.react-select__control--is-focused {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+}
+
+.react-select__placeholder {
+    color: #64748b !important;
+}
+
+.react-select__multi-value {
+    background: #dbeafe !important;
+    border-radius: 6px !important;
+}
+
+.react-select__multi-value__label {
+    color: #1e3a8a !important;
+    font-weight: 600;
+}
+
+.react-select__multi-value__remove:hover {
+    background: #2563eb !important;
+    color: white !important;
+}
+
+.react-select__value-container {
+    max-height: 47px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ── menú dropdown ── */
+.react-select__menu {
+    border-radius: 10px !important;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.react-select__option {
+    background: #fff;
+    color: #0f172a;
+    cursor: pointer;
+}
+
+.react-select__option--is-focused {
+    background: #dbeafe !important;
+}
+
+.react-select__option--is-selected {
+    background: #2563eb !important;
+    color: #fff !important;
+}
+
+/* ── botón limpiar ── */
+.boton-limpiar {
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #334155;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.boton-limpiar:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+}

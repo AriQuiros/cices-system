@@ -1,5 +1,5 @@
 import Select from "react-select";
-
+import "./ProyectoFiltros.css"
 /**
  * Filtros comunes de proyecto — reutilizable en ListadoProyectos,
  * ConsultaGastos, AsignarInvestigadores, etc.

@@ -1,6 +1,7 @@
 package org.example.backend_cices_system.export.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend_cices_system.consult.presupuesto.dto.PresupuestoFiltroDTO;
 import org.example.backend_cices_system.consult.presupuesto.service.RepPresupuestoBaseService;
 import org.example.backend_cices_system.consult.presupuesto.service.RepPresupuestoGastosService;
 import org.example.backend_cices_system.consult.presupuesto.service.RepPresupuestoHorasService;
@@ -36,10 +37,13 @@ public class PresupuestoReporteOrquestador {
 
     public Page<ReportePresupuestosListadoDTO> paginado(
             ProyectoFiltroDTO filtro,
+            PresupuestoFiltroDTO filtroPresupuesto,
             Pageable pageable,
             int limitePresupuestos
     ) {
-        Page<RepProyectoBase> pagina = proyectoService.obtenerPaginaFiltrada(filtro, pageable);
+        Page<RepProyectoBase> pagina =
+                proyectoService.obtenerPaginaFiltrada(filtro, pageable);
+
         if (pagina.isEmpty()) return Page.empty(pageable);
 
         List<Integer> idsProyecto = pagina.getContent().stream()
@@ -48,7 +52,9 @@ public class PresupuestoReporteOrquestador {
 
         // batch: todos los presupuestos de los proyectos de esta página
         Map<Integer, List<RepPresupuestoBase>> porProyecto =
-                presupuestoService.obtenerPorProyectos(idsProyecto);
+                tieneFiltroPresupuesto(filtroPresupuesto)
+                        ? presupuestoService.obtenerPorProyectosConFiltro(idsProyecto, filtroPresupuesto)
+                        : presupuestoService.obtenerPorProyectos(idsProyecto);
 
         return pagina.map(p -> {
             List<RepPresupuestoBase> lista =
@@ -74,15 +80,19 @@ public class PresupuestoReporteOrquestador {
     // EXPORTACIÓN COMPLETA (con gastos, horas y bitácoras)
     // ════════════════════════════════════════════════════════════════════════
 
-    public List<ReportePresupuestosExportDTO> generarCompleto(ProyectoFiltroDTO filtro) {
+    public List<ReportePresupuestosExportDTO> generarCompleto(
+            ProyectoFiltroDTO filtro,
+            PresupuestoFiltroDTO filtroPresupuesto
+    ) {
         List<Integer> idsProyecto = proyectoService.buscarIdsPorFiltros(filtro);
         if (idsProyecto.isEmpty()) return List.of();
 
         List<RepProyectoBase> proyectos = proyectoService.buscarPorIds(idsProyecto);
 
-        // Query batch: presupuestos
         Map<Integer, List<RepPresupuestoBase>> presupuestosPorProyecto =
-                presupuestoService.obtenerPorProyectos(idsProyecto);
+                tieneFiltroPresupuesto(filtroPresupuesto)
+                        ? presupuestoService.obtenerPorProyectosConFiltro(idsProyecto, filtroPresupuesto)
+                        : presupuestoService.obtenerPorProyectos(idsProyecto);
 
         // IDs de todos los presupuestos en el lote
         List<Integer> idsPresupuesto = presupuestosPorProyecto.values().stream()
@@ -149,6 +159,17 @@ public class PresupuestoReporteOrquestador {
                 bitGastoPorPresupuesto.getOrDefault(id, List.of());
 
         return new PresupuestoConBitacorasReporteDTO(base, cambiosPresupuesto, cambiosGasto);
+    }
+
+    private boolean tieneFiltroPresupuesto(PresupuestoFiltroDTO f) {
+        if (f == null) return false;
+        return (f.busqueda()              != null && !f.busqueda().isBlank())
+                || (f.tipoPresupuesto()       != null && !f.tipoPresupuesto().isBlank())
+                || (f.codigoProyecto()        != null && !f.codigoProyecto().isBlank())
+                || (f.fuentesFinanciamiento() != null && !f.fuentesFinanciamiento().isEmpty())
+                || (f.categorias()            != null && !f.categorias().isEmpty())
+                ||  f.fechaDesde()            != null
+                ||  f.fechaHasta()            != null;
     }
 
     private ProyectoFechasDTO toProyectoFechasDTO(RepProyectoBase p) {

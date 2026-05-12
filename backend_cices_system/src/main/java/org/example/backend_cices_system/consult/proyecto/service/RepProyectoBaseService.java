@@ -119,6 +119,7 @@ public class RepProyectoBaseService {
                 proyecto.getEstadoProyecto(),
                 proyecto.getFechaInicio(),
                 proyecto.getFechaFinalizacion(),
+                proyecto.getDetallesProyectos(),
                 investigadores,
                 entidades,
                 presupuestos,

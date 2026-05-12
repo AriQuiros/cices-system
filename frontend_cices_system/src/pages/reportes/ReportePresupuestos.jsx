@@ -6,15 +6,19 @@ import { Pagination } from "../../components/shared/Pagination.jsx";
 import { useListadoPresupuestos } from "../../hooks/exportHooks/useListadoPresupuestos.js";
 import { useExportarPresupuestos } from "../../hooks/exportHooks/mutations/useExport.js";
 import "./ReporteInvestigadoresParticipantes.css";
+import "./ReportesPresupuesto.css";
 import PresupuestoResumen from "../../components/presupuestoComponents/PresupuestoResumen.jsx";
+import PresupuestoFiltrosReporte from "../../components/filtrado/PresupuestoFiltrosReporte.jsx";
+import {notify} from "../../utils/ui/notify.jsx";
 
 function ReportePresupuestos() {
     const {
-        data, totalElements, totalPages,
-        isLoading, isError,
-        filtroProyecto, cambiarFiltroProyecto, limpiarFiltros,
-        pageable, cambiarPagina,
-        opcionesTipos, opcionesEstado, opcionesLineas
+        data, totalElements, totalPages, isLoading, isError,
+        filtroProyecto, cambiarFiltroProyecto,
+        filtroPresupuesto, cambiarFiltroPresupuesto,
+        limpiarFiltros, pageable, cambiarPagina,
+        opcionesTipos, opcionesEstado, opcionesLineas,
+        opcionesTiposPresupuesto, opcionesFuentes, opcionesCategorias
     } = useListadoPresupuestos();
 
     const [formato, setFormato] = useState("docx");
@@ -22,13 +26,14 @@ function ReportePresupuestos() {
 
     const handleExportar = async () => {
         try {
-            const blob = await exportar({ formato, filtro: filtroProyecto });
+            const blob = await exportar({ filtroProyecto, filtroPresupuesto, formato });
             descargarArchivo(blob, `reporte_presupuestos.${formato}`);
+
+            notify.success("Reporte de presupuestos generado!")
         } catch (err) {
             console.error(err);
         }
     };
-
     return (
         <div className="listado-proyectos-page">
             <div className="listado-proyectos-card">
@@ -44,15 +49,23 @@ function ReportePresupuestos() {
                     opcionesEstado={opcionesEstado}
                 />
 
+                <PresupuestoFiltrosReporte
+                    filtros={filtroPresupuesto}
+                    onChange={cambiarFiltroPresupuesto}
+                    opcionesTiposPresupuesto={opcionesTiposPresupuesto}
+                    opcionesFuentes={opcionesFuentes}
+                    opcionesCategorias={opcionesCategorias}
+                />
+
                 <p>Total de proyectos: {totalElements}</p>
 
-                <div className="listado-export">
-                    <select value={formato} onChange={e => setFormato(e.target.value)}>
+                <div className="cert-export">
+                    <select className={"cert-select"} value={formato} onChange={e => setFormato(e.target.value)}>
                         <option value="docx">Word</option>
                         <option value="pdf">PDF</option>
                         <option value="xlsx">Excel</option>
                     </select>
-                    <button onClick={handleExportar} disabled={isPending}>
+                    <button className="cert-btn-export"  data-testid="btn-exportar" onClick={handleExportar} disabled={isPending}>
                         {isPending ? "Exportando..." : "Exportar"}
                     </button>
                 </div>
@@ -65,7 +78,7 @@ function ReportePresupuestos() {
                     {!isLoading && data.length === 0 && <p>No hay resultados.</p>}
 
                     {data.map(item => (
-                        <div key={item.proyecto.codigoProyecto} className="participante-card">
+                        <div key={item.proyecto.codigoProyecto} className="presupuesto-card">
 
                             <h3>{item.proyecto.codigoProyecto}</h3>
                             <p><b>Nombre:</b> {item.proyecto.nombreProyecto}</p>
@@ -83,7 +96,7 @@ function ReportePresupuestos() {
                                     />
                                 ))
                             ) : (
-                                <p className="sin-participantes">
+                                <p className="sin-presupuestos">
                                     <br/>
                                     Este proyecto no tiene presupuestos registrados.
                                     <br/>
@@ -93,7 +106,7 @@ function ReportePresupuestos() {
                             )}
 
                             {item.restantes > 0 && (
-                                <p className="mas-participantes">+{item.restantes} más</p>
+                                <p className="mas-presupuestos">+{item.restantes} más</p>
                             )}
 
                         </div>

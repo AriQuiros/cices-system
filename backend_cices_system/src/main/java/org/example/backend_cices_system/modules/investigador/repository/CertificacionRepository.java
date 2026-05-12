@@ -13,4 +13,6 @@ public interface CertificacionRepository extends JpaRepository<Certificacion, In
     List<Certificacion> findByFechaExpiracionBetween(LocalDate inicio, LocalDate fin);
 
     List<Certificacion> findByFechaExpiracionBefore(LocalDate hoy);
+
+    List<Certificacion> findByFechaExpiracionIsNotNull();
 }

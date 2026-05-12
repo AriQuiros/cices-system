@@ -19,6 +19,7 @@ public record ProyectoReporteDTO(
         String estado,
         LocalDate fechaInicio,
         LocalDate fechaFinalizacion,
+        String detalleProyecto,
 
         // =====================
         // 👥 PERSONAS

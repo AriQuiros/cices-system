@@ -34,6 +34,20 @@ public class RepPresupuestoBaseService {
                 () -> new RuntimeException("Presupuesto no encontrado con id: " + idPresupuesto));
     }
 
+    public Map<Integer, List<RepPresupuestoBase>> obtenerPorProyectosConFiltro(
+            List<Integer> idsProyecto,
+            PresupuestoFiltroDTO filtro
+    ) {
+        if (idsProyecto == null || idsProyecto.isEmpty()) return Map.of();
+
+        Specification<RepPresupuestoBase> spec =
+                PresupuestoSpecification.filtrarConProyectos(filtro, idsProyecto);
+
+        return repo.findAll(spec)
+                .stream()
+                .collect(Collectors.groupingBy(RepPresupuestoBase::getIdProyecto));
+    }
+
     public Page<RepPresupuestoBase> buscarPresupuestosBase(
             PresupuestoFiltroDTO filtro,
             String ordenarPor,

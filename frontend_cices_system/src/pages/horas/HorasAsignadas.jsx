@@ -40,7 +40,7 @@ const ConsultaHoras = () => {
 
                 <BotonInicio />
 
-                <h2>Consulta de horas asignadas</h2>
+                <h2 className="gestion-gastos-title">Consulta de horas asignadas</h2>
 
                 <BuscadorProyecto onSelect={seleccionarProyecto} />
 

@@ -15,14 +15,6 @@
     padding: 28px;
 }
 
-.listado-proyectos-title {
-    margin: 0 0 24px;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #123c63;
-}
-
 .exportar-container {
     display: flex;
     align-items: center;

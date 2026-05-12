@@ -7,7 +7,7 @@ import "../../estilos/form.css";
 const CLASES_REGISTRO = {
     contenedor:        "form-container",
     form:              "form-content",
-    titulo:            "",
+    titulo:            "perfil-title",
     fila:              "row",
     grupoInput:        "input-group",
     label:             "input-label",

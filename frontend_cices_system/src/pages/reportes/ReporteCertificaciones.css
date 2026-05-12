@@ -78,6 +78,8 @@
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
+
+
 .cert-filters-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

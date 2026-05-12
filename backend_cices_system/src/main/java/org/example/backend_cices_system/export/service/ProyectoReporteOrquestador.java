@@ -98,11 +98,9 @@ public class ProyectoReporteOrquestador {
         // en ensamblarPresupuestos() usando presupuesto.getIdPresupuesto().
         Map<Integer, List<GastoReporteDTO>> gastosPorPresupuesto =
                 gastosService.obtenerPorProyectos(idsReales);                      // Query 6
-        System.out.println("obteniendo horas");
 
         Map<Integer, List<HorasAsignadasReporteDTO>> horasPorPresupuesto =
                 horasService.obtenerPorProyectosAgrupadoPorPresupuesto(idsReales);                       // Query 7
-        System.out.println("obteniendo documentos");
 
         Map<Integer, List<DocumentoDTO>> documentosPorProyecto =
                 documentoService.obtenerPorProyectos(idsReales); // Query 8
@@ -126,11 +124,11 @@ public class ProyectoReporteOrquestador {
     // PUNTO DE ENTRADA — un solo proyecto
     // ════════════════════════════════════════════════════════════════════════
 
+    // REEMPLAZAR todo el método ensamblarUnoOptimizado:
     public ProyectoReporteDTO ensamblarUnoOptimizado(String codigoProyecto) {
 
         RepProyectoBase proyecto = proyectoService.buscarPorCodigo(codigoProyecto);
-
-        var idProyecto = proyecto.getIdProyecto();
+        Integer idProyecto = proyecto.getIdProyecto();
 
         List<InvestigadorReporteDTO> investigadores =
                 investigadorService.obtenerPorProyecto(idProyecto);
@@ -141,19 +139,27 @@ public class ProyectoReporteOrquestador {
         List<InformeReporteDTO> informes =
                 informeService.obtenerPorProyecto(idProyecto);
 
+        List<DocumentoDTO> documentos =
+                documentoService.documentosPorIdProyecto(idProyecto);
+
+        // 1 query por dominio, agrupados por idPresupuesto en memoria
         List<RepPresupuestoBase> presupuestos =
                 presupuestoService.obtenerPorProyecto(idProyecto);
 
-        // CORREGIR!!!
+        Map<Integer, List<GastoReporteDTO>> gastosPorPresupuesto =
+                gastosService.obtenerPorIdProyectoAgrupadoPorPresupuesto(idProyecto);
+
+        Map<Integer, List<HorasAsignadasReporteDTO>> horasPorPresupuesto =
+                horasService.obtenerPorIdProyectoAgrupadoPorPresupuesto(idProyecto);
+
         List<PresupuestoReporteDTO> presupuestosDTO = presupuestos.stream()
                 .map(pb -> presupuestoService.obtenerPresupuestoReporteDTO(
                         pb,
-                        gastosService.obtenerPorProyecto(idProyecto), // ⚠️ aquí cuidado
-                        horasService.obtenerPorProyecto(idProyecto)
+                        gastosPorPresupuesto.getOrDefault(pb.getIdPresupuesto(), List.of()),
+                        horasPorPresupuesto.getOrDefault(pb.getIdPresupuesto(), List.of())
                 ))
                 .toList();
 
-        List<DocumentoDTO> documentos = documentoService.documentosPorIdProyecto(idProyecto);
         return proyectoService.obtenerProyectoReporteDTO(
                 proyecto,
                 investigadores,

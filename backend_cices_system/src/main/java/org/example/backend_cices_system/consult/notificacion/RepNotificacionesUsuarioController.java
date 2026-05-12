@@ -1,14 +1,15 @@
 package org.example.backend_cices_system.consult.notificacion;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend_cices_system.modules.usuario.model.Usuario;
 import org.example.backend_cices_system.modules.notificacion.service.NotificacionCambioService;
-import org.springframework.http.ResponseEntity;
+import org.example.backend_cices_system.modules.usuario.model.Usuario;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
-
-import java.util.List;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,21 +20,24 @@ public class RepNotificacionesUsuarioController {
     private final NotificacionCambioService notificacionCambioService;
 
     @GetMapping("/listar")
-    public List<RepNotificacionesUsuario> getByNombreUsuario(Authentication authentication) {
+    public Page<RepNotificacionesUsuario> listar(
+            @ModelAttribute NotificacionFiltroDTO filtro,
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            Authentication authentication
+    ) {
         Usuario usuario = (Usuario) authentication.getPrincipal();
-        return service.buscarPorIdUsuario(usuario.getId());
+        return service.buscarConFiltro(usuario.getId(), filtro, pageable);
     }
 
-    @GetMapping("/detalladas")
-    public List<RepNotificacionDetalladaDTO> getDetalladasByNombreUsuario(Authentication authentication) {
+    @GetMapping("/no-leidas/count")
+    public long contarNoLeidas(Authentication authentication) {
         Usuario usuario = (Usuario) authentication.getPrincipal();
-        return service.buscarDetalladasPorNombreUsuario(usuario.getId());
+        return service.contarNoLeidas(usuario.getId());
     }
 
-    @GetMapping("/esperar-cambios")
-    public DeferredResult<ResponseEntity<Void>> esperarCambios(Authentication authentication) {
+    @GetMapping(value = "/suscribir", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter suscribir(Authentication authentication) {
         Usuario usuario = (Usuario) authentication.getPrincipal();
-        return notificacionCambioService.esperarCambios(usuario.getNombreUsuario());
+        return notificacionCambioService.suscribir(usuario.getNombreUsuario());
     }
-
 }

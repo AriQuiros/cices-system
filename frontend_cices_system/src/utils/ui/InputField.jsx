@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import "../../estilos/form.css"
 
 export default function InputField({
@@ -9,31 +9,49 @@ export default function InputField({
                                    }){
 
     const [error, setError] = useState("");
+    const [touched, setTouched] = useState(false);
+    const inputRef = useRef(null);
 
-    const validate = (input) => {
+    useEffect(() => {
+
+        if (inputRef.current && touched) {
+            validate(inputRef.current);
+        }
+
+    }, [value, rules, touched]);
+
+    const validate = (input, showError = true) => {
 
         const v = input.value;
 
-        // validadores personalizados
         for (let rule of rules) {
 
             const err = rule(v);
 
             if (err) {
+
                 input.setCustomValidity(err);
-                setError(err);
-                return;
+
+                if (showError) {
+                    setError(err);
+                }
+
+                return err;
             }
         }
 
-        // limpiar error
         input.setCustomValidity("");
         setError("");
+
+        return "";
     };
 
     const handleChange = (e) => {
 
-        validate(e.target);
+        if (touched) {
+            validate(e.target);
+        }
+
         onChange(e);
     };
 
@@ -53,6 +71,7 @@ export default function InputField({
             )}
 
             <input
+                ref={inputRef}
                 type={type}
                 name={name}
                 value={value}
@@ -63,10 +82,13 @@ export default function InputField({
                 step={step}
                 minLength={minLength}
                 maxLength={maxLength}
-                pattern={pattern}
+                //pattern={pattern}
                 onChange={handleChange}
                 onInvalid={handleInvalid}
-                onBlur={(e) => validate(e.target)}
+                onBlur={(e) => {
+                    setTouched(true);
+                    validate(e.target);
+                }}
                 className={`w-full border rounded px-3 py-2 
         ${error ? "border-red-500 focus:border-red-500" : "border-gray-300"}
         ${className}`}

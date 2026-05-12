@@ -32,14 +32,17 @@ export const useListadoProyectos = () => {
     const tieneRolAdmin = roles.some(r =>
         ["DIRECCION", "ADMINISTRATIVO", "ASISTENTE"].includes(r)
     );
+
     // Usuario con doble rol: puede cambiar de vista
     const puedeAlternar = esInvestigador && tieneRolAdmin;
 
     // Vista activa: "todos" (rol admin) | "mis" (rol investigador)
     // Si solo es investigador arranca en "mis", si solo es admin arranca en "todos"
-    const [vistaActiva, setVistaActiva] = useState(
-        puedeAlternar ? "todos" : "mis"
-    );
+    const [vistaActiva, setVistaActiva] = useState(() => {
+        if (puedeAlternar) return "todos";
+        if (esInvestigador) return "mis";
+        return "todos";
+    });
 
     // ── Filtros y paginación ────────────────────────────────────────────
     const [filtroInv, setFiltroInv] = useState(FILTRO_INV_INICIAL);
@@ -66,6 +69,7 @@ export const useListadoProyectos = () => {
     const queryTodos = useProyectos(
         filtroProyecto,
         pageable,
+        vistaActiva === "todos"
     );
 
     // Vista "mis proyectos" — rol INVESTIGADOR
@@ -73,7 +77,8 @@ export const useListadoProyectos = () => {
     const queryMis = useListarInvestigadorProyecto(
         filtroProyecto,
         filtroInv,
-        pageable
+        pageable,
+        vistaActiva === "mis" && esInvestigador
     );
 
 

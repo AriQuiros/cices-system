@@ -20,6 +20,7 @@ const PresupuestoResumen = ({ presupuesto }) => {
             {/* Financiero */}
             {esFinanciero && (
                 <>
+                    <p>Fuente de financiamiento: {presupuesto?.fuenteFinanciamiento}</p>
                     <p>Monto asignado: {formatearMonedaCR(presupuesto?.montoAsignado)}</p>
                     <p>Total usado: {formatearMonedaCR(presupuesto?.resumen?.totalUsado)}</p>
                     <p>Disponible: {formatearMonedaCR(presupuesto?.resumen?.disponible)}</p>

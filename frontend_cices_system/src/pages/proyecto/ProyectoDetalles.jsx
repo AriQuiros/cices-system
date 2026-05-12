@@ -18,7 +18,8 @@ function ProyectoDetalles({ editable }) {
                 onChange={(e) =>
                     actualizarCampo("detalles", e.target.value)
                 }
-                placeholder="Notas internas, observaciones..."
+                placeholder="Notas internas, observaciones, cambios..."
+                required={editable}
             />
         </fieldset>
     );

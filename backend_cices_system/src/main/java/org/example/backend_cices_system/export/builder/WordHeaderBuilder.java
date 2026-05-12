@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static org.example.backend_cices_system.export.builder.ReportBuilderUtils.fmt;
+
 @Component
 public class WordHeaderBuilder {
 
@@ -13,7 +15,7 @@ public class WordHeaderBuilder {
 
         Map<String, String> values = Map.of(
                 "${titulo}", doc.title(),
-                "${fecha}", doc.date().toString()
+                "${fecha}", fmt(doc.date())
         );
 
         replaceInHeaders(document, values);

@@ -2,6 +2,7 @@ package org.example.backend_cices_system.export.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.consult.investigador.dto.CertificacionFiltroDTO;
+import org.example.backend_cices_system.consult.presupuesto.dto.PresupuestoFiltroDTO;
 import org.example.backend_cices_system.consult.proyecto.dto.ProyectoFiltroDTO;
 import org.example.backend_cices_system.export.dto.ReporteParticipantesDTO;
 import org.example.backend_cices_system.export.dto.ReportePresupuestosListadoDTO;
@@ -58,19 +59,22 @@ public class ExportController {
 
     @GetMapping("/listar-presupuestos")
     public Page<ReportePresupuestosListadoDTO> listarPresupuestos(
-            @ModelAttribute ProyectoFiltroDTO filtro,
+            @ModelAttribute ProyectoFiltroDTO filtroProyecto,
+            @ModelAttribute PresupuestoFiltroDTO filtroPresupuesto,
             @PageableDefault(size = 8) Pageable pageable,
             @RequestParam(defaultValue = "5") int limite
     ) {
-        return exportService.paginadoPresupuestos(filtro, pageable, limite);
+        return exportService.paginadoPresupuestos(
+                filtroProyecto, filtroPresupuesto, pageable, limite);
     }
 
     @GetMapping("/reporte-presupuestos")
     public ResponseEntity<byte[]> exportarPresupuestos(
-            @ModelAttribute ProyectoFiltroDTO filtro,
+            @ModelAttribute ProyectoFiltroDTO filtroProyecto,
+            @ModelAttribute PresupuestoFiltroDTO filtroPresupuesto,
             @RequestParam String formato
     ) {
-        return exportService.generarReportePresupuestos(filtro, formato);
+        return exportService.generarReportePresupuestos(filtroProyecto, filtroPresupuesto, formato);
     }
 }
 

@@ -8,7 +8,7 @@ export const listarParticipantesSrv = async (filtro, pageable, limite) => {
     return res.data;
 };
 
-export const listarPresupuestosReporteSrv = async (filtro, pageable, limite) => {
-    const res = await listarPresupuestosReporte(filtro, pageable, limite);
+export const listarPresupuestosReporteSrv = async (filtroProyecto, filtroPresupuesto, pageable, limite) => {
+    const res = await listarPresupuestosReporte(filtroProyecto, filtroPresupuesto, pageable, limite);
     return res.data;
 };

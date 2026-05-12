@@ -106,6 +106,7 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
         sections.addAll(buildPresupuestosFinancieros(p));
         sections.add(buildInformes(p));
         sections.add(buildDocumentos(p));
+        sections.add(buildDetalle(p));
 
         return sections;
     }
@@ -126,16 +127,16 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
         )));
 
         if (notEmpty(p.descripcionProyecto())) {
-            elements.add(para("Descripción"));
+            elements.add(paraBold("Descripción"));
             elements.add(para(p.descripcionProyecto()));
         }
         if (notEmpty(p.objetivoGeneral())) {
-            elements.add(para("Objetivo general"));
+            elements.add(paraBold("Objetivo general"));
             elements.add(para(p.objetivoGeneral()));
         }
 
         if (!p.entidades().isEmpty()) {
-            elements.add(para("Entidades vinculadas"));
+            elements.add(paraBold("Entidades vinculadas"));
             elements.add(new ReportTable(
                     List.of("Entidad", "Tipo"),
                     p.entidades().stream()
@@ -145,7 +146,7 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
         }
 
         if (!p.objetivos().isEmpty()) {
-            elements.add(para("Objetivos específicos"));
+            elements.add(paraBold("Objetivos específicos"));
             elements.addAll(buildObjetivos(p.objetivos()));
         }
 
@@ -178,8 +179,8 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
         String indicadores = (meta.indicadores() == null || meta.indicadores().isEmpty())
                 ? "—"
                 : meta.indicadores().stream()
-                  .map(IndicadorReporteDTO::descripcion)
-                  .collect(Collectors.joining(" / "));
+                  .map(ind -> "- " + ind.descripcion())
+                  .collect(Collectors.joining(System.lineSeparator()));
 
         return List.of(
                 safe(meta.descripcion()),
@@ -288,6 +289,7 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
 
         financieros.forEach(pre -> sections.add(buildPresupuestoDetalle(pre,
                 List.of(
+                        row("Fuente financiamiento", safe(pre.fuenteFinanciamiento())),
                         row("Monto asignado",    fmt(pre.montoAsignado())),
                         row("Total gastado",     fmt(pre.resumen().totalUsado())),
                         row("Monto disponible",  fmt(pre.resumen().disponible())),
@@ -360,7 +362,6 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
         List<List<String>> filasBase = new ArrayList<>(List.of(
                 row("Categoría",             safe(pre.categoria())),
                 row("Descripción",           safe(pre.descripcion())),
-                row("Fuente financiamiento", safe(pre.fuenteFinanciamiento())),
                 row("Fecha asignación",      fmt(pre.fechaAsignacion()))
         ));
         filasBase.addAll(filasEspecificas); // campos propios del tipo (horas vs financiero)
@@ -384,19 +385,20 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
 
     private ReportSection buildInformes(ProyectoReporteDTO p) {
         if (p.informes().isEmpty()) {
-            return section("Informes del proyecto", H2, List.of(para("Sin informes registrados.")));
+            return section("Informes del proyecto", H2, List.of(
+                    para("Sin informes registrados.")
+            ));
         }
+
+        String informes = p.informes().stream()
+                .map(i -> "- " + i.tipoInforme() + " - " +
+                        fmt(i.fechaPresentacion()) +
+                        " - " +
+                        safe(i.estado()))
+                .collect(Collectors.joining("\n"));
+
         return section("Informes del proyecto", H2, List.of(
-                new ReportTable(
-                        List.of("Tipo", "Estado", "Fecha presentación"),
-                        p.informes().stream()
-                                .map(i -> List.of(
-                                        safe(i.tipoInforme()),
-                                        safe(i.estado()),
-                                        fmt(i.fechaPresentacion())
-                                ))
-                                .collect(Collectors.toList())
-                )
+                para(informes)
         ));
     }
 
@@ -406,17 +408,23 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
 
     private ReportSection buildDocumentos(ProyectoReporteDTO p) {
         if (p.documentos().isEmpty()) {
-            return section("Documentos relacionados", H2, List.of(para("Sin documentos registrados.")));
+            return section("Documentos relacionados", H2, List.of(
+                    para("Sin documentos registrados.")
+            ));
         }
+
+        String documentos = p.documentos().stream()
+                .map(d -> "- " + safe(d.nombreDocumento()))
+                .collect(Collectors.joining("\n"));
+
         return section("Documentos relacionados", H2, List.of(
-                new ReportTable(
-                        List.of("Nombre del documento"),
-                        p.documentos().stream()
-                                .map(d -> List.of(
-                                        safe(d.nombreDocumento())
-                                ))
-                                .collect(Collectors.toList())
-                )
+                para(documentos)
+        ));
+    }
+
+    private ReportSection buildDetalle(ProyectoReporteDTO p) {
+        return section("Detalle de proyecto", H2, List.of(
+                para(p.detalleProyecto())
         ));
     }
 

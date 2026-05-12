@@ -1,232 +1,119 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import { AppContext } from "../../context/AppContext.jsx";
-
-/* IMÁGENES */
+import { useNotificacionesQuery } from "../../hooks/notificacionHooks/queries/useNotificaciones.js";
+import { useSseNotificaciones } from "../../hooks/notificacionHooks/useSseNotificaciones.js";
+import { useNavigate } from "react-router-dom";
 import notificacionAlertaIcon from "../../assets/images/notificacion-alerta.svg";
 import notificacionNormalIcon from "../../assets/images/notificacion-normal.svg";
-import "../../App.css"
+import "../../App.css";
+import {useCantidadNoLeidasQuery} from "../../hooks/notificacionHooks/queries/useCantidadNoLeidas.js";
+
 
 export default function NotificationMenu() {
-  /*  const { user, token } = useContext(AppContext);
-
-    const [tieneNoLeidas, setTieneNoLeidas] = useState(false);
-    const [notificacionesNoLeidas, setNotificacionesNoLeidas] = useState([]);
-    const [mostrarMenuNotificaciones, setMostrarMenuNotificaciones] = useState(false);
-
-    const notificacionesMenuRef = useRef(null);
-    const canceladoRef = useRef(false);
-
-    const normalizarTexto = (valor) =>
-        String(valor || "")
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim();
-
-    const obtenerValorCampo = (notificacion, nombreCampo) => {
-        const buscado = normalizarTexto(nombreCampo);
-        const campo = (notificacion?.detalle || []).find(
-            (c) => normalizarTexto(c?.label) === buscado
-        );
-        return campo?.value || "-";
-    };
-
-    const obtenerResumenNotificacion = (notificacion) => {
-        const tipo = normalizarTexto(notificacion?.tipo);
-
-        if (tipo === "informe") {
-            return `Codigo del proyecto: ${obtenerValorCampo(notificacion, "Codigo de proyecto")} | Numero del informe: ${obtenerValorCampo(notificacion, "Numero de informe")} | Fecha de presentacion: ${obtenerValorCampo(notificacion, "Fecha de presentacion")}`;
-        }
-
-        if (tipo === "acreditacion o licencia" || tipo === "acreditacion") {
-            return `Nombre de la acreditacion o licencia: ${obtenerValorCampo(notificacion, "Nombre de la acreditacion o licencia")} | Fecha de expiracion: ${obtenerValorCampo(notificacion, "Fecha de expiracion")} | Nombre del investigador: ${obtenerValorCampo(notificacion, "Nombre del investigador")}`;
-        }
-
-        if (tipo === "permiso coordinador") {
-            return `Codigo del proyecto: ${obtenerValorCampo(notificacion, "Codigo de proyecto")} | Fecha de inicio: ${obtenerValorCampo(notificacion, "Fecha de inicio")} | Fecha de fin: ${obtenerValorCampo(notificacion, "Fecha fin")}`;
-        }
-
-        return (notificacion?.detalle || [])
-            .map((c) => `${c?.label}: ${c?.value || "-"}`)
-            .join(" | ");
-    };
-
-    const manejarClickCampana = () => {
-        if (tieneNoLeidas) {
-            setMostrarMenuNotificaciones((prev) => !prev);
-            return;
-        }
-
-        window.location.href = "/notificaciones";
-    };
-
-    const irATodasLasNotificaciones = () => {
-        setMostrarMenuNotificaciones(false);
-        window.location.href = "/notificaciones";
-    };
-
-    const cargarNotificaciones = async () => {
-        if (!user?.username) {
-            setTieneNoLeidas(false);
-            setNotificacionesNoLeidas([]);
-            setMostrarMenuNotificaciones(false);
-            return;
-        }
-
-        try {
-            const headers = {
-                "Content-Type": "application/json",
-            };
-
-            if (token) {
-                headers.Authorization = `Bearer ${token}`;
-            }
-
-            const res = await fetch(
-                `/api/consulta/notificaciones-usuario/detalladas`,
-                { headers }
-            );
-
-            if (!res.ok) throw new Error();
-
-            const data = await res.json();
-
-            const noLeidas = Array.isArray(data)
-                ? data.filter((n) => n && n.leido === false && n.eliminado !== true)
-                : [];
-
-            if (!canceladoRef.current) {
-                setNotificacionesNoLeidas(noLeidas);
-                setTieneNoLeidas(noLeidas.length > 0);
-
-                if (noLeidas.length === 0) {
-                    setMostrarMenuNotificaciones(false);
-                }
-            }
-        } catch {
-            if (!canceladoRef.current) {
-                setTieneNoLeidas(false);
-                setNotificacionesNoLeidas([]);
-                setMostrarMenuNotificaciones(false);
-            }
-        }
-    };
+    const { user, token } = useContext(AppContext);
+    const navigate = useNavigate();
+    const [abierto, setAbierto] = useState(false);
+    const menuRef = useRef(null);
 
     useEffect(() => {
-        canceladoRef.current = false;
 
-        cargarNotificaciones();
-        let detener = false;
+        const handleClickOutside = (event) => {
 
-        const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            if (!abierto) return;
 
-        const escucharCambios = async () => {
-            while (!detener && !canceladoRef.current) {
-                if (!user?.username) {
-                    break;
-                }
-
-                try {
-                    const headers = {
-                        "Content-Type": "application/json",
-                    };
-
-                    if (token) {
-                        headers.Authorization = `Bearer ${token}`;
-                    }
-
-                    const res = await fetch(
-                        `/api/consulta/notificaciones-usuario/esperar-cambios`,
-                        { headers, cache: "no-store" }
-                    );
-
-                    if (detener || canceladoRef.current) {
-                        break;
-                    }
-
-                    if (res.ok) {
-                        await cargarNotificaciones();
-                        window.dispatchEvent(new Event("notificaciones:actualizadas"));
-                    }
-                } catch {
-                    if (detener || canceladoRef.current) {
-                        break;
-                    }
-
-                    await esperar(2000);
-                }
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target)
+            ) {
+                setAbierto(false);
             }
         };
 
-        const manejarRefresh = () => cargarNotificaciones();
-        window.addEventListener("notificaciones:actualizadas", manejarRefresh);
-        escucharCambios();
+        document.addEventListener("click", handleClickOutside);
 
         return () => {
-            detener = true;
-            canceladoRef.current = true;
-            window.removeEventListener("notificaciones:actualizadas", manejarRefresh);
-        };
-    }, [user?.username, token]);
-
-    useEffect(() => {
-        if (!mostrarMenuNotificaciones) return;
-
-        const manejarClickFuera = (event) => {
-            if (notificacionesMenuRef.current && !notificacionesMenuRef.current.contains(event.target)) {
-                setMostrarMenuNotificaciones(false);
-            }
+            document.removeEventListener("click", handleClickOutside);
         };
 
-        document.addEventListener("mousedown", manejarClickFuera);
-        return () => document.removeEventListener("mousedown", manejarClickFuera);
-    }, [mostrarMenuNotificaciones]);
+    }, [abierto]);
+
+    // Suscripción SSE — el servidor avisa cuando hay cambios
+    useSseNotificaciones(token);
+
+    // Solo las no leídas para el preview de la campana
+    const filtro = {
+        leido: false
+    };
+
+    const pageable = {
+        page: 0,
+        size: 4
+    };
+
+    const { data } = useNotificacionesQuery(filtro, pageable);
+
+    const { data: cantidadNoLeidas = 0 } = useCantidadNoLeidasQuery();
+
+    const noLeidas = data?.content ?? [];
+
+    const tieneNoLeidas = cantidadNoLeidas > 0;
+
+
+    const irANotificaciones = () => {
+        setAbierto(false);
+        navigate("/notificaciones");
+    };
+
+    const handleCampana = () => {
+        if (tieneNoLeidas) {
+            setAbierto(prev => !prev);
+        } else {
+            navigate("/notificaciones");
+        }
+    };
 
     if (!user) return null;
 
     return (
-        <div className="notification-menu-wrapper" ref={notificacionesMenuRef}>
-            <button
-                type="button"
-                className="notification-bell-btn"
-                onClick={manejarClickCampana}
-            >
+        <div className="notification-menu-wrapper" ref={menuRef}>
+            <button type="button" className="notification-bell-btn" onClick={handleCampana}>
                 <img
                     src={tieneNoLeidas ? notificacionAlertaIcon : notificacionNormalIcon}
                     className="notification-bell-img"
+                    alt="Notificaciones"
                 />
+                {tieneNoLeidas && (
+                    <span className="notification-badge">{cantidadNoLeidas}</span>
+                )}
             </button>
 
-            {tieneNoLeidas && mostrarMenuNotificaciones && (
+            {abierto && tieneNoLeidas && (
                 <div className="notification-summary-menu">
                     <p className="notification-summary-title">Notificaciones pendientes</p>
-
                     <div className="notification-summary-list">
-                        {notificacionesNoLeidas.slice(0, 4).map((notificacion) => (
-                            <div key={notificacion.idNotificacionUsuario} className="notification-summary-item">
-                                <p className="notification-summary-item-type">{notificacion.tipo || "Notificacion"}</p>
+                        {noLeidas.slice(0, 4).map(n => (
+                            <div key={n.idNotificacionUsuario} className="notification-summary-item">
+                                <p className="notification-summary-item-type">
+                                    {n.categoria || "Notificación"}
+                                </p>
                                 <p className="notification-summary-item-text">
-                                    {obtenerResumenNotificacion(notificacion)}
+                                    <strong>{n.asunto}</strong>
+                                    {n.mensaje ? ` — ${n.mensaje}` : ""}
                                 </p>
                             </div>
                         ))}
-
-                        {notificacionesNoLeidas.length > 4 && (
+                        {cantidadNoLeidas > 4 && (
                             <p className="notification-summary-more">
-                                y {notificacionesNoLeidas.length - 4} más...
+                                y {cantidadNoLeidas - 4} más...
                             </p>
                         )}
                     </div>
-
-                    <button
-                        type="button"
-                        className="notification-view-all-btn"
-                        onClick={irATodasLasNotificaciones}
-                    >
+                    <button type="button" className="notification-view-all-btn"
+                            onClick={irANotificaciones}>
                         Ver todas las notificaciones
                     </button>
                 </div>
             )}
         </div>
-    );*/
+    );
 }

@@ -29,7 +29,7 @@ export const useExportarParticipantes = () => {
 
 export const useExportarPresupuestos = () => {
     return useMutation({
-        mutationFn: ({ filtro, formato }) =>
-            exportarPresupuestosSrv(filtro, formato)
+        mutationFn: ({ filtroProyecto, filtroPresupuesto, formato }) =>
+            exportarPresupuestosSrv(filtroProyecto, filtroPresupuesto, formato)
     });
 };

@@ -2,21 +2,18 @@ package org.example.backend_cices_system.modules.notificacion.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.backend_cices_system.modules.notificacion.dto.NotificacionDTO;
 import org.example.backend_cices_system.modules.investigador.model.Certificacion;
-import org.example.backend_cices_system.modules.notificacion.model.Notificacion;
 import org.example.backend_cices_system.modules.investigador.service.CertificacionService;
 import org.example.backend_cices_system.modules.investigadorProyecto.service.InvestigadorProyectoService;
+import org.example.backend_cices_system.modules.proyecto.model.PresentacionInforme;
 import org.example.backend_cices_system.modules.proyecto.service.PresentacionInformeService;
 import org.example.backend_cices_system.modules.usuario.model.Usuario;
-import org.example.backend_cices_system.modules.usuario.service.RolUsuarioService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 @Service
@@ -24,174 +21,70 @@ import java.util.List;
 public class NotificacionSchedulerService {
 
     private final NotificacionService notificacionService;
-    private final NotificacionUsuarioService notificacionUsuarioService;
-
-    // Informes
+    private final NotificacionGeneradorService generadorService;
     private final PresentacionInformeService presentacionInformeService;
     private final InvestigadorProyectoService investigadorProyectoService;
-
-    // Certificaciones
     private final CertificacionService certificacionService;
-    private final RolUsuarioService rolUsuarioService;
-
     private final Clock clock;
 
-    //@Scheduled(cron = "0 0 0 * * *", zone = "America/Costa_Rica") // todos los días a media noche -> 00:00
-    //@Scheduled(cron = "0 0 */12 * * *", zone = "America/Costa_Rica") // cada 12 horas -> 00:00 y 12:00
-    @Scheduled(cron = "0 */5 * * * *", zone = "America/Costa_Rica") // cada  5 minutos
+    @Scheduled(cron = "0 0 */12 * * *", zone = "America/Costa_Rica") // 00:00 y 12:00
     @Transactional
     public synchronized void ejecutarNotificaciones() {
         generarNotificacionesInformes();
-        generarNotificacionesCertificacionesProximas();
-        generarNotificacionesCertificacionesVencidas();
+        generarNotificacionesCertificaciones();
         limpiarNotificacionesAntiguas();
     }
 
-    private LocalDate hoy() {
-        return LocalDate.now(clock);
-    }
+    private LocalDate hoy() { return LocalDate.now(clock); }
 
-    // =========================
+    // ════════════════════════════════════════════════════════════════════════
     // INFORMES
-    // =========================
+    // ════════════════════════════════════════════════════════════════════════
+
     private void generarNotificacionesInformes() {
-        var categoria = "INFORME";
+        LocalDate hoy = hoy();
+        List<PresentacionInforme> informes =
+                presentacionInformeService.buscarEntreFechas(hoy, hoy.plusDays(30));
 
-        var hoy = hoy();
-        var max = hoy.plusDays(30);
-
-        var informes = presentacionInformeService.buscarEntreFechas(hoy, max);
-
-        for (var inf : informes) {
-
+        for (PresentacionInforme inf : informes) {
             long dias = ChronoUnit.DAYS.between(hoy, inf.getFechaPresentacion());
-
             if (!List.of(30L, 15L, 7L, 3L, 0L).contains(dias)) continue;
 
-            var proyecto = inf.getIdProyecto();
+            List<Usuario> investigadores = investigadorProyectoService
+                    .obtenerPorProyecto(inf.getIdProyecto())
+                    .stream()
+                    .map(ip -> ip.getIdInvestigador().getIdEmpleado().getIdUsuario())
+                    .toList();
 
-            var clave = notificacionService.crearClave(categoria, inf.getId(), (int) dias);
-            if (notificacionService.existeNotificacionHoy(clave)) continue;
-
-            var notificacion = notificacionService.guardarNotificacion(
-                    new NotificacionDTO(
-                            null,
-                            categoria,
-                            null,
-                            "Presentación de informe - " + proyecto.getCodigoProyecto(),
-                            "Codigo de proyecto: " + proyecto.getCodigoProyecto()
-                                    + "; Numero de informe: " + inf.getId()
-                                    + "; Fecha de presentacion: " + inf.getFechaPresentacion(),
-                            hoy()
-                    ),
-                    inf.getId(),
-                    clave
-            );
-
-            var investigadores = investigadorProyectoService.obtenerPorProyecto(proyecto);
-
-            for (var inv : investigadores) {
-                var usuario = inv.getIdInvestigador()
-                        .getIdEmpleado()
-                        .getIdUsuario();
-
-                notificacionUsuarioService
-                        .guardarNotificacionUsuario(notificacion, usuario);
-            }
+            generadorService.generarNotificacionInforme(inf, dias, investigadores);
         }
     }
 
-    // =========================
-    // CERTIFICACIONES
-    // =========================
-    private void generarNotificacionesCertificacionesProximas() {
-        var categoria = "CERTIFICACION";
+    // ════════════════════════════════════════════════════════════════════════
+    // CERTIFICACIONES (próximas + vencidas)
+    // ════════════════════════════════════════════════════════════════════════
 
-        var hoy = hoy();
-        var max = hoy.plusDays(90);
+    private void generarNotificacionesCertificaciones() {
+        LocalDate hoy = hoy();
 
-        var certificaciones = certificacionService.buscarEntreFechas(hoy, max);
-
-        for (var cert : certificaciones) {
-
+        // Próximas a vencer
+        for (Certificacion cert : certificacionService.buscarEntreFechas(hoy, hoy.plusDays(90))) {
             long dias = ChronoUnit.DAYS.between(hoy, cert.getFechaExpiracion());
-
             if (!List.of(90L, 60L, 30L, 14L).contains(dias)) continue;
+            generadorService.generarNotificacionCertificacion(cert, dias);
+        }
 
-            var clave = notificacionService.crearClave(categoria, cert.getId(), (int) dias);
-            if (notificacionService.existeNotificacionHoy(clave)) continue;
-
-            var empleado = cert.getIdInvestigador().getIdEmpleado();
-            var notificacion = notificacionService.guardarNotificacion(
-                    new NotificacionDTO(
-                            null,
-                            categoria,
-                            null,
-                            "Certificación por vencer - " + empleado.getIdentificacion(),
-                            "Nombre de la acreditacion o licencia: " + cert.getNombreCertificacion()
-                                    + "; Fecha de expiracion: " + cert.getFechaExpiracion()
-                                    + "; Nombre del investigador: " + empleado.getNombreCompleto(),
-                            hoy()
-                    ),
-                    cert.getId(),
-                    clave
-            );
-
-            asignarUsuariosCertificacion(notificacion, cert);
+        // Vencidas
+        for (Certificacion cert : certificacionService.buscarVencidas(hoy)) {
+            generadorService.generarNotificacionCertificacion(cert, -1L);
         }
     }
 
-    private void generarNotificacionesCertificacionesVencidas() {
-        var categoria = "CERTIFICACION";
+    // ════════════════════════════════════════════════════════════════════════
+    // LIMPIEZA — 30 días
+    // ════════════════════════════════════════════════════════════════════════
 
-        var hoy = hoy();
-
-        var certificaciones = certificacionService.buscarVencidas(hoy);
-
-        for (var cert : certificaciones) {
-
-            var clave = notificacionService.crearClave(categoria, cert.getId(), -1);
-
-            if (notificacionService.existeNotificacionHoy(clave)) continue;
-
-            var empleado = cert.getIdInvestigador().getIdEmpleado();
-            var notificacion = notificacionService.guardarNotificacion(
-                    new NotificacionDTO(
-                            null,
-                            categoria,
-                            null,
-                            "Certificación vencida - " + empleado.getIdentificacion(),
-                            "Nombre de la acreditacion o licencia: " + cert.getNombreCertificacion()
-                                    + "; Fecha de expiracion: " + cert.getFechaExpiracion()
-                                    + "; Nombre del investigador: " + empleado.getNombreCompleto(),
-                            hoy()
-                    ),
-                    cert.getId(),
-                    clave
-            );
-
-            asignarUsuariosCertificacion(notificacion, cert);
-        }
-    }
-
-    private void asignarUsuariosCertificacion(Notificacion notificacion, Certificacion cert) {
-        var usuarioInv = cert.getIdInvestigador().getIdEmpleado().getIdUsuario();
-
-        var todos = new LinkedHashSet<Usuario>();
-        todos.add(usuarioInv);
-        rolUsuarioService.obtenerRolesUsuarioPorNombreRol("ADMINISTRACION")
-                .forEach(r -> todos.add(r.getIdUsuario()));
-        rolUsuarioService.obtenerRolesUsuarioPorNombreRol("DIRECCION")
-                .forEach(r -> todos.add(r.getIdUsuario()));
-
-        todos.forEach(u -> notificacionUsuarioService.guardarNotificacionUsuario(notificacion, u));
-    }
-
-    // =========================
-    // LIMPIEZA - cada 30 días
-    // =========================
     private void limpiarNotificacionesAntiguas() {
-        var fechaLimite = hoy().minusDays(30);
-        notificacionService.eliminarNotificacionesAntiguas(fechaLimite);
+        notificacionService.eliminarNotificacionesAntiguas(hoy().minusDays(30));
     }
 }

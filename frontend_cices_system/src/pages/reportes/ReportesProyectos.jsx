@@ -55,7 +55,7 @@ function ReportesProyectos() {
         <div className="listado-proyectos-page">
             <div className="listado-proyectos-card">
 
-                <h2 className="listado-proyectos-title">
+                <h2>
                     Reporte de proyectos
                 </h2>
 
@@ -74,8 +74,8 @@ function ReportesProyectos() {
                 <p>Total de proyectos: {totalElements}</p>
 
                 {/* EXPORTACIÓN */}
-                <div className="listado-export">
-                    <select
+                <div className="cert-export">
+                    <select className={"cert-select"}
                         value={formato}
                         onChange={e => setFormato(e.target.value)}
                     >
@@ -84,7 +84,7 @@ function ReportesProyectos() {
                         <option value="docx">Word</option>
                     </select>
 
-                    <button
+                    <button className={"cert-btn-export"}
                         onClick={handleExportar}
                         disabled={isPending}
                     >

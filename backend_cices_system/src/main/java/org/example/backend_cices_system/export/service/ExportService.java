@@ -3,6 +3,7 @@ package org.example.backend_cices_system.export.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.consult.investigador.dto.FormacionDTO;
 import org.example.backend_cices_system.consult.investigador.dto.CertificacionFiltroDTO;
+import org.example.backend_cices_system.consult.presupuesto.dto.PresupuestoFiltroDTO;
 import org.example.backend_cices_system.consult.proyecto.dto.ProyectoFiltroDTO;
 import org.example.backend_cices_system.consult.investigador.service.RepInvestigadorCertificacionesService;
 import org.example.backend_cices_system.export.builder.CertificacionesReportBuilder;
@@ -108,14 +109,22 @@ public class ExportService {
     // ════════════════════════════════════════════════════════════════════════
 
     public Page<ReportePresupuestosListadoDTO> paginadoPresupuestos(
-            ProyectoFiltroDTO filtro, Pageable pageable, int limite) {
-        return presupuestoReporteOrquestador.paginado(filtro, pageable, limite);
+            ProyectoFiltroDTO filtroProyecto,
+            PresupuestoFiltroDTO filtroPresupuesto,
+            Pageable pageable,
+            int limite
+    ) {
+        return presupuestoReporteOrquestador.paginado(
+                filtroProyecto, filtroPresupuesto, pageable, limite);
     }
 
     public ResponseEntity<byte[]> generarReportePresupuestos(
-            ProyectoFiltroDTO filtro, String formato) {
+            ProyectoFiltroDTO filtroProyecto,
+            PresupuestoFiltroDTO filtroPresupuesto,
+            String formato
+    ) {
         List<ReportePresupuestosExportDTO> data =
-                presupuestoReporteOrquestador.generarCompleto(filtro);
+                presupuestoReporteOrquestador.generarCompleto(filtroProyecto, filtroPresupuesto);
         return documentService.generarResponse(
                 presupuestosReportBuilder, data, formato, "reporte_presupuestos");
     }

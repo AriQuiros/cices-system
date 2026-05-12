@@ -7,6 +7,7 @@ import org.example.backend_cices_system.export.model.ReportTable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -31,7 +32,11 @@ public final class ReportBuilderUtils {
     }
 
     public static ReportParagraph para(String text) {
-        return new ReportParagraph(text);
+        return new ReportParagraph(text, false);
+    }
+
+    public static ReportParagraph paraBold(String text) {
+        return new ReportParagraph(text, true);
     }
 
     /**
@@ -54,7 +59,14 @@ public final class ReportBuilderUtils {
 
     public static String safe(String s)      { return s != null ? s : "—"; }
     public static String safe(Number n)      { return n != null ? String.valueOf(n) : "—"; }
-    public static String fmt(LocalDate d)    { return d != null ? d.toString() : "—"; }
+
+    private static final DateTimeFormatter CR_FORMAT =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public static String fmt(LocalDate d) {
+        return d != null ? d.format(CR_FORMAT) : "—";
+    }
+
     public static String fmt(BigDecimal bd)  { return bd != null ? bd.toPlainString() : "—"; }
     public static String fmt(Double d)       { return d != null ? String.valueOf(d) : "—"; }
     public static String fmt(Object o)       { return o != null ? o.toString() : "—"; }

@@ -11,10 +11,11 @@ export const listarParticipantes = (filtro, pageable, limite) => {
     });
 };
 
-export const listarPresupuestosReporte = (filtro, pageable, limite) => {
+export const listarPresupuestosReporte = (filtroProyecto, filtroPresupuesto, pageable, limite) => {
     return httpClient.get("/exportar/listar-presupuestos", {
         params: {
-            ...filtro,
+            ...filtroProyecto,
+            ...filtroPresupuesto,
             page: pageable.page,
             size: pageable.size,
             limite

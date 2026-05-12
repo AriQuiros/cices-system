@@ -1,0 +1,87 @@
+/* ───────────────────────────────
+   LISTA GENERAL DE PRESUPUESTOS
+─────────────────────────────── */
+.lista-participantes {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* separación clara entre proyectos */
+    margin-top: 20px;
+}
+
+/* ───────────────────────────────
+   CARD DE PROYECTO CON PRESUPUESTOS
+─────────────────────────────── */
+.presupuesto-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.presupuesto-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.10);
+    border-color: #cbd5e1;
+}
+
+/* ───────────────────────────────
+   TÍTULO DEL PROYECTO
+─────────────────────────────── */
+.presupuesto-card h3 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* ───────────────────────────────
+   INFORMACIÓN GENERAL
+─────────────────────────────── */
+.presupuesto-card p {
+    margin: 6px 0;
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.45;
+}
+
+/* ───────────────────────────────
+   BLOQUE DE PRESUPUESTOS
+─────────────────────────────── */
+.presupuesto-card .presupuesto-resumen {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+/* separación entre presupuestos */
+.presupuesto-card .presupuesto-resumen + .presupuesto-resumen {
+    margin-top: 10px;
+}
+
+/* ───────────────────────────────
+   MENSAJES VACÍOS
+─────────────────────────────── */
+.sin-presupuestos {
+    margin-top: 12px;
+    padding: 14px;
+    text-align: center;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    color: #64748b;
+    font-style: italic;
+}
+
+.mas-presupuestos {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1d4ed8;
+}

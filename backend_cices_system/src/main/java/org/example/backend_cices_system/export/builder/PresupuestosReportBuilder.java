@@ -4,6 +4,7 @@ import org.example.backend_cices_system.export.dto.*;
 import org.example.backend_cices_system.export.model.*;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,11 +152,10 @@ public class PresupuestosReportBuilder implements ReportBuilder<List<ReportePres
 
         if (esHoras) {
             elementos.add(new ReportTable(
-                    List.of("Categoría", "Fuente", "Horas/mes", "Meses",
+                    List.of("Categoría", "Horas/mes", "Meses",
                             "Horas asignadas", "Horas usadas", "Horas disponibles"),
                     List.of(List.of(
                             safe(base.categoria()),
-                            safe(base.fuenteFinanciamiento()),
                             fmt(base.cantidadHorasMes()),
                             safe(base.cantidadMeses()),
                             fmt(base.resumen().totalAsignado()),
@@ -166,7 +166,7 @@ public class PresupuestosReportBuilder implements ReportBuilder<List<ReportePres
 
             // Tabla de horas asignadas
             if (base.horasAsignadas() != null && !base.horasAsignadas().isEmpty()) {
-                elementos.add(para("Horas asignadas por investigador"));
+                elementos.add(paraBold("Horas asignadas por investigador"));
                 elementos.add(new ReportTable(
                         List.of("Investigador", "Modalidad", "Horas/mes", "Meses", "Total horas"),
                         base.horasAsignadas().stream().map(h -> List.of(
@@ -191,7 +191,7 @@ public class PresupuestosReportBuilder implements ReportBuilder<List<ReportePres
 
             // Tabla de gastos
             if (base.gastos() != null && !base.gastos().isEmpty()) {
-                elementos.add(para("Detalle de gastos"));
+                elementos.add(paraBold("Detalle de gastos"));
                 elementos.addAll(buildGastosConCambios(base.gastos(), dto.cambiosGasto()));
             }
         }
@@ -199,29 +199,105 @@ public class PresupuestosReportBuilder implements ReportBuilder<List<ReportePres
         sections.add(section(heading, H3, elementos));
 
         // H4: Cambios del presupuesto
-        sections.add(buildCambiosPresupuesto(dto.cambiosPresupuesto(), esHoras));
+        sections.add(buildCambiosPresupuesto(
+                dto.cambiosPresupuesto(),
+                esHoras,
+                base
+        ));
 
         return sections;
     }
 
     private ReportSection buildCambiosPresupuesto(
-            List<BitacoraPresupuestoReporteDTO> cambios, boolean esHoras) {
+            List<BitacoraPresupuestoReporteDTO> cambios,
+            boolean esHoras,
+            PresupuestoReporteDTO base
+    ) {
+
         if (cambios == null || cambios.isEmpty()) {
             return section("Cambios del presupuesto", H4,
                     List.of(para("Sin cambios registrados.")));
         }
 
         List<String> headers = esHoras
-                ? List.of("Fecha", "Acción", "Usuario", "Horas/mes anterior", "Meses anterior")
-                : List.of("Fecha", "Acción", "Usuario", "Monto anterior");
+                ? List.of(
+                "Fecha",
+                "Acción",
+                "Usuario",
+                "Horas/mes anterior",
+                "Meses anterior",
+                "Cambio"
+        )
+                : List.of(
+                "Fecha",
+                "Acción",
+                "Usuario",
+                "Monto anterior",
+                "Cambio"
+        );
 
-        List<List<String>> filas = cambios.stream().map(c -> esHoras
-                ? List.of(c.fecha(), c.accion(), c.usuario(), c.horasMesAnterior(), c.mesesAnterior())
-                : List.of(c.fecha(), c.accion(), c.usuario(), c.montoAnterior())
-        ).collect(Collectors.toList());
+        List<List<String>> filas = new ArrayList<>();
 
-        return section("Cambios del presupuesto", H4,
-                List.of(new ReportTable(headers, filas)));
+        for (int i = 0; i < cambios.size(); i++) {
+
+            BitacoraPresupuestoReporteDTO actual = cambios.get(i);
+
+            BitacoraPresupuestoReporteDTO anterior =
+                    i > 0 ? cambios.get(i - 1) : null;
+
+            String tendencia;
+
+            if (esHoras) {
+
+                BigDecimal nuevoHoras = anterior != null
+                        ? parseBigDecimal(anterior.horasMesAnterior())
+                        : base.cantidadHorasMes();
+
+                BigDecimal horasAnterior =
+                        parseBigDecimal(actual.horasMesAnterior());
+
+                tendencia = calcularTendencia(
+                        horasAnterior,
+                        nuevoHoras
+                );
+                filas.add(List.of(
+                        fmt(actual.fecha()),
+                        safe(actual.accion()),
+                        safe(actual.usuario()),
+                        safe(actual.horasMesAnterior()),
+                        safe(actual.mesesAnterior()),
+                        tendencia
+                ));
+
+            } else {
+
+                BigDecimal nuevoMonto = anterior != null
+                        ? parseBigDecimal(anterior.montoAnterior())
+                        : base.montoAsignado();
+
+                BigDecimal montoAnterior =
+                        parseBigDecimal(actual.montoAnterior());
+
+                tendencia = calcularTendencia(
+                        montoAnterior,
+                        nuevoMonto
+                );
+
+                filas.add(List.of(
+                        fmt(actual.fecha()),
+                        safe(actual.accion()),
+                        safe(actual.usuario()),
+                        safe(actual.montoAnterior()),
+                        tendencia
+                ));
+            }
+        }
+
+        return section(
+                "Cambios del presupuesto",
+                H4,
+                List.of(new ReportTable(headers, filas))
+        );
     }
 
     private List<ReportElement> buildGastosConCambios(
@@ -254,13 +330,13 @@ public class PresupuestosReportBuilder implements ReportBuilder<List<ReportePres
 
             if (listaCambios != null && !listaCambios.isEmpty()) {
 
-                elementos.add(new ReportParagraph("Cambios"));
+                elementos.add(paraBold("Cambios"));
 
                 elementos.addAll(
                         listaCambios.stream()
-                                .map(c -> para(
-                                        safe(c.usuario()) + " - " +
-                                                safe(c.accion()) + " - " +
+                                .map(c -> para( "• " +
+                                        safe(c.accion()) + " - " +
+                                                safe(c.usuario()) + " - " +
                                                 safe(c.descripcionAnterior()) + " - " +
                                                 fmt(c.montoAnterior()) + " - " +
                                                 fmt(c.fechaGastoAnterior())
@@ -279,5 +355,40 @@ public class PresupuestosReportBuilder implements ReportBuilder<List<ReportePres
         return lista.stream()
                 .filter(p -> tipo.equalsIgnoreCase(p.base().tipoPresupuesto()))
                 .toList();
+    }
+
+    private String calcularTendencia(
+            BigDecimal anterior,
+            BigDecimal nuevo
+    ) {
+
+        if (anterior == null || nuevo == null) {
+            return "→ Sin cambio";
+        }
+
+        int comparacion = nuevo.compareTo(anterior);
+
+        if (comparacion > 0) {
+            return "↑ Aumento";
+        }
+
+        if (comparacion < 0) {
+            return "↓ Disminución";
+        }
+
+        return "→ Sin cambio";
+    }
+
+    private BigDecimal parseBigDecimal(String value) {
+
+        try {
+
+            return value == null || value.isBlank()
+                    ? null
+                    : new BigDecimal(value);
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

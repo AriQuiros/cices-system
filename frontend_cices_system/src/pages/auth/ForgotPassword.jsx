@@ -28,7 +28,7 @@ export default function ForgotPassword() {
                         placeholder="ejemplo@ucr.ac.cr"
                         value={correo}
                         onChange={handleChange}
-                        rules={[required(), correoUCR(), maxLength(254)]}
+                        rules={[required(),  maxLength(254)]}
                         maxLength={254}
                         required
                     />

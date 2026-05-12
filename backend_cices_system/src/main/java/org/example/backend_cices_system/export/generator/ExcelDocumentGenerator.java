@@ -1,6 +1,6 @@
 package org.example.backend_cices_system.export.generator;
 
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.backend_cices_system.export.model.*;
@@ -22,25 +22,73 @@ public class ExcelDocumentGenerator implements DocumentGenerator {
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet sheet = workbook.createSheet("Reporte");
 
+            // ── Estilos ──────────────────────────────────────────────────
+            CellStyle styleHeader = workbook.createCellStyle();
+            Font fontHeader = workbook.createFont();
+            fontHeader.setBold(true);
+            fontHeader.setFontHeightInPoints((short) 13);
+            styleHeader.setFont(fontHeader);
+            styleHeader.setAlignment(HorizontalAlignment.CENTER);
+
+            CellStyle styleSubHeader = workbook.createCellStyle();
+            Font fontSub = workbook.createFont();
+            fontSub.setFontHeightInPoints((short) 10);
+            styleSubHeader.setFont(fontSub);
+            styleSubHeader.setAlignment(HorizontalAlignment.CENTER);
+
+            // ── Encabezado ───────────────────────────────────────────────
             int rowIndex = 0;
 
+            // Fila 1: Nombre del sistema
+            Row rowSistema = sheet.createRow(rowIndex++);
+            Cell cellSistema = rowSistema.createCell(0);
+            cellSistema.setCellValue(safe(doc.systemName()));
+            cellSistema.setCellStyle(styleHeader);
+
+            // Fila 2: Título del reporte
+            Row rowTitulo = sheet.createRow(rowIndex++);
+            Cell cellTitulo = rowTitulo.createCell(0);
+            cellTitulo.setCellValue(safe(doc.title()));
+            cellTitulo.setCellStyle(styleSubHeader);
+
+            // Fila 3: Fecha
+            Row rowFecha = sheet.createRow(rowIndex++);
+            Cell cellFecha = rowFecha.createCell(0);
+            String fechaStr = doc.date() != null
+                    ? "Fecha: " + doc.date().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    : "";
+            cellFecha.setCellValue(fechaStr);
+            cellFecha.setCellStyle(styleSubHeader);
+
+            // Fila 4: espacio en blanco
+            rowIndex++;
+
+            // ── Contenido ────────────────────────────────────────────────
             for (ReportSection section : doc.sections()) {
 
                 Row title = sheet.createRow(rowIndex++);
-                title.createCell(0).setCellValue(safe(section.heading()));
+                Cell titleCell = title.createCell(0);
+                titleCell.setCellValue(safe(section.heading()));
+
+                CellStyle sectionStyle = workbook.createCellStyle();
+                Font sectionFont = workbook.createFont();
+                sectionFont.setBold(true);
+                sectionStyle.setFont(sectionFont);
+                titleCell.setCellStyle(sectionStyle);
 
                 for (ReportElement element : section.elements()) {
-
                     if (element instanceof ReportParagraph p) {
                         Row row = sheet.createRow(rowIndex++);
                         row.createCell(0).setCellValue(safe(p.text()));
                     }
-
                     if (element instanceof ReportTable t) {
                         rowIndex = writeTable(sheet, t, rowIndex);
                     }
                 }
             }
+
+            // Autoajuste de columnas
+            sheet.autoSizeColumn(0);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             workbook.write(out);

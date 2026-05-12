@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import { AppContext } from "../../context/AppContext.jsx";
+import React, { useState } from "react";
 import BuscadorProyecto from "../../components/busqueda/BusquedaProyecto.jsx";
 import PermisoProyectoForm from "../../components/permisoProyectoComponents/PermisoProyectoForm.jsx";
 import { useGestionPermisos } from "../../hooks/permisoProyectoHooks/useGestionPermisos.js";

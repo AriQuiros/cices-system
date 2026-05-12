@@ -58,8 +58,8 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
     const rolesBD = (rolesSistemaQuery.data?.data ?? rolesSistemaQuery.data ?? []);
 
     // ── Queries de perfil (solo en modoPerfil) ───────────────────────────
-    const perfilEmpleadoQuery     = usePerfilEmpleado();
-    const perfilInvestigadorQuery = usePerfilInvestigador();
+    const perfilEmpleadoQuery     = usePerfilEmpleado(!isInvestigador);
+    const perfilInvestigadorQuery = usePerfilInvestigador(isInvestigador);
 
     // Cargar datos en el formulario cuando llega el perfil
     useEffect(() => {
@@ -225,7 +225,7 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
                         try {
 
                             const data = await loginSrv(nuevoCorreo, authPassword);
-
+                            console.log(data);
                             login(data.user, data.token);
 
                         } catch {

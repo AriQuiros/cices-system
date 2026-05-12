@@ -2,12 +2,24 @@ import { useProyecto } from "../../context/proyectoCtx/UseProyecto.jsx";
 import { CodigoDTO } from "../../modelos/CodigoDTO.jsx";
 import { Plus, X} from "lucide-react";
 import {InformeDTO} from "../../modelos/proyectoDTO.jsx";
+import {useEffect} from "react";
 
 function ProyectoInformes({ editable, tipoInforme }) {
     const { proyecto, setByPath, addByPath, removeByPath } = useProyecto();
 
     const informeVacio = () => ({ ...InformeDTO });
 
+    useEffect(() => {
+
+        if (!proyecto.presentacionesInformes?.length) {
+
+            addByPath(
+                ["presentacionesInformes"],
+                informeVacio()
+            );
+        }
+
+    }, [proyecto.presentacionesInformes]);
     return (
         <fieldset className="input-group">
             <legend>Fechas de Informes</legend>

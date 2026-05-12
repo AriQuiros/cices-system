@@ -38,8 +38,8 @@ export default function RegistroInvestigador({
 
     const configTitulos = {
         tipo:               "titulos",
-        titulo:             "Títulos académicos (formal)",
-        nota:               "No es obligatorio ingresar títulos en este momento.",
+        titulo:             "Títulos académicos",
+        nota:               "No es obligatorio ingresar títulos.",
         labelNombre:        "Nombre del título",
         campNombre:         "nombreTitulo",
         mostrarNivel:       true,
@@ -52,8 +52,9 @@ export default function RegistroInvestigador({
 
     const configCertificaciones = {
         tipo:               "certificaciones",
-        titulo:             "Certificaciones (informal)",
-        nota:               "No es obligatorio ingresar certificaciones en este momento.",
+        titulo:             "Certificaciones (capacitaciones, cursos, licencias, etc...)",
+        nota:               "En este apartado se pueden registrar acreditaciones o licencias profesionales\n" +
+            "que requieran para la participación en los proyectos.",
         labelNombre:        "Nombre de la certificación",
         campNombre:         "nombreCertificacion",
         mostrarNivel:       false,

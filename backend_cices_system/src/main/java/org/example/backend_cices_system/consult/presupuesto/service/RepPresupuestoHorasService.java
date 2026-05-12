@@ -123,4 +123,16 @@ public class RepPresupuestoHorasService {
                 .map(this::obtenerHorasAsignadasReporteDTO)
                 .toList();
     }
+
+    // Agregar después de obtenerPorProyecto():
+    public Map<Integer, List<HorasAsignadasReporteDTO>> obtenerPorIdProyectoAgrupadoPorPresupuesto(Integer idProyecto) {
+        if (idProyecto == null) return Map.of();
+        return repo.findByIdProyecto(idProyecto)
+                .stream()
+                .filter(Objects::nonNull) // para cuando no haya horas asignadas
+                .collect(Collectors.groupingBy(
+                        RepPresupuestoHoras::getIdPresupuesto,
+                        Collectors.mapping(this::obtenerHorasAsignadasReporteDTO, Collectors.toList())
+                ));
+    }
 }

@@ -3,10 +3,8 @@ package org.example.backend_cices_system.modules.notificacion.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.modules.notificacion.repository.NotificacionUsuarioRepository;
-import org.example.backend_cices_system.modules.notificacion.dto.NotificacionDTO;
 import org.example.backend_cices_system.modules.notificacion.model.Notificacion;
 import org.example.backend_cices_system.modules.notificacion.model.NotificacionUsuario;
-import org.example.backend_cices_system.modules.investigadorProyecto.model.PermisoProyecto;
 import org.example.backend_cices_system.modules.usuario.model.Usuario;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,7 @@ public class NotificacionUsuarioService {
     private final NotificacionCambioService notificacionCambioService;
     private final Clock clock;
 
-    public NotificacionUsuario guardarNotificacionUsuario(Notificacion notificacion, Usuario usuario){
+    public void guardarNotificacionUsuario(Notificacion notificacion, Usuario usuario){
         var notificacionUsuario = new NotificacionUsuario();
         notificacionUsuario.setIdNotificacion(notificacion);
 
@@ -33,40 +31,6 @@ public class NotificacionUsuarioService {
 
                 var guardada = notificacionUsuarioRepository.save(notificacionUsuario);
         notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
-        return guardada;
-    }
-
-    @Transactional
-    public void guardarNotificacionPermiso(PermisoProyecto permisoProyecto){
-        var usuario = permisoProyecto.getIdInvestigadorProyecto().getIdInvestigador().getIdEmpleado().getIdUsuario();
-        var codigoProyecto = permisoProyecto.getIdInvestigadorProyecto().getIdProyecto().getCodigoProyecto();
-
-        var fechaFin = permisoProyecto.getFechaFinPermiso() != null
-                ? permisoProyecto.getFechaFinPermiso().toString()
-                : "Indefinido";
-
-        var mensaje = "Codigo de proyecto: " + codigoProyecto
-                + "; Fecha de inicio: " + permisoProyecto.getFechaInicioPermiso()
-                + "; Fecha fin: " + fechaFin;
-
-        var categoria = "PERMISO_COORDINADOR";
-        var clave = notificacionService.crearClave(categoria, permisoProyecto.getId(), 0);
-
-        var notificacion = notificacionService.guardarNotificacion(
-                new NotificacionDTO(
-                null,
-                categoria,
-                null,
-                "Permiso Coordinador en proyecto '" + codigoProyecto + "'",
-                 mensaje,
-                 LocalDate.now(clock)
-        ),
-                permisoProyecto.getId(),
-                clave
-                );
-
-        guardarNotificacionUsuario(notificacion, usuario);
-
     }
 
     private NotificacionUsuario obtenerNotificacionUsuarioPorIdYUsuario(Integer id, Usuario usuario){
@@ -92,12 +56,11 @@ public class NotificacionUsuarioService {
         notificacionUsuarioRepository.save(notificacionUsuario);
         notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
     }
-
     @Transactional
     public void eliminar(Integer idNotificacionUsuario, Usuario usuario) {
-        NotificacionUsuario notificacionUsuario = obtenerNotificacionUsuarioPorIdYUsuario(idNotificacionUsuario, usuario);
-        notificacionUsuario.setEliminado(true);
-        notificacionUsuarioRepository.save(notificacionUsuario);
+        // Verificar que la notificación pertenece al usuario antes de borrar
+        obtenerNotificacionUsuarioPorIdYUsuario(idNotificacionUsuario, usuario);
+        notificacionUsuarioRepository.deleteById(idNotificacionUsuario);
         notificacionCambioService.notificarCambioUsuario(usuario.getNombreUsuario());
     }
 

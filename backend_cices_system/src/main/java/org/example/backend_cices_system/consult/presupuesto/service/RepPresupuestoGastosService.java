@@ -96,4 +96,14 @@ public class RepPresupuestoGastosService {
                 .toList();
     }
 
+    public Map<Integer, List<GastoReporteDTO>> obtenerPorIdProyectoAgrupadoPorPresupuesto(Integer idProyecto) {
+        if (idProyecto == null) return Map.of();
+        return repo.findByIdProyecto(idProyecto)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        RepPresupuestoGastos::getIdPresupuesto,
+                        Collectors.mapping(this::obtenerGastoReporteDTO, Collectors.toList())
+                ));
+    }
+
 }

@@ -92,8 +92,7 @@ function ListadoProyectos() {
                                             <span className="proyecto_card-rol">{p.rolProyecto}</span>
                                             <span className="proyecto_card-fechas-inv">
                                                 {formatearFechaCR(p.fechaInicioInvestigador)}
-                                                {" – "}
-                                                {formatearFechaCR(p.fechaFinInvestigador)}
+                                                {p.fechaFinInvestigador ? " — " + formatearFechaCR(p.fechaFinInvestigador) : ""}
                                             </span>
                                         </div>
                                     )}

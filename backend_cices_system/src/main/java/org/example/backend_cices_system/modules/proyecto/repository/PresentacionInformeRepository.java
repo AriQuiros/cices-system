@@ -11,4 +11,7 @@ public interface PresentacionInformeRepository extends JpaRepository<Presentacio
     List<PresentacionInforme> findPresentacionInformeByIdProyecto(Proyecto proyecto);
 
     List<PresentacionInforme> findByFechaPresentacionBetween(LocalDate inicio, LocalDate fin);
+
+    List<PresentacionInforme> findByFechaPresentacionBeforeAndIdCodigoTipoEstado(
+            LocalDate fecha, Short idCodigoTipoEstado);
 }

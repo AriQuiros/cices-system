@@ -22,7 +22,7 @@ export const menuConfig = [
             {
                 label: "Mis Certificaciones",
                 path: "/certificaciones-investigador",
-                roles: ["ADMINISTRATIVO","DIRECCION", "INVESTIGADOR"]
+                roles: ["INVESTIGADOR"]
             },
         ]
     },
@@ -84,11 +84,6 @@ export const menuConfig = [
             {
                 label: "Consultar Asignación Horas",
                 path: "/consulta-horas-asignadas",
-                roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
-            },
-            {
-                label: "Asignación Investigador y Horas",
-                path: "/asignar-investigadores-horas",
                 roles: ["ADMINISTRATIVO","DIRECCION","ASISTENTE"]
             }
         ]

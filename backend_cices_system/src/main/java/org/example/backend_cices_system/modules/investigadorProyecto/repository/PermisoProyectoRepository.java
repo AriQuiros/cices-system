@@ -5,11 +5,12 @@ import org.example.backend_cices_system.modules.investigadorProyecto.model.Permi
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface PermisoProyectoRepository extends JpaRepository<PermisoProyecto, Integer> {
-    boolean existsByIdInvestigadorProyecto(InvestigadorProyecto idInvestigadorProyecto);
+    List<PermisoProyecto> findByFechaFinPermisoBeforeAndFechaFinPermisoIsNotNull(LocalDate fecha);
     boolean existsByIdInvestigadorProyecto_Id(Integer idInvestigadorProyectoId);
     List<PermisoProyecto> findByIdInvestigadorProyecto_IdProyecto_CodigoProyecto
             (String idInvestigadorProyectoIdProyectoCodigoProyecto);

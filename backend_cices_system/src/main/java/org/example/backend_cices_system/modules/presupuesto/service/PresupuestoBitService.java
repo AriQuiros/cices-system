@@ -82,7 +82,7 @@ public class PresupuestoBitService {
 
     public BitacoraPresupuestoReporteDTO toReporteDTO(PresupuestoBit bit) {
         return new BitacoraPresupuestoReporteDTO(
-                bit.getFecBit() != null ? bit.getFecBit().toString() : "—",
+                bit.getFecBit(),
                 accionLabel(bit.getAccBit()),
                 usuarioService.obtenerUsuario(bit.getUsuBit()).getNombreUsuario(),
                 bit.getMontoAsignadoOld() != null ? bit.getMontoAsignadoOld().toPlainString() : "—",

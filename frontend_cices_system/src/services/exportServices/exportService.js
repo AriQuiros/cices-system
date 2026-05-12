@@ -37,7 +37,7 @@ export const exportarParticipantesSrv = async (filtro, formato) => {
     return res.data;
 };
 
-export const exportarPresupuestosSrv = async (filtro, formato) => {
-    const res = await exportarPresupuestos(filtro, formato);
+export const exportarPresupuestosSrv = async (filtroProyecto, filtroPresupuesto, formato) => {
+    const res = await exportarPresupuestos(filtroProyecto, filtroPresupuesto, formato);
     return res.data;
 };

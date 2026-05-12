@@ -2,7 +2,6 @@ import { useContext, useMemo } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 
 export function useAuth() {
-
     const { token, user, login } = useContext(AppContext);
 
     const roles = useMemo(() => user?.roles ?? [], [user?.roles]);

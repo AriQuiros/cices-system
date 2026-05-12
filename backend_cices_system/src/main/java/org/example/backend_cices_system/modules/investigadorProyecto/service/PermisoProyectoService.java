@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend_cices_system.modules.investigadorProyecto.repository.PermisoProyectoRepository;
 import org.example.backend_cices_system.modules.investigadorProyecto.dto.PermisoProyectoDTO;
 import org.example.backend_cices_system.modules.investigadorProyecto.model.PermisoProyecto;
-import org.example.backend_cices_system.modules.notificacion.service.NotificacionUsuarioService;
+import org.example.backend_cices_system.modules.notificacion.service.NotificacionGeneradorService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class PermisoProyectoService {
 
     private final PermisoProyectoRepository permisoProyectoRepository;
     private final InvestigadorProyectoService  investigadorProyectoService;
-    private final NotificacionUsuarioService notificacionUsuarioService;
+    private final NotificacionGeneradorService notificacionGeneradorService;
 
     public PermisoProyecto getById(Integer id) {
         return permisoProyectoRepository.findById(id)
@@ -39,7 +39,7 @@ public class PermisoProyectoService {
 
         permisoProyectoRepository.save(permisoProyecto);
 
-        notificacionUsuarioService.guardarNotificacionPermiso(permisoProyecto);
+        notificacionGeneradorService.generarNotificacionPermiso(permisoProyecto);
 
         return permisoDto;
     }

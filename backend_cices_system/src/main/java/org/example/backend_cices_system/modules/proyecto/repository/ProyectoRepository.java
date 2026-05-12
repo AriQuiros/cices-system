@@ -12,6 +12,7 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Integer>, Jp
     Optional<Proyecto> findByCodigoProyecto(String codigoProyecto);
 
     boolean existsByCodigoProyecto(String codigoProyecto);
+    List<Proyecto> findByFechaFinalizacionIsNotNull();
 
     @Query("SELECT DISTINCT p.lineaInvestigacion FROM Proyecto p")
     List<String> findDistinctLineasInvestigacion();

@@ -28,15 +28,29 @@ export const pattern = (regex, msg) => v =>
         ? ""
         : msg || "Formato inválido";
 
-export const fechaMayorIgualQue = (fechaRef, msg) => v =>
-    !v || new Date(v) >= new Date(fechaRef)
-        ? ""
-        : msg || `Debe ser mayor a ${fechaRef}`;
+export const fechaMayorIgualQue = (fechaRef, msg) => v => {
 
-export const fechaMenorIgualQue = (fechaRef, msg) => v =>
-    !v || new Date(v) <= new Date(fechaRef)
+    // si no hay valor, no validar aquí
+    if (!v) return "";
+
+    // si no hay fecha referencia, no comparar
+    if (!fechaRef) return "";
+
+    return new Date(v) >= new Date(fechaRef)
         ? ""
-        : msg || `Debe ser menor a ${fechaRef}`;
+        : msg || `Debe ser mayor o igual a ${fechaRef}`;
+};
+
+export const fechaMenorIgualQue = (fechaRef, msg) => v => {
+
+    if (!v) return "";
+
+    if (!fechaRef) return "";
+
+    return new Date(v) <= new Date(fechaRef)
+        ? ""
+        : msg || `Debe ser menor o igual a ${fechaRef}`;
+};
 
 export const correoUCR = (msg) => v =>
     !v || v.endsWith("@ucr.ac.cr")

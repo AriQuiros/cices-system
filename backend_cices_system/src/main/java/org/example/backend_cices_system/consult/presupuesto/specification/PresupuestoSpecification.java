@@ -10,6 +10,28 @@ import java.util.List;
 
 public class PresupuestoSpecification {
 
+    public static Specification<RepPresupuestoBase> filtrarConProyectos(
+            PresupuestoFiltroDTO filtro,
+            List<Integer> idsProyecto
+    ) {
+        return (root, query, cb) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Proyectos acotados
+            if (idsProyecto != null && !idsProyecto.isEmpty()) {
+                predicates.add(root.get("idProyecto").in(idsProyecto));
+            }
+
+            // Reutilizar todos los predicados del filtro base
+            Specification<RepPresupuestoBase> base = filtrar(filtro);
+            Predicate basePredicate = base.toPredicate(root, query, cb);
+            if (basePredicate != null) predicates.add(basePredicate);
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
     public static Specification<RepPresupuestoBase> filtrar(PresupuestoFiltroDTO filtro) {
         return (root, query, cb) -> {
 
@@ -41,31 +63,11 @@ public class PresupuestoSpecification {
             }
 
             if (filtro.fechaDesde() != null && filtro.fechaHasta() != null) {
-                predicates.add(
-                        cb.between(
-                                root.get("fechaAsignacion"),
-                                filtro.fechaDesde(),
-                                filtro.fechaHasta()
-                        )
-                );
-            }
-
-            if (filtro.fechaDesde() != null) {
-                predicates.add(
-                        cb.greaterThanOrEqualTo(
-                                root.get("fechaAsignacion"),
-                                filtro.fechaDesde()
-                        )
-                );
-            }
-
-            if (filtro.fechaHasta() != null) {
-                predicates.add(
-                        cb.lessThanOrEqualTo(
-                                root.get("fechaAsignacion"),
-                                filtro.fechaHasta()
-                        )
-                );
+                predicates.add(cb.between(root.get("fechaAsignacion"), filtro.fechaDesde(), filtro.fechaHasta()));
+            } else if (filtro.fechaDesde() != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("fechaAsignacion"), filtro.fechaDesde()));
+            } else if (filtro.fechaHasta() != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("fechaAsignacion"), filtro.fechaHasta()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

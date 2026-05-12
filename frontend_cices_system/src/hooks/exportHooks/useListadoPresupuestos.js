@@ -1,21 +1,28 @@
 import { useState } from "react";
 import { usePresupuestosReporteQuery } from "./queries/usePresupuestosReporte.js";
 import { useProyectosFiltros } from "../shared/useProyectosFiltros.js";
+import { usePresupuestoFiltros } from "../presupuestoHooks/usePresupuestoFiltros.js"; // hook existente
 
 export const useListadoPresupuestos = () => {
     const {
-        filtroProyecto,
-        cambiarFiltroProyecto,
-        limpiarFiltros,
-        opcionesTipos,
-        opcionesEstado,
-        opcionesLineas
+        filtroProyecto, cambiarFiltroProyecto, limpiarFiltros: limpiarProyecto,
+        opcionesTipos, opcionesEstado, opcionesLineas
     } = useProyectosFiltros();
 
-    const [pageable, setPageable] = useState({ page: 0, size: 8 });
-    const [limite] = useState(5);
+    const {
+        filtroPresupuesto, cambiarFiltroPresupuesto, limpiarFiltros: limpiarPresupuesto,
+        opcionesTiposPresupuesto, opcionesFuentes, opcionesCategorias
+    } = usePresupuestoFiltros();
 
-    const query = usePresupuestosReporteQuery(filtroProyecto, pageable, limite);
+    const [pageable, setPageable] = useState({ page: 0, size: 8 });
+    const [limite] = useState(3);
+    const query = usePresupuestosReporteQuery(filtroProyecto, filtroPresupuesto, pageable, limite);
+
+    const limpiarFiltros = () => {
+        limpiarProyecto();
+        limpiarPresupuesto();
+        setPageable(prev => ({ ...prev, page: 0 }));
+    };
 
     return {
         data: query.data?.content || [],
@@ -24,16 +31,14 @@ export const useListadoPresupuestos = () => {
         isLoading: query.isLoading,
         isError: query.isError,
 
-        filtroProyecto,
-        cambiarFiltroProyecto,
+        filtroProyecto, cambiarFiltroProyecto,
+        filtroPresupuesto, cambiarFiltroPresupuesto,
         limpiarFiltros,
 
         pageable,
-        cambiarPagina: (nuevaPagina) =>
-            setPageable(prev => ({ ...prev, page: nuevaPagina })),
+        cambiarPagina: (p) => setPageable(prev => ({ ...prev, page: p })),
 
-        opcionesTipos,
-        opcionesEstado,
-        opcionesLineas
+        opcionesTipos, opcionesEstado, opcionesLineas,
+        opcionesTiposPresupuesto, opcionesFuentes, opcionesCategorias
     };
 };

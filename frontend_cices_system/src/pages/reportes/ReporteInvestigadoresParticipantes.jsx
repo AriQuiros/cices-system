@@ -8,6 +8,7 @@ import {formatearNumeroCR} from "../../utils/formatoNumeroCR.js";
 import {useListadoParticipantes} from "../../hooks/exportHooks/useListadoParticipantes.js";
 
 import "./ReporteInvestigadoresParticipantes.css";
+import "./ReporteCertificaciones.css";
 
 function ReportesParticipantes() {
 
@@ -61,16 +62,19 @@ function ReportesParticipantes() {
                 <p>Total de proyectos: {totalElements}</p>
 
                 {/* EXPORT */}
-                <div className="listado-export">
-                    <select value={formato} onChange={e => setFormato(e.target.value)}>
+                <div className="cert-controls">
+                <div className="cert-export">
+                    <select className="cert-select"
+                        value={formato} onChange={e => setFormato(e.target.value)}>
                         <option value="pdf">PDF</option>
                         <option value="xlsx">Excel</option>
                         <option value="docx">Word</option>
                     </select>
 
-                    <button onClick={handleExportar} disabled={isPending}>
+                    <button className="cert-btn-export" onClick={handleExportar} disabled={isPending}>
                         {isPending ? "Exportando..." : "Exportar"}
                     </button>
+                </div>
                 </div>
 
                 {/* ESTADOS */}
@@ -106,7 +110,7 @@ function ReportesParticipantes() {
                                         <th>Rol</th>
                                         <th>Participación</th>
                                         <th>Modalidad</th>
-                                        <th>Carga</th>
+                                        {/*<th>Carga</th>*/}
                                         <th>Horas/mes</th>
                                         <th>Meses</th>
                                         <th>Total horas</th>
@@ -129,7 +133,7 @@ function ReportesParticipantes() {
                                             </td>
 
                                             <td>{p.modalidad || "N/A"}</td>
-                                            <td>{p.cargaAcademica || "N/A"}</td>
+                                            {/* <td>{p.cargaAcademica || "N/A"}</td>*/}
                                             <td>{p.horasMes || "N/A"}</td>
                                             <td>{p.meses || "N/A"}</td>
 

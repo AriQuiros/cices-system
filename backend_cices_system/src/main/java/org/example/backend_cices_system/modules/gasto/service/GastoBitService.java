@@ -81,11 +81,11 @@ public class GastoBitService {
 
     private BitacoraGastoReporteDTO toReporteDTO(GastoBit bit) {
         return new BitacoraGastoReporteDTO(
-                bit.getFecBit() != null ? bit.getFecBit().toString() : "—",
+                bit.getFecBit(),
                 accionLabel(bit.getAccBit()),
                 usuarioService.obtenerUsuario(bit.getUsuBit()).getNombreUsuario(),
                 bit.getMontoOld() != null ? bit.getMontoOld().toPlainString() : "—",
-                bit.getFechaGastoOld() != null ? bit.getFechaGastoOld().toString() : "—",
+                bit.getFechaGastoOld(),
                 bit.getDescripcionOld() != null ? bit.getDescripcionOld() : "—",
                 bit.getIdPresupuesto(),
                 bit.getIdGasto()

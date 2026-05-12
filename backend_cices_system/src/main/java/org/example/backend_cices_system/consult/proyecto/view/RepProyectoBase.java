@@ -61,4 +61,8 @@ public class RepProyectoBase {
     @Column(name = "FECHA_FINALIZACION")
     private LocalDate fechaFinalizacion;
 
+    @Lob
+    @Column(name = "DETALLES_PROYECTOS")
+    private String detallesProyectos;
+
 }

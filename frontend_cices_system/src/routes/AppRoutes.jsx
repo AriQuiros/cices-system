@@ -31,7 +31,6 @@ import HorasAsignadas from "../pages/horas/HorasAsignadas.jsx";
 
 /* ASIGNACIONES */
 import AsignarInvestigadores from "../pages/investigadorProyecto/AsignarInvestigadores.jsx";
-import AsignarInvestigadoresHoras from "../pages/investigadorProyecto/AsignarInvestigadorHoras.jsx";
 
 import GestionPermisoProyecto from "../pages/permisoProyecto/GestionPermisosProyecto.jsx";
 
@@ -84,7 +83,6 @@ function AppRoutes() {
 
                 {/* ASIGNACIONES */}
                 <Route path="/asignar-investigadores" element={<AsignarInvestigadores />} />
-                <Route path="/asignar-investigadores-horas" element={<AsignarInvestigadoresHoras />} />
                 <Route path="/gestion-permiso-proyecto" element={<GestionPermisoProyecto />} />
 
                 {/* DIRECTOR */}

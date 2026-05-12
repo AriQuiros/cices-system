@@ -1,7 +1,9 @@
 package org.example.backend_cices_system.export.dto;
 
+import java.time.LocalDate;
+
 public record BitacoraPresupuestoReporteDTO(
-        String fecha,
+        LocalDate fecha,
         String accion,
         String usuario,
         String montoAnterior,

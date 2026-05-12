@@ -7,16 +7,29 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
-/**
- * Mapping for DB view
- */
 @Getter
 @Setter
 @Entity
 @Immutable
 @Table(name = "REP_PROYECTO_RESULTADOS")
+@IdClass(RepProyectoResultadosId.class)
 public class RepProyectoResultados {
+
+    // ── Clave compuesta ─────────────────────────────────────────────────────
+    // idMeta identifica la meta, idIndicador puede ser null (meta sin indicadores).
+    // El par (idMeta, idIndicador) es único por fila en la vista.
+
     @Id
+    @NotNull
+    @Column(name = "ID_META", nullable = false)
+    private Integer idMeta;
+
+    @Id
+    @Column(name = "ID_INDICADOR")
+    private Integer idIndicador;
+
+    // ── Resto de columnas ───────────────────────────────────────────────────
+
     @NotNull
     @Column(name = "ID_PROYECTO", nullable = false)
     private Integer idProyecto;
@@ -39,10 +52,6 @@ public class RepProyectoResultados {
     @Column(name = "OBJETIVO_ESPECIFICO")
     private String objetivoEspecifico;
 
-    @NotNull
-    @Column(name = "ID_META", nullable = false)
-    private Integer idMeta;
-
     @Lob
     @Column(name = "META")
     private String meta;
@@ -54,11 +63,7 @@ public class RepProyectoResultados {
     @Column(name = "CANTIDAD_META")
     private Integer cantidadMeta;
 
-    @Column(name = "ID_INDICADOR")
-    private Integer idIndicador;
-
     @Lob
     @Column(name = "INDICADOR")
     private String indicador;
-
 }

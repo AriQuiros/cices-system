@@ -117,34 +117,56 @@ export default function VerProyecto() {
                         objetivos.map((obj, i) => (
                             <div key={i} style={{ marginBottom: "1.5rem" }}>
                                 <p><b>Objetivo {i + 1}:</b> {obj.descripcion || "-"}</p>
-                                {(obj.metas || []).length > 0 && (
-                                    <table>
-                                        <thead>
-                                        <tr>
-                                            <th>Tipo</th><th>Cantidad</th>
-                                            <th>Descripción</th><th>Indicadores</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {obj.metas.map((meta, j) => (
-                                            <tr key={j}>
-                                                <td>{meta.tipoMeta || "-"}</td>
-                                                <td>{meta.cantidad || "-"}</td>
-                                                <td>{meta.descripcion || "-"}</td>
-                                                <td>
-                                                    {(meta.indicadores || []).length === 0 ? "-" : (
-                                                        <ul style={{ textAlign: "left", margin: 0, paddingLeft: "1rem" }}>
-                                                            {meta.indicadores.map((ind, k) => (
-                                                                <li key={k}>{ind.descripcion}</li>
-                                                            ))}
-                                                        </ul>
-                                                    )}
-                                                </td>
+                                {(obj.metas || []).length > 0 && (() => {
+                                    const mostrarCantidad = obj.metas.some(
+                                        meta => meta.cantidad !== null &&
+                                            meta.cantidad !== undefined &&
+                                            meta.cantidad !== ""
+                                    );
+
+                                    return (
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th>Tipo</th>
+
+                                                {mostrarCantidad && <th>Cantidad</th>}
+
+                                                <th>Descripción</th>
+                                                <th>Indicadores</th>
                                             </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                )}
+                                            </thead>
+
+                                            <tbody>
+                                            {obj.metas.map((meta, j) => (
+                                                <tr key={j}>
+                                                    <td>{meta.tipoMeta || "-"}</td>
+
+                                                    {mostrarCantidad && (
+                                                        <td>{meta.cantidad || "-"}</td>
+                                                    )}
+
+                                                    <td>{meta.descripcion || "-"}</td>
+
+                                                    <td>
+                                                        {(meta.indicadores || []).length === 0 ? "-" : (
+                                                            <ul style={{
+                                                                textAlign: "left",
+                                                                margin: 0,
+                                                                paddingLeft: "1rem"
+                                                            }}>
+                                                                {meta.indicadores.map((ind, k) => (
+                                                                    <li key={k}>- {ind.descripcion}</li>
+                                                                ))}
+                                                            </ul>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    );
+                                })()}
                             </div>
                         ))
                     )}

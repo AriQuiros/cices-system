@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { obtenerPerfilInvestigadorSrv } from "../../../services/investigadorServices/investigadorService.js";
 
-export const usePerfilInvestigador = () => {
+export const usePerfilInvestigador = (enabled = true) => {
     return useQuery({
         queryKey: ["investigador-perfil"],
-        queryFn: obtenerPerfilInvestigadorSrv
+        queryFn: obtenerPerfilInvestigadorSrv,
+        enabled: enabled
+
     });
 };

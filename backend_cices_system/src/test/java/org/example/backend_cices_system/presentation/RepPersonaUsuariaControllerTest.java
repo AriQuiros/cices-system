@@ -1,7 +1,21 @@
-package org.example.backend_cices_system.presentation;
+package org.example.backend_cices_system.report.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-/*
+import org.example.backend_cices_system.report.dto.InvestigadorConsultaDTO;
+import org.example.backend_cices_system.report.dto.PersonaUsuariaDTO;
+import org.example.backend_cices_system.report.dto.UsuarioPersonaDTO;
+import org.example.backend_cices_system.report.serviceVw.RepPersonaUsuariaService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class RepPersonaUsuariaControllerTest {
 
@@ -11,68 +25,76 @@ class RepPersonaUsuariaControllerTest {
     @InjectMocks
     private RepPersonaUsuariaController controller;
 
-    // =========================================
-    // HU-010
-    // Debe retornar lista de empleados para supervisión
-    // =========================================
     @Test
-    void HU10_controllerDebeRetornarListaDeEmpleados() {
-
-        List<PersonaUsuariaDTO> lista = List.of(
+    void obtenerEmpleados_debeRetornarListaDeEmpleados() {
+        List<PersonaUsuariaDTO> mockLista = List.of(
                 new PersonaUsuariaDTO(
-                        "Alejandro",
-                        "1",
-                        "CR",
-                        "a@gmail.com",
+                        "Ana Perez",
+                        "111",
+                        "Costa Rica",
+                        "ana@mail.com",
                         "8888",
-                        "Lic",
-                        List.of("ASISTENTE")
-                ),
-                new PersonaUsuariaDTO(
-                        "Maria",
-                        "2",
-                        "CR",
-                        "m@gmail.com",
-                        "7777",
-                        "Maestría",
-                        List.of("ADMINISTRATIVO")
+                        "Licenciatura",
+                        List.of("ASISTENTE", "ADMINISTRATIVO")
                 )
         );
 
-        Page<PersonaUsuariaDTO> pageMock =
-                new PageImpl<>(lista);
+        when(personaService.obtenerAsistentesAdministrativos()).thenReturn(mockLista);
 
-        when(personaService.obtenerPersonaPorRoles(
-                any(),
-                any(),
-                any()
-        )).thenReturn(pageMock);
+        List<PersonaUsuariaDTO> resultado = controller.obtenerEmpleados();
 
-        Page<PersonaUsuariaDTO> resultado =
-                controller.obtenerEmpleados(null, Pageable.unpaged());
-
-        assertEquals(2, resultado.getContent().size());
+        assertEquals(1, resultado.size());
+        assertEquals("Ana Perez", resultado.get(0).nombreCompleto());
+        assertEquals("111", resultado.get(0).identificacion());
+        verify(personaService).obtenerAsistentesAdministrativos();
     }
 
-    // =========================================
-    // HU-010
-    // Debe retornar lista vacía si no existen empleados válidos
-    // =========================================
     @Test
-    void HU10_controllerDebeRetornarListaVacia() {
+    void obtenerInvestigadores_debeRetornarListaDeInvestigadores() {
+        List<InvestigadorConsultaDTO> mockLista = List.of(
+                new InvestigadorConsultaDTO(
+                        "Luis Mora",
+                        "222",
+                        "Costa Rica",
+                        "luis@mail.com",
+                        "9999",
+                        "Maestria",
+                        "TEC",
+                        "Computacion",
+                        "Datos"
+                )
+        );
 
-        Page<PersonaUsuariaDTO> pageMock =
-                new PageImpl<>(List.of());
+        when(personaService.obtenerInvestigadores()).thenReturn(mockLista);
 
-        when(personaService.obtenerPersonaPorRoles(
-                any(),
-                any(),
-                any()
-        )).thenReturn(pageMock);
+        List<InvestigadorConsultaDTO> resultado = controller.obtenerInvestigadores();
 
-        Page<PersonaUsuariaDTO> resultado =
-                controller.obtenerEmpleados(null, Pageable.unpaged());
-
-        assertTrue(resultado.getContent().isEmpty());
+        assertEquals(1, resultado.size());
+        assertEquals("Luis Mora", resultado.get(0).nombreCompleto());
+        assertEquals("222", resultado.get(0).identificacion());
+        verify(personaService).obtenerInvestigadores();
     }
-}*/
+
+    @Test
+    void obtenerUsuarios_debeRetornarListaDeUsuarios() {
+        List<UsuarioPersonaDTO> mockLista = List.of(
+                new UsuarioPersonaDTO(
+                        1,
+                        "Ana Perez",
+                        "aperez",
+                        true,
+                        List.of("DIRECTOR")
+                )
+        );
+
+        when(personaService.todosUsuarios()).thenReturn(mockLista);
+
+        List<UsuarioPersonaDTO> resultado = controller.obtenerUsuarios();
+
+        assertEquals(1, resultado.size());
+        assertEquals("Ana Perez", resultado.get(0).nombreCompleto());
+        assertEquals("aperez", resultado.get(0).nombreUsuario());
+        assertEquals(true, resultado.get(0).activo());
+        verify(personaService).todosUsuarios();
+    }
+}

@@ -13,7 +13,7 @@ export function HoraTableSoloLectura({ data = [] }) {
             " - " +
             (formatearFechaCR(h?.fechaFin) || ""),
         modalidad: h.modalidad || "—",
-        tipoHora: h.tipoHora || "N/A",
+        tipoHora: h.tiempo || "N/A",
         horasMes: h.horasMes,
         meses: h.meses,
         total: formatearNumeroCR(h.totalHorasAsignadas)
@@ -22,8 +22,8 @@ export function HoraTableSoloLectura({ data = [] }) {
     const columns = [
         { key: "investigador",       label: "Investigador" },
         { key: "fechasInvestigador", label: "Fechas Participación" },
-        { key: "modalidad",          label: "Modalidad" },
-        { key: "tipoHora",           label: "Tipo Hora" },
+        { key: "modalidad",          label: "Carga Académica" },
+        { key: "tipoHora",           label: "Tiempo" },
         { key: "horasMes",           label: "Horas/Mes" },
         { key: "meses",              label: "Meses" },
         { key: "total",              label: "Total" }

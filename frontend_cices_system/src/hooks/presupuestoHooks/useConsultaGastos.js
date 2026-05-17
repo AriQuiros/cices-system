@@ -5,11 +5,14 @@ import { obtenerPresupuestosProyectoTipo } from "../../services/presupuestoServi
 
 export const useConsultaGastos = () => {
 
+    const ANIO_MIN = 2020;
+    const ANIO_MAX = new Date().getFullYear();
+
     const [filtro, setFiltro] = useState({
         codigoProyecto: null,
         categorias: [],
-        fechaDesde: null,
-        fechaHasta: null,
+        anioDesde: ANIO_MIN,
+        anioHasta: ANIO_MAX,
         tipoPresupuesto: "Financiero"
     });
 
@@ -74,6 +77,9 @@ export const useConsultaGastos = () => {
         setOrdenPresupuesto,
 
         ordenGasto,
-        setOrdenGasto
+        setOrdenGasto,
+
+        ANIO_MIN,
+        ANIO_MAX
     };
 };

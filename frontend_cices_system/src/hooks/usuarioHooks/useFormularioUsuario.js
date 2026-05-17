@@ -223,7 +223,8 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
                     if (nuevoCorreo && nuevoCorreo !== correoActual) {
 
                         try {
-
+                            console.log(nuevoCorreo)
+                            console.log(authPassword)
                             const data = await loginSrv(nuevoCorreo, authPassword);
                             console.log(data);
                             login(data.user, data.token);

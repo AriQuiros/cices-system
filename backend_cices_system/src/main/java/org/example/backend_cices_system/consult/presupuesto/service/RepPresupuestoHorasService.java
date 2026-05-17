@@ -55,7 +55,7 @@ public class RepPresupuestoHorasService {
                 horasAsignadas.getRolProyecto(),
                 horasAsignadas.getFechaInicioInvestigador(),
                 horasAsignadas.getFechaFinInvestigador(),
-                "TEMPORAL",
+                horasAsignadas.getTiempo(),
                 horasAsignadas.getCantidadHorasMes(),
                 horasAsignadas.getCantidadMeses(),
                 horasAsignadas.getTotalHorasPlanificadas()

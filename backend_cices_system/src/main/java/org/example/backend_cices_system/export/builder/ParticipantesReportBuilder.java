@@ -116,7 +116,7 @@ public class ParticipantesReportBuilder implements ReportBuilder<List<ReportePar
                 safe(p.investigador()),
                 safe(normalizarRol(p.rolProyecto())),
                 safe(p.modalidad()),
-                safe(p.cargaAcademica()),
+                safe(p.tiempo()),
                 fmt(p.horasMes()),
                 safe(p.meses()),
                 fmt(p.totalHorasAsignadas()),

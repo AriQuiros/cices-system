@@ -139,7 +139,7 @@ public class ParticipantesReporteOrquestador {
                 inv.rolProyecto(),
                 inv.fechaInicio(),
                 inv.fechaFin(),
-                horas != null ? horas.cargaAcademica() : null,
+                horas != null ? horas.tiempo() : null,
                 horas != null ? horas.horasMes() : null,
                 horas != null ? horas.meses() : null,
                 horas != null ? horas.totalHorasAsignadas() : null

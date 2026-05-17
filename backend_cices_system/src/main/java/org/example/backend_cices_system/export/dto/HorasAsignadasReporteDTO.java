@@ -11,7 +11,7 @@ public record HorasAsignadasReporteDTO(
         String rolProyecto,
         LocalDate fechaInicio,
         LocalDate fechaFin,
-        String cargaAcademica, // tipo hora??
+        String tiempo, // tipo hora??
         Double horasMes,
         Short meses,
         BigDecimal totalHorasAsignadas

@@ -103,13 +103,14 @@ function ListadoProyectos() {
                         </div>
                     </section>
 
+                    <div className="paginacion">
                     <Pagination
                         page={pageable.page}
                         totalPages={totalPages}
                         totalElements={totalElements}
                         onPageChange={cambiarPagina}
                     />
-
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {notify} from "../../utils/ui/notify.jsx";
+import {confirm} from "../../utils/ui/confirm.jsx";
 
 const MAX_HORAS = 5;
 
@@ -19,14 +20,7 @@ export const useHoraForm = ({ horaSeleccionada, presupuesto, onSubmit }) => {
         if (horaSeleccionada) {
             setHorasForm([{
                 id: horaSeleccionada.id,
-                investigador: horaSeleccionada.investigador
-                    ? {
-                        id: horaSeleccionada.investigador.id,
-                        nombreCompleto:
-                            horaSeleccionada.investigador.nombreCompleto
-                            ?? horaSeleccionada.investigador.nombreInvestigador
-                    }
-                    : null,
+                investigador: horaSeleccionada.investigador ?? null,
                 modalidad: horaSeleccionada.modalidad,
                 tipoHora: horaSeleccionada.tipoHora,
                 cantidadHorasMes: horaSeleccionada.cantidadHorasMes,
@@ -37,10 +31,42 @@ export const useHoraForm = ({ horaSeleccionada, presupuesto, onSubmit }) => {
         }
     }, [horaSeleccionada]);
 
+    // REEMPLAZAR la función actualizarCampo existente:
     const actualizarCampo = (index, campo, valor) => {
         setHorasForm(prev => {
             const copia = [...prev];
-            copia[index][campo] = valor;
+            const fila = { ...copia[index] };
+
+            // Al cambiar modalidad
+            if (campo === "modalidad") {
+                fila.modalidad = valor;
+                // Si no es REGIMEN POR TIEMPO, limpiar tipoHora
+                if (valor?.valor !== "REGIMEN POR TIEMPO") {
+                    fila.tipoHora = null;
+                    // No borrar cantidadHorasMes, deja que el usuario la edite
+                } else {
+                    // Si es REGIMEN POR TIEMPO y ya había tipoHora elegido, reflejar su valor
+                    if (fila.tipoHora?.valor) {
+                        fila.cantidadHorasMes = fila.tipoHora.valor;
+                    } else {
+                        fila.cantidadHorasMes = "";
+                    }
+                }
+            }
+            else if (campo === "tipoHora") {
+                fila.tipoHora = valor;
+                // Auto-fill horas desde el valor numérico del catálogo
+                if (valor?.valor) {
+                    fila.cantidadHorasMes = valor.valor; // valor = "40", "20", "10", "5"
+                } else {
+                    fila.cantidadHorasMes = "";
+                }
+            }
+            else {
+                fila[campo] = valor;
+            }
+
+            copia[index] = fila;
             return copia;
         });
     };
@@ -79,9 +105,11 @@ export const useHoraForm = ({ horaSeleccionada, presupuesto, onSubmit }) => {
     const handleSubmit = async () => {
 
         // 1. Campos incompletos
-        const incompletos = horasForm.some(
-            h => !h.investigador || !h.modalidad || !h.cantidadHorasMes || !h.cantidadMeses
-        );
+        const incompletos = horasForm.some(h => {
+            if (!h.investigador || !h.modalidad || !h.cantidadHorasMes || !h.cantidadMeses) return true;
+            if (h.modalidad?.valor === "REGIMEN POR TIEMPO" && !h.tipoHora) return true;
+            return false;
+        });
         if (incompletos) {
             notify.warning("Complete todos los campos");
             return;

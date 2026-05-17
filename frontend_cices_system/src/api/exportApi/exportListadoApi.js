@@ -1,4 +1,5 @@
 import httpClient from "../../core/api/httpClient.js";
+import qs from "qs";
 
 export const listarParticipantes = (filtro, pageable, limite) => {
     return httpClient.get("/exportar/listar-participantes", {
@@ -19,6 +20,7 @@ export const listarPresupuestosReporte = (filtroProyecto, filtroPresupuesto, pag
             page: pageable.page,
             size: pageable.size,
             limite
-        }
+        },
+        paramsSerializer: params => qs.stringify(params, { arrayFormat: "repeat" })
     });
 };

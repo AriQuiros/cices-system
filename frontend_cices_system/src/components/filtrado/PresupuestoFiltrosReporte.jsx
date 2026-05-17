@@ -9,33 +9,54 @@ function PresupuestoFiltrosReporte({
                                        onChange,
                                        opcionesTiposPresupuesto = [],
                                        opcionesFuentes = [],
-                                       opcionesCategorias = []
+                                       opcionesCategorias = [],
+                                       ANIO_MIN = 2020,
+                                       ANIO_MAX = new Date().getFullYear()
                                    }) {
+
+    const opcionesAnio = Array.from(
+        { length: ANIO_MAX - ANIO_MIN + 1 },
+        (_, i) => ({ value: ANIO_MIN + i, label: String(ANIO_MIN + i) })
+    ).reverse();
+
+    const handleAnioDesde = (opt) => {
+        const val = opt?.value ?? ANIO_MIN;
+        onChange("anioDesde", val);
+        if (filtros.anioHasta && val > filtros.anioHasta) onChange("anioHasta", val);
+    };
+
+    const handleAnioHasta = (opt) => {
+        const val = opt?.value ?? ANIO_MAX;
+        onChange("anioHasta", val);
+        if (filtros.anioDesde && val < filtros.anioDesde) onChange("anioDesde", val);
+    };
+
     return (
         <div className="filtros-presupuesto">
+            <div style={{ marginBottom: "8px" }}>
+                <h4 style={{ margin: "0 0 4px 0", fontWeight: 600 }}>Filtros de presupuesto</h4>
+                <p style={{ margin: 0, fontSize: "0.78rem", color: "#666" }}>
+                    El filtro por año actúa como un corte temporal sobre la fecha de asignación del presupuesto,
+                    permitiendo acotar los resultados a un rango anual específico.
+                </p>
+            </div>
             <div className="consulta-grid-filtros">
-
-                <div className="gasto-form-item">
-                    <label>Búsqueda</label>
-                    <input
-                        type="text"
-                        className="gestion-gastos-select"
-                        placeholder="Descripción o categoría..."
-                        value={filtros.busqueda || ""}
-                        onChange={e => onChange("busqueda", e.target.value)}
-                    />
-                </div>
 
                 <div className="gasto-form-item">
                     <label>Tipo de presupuesto</label>
                     <select
                         className="gestion-gastos-select"
                         value={filtros.tipoPresupuesto || ""}
-                        onChange={e => onChange("tipoPresupuesto", e.target.value)}
+                        onChange={e =>
+                            onChange(
+                                "tipoPresupuesto",
+                                e.target.value || null
+                            )
+                        }
                     >
                         <option value="">Todos</option>
                         {opcionesTiposPresupuesto.map(o => (
-                            <option key={o.value} value={o.label}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{o.label}</option>
                         ))}
                     </select>
                 </div>
@@ -66,23 +87,33 @@ function PresupuestoFiltrosReporte({
                     />
                 </div>
 
+                {/* ── Año desde ── */}
                 <div className="gasto-form-item">
-                    <label>Fecha desde</label>
-                    <input
-                        type="date"
-                        className="gestion-gastos-select"
-                        value={filtros.fechaDesde || ""}
-                        onChange={e => onChange("fechaDesde", e.target.value || null)}
+                    <label>Año desde</label>
+                    <Select
+                        options={opcionesAnio}
+                        value={opcionesAnio.find(o => o.value === filtros.anioDesde) ?? null}
+                        onChange={handleAnioDesde}
+                        placeholder="Año desde"
+                        maxMenuHeight={220}
+                        isSearchable
+                        className="select-campo"
+                        classNamePrefix="select"
                     />
                 </div>
 
+                {/* ── Año hasta ── */}
                 <div className="gasto-form-item">
-                    <label>Fecha hasta</label>
-                    <input
-                        type="date"
-                        className="gestion-gastos-select"
-                        value={filtros.fechaHasta || ""}
-                        onChange={e => onChange("fechaHasta", e.target.value || null)}
+                    <label>Año hasta</label>
+                    <Select
+                        options={opcionesAnio.filter(o => o.value >= (filtros.anioDesde ?? ANIO_MIN))}
+                        value={opcionesAnio.find(o => o.value === filtros.anioHasta) ?? null}
+                        onChange={handleAnioHasta}
+                        placeholder="Año hasta"
+                        maxMenuHeight={220}
+                        isSearchable
+                        className="select-campo"
+                        classNamePrefix="select"
                     />
                 </div>
 

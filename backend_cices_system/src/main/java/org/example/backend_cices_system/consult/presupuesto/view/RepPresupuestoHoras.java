@@ -61,6 +61,10 @@ public class RepPresupuestoHoras {
     @Column(name = "MODALIDAD", length = 30)
     private String modalidad;
 
+    @Size(max = 30)
+    @Column(name = "TIEMPO", length = 30)
+    private String tiempo;
+
     @Size(max = 50)
     @NotNull
     @Column(name = "ROL_PROYECTO", nullable = false, length = 50)
@@ -75,6 +79,7 @@ public class RepPresupuestoHoras {
 
     @Column(name = "TOTAL_HORAS_PLANIFICADAS", precision = 12, scale = 2)
     private BigDecimal totalHorasPlanificadas;
+
 
 
 }

@@ -69,21 +69,25 @@ const HoraForm = ({
                                     )
                                     .map(i => ({
                                         label: i.nombreCompleto,
-                                        value: i.id
+                                        value: i.id,
+                                        data: i
                                     }))
                                 }
-                                onChange={(option) => actualizarCampo(index, "investigador", investigadores.find(i => i.id === option.value))}
+                                onChange={(option) =>
+                                    actualizarCampo(index, "investigador", option.data)
+                                }
                                 className="select-campo"
                                 classNamePrefix="select"
                                 isDisabled={isEditing}
                             />
                         </div>
 
+                        {/* ─── Modalidad ─────────────────────────────────────── */}
                         <div className="campo-formulario">
-                            <label className="label-campo">Modalidad</label>
+                            <label className="label-campo">Carga académica</label>
                             <Select
                                 required
-                                placeholder="Modalidad"
+                                placeholder="Carga académica"
                                 value={h.modalidad ? { label: h.modalidad.despliegue, value: h.modalidad.valor } : null}
                                 options={tipos["MODALIDAD_HORARIA"]?.map(t => ({ label: t.despliegue, value: t.valor }))}
                                 onChange={(option) => actualizarCampo(index, "modalidad", tipos["MODALIDAD_HORARIA"]?.find(t => t.valor === option.value))}
@@ -92,6 +96,23 @@ const HoraForm = ({
                             />
                         </div>
 
+                        {/* ─── Tiempo (solo si REGIMEN POR TIEMPO) ────────────── */}
+                        {h.modalidad?.valor === "REGIMEN POR TIEMPO" && (
+                            <div className="campo-formulario">
+                                <label className="label-campo">Tiempo</label>
+                                <Select
+                                    required
+                                    placeholder="Seleccione el tiempo"
+                                    value={h.tipoHora ? { label: h.tipoHora.despliegue, value: h.tipoHora.valor } : null}
+                                    options={tipos["TIPO_HORAS"]?.map(t => ({ label: t.despliegue, value: t.valor }))}
+                                    onChange={(option) => actualizarCampo(index, "tipoHora", tipos["TIPO_HORAS"]?.find(t => t.valor === option.value))}
+                                    className="select-campo"
+                                    classNamePrefix="select"
+                                />
+                            </div>
+                        )}
+
+                        {/* ─── Horas por mes ──────────────────────────────────── */}
                         <div className="campo-formulario">
                             <InputField
                                 label="Horas por mes"
@@ -100,11 +121,15 @@ const HoraForm = ({
                                 placeholder="Horas mes"
                                 value={h.cantidadHorasMes}
                                 onChange={(e) => actualizarCampo(index, "cantidadHorasMes", e.target.value)}
-                                rules={[required(), min(1), max(h.modalidad?.valor === "REGIMEN POR TIEMPO" ? 40 : 20)]}
+                                rules={[required(), min(1), max(40)]}
                                 required
                                 min={1}
-                                max={h.modalidad?.valor === "REGIMEN POR TIEMPO" ? 40 : 20}
+                                max={40}
+                                disabled={h.modalidad?.valor === "REGIMEN POR TIEMPO"}  // ← bloquear si régimen
                             />
+                            {h.modalidad?.valor === "REGIMEN POR TIEMPO" && (
+                                <small style={{ color: "#888" }}>Las horas se asignan automáticamente según el Tiempo seleccionado.</small>
+                            )}
                         </div>
 
                         <div className="campo-formulario">
@@ -115,10 +140,10 @@ const HoraForm = ({
                                 placeholder="Meses"
                                 value={h.cantidadMeses}
                                 onChange={(e) => actualizarCampo(index, "cantidadMeses", e.target.value)}
-                                rules={[required(), min(1), max(calcularMesesParticipacion(h.investigador))]}   // ← AGREGAR max(maxMeses)
+                                rules={[required(), min(1), max(calcularMesesParticipacion(h.investigador))]}
                                 required
                                 min={1}
-                                max={calcularMesesParticipacion(h.investigador)}                                 // ← AGREGAR
+                                max={calcularMesesParticipacion(h.investigador)}
                             />
                         </div>
 

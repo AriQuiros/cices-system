@@ -35,6 +35,9 @@ public class HorasAsignada {
     @Column(name = "ID_CODIGO_TIPO_MODALIDAD", nullable = false)
     private Short idCodigoTipoModalidad;
 
+    @Column(name = "ID_CODIGO_TIPO_HORA", nullable = false)
+    private Short idCodigoTipoHora;
+
     @NotNull
     @Column(name = "CANTIDAD_HORAS_MES", nullable = false)
     private Double cantidadHorasMes;
@@ -42,5 +45,6 @@ public class HorasAsignada {
     @NotNull
     @Column(name = "CANTIDAD_MESES", nullable = false)
     private Short cantidadMeses;
+
 
 }

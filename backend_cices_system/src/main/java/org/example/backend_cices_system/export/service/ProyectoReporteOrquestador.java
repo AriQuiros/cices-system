@@ -14,6 +14,7 @@ import org.example.backend_cices_system.consult.presupuesto.view.RepPresupuestoB
 import org.example.backend_cices_system.consult.proyecto.view.RepProyectoBase;
 import org.example.backend_cices_system.modules.proyecto.dto.DocumentoDTO;
 import org.example.backend_cices_system.modules.proyecto.service.DocumentoService;
+import org.example.backend_cices_system.modules.proyecto.service.EntidadProyectoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class ProyectoReporteOrquestador {
     private final RepPresupuestoGastosService gastosService;
     private final RepPresupuestoHorasService horasService;
     private final DocumentoService documentoService;
+    private final EntidadProyectoService entidadProyectoService;
 
     // ════════════════════════════════════════════════════════════════════════
     // PUNTO DE ENTRADA — múltiples proyectos por IDs
@@ -67,30 +69,25 @@ public class ProyectoReporteOrquestador {
         List<RepProyectoBase> proyectos = proyectoService.buscarPorIds(ids);
 
         if (proyectos.isEmpty()) return List.of();
-        System.out.println("obteniendo ids proyecto");
 
         // ids reales después de filtrar (puede que alguno no exista en la vista)
         List<Integer> idsReales = proyectos.stream()
                 .map(RepProyectoBase::getIdProyecto)
                 .toList();
-        System.out.println("obteniendo investigadoresProyecto");
+
         // ── Queries 2-4: datos directos por idProyecto ─────────────────────
         Map<Integer, List<InvestigadorReporteDTO>> investigadoresPorProyecto =
                 investigadorService.obtenerPorProyectos(idsReales);                // Query 2
-        System.out.println("obteniendo objetivos");
 
         Map<Integer, List<ObjetivoReporteDTO>> objetivosPorProyecto =
                 resultadosService.obtenerPorProyectos(idsReales);                  // Query 3
-        System.out.println("obteniendo informes");
 
         Map<Integer, List<InformeReporteDTO>> informesPorProyecto =
                 informeService.obtenerPorProyectos(idsReales);                     // Query 4
-        System.out.println("obteniendo presupuestos");
 
         // ── Query 5: presupuestos agrupados por idProyecto ──────────────────
         Map<Integer, List<RepPresupuestoBase>> presupuestosPorProyecto =
                 presupuestoService.obtenerPorProyectos(idsReales);                 // Query 5
-        System.out.println("obteniendo gastos");
 
         // ── Queries 6-7: gastos y horas agrupados por idPresupuesto ─────────
         // IMPORTANTE: el parámetro son idsProyectos, pero el Map resultante
@@ -105,6 +102,9 @@ public class ProyectoReporteOrquestador {
         Map<Integer, List<DocumentoDTO>> documentosPorProyecto =
                 documentoService.obtenerPorProyectos(idsReales); // Query 8
 
+        Map<Integer, List<EntidadReporteDTO>> entidadesPorProyecto =
+                entidadProyectoService.obtenerPorProyectos(idsReales);// Query 9
+
         // ── Ensamblaje en memoria (0 queries adicionales) ───────────────────
         return proyectos.stream()
                 .map(p -> ensamblarProyecto(
@@ -115,7 +115,8 @@ public class ProyectoReporteOrquestador {
                         presupuestosPorProyecto,
                         gastosPorPresupuesto,
                         horasPorPresupuesto,
-                        documentosPorProyecto
+                        documentosPorProyecto,
+                        entidadesPorProyecto
                 ))
                 .toList();
     }
@@ -160,10 +161,13 @@ public class ProyectoReporteOrquestador {
                 ))
                 .toList();
 
+        List<EntidadReporteDTO> entidades =
+                entidadProyectoService.obtenerEntidadesReportePorProyecto(idProyecto);  // ← real
+
         return proyectoService.obtenerProyectoReporteDTO(
                 proyecto,
                 investigadores,
-                List.of(),
+                entidades,
                 presupuestosDTO,
                 objetivos,
                 documentos,
@@ -199,7 +203,8 @@ public class ProyectoReporteOrquestador {
             Map<Integer, List<RepPresupuestoBase>>       presupuestosPorProyecto,
             Map<Integer, List<GastoReporteDTO>>          gastosPorPresupuesto,
             Map<Integer, List<HorasAsignadasReporteDTO>> horasPorPresupuesto,
-            Map<Integer, List<DocumentoDTO>> documentosPorProyecto
+            Map<Integer, List<DocumentoDTO>> documentosPorProyecto,
+            Map<Integer, List<EntidadReporteDTO>> entidadesPorProyecto
     ) {
         Integer idP = p.getIdProyecto();
 
@@ -212,7 +217,7 @@ public class ProyectoReporteOrquestador {
         return proyectoService.obtenerProyectoReporteDTO(
                 p,
                 investigadoresPorProyecto.getOrDefault(idP, List.of()),
-                List.of(),          // TODO: entidades — agregar RepEntidadService cuando esté listo
+                entidadesPorProyecto.getOrDefault(idP, List.of()),
                 presupuestosDTO,
                 objetivosPorProyecto.getOrDefault(idP, List.of()),
                 documentosPorProyecto.getOrDefault(idP, List.of()),

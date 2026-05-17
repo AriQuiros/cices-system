@@ -33,6 +33,10 @@ public class HorasAsignadasService {
             Presupuesto presupuesto = presupuestoService.obtenerPresupuesto(dto.idPresupuesto());
             horasAsignadas.setIdPresupuesto(presupuesto);
             horasAsignadas.setIdCodigoTipoModalidad(dto.modalidad().id());
+
+            if (dto.tipoHora() != null) {
+                horasAsignadas.setIdCodigoTipoHora(dto.tipoHora().id());
+            }
             horasAsignadas.setCantidadHorasMes(dto.cantidadHorasMes());
             horasAsignadas.setCantidadMeses(dto.cantidadMeses());
 
@@ -46,6 +50,12 @@ public class HorasAsignadasService {
         hora.setIdCodigoTipoModalidad(dto.modalidad().id());
         hora.setCantidadHorasMes(dto.cantidadHorasMes());
         hora.setCantidadMeses(dto.cantidadMeses());
+
+        if (dto.tipoHora() != null) {
+            hora.setIdCodigoTipoHora(dto.tipoHora().id());
+        } else {
+            hora.setIdCodigoTipoHora(null);
+        }
 
         horasAsignadasRepository.save(hora);
         return dto;
@@ -68,7 +78,8 @@ public class HorasAsignadasService {
                 investigadorProyectoService.obtenerDTO(horasAsignada.getIdInvestigadorProyecto()),
                 horasAsignada.getIdPresupuesto().getId(),
                 catalogoService.obtenerDto(horasAsignada.getIdCodigoTipoModalidad()),
-                null,
+                horasAsignada.getIdCodigoTipoHora() != null ?
+                        catalogoService.obtenerDto(horasAsignada.getIdCodigoTipoHora()) : null,
                 horasAsignada.getCantidadHorasMes(),
                 horasAsignada.getCantidadMeses()
         );

@@ -168,9 +168,9 @@ public class PresupuestosReportBuilder implements ReportBuilder<List<ReportePres
             if (base.horasAsignadas() != null && !base.horasAsignadas().isEmpty()) {
                 elementos.add(paraBold("Horas asignadas por investigador"));
                 elementos.add(new ReportTable(
-                        List.of("Investigador", "Modalidad", "Horas/mes", "Meses", "Total horas"),
+                        List.of("Investigador", "Carga académica", "Tiempo", "Horas/mes", "Meses" ,"Total horas"),
                         base.horasAsignadas().stream().map(h -> List.of(
-                                safe(h.investigador()), safe(h.modalidad()),
+                                safe(h.investigador()), safe(h.modalidad()), safe(h.tiempo()),
                                 fmt(h.horasMes()), safe(h.meses()), fmt(h.totalHorasAsignadas())
                         )).collect(Collectors.toList())
                 ));

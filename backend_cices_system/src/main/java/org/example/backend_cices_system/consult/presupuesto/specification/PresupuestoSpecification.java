@@ -5,6 +5,8 @@ import org.example.backend_cices_system.consult.presupuesto.view.RepPresupuestoB
 import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.persistence.criteria.Predicate;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class PresupuestoSpecification {
                 predicates.add(cb.equal(root.get("codigoProyecto"), filtro.codigoProyecto()));
             }
 
-            if (filtro.tipoPresupuesto() != null) {
+            if (filtro.tipoPresupuesto() != null && !filtro.tipoPresupuesto().isBlank()) {
                 predicates.add(cb.equal(root.get("tipoPresupuesto"), filtro.tipoPresupuesto()));
             }
 
@@ -62,12 +64,18 @@ public class PresupuestoSpecification {
                 predicates.add(root.get("categoriaPresupuesto").in(filtro.categorias()));
             }
 
-            if (filtro.fechaDesde() != null && filtro.fechaHasta() != null) {
-                predicates.add(cb.between(root.get("fechaAsignacion"), filtro.fechaDesde(), filtro.fechaHasta()));
-            } else if (filtro.fechaDesde() != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("fechaAsignacion"), filtro.fechaDesde()));
-            } else if (filtro.fechaHasta() != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("fechaAsignacion"), filtro.fechaHasta()));
+            if (filtro.anioDesde() != null || filtro.anioHasta() != null) {
+                LocalDate desde = filtro.anioDesde() != null
+                        ? LocalDate.of(filtro.anioDesde(), 1, 1)
+                        : LocalDate.of(2020, 1, 1);
+
+                LocalDate hasta = filtro.anioHasta() != null
+                        ? LocalDate.of(filtro.anioHasta(), 12, 31)
+                        : LocalDate.now();
+
+                predicates.add(
+                        cb.between(root.get("fechaAsignacion"), desde, hasta)
+                );
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

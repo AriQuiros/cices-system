@@ -11,32 +11,32 @@ const PresupuestoResumen = ({ presupuesto }) => {
     return (
         <div className="gestion-gastos-resumen">
             {esFinanciero && (
-                <p>Categoria: {presupuesto?.categoria}</p>
+                <p><strong>Categoría:</strong> {presupuesto?.categoria}</p>
             )}
 
-            <p>Descripción: {presupuesto?.descripcion || 'Sin descripción'}</p>
-            <p>Fecha Asignación: {formatearFechaCR(presupuesto?.fechaAsignacion)}</p>
+            <p><strong>Descripción:</strong> {presupuesto?.descripcion || 'Sin descripción'}</p>
+            <p><strong>Fecha de asignación:</strong> {formatearFechaCR(presupuesto?.fechaAsignacion)}</p>
 
             {/* Financiero */}
             {esFinanciero && (
                 <>
-                    <p>Fuente de financiamiento: {presupuesto?.fuenteFinanciamiento}</p>
-                    <p>Monto asignado: {formatearMonedaCR(presupuesto?.montoAsignado)}</p>
-                    <p>Total usado: {formatearMonedaCR(presupuesto?.resumen?.totalUsado)}</p>
-                    <p>Disponible: {formatearMonedaCR(presupuesto?.resumen?.disponible)}</p>
-                    <p>Cantidad de gastos: {formatearNumeroCR(presupuesto?.resumen?.cantidad)}</p>
+                    <p><strong>Fuente de financiamiento:</strong> {presupuesto?.fuenteFinanciamiento}</p>
+                    <p><strong>Monto asignado:</strong> {formatearMonedaCR(presupuesto?.montoAsignado)}</p>
+                    <p><strong>Total usado:</strong> {formatearMonedaCR(presupuesto?.resumen?.totalUsado)}</p>
+                    <p><strong>Disponible:</strong> {formatearMonedaCR(presupuesto?.resumen?.disponible)}</p>
+                    <p><strong>Cantidad de gastos:</strong> {formatearNumeroCR(presupuesto?.resumen?.cantidad)}</p>
                 </>
             )}
 
             {/* Horas */}
             {esHoras && (
                 <>
-                    <p>Horas por mes: {formatearNumeroCR(presupuesto?.cantidadHorasMes)}</p>
-                    <p>Cantidad de meses: {formatearNumeroCR(presupuesto?.cantidadMeses)}</p>
-                    <p>Total de horas asignadas: {formatearNumeroCR(presupuesto?.resumen?.totalAsignado)}</p>
-                    <p>Total usadas: {formatearNumeroCR(presupuesto?.resumen?.totalUsado)}</p>
-                    <p>Disponible: {formatearNumeroCR(presupuesto?.resumen?.disponible)}</p>
-                    <p>Cantidad de horas asignadas: {formatearNumeroCR(presupuesto?.resumen?.cantidad)}</p>
+                    <p><strong>Horas por mes:</strong> {formatearNumeroCR(presupuesto?.cantidadHorasMes)}</p>
+                    <p><strong>Cantidad de meses:</strong> {formatearNumeroCR(presupuesto?.cantidadMeses)}</p>
+                    <p><strong>Total de horas asignadas:</strong> {formatearNumeroCR(presupuesto?.resumen?.totalAsignado)}</p>
+                    <p><strong>Total usadas:</strong> {formatearNumeroCR(presupuesto?.resumen?.totalUsado)}</p>
+                    <p><strong>Disponible:</strong> {formatearNumeroCR(presupuesto?.resumen?.disponible)}</p>
+                    <p><strong>Cantidad de horas asignadas:</strong> {formatearNumeroCR(presupuesto?.resumen?.cantidad)}</p>
                 </>
             )}
         </div>

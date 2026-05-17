@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useCatalogos } from "../referenceDataHooks/useCatalogos.js";
 
+const ANIO_MIN = 2020;
+const ANIO_MAX = new Date().getFullYear();
+
 const FILTRO_INICIAL = {
     busqueda: "",
     tipoPresupuesto: "",
     fuentesFinanciamiento: [],
     categorias: [],
-    fechaDesde: null,
-    fechaHasta: null
+    anioDesde: ANIO_MIN,
+    anioHasta: ANIO_MAX
 };
 
 export const usePresupuestoFiltros = () => {
@@ -56,6 +59,8 @@ export const usePresupuestoFiltros = () => {
         opcionesFuentes,
         opcionesCategorias,
 
-        isLoadingCatalogos: catalogosQuery.isLoading
+        isLoadingCatalogos: catalogosQuery.isLoading,
+        ANIO_MIN,
+        ANIO_MAX
     };
 };

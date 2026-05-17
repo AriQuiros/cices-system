@@ -9,7 +9,7 @@ export function HoraTable({ data = [], onEdit, onDelete }) {
         investigador: h.investigador || "-",
         fechasInvestigador: (formatearFechaCR(h?.fechaInicio) || "") + " - " + (formatearFechaCR(h?.fechaFin) || ""),
         modalidad: h.modalidad || "-",
-        tipoHora: h.tipoHora || "N/A",
+        tipoHora: h.tiempo || "-",         // ← campo correcto del DTO
         horasMes: h.horasMes,
         meses: h.meses,
         total: formatearNumeroCR(h.totalHorasAsignadas)
@@ -18,8 +18,8 @@ export function HoraTable({ data = [], onEdit, onDelete }) {
     const columns = [
         { key: "investigador", label: "Investigador" },
         { key: "fechasInvestigador", label: "Fechas Participación" },
-        { key: "modalidad", label: "Modalidad" },
-        { key: "tipoHora", label: "Tipo Hora" },
+        { key: "modalidad", label: "Carga Académica" },
+        { key: "tipoHora", label: "Tiempo" },
         { key: "horasMes", label: "Horas/Mes" },
         { key: "meses", label: "Meses" },
         { key: "total", label: "Total" }

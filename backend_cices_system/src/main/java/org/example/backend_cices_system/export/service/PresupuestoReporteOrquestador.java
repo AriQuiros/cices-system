@@ -168,8 +168,8 @@ public class PresupuestoReporteOrquestador {
                 || (f.codigoProyecto()        != null && !f.codigoProyecto().isBlank())
                 || (f.fuentesFinanciamiento() != null && !f.fuentesFinanciamiento().isEmpty())
                 || (f.categorias()            != null && !f.categorias().isEmpty())
-                ||  f.fechaDesde()            != null
-                ||  f.fechaHasta()            != null;
+                ||  f.anioDesde()            != null
+                ||  f.anioHasta()            != null;
     }
 
     private ProyectoFechasDTO toProyectoFechasDTO(RepProyectoBase p) {

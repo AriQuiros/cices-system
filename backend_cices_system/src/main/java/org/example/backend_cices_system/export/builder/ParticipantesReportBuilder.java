@@ -79,7 +79,7 @@ public class ParticipantesReportBuilder implements ReportBuilder<List<ReportePar
         List<ReportElement> elementos = new ArrayList<>(buildResumenParticipantes(item));
 
         elementos.add(new ReportTable(
-                List.of("Investigador", "Rol", "Modalidad", "Carga académica",
+                List.of("Investigador", "Rol", "Carga académica", "Tiempo",
                         "Horas/mes", "Meses", "Total horas", "Inicio", "Fin"),
                 item.participantes().stream()
                         .map(this::participanteAFila)

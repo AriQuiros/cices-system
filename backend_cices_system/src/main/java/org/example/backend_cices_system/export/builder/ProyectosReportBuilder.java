@@ -255,11 +255,12 @@ public class ProyectosReportBuilder implements ReportBuilder<List<ProyectoReport
         return List.of(
                 para("Horas asignadas por investigador"),
                 new ReportTable(
-                        List.of("Investigador", "Modalidad", "Horas/mes", "Meses", "Total horas"),
+                        List.of("Investigador", "Carga académica", "Tiempo", "Horas/mes", "Meses", "Total horas"),
                         pre.horasAsignadas().stream()
                                 .map(h -> List.of(
                                         safe(h.investigador()),
                                         safe(h.modalidad()),
+                                        safe(h.tiempo()),
                                         fmt(h.horasMes()),
                                         safe(h.meses()),
                                         fmt(h.totalHorasAsignadas())

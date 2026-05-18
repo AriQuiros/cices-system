@@ -109,8 +109,8 @@ function ReportesParticipantes() {
                                         <th>Investigador</th>
                                         <th>Rol</th>
                                         <th>Participación</th>
-                                        <th>Modalidad</th>
-                                        {/*<th>Carga</th>*/}
+                                        <th>Carga académica</th>
+                                        <th>Tiempo</th>
                                         <th>Horas/mes</th>
                                         <th>Meses</th>
                                         <th>Total horas</th>
@@ -133,7 +133,7 @@ function ReportesParticipantes() {
                                             </td>
 
                                             <td>{p.modalidad || "N/A"}</td>
-                                            {/* <td>{p.cargaAcademica || "N/A"}</td>*/}
+                                            <td>{p.tiempo || "N/A"}</td>
                                             <td>{p.horasMes || "N/A"}</td>
                                             <td>{p.meses || "N/A"}</td>
 

@@ -10,7 +10,9 @@ httpClient.interceptors.request.use((config) => {
     const rutasPublicas = [
         "/auth/login",
         "/auth/forgot-password",
-        "/auth/reset-password"
+        "/auth/reset-password",
+        "/investigadores/registro",
+        "/empleados/registro"
     ];
 
     const esPublica = rutasPublicas.some((ruta) =>

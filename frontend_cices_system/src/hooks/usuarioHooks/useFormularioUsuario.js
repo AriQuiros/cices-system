@@ -62,8 +62,8 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
     const rolesBD = (rolesSistemaQuery.data?.data ?? rolesSistemaQuery.data ?? []);
 
     // ── Queries de perfil (solo en modoPerfil) ───────────────────────────
-    const perfilEmpleadoQuery     = usePerfilEmpleado(!isInvestigador);
-    const perfilInvestigadorQuery = usePerfilInvestigador(isInvestigador);
+    const perfilEmpleadoQuery     = usePerfilEmpleado(modoPerfil && !isInvestigador);
+    const perfilInvestigadorQuery = usePerfilInvestigador(modoPerfil && isInvestigador);
 
     // Cargar datos en el formulario cuando llega el perfil
     useEffect(() => {
@@ -208,8 +208,8 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
         const validacion = combinacionRolesValida(rolesSeleccionados);
         if (!validacion.valida) { notify.error(validacion.mensaje); return; }
 
-        const payload = buildPayloadRegistro({ empleado, usuario, investigador, isInvestigador });
         const esInv   = rolesSeleccionados.some(r => r.nombreRol === "INVESTIGADOR");
+        const payload = buildPayloadRegistro({ empleado, usuario, investigador, isInvestigador: modoPerfil ? isInvestigador : esInv });
 
         // PERFIL
         if (modoPerfil) {
@@ -264,6 +264,7 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
         }
 
         // REGISTRO
+        console.log(payload)
         const mutation = esInv ? crearInvestigador : crearEmpleado;
         mutation.mutate(payload, {
             onSuccess: () => {

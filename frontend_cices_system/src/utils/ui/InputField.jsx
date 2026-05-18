@@ -20,6 +20,16 @@ export default function InputField({
 
     }, [value, rules, touched]);
 
+    useEffect(() => {
+        if (value === "" || value === null || value === undefined) {
+            setTouched(false);
+            setError("");
+            if (inputRef.current) {
+                inputRef.current.setCustomValidity("");
+            }
+        }
+    }, [value]);
+
     const validate = (input, showError = true) => {
 
         const v = input.value;

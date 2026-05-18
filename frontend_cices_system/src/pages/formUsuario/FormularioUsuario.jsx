@@ -1,5 +1,4 @@
 // src/paginas/usuarios/formUsuario/FormularioUsuario.jsx
-import { useState } from "react";
 import InputField from "../../utils/ui/InputField.jsx";
 import { required, correoUCR, minLength, maxLength, match } from "../../validators/Validators.jsx";
 import PhoneInput from "react-phone-number-input";
@@ -63,9 +62,6 @@ export default function FormularioUsuario({
         authModal = "", authBox = "", phoneCss = ""
     } = clases;
 
-    // Solo estado de UI puro — toggle visibilidad contraseña
-    const [showPassword,        setShowPassword]        = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const tipoId   = (empleado.tipoId?.valor || "").toUpperCase();
     const idConfig = getIdConfig(tipoId);
@@ -177,23 +173,20 @@ export default function FormularioUsuario({
                         <div className={passwordContainer}>
                             <InputField
                                 label="Contraseña"
-                                type={showPassword ? "text" : "password"}
+                                type={"password"}
                                 name="contrasena" placeholder="Mínimo 8 caracteres"
                                 value={usuario?.contrasena || ""}
                                 onChange={e => actualizarCampoUsuario("contrasena", e.target.value)}
                                 rules={[required(), minLength(8), maxLength(254)]}
                                 maxLength={32} required
                             />
-                            <button type="button" className={passwordToggle}
-                                    onClick={() => setShowPassword(v => !v)}>
-                                {showPassword ? "🙈" : "👁️"}
-                            </button>
+
                         </div>
 
                         <div className={passwordContainer}>
                             <InputField
                                 label="Confirmar Contraseña"
-                                type={showConfirmPassword ? "text" : "password"}
+                                type={"password"}
                                 name="confirmarContrasena" placeholder="Mínimo 8 caracteres"
                                 value={confirmarContrasena}
                                 onChange={e => setConfirmarContrasena(e.target.value)}
@@ -204,10 +197,7 @@ export default function FormularioUsuario({
                                 ]}
                                 maxLength={32} required
                             />
-                            <button type="button" className={passwordToggle}
-                                    onClick={() => setShowConfirmPassword(v => !v)}>
-                                {showConfirmPassword ? "🙈" : "👁️"}
-                            </button>
+
                         </div>
                     </>
                 )}

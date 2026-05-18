@@ -33,7 +33,7 @@ export default function ListaPersonas() {
                     onLimpiar={limpiarFiltros}
                     opcionesGrados={opcionesGrados}
                     opcionesRoles={opcionesRoles}
-                    mostrarRoles={true}
+                    mostrarRoles={false}
                     mostrarEstado={false}
                 />
 

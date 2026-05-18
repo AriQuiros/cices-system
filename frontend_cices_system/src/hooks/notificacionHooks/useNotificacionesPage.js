@@ -61,7 +61,7 @@ export const useNotificacionesPage = () => {
 
     const handleEliminar = async (id) => {
 
-        const confirmado = confirm.delete();
+        const confirmado = await confirm.delete();
 
         if (!confirmado) return;
 

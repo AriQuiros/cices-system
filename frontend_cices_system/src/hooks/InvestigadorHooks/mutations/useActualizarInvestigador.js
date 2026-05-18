@@ -1,14 +1,14 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation/*, useQueryClient*/ } from "@tanstack/react-query";
 import { actualizarInvestigadorSrv } from "../../../services/investigadorServices/investigadorService.js";
 
 export const useActualizarInvestigador = () => {
-    const queryClient = useQueryClient();
+    //const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: actualizarInvestigadorSrv,
 
-        onSuccess: () => {
+        /*onSuccess: () => {
             queryClient.invalidateQueries(["investigador-perfil"]);
-        }
+        }*/
     });
 };

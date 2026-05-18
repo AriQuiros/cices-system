@@ -1,14 +1,14 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation/*, useQueryClient */} from "@tanstack/react-query";
 import { actualizarEmpleadoSrv } from "../../../services/empleadoServices/empleadoService.js";
 
 export const useActualizarEmpleado = () => {
-    const queryClient = useQueryClient();
+    //const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: actualizarEmpleadoSrv,
 
-        onSuccess: () => {
+        /*onSuccess: () => {
             queryClient.invalidateQueries(["empleado-perfil"]);
-        }
+        }*/
     });
 };

@@ -16,6 +16,8 @@ import { confirm } from "../../utils/ui/confirm.jsx";
 import { loginSrv } from "../../services/authServices/authService.js";
 import { EmpleadoDTO, UsuarioDTO } from "../../modelos/empleadoDTO.jsx";
 import { InvestigadorDTO } from "../../modelos/investigadorDTO.jsx";
+import {useNavigate} from "react-router-dom";
+import {useQueryClient} from "@tanstack/react-query";
 
 const buildPayloadRegistro = ({ empleado, usuario, investigador, isInvestigador }) => {
     if (isInvestigador) {
@@ -35,8 +37,8 @@ const buildPayloadRegistro = ({ empleado, usuario, investigador, isInvestigador 
 };
 
 export const useFormularioUsuario = ({ modoPerfil }) => {
-
-    const { user, login } = useContext(AppContext);
+    const navigate = useNavigate();
+    const { user, login, logout } = useContext(AppContext);
     const { isInvestigador } = useAuth();
 
     // ── Estado local del formulario ──────────────────────────────────────
@@ -46,6 +48,8 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
     const [confirmarContrasena, setConfirmarContrasena] = useState("");
 
     // ── Re-autenticación ─────────────────────────────────────────────────
+    const queryClient = useQueryClient();
+
     const [requiereAuth, setRequiereAuth] = useState(false);
     const [authPassword, setAuthPassword] = useState("");
     const [authOk,       setAuthOk]       = useState(false);
@@ -216,37 +220,44 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
             mutation.mutate(payload, {
                 onSuccess: async () => {
 
-                    const nuevoCorreo  = payload.empleado?.correo ?? payload.correo;
+                    const nuevoCorreo =
+                        payload.empleado?.correo ?? payload.correo;
 
                     const correoActual = user?.username;
 
                     if (nuevoCorreo && nuevoCorreo !== correoActual) {
 
                         try {
-                            console.log(nuevoCorreo)
-                            console.log(authPassword)
-                            const data = await loginSrv(nuevoCorreo, authPassword);
-                            console.log(data);
+
+                            const data =
+                                await loginSrv(nuevoCorreo, authPassword);
+
                             login(data.user, data.token);
 
-                        } catch {
-                            notify.warning("Perfil actualizado. Vuelve a iniciar sesión con tu nuevo correo.");
+                            // AQUI invalidas
+                            await queryClient.invalidateQueries();
 
+                            notify.success("Perfil actualizado correctamente");
+
+                        } catch {
+
+                            notify.warning(
+                                "Perfil actualizado. Vuelve a iniciar sesión."
+                            );
                         }
 
                     } else {
 
-                        notify.success("Perfil actualizado correctamente");
+                        await queryClient.invalidateQueries();
 
+                        notify.success("Perfil actualizado correctamente");
+                        logout();
+
+                        navigate("/");
                     }
 
                     setAuthOk(false);
-
                     setAuthPassword("");
-
-                },
-                onError: (err) => {
-                    notify.error(err?.response?.data?.message || "Error al actualizar perfil");
                 }
             });
             return;

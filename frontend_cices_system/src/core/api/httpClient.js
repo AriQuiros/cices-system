@@ -6,10 +6,23 @@ const httpClient = axios.create({
 });
 
 httpClient.interceptors.request.use((config) => {
-    const token = getToken();
 
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    const rutasPublicas = [
+        "/auth/login",
+        "/auth/forgot-password",
+        "/auth/reset-password"
+    ];
+
+    const esPublica = rutasPublicas.some((ruta) =>
+        config.url?.includes(ruta)
+    );
+
+    if (!esPublica) {
+        const token = getToken();
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
     }
 
     return config;

@@ -53,6 +53,9 @@ export default function ResetPassword() {
                     />
 
                     <div className="reset-actions">
+                        <Link to="/" className="btn-secondary">
+                            Volver al inicio de sesión
+                        </Link>
                         <button
                             className="btn-primary"
                             type="submit"

@@ -10,14 +10,14 @@ import "./BusquedaProyecto.css";
 
 const BuscadorProyecto = ({ onSelect, soloPrincipalOPermiso = false }) => {
     const { user }          = useContext(AppContext);
-    const { esInvestigador } = useAuth();
+    const { isInvestigador } = useAuth();
 
     const roles         = user?.roles || [];
     const tieneRolAdmin = roles.some(r =>
         ["DIRECCION", "ADMINISTRATIVO", "ASISTENTE"].includes(r)
     );
     const usarEndpointInvestigador =
-        soloPrincipalOPermiso || (esInvestigador && !tieneRolAdmin);
+        soloPrincipalOPermiso || (isInvestigador && !tieneRolAdmin);
 
     const [inputText, setInputText] = useState("");
     const [selected,  setSelected]  = useState(null);

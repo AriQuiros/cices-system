@@ -26,6 +26,8 @@ const HoraForm = ({
     onCancel
 }) => {
 
+    function cantMaxHoras(cargaAcademica) { return cargaAcademica === "REGIMEN POR TIEMPO" ? 40 : 20}
+
 
     return (
         <div className="gestion-horas-form-container">
@@ -121,10 +123,10 @@ const HoraForm = ({
                                 placeholder="Horas mes"
                                 value={h.cantidadHorasMes}
                                 onChange={(e) => actualizarCampo(index, "cantidadHorasMes", e.target.value)}
-                                rules={[required(), min(1), max(40)]}
+                                rules={[required(), min(1), max(cantMaxHoras(h?.modalidad?.valor))]}
                                 required
                                 min={1}
-                                max={40}
+                                max={cantMaxHoras(h?.modalidad?.valor)}
                                 disabled={h.modalidad?.valor === "REGIMEN POR TIEMPO"}  // ← bloquear si régimen
                             />
                             {h.modalidad?.valor === "REGIMEN POR TIEMPO" && (

@@ -1,0 +1,36 @@
+# ARCHIVO COMPLETO RESULTANTE:
+version: '3.8'
+
+services:
+
+  backend:
+    build:
+      context: ./backend_cices_system
+      dockerfile: Dockerfile
+    container_name: cices-backend
+    env_file: ${COMPOSE_ENV_FILE:-.env.local}
+    ports:
+      - "8080:8080"
+    networks:
+      - cices-network
+    # AGREGAR extra_hosts: permite que "host.docker.internal" resuelva al host en Linux
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend_cices_system
+      dockerfile: Dockerfile
+    container_name: cices-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - cices-network
+    restart: unless-stopped
+
+networks:
+  cices-network:
+    driver: bridge

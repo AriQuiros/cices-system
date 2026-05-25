@@ -34,6 +34,7 @@ logs/
 backend_cices_system/.env
 .env
 .env.local
+.env.prod
 .env.*.local
 
 #data

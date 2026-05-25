@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useProyecto } from "../../context/proyectoCtx/UseProyecto.jsx";
-import { CodigoDTO } from "../../modelos/CodigoDTO.jsx";
+import { CodigoDTO } from "../../modelos/codigoDTO.jsx";
 import { notify } from "../../utils/ui/notify.jsx";
 import CreatableSelect from "react-select/creatable";
 import InputField from "../../utils/ui/InputField.jsx";

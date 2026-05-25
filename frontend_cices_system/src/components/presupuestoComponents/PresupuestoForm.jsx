@@ -1,4 +1,4 @@
-import { CodigoDTO } from "../../modelos/CodigoDTO.jsx";
+import { CodigoDTO } from "../../modelos/codigoDTO.jsx";
 import InputField from "../../utils/ui/InputField.jsx";
 import {
     required, maxLength, min, max,

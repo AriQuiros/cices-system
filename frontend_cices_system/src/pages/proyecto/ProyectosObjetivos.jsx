@@ -1,7 +1,7 @@
 import { useProyecto } from "../../context/proyectoCtx/UseProyecto.jsx";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
-import { CodigoDTO } from "../../modelos/CodigoDTO.jsx";
+import { CodigoDTO } from "../../modelos/codigoDTO.jsx";
 import {IndicadorDTO} from "../../modelos/proyectoDTO.jsx";
 import {PlusSquare, Trash2, PlusCircle, MinusCircle, Plus, X} from "lucide-react";
 

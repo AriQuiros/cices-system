@@ -1,6 +1,6 @@
 import { EmpleadoDTO } from "./empleadoDTO.jsx";
 import { EntidadDTO } from "./entidadDTO.jsx";
-import {CodigoDTO} from "./CodigoDTO.jsx";
+import {CodigoDTO} from "./codigoDTO.jsx";
 
 export const InvestigadorDTO = {
     id: null,

@@ -1,5 +1,5 @@
 import { useProyecto } from "../../context/proyectoCtx/UseProyecto.jsx";
-import { CodigoDTO } from "../../modelos/CodigoDTO.jsx";
+import { CodigoDTO } from "../../modelos/codigoDTO.jsx";
 import { Plus, X} from "lucide-react";
 import {InformeDTO} from "../../modelos/proyectoDTO.jsx";
 import {useEffect} from "react";

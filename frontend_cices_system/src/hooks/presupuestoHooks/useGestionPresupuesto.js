@@ -6,7 +6,7 @@ import { useRegistrarPresupuesto } from "./mutations/useRegistrarPresupuestos.js
 import { useActualizarPresupuesto } from "./mutations/useActualizarPresupuesto.js";
 import { useCatalogos } from "../referenceDataHooks/useCatalogos.js";
 import { PresupuestoDTO } from "../../modelos/presupuestoDTO.jsx";
-import { CodigoDTO } from "../../modelos/CodigoDTO.jsx";
+import { CodigoDTO } from "../../modelos/codigoDTO.jsx";
 import { notify } from "../../utils/ui/notify.jsx";
 import { confirm } from "../../utils/ui/confirm.jsx";
 

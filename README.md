@@ -54,8 +54,74 @@ Notas:
 - El `docker-compose.yaml` expone el backend en el puerto 8080 y el frontend en el puerto 80 (mapeados como `8080:8080` y `80:80`).
 - El backend lee variables de entorno desde el archivo indicado por la variable `COMPOSE_ENV_FILE` o `.env.local` por defecto (ver `env_file` en `docker-compose.yaml`).
 
+Notas:
+
+- El `docker-compose.yaml` expone:
+    - Backend: `http://localhost:8080`
+    - Frontend: `http://localhost`
+
+- El backend corre internamente en el puerto `8080`.
+- El frontend (Nginx + React) se publica en el puerto `80`.
+
+- Para probar el sistema en navegador:
+    - Frontend: `http://localhost`
+    - API backend: `http://localhost:8080`
+
+- El backend lee variables de entorno desde el archivo indicado por la variable `COMPOSE_ENV_FILE` o `.env.local` por defecto (ver `env_file` en `docker-compose.yaml`).
+
+
+# Variables de entorno
+
+Antes de ejecutar el sistema, debe existir un archivo (no debe subirse al repositorio):
+
+```text
+backend_cices_system/.env.local
+```
+
+Ejemplo:
+
+```env
+# Base de datos Oracle local
+DB_URL=jdbc:oracle:thin:@host.docker.internal:1521:XE
+DB_USERNAME=usuario
+DB_PASSWORD=contrasena
+
+# JWT — cambiar por una cadena larga y segura
+JWT_SECRET=secret-key
+JWT_EXPIRATION=8
+
+# Brevo
+BREVO_API_KEY=tu_api_key
+BREVO_SENDER_EMAIL=correo@ejemplo.com
+BREVO_SENDER_NAME=NOMBRE_API
+```
+
+## Importante
+
+En el archivo `docker-compose.yaml` debe existir:
+
+```env
+COMPOSE_ENV_FILE=.env.local
+```
+
+Esto indica que Docker Compose utilizará el archivo:
+
+```text
+backend_cices_system/.env.local
+```
+
+para cargar las variables de entorno del backend.
+
+## Notas
+
+* `JWT_SECRET` es obligatorio.
+* Si falta alguna variable requerida, el backend no iniciará correctamente.
+* Para despliegue en otros entornos (servidor virtual, producción, etc.), se recomienda usar un archivo `.env` diferente con credenciales reales.
+
+
 Enlaces rápidos a README específicos:
 
 - `backend_cices_system/README.md` - instrucciones sobre compilación y ejecución del backend.
 - `frontend_cices_system/README.md` - instrucciones sobre compilación y ejecución del frontend.
+
 

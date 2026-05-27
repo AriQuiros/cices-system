@@ -29,7 +29,7 @@ public class Gasto {
     private Presupuesto idPresupuesto;
 
     @NotNull
-    @Column(name = "MONTO", nullable = false, precision = 9, scale = 5)
+    @Column(name = "MONTO", nullable = false, precision = 9, scale = 2)
     private BigDecimal monto;
 
     @NotNull

@@ -53,6 +53,8 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
     const [requiereAuth, setRequiereAuth] = useState(false);
     const [authPassword, setAuthPassword] = useState("");
     const [authOk,       setAuthOk]       = useState(false);
+    const [initialized, setInitialized] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
 
     // ── Catálogos ────────────────────────────────────────────────────────
     const catalogosQuery = useCatalogos(["TIPO_IDENTIFICACION", "GRADO_ACADEMICO"]);
@@ -72,6 +74,7 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
         if (isInvestigador) {
             const data = perfilInvestigadorQuery.data;
             if (!data) return;
+            if (initialized) return;
             const emp = data.empleado || {};
             const usr = emp.usuario  || {};
             setEmpleado(emp);
@@ -84,12 +87,15 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
                 titulos:           data.titulos            || [],
                 certificaciones:   data.certificaciones    || []
             });
+            setInitialized(true);
         } else {
             const data = perfilEmpleadoQuery.data;
             if (!data) return;
+            if (initialized) return;
             const { usuario: usr, ...emp } = data;
             setEmpleado(emp);
             setUsuario({ ...usr, nombreUsuario: emp.correo });
+            setInitialized(true);
         }
     }, [
         modoPerfil,
@@ -115,14 +121,17 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
     // ── Helpers de campo ─────────────────────────────────────────────────
     const actualizarCampo = (campo, valor) => {
         setEmpleado(prev => ({ ...prev, [campo]: valor }));
+        setIsDirty(true);
     };
 
     const actualizarCampoUsuario = (campo, valor) => {
         setUsuario(prev => ({ ...prev, [campo]: valor }));
+        setIsDirty(true);
     };
 
     const actualizarCampoInvestigador = (campo, valor) => {
         setInvestigador(prev => ({ ...prev, [campo]: valor }));
+        setIsDirty(true);
     };
 
     const actualizarItemInvestigador = (coleccion, idx, campo, valor) => {
@@ -131,6 +140,7 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
             lista[idx] = { ...lista[idx], [campo]: valor };
             return { ...prev, [coleccion]: lista };
         });
+        setIsDirty(true);
     };
 
     const agregarItemInvestigador = (coleccion, dto) => {
@@ -138,6 +148,7 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
             ...prev,
             [coleccion]: [...(prev[coleccion] || []), { ...dto }]
         }));
+        setIsDirty(true);
     };
 
     const eliminarItemInvestigador = (coleccion, idx) => {
@@ -146,6 +157,7 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
             lista.splice(idx, 1);
             return { ...prev, [coleccion]: lista };
         });
+        setIsDirty(true);
     };
 
     const handleCodigoChange = (campo, valor, lista) => {
@@ -239,6 +251,10 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
 
                             notify.success("Perfil actualizado correctamente");
 
+                                    // permitir que el perfil se recargue
+                                    setInitialized(false);
+                                    setIsDirty(false);
+
                         } catch {
 
                             notify.warning(
@@ -251,9 +267,9 @@ export const useFormularioUsuario = ({ modoPerfil }) => {
                         await queryClient.invalidateQueries();
 
                         notify.success("Perfil actualizado correctamente");
-                        logout();
 
-                        navigate("/");
+                        // Recargar la página actual para reflejar cambios sin hacer logout
+                        window.location.reload();
                     }
 
                     setAuthOk(false);
